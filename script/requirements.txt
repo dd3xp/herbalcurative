@@ -1,0 +1,4 @@
+# Image processing dependencies
+Pillow>=8.0.0
+
+# pip install -r requirements.txt

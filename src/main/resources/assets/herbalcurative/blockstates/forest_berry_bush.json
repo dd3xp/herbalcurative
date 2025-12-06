@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "herbalcurative:block/forest_berry_bush_stage0"
+    },
+    "age=1": {
+      "model": "herbalcurative:block/forest_berry_bush_stage1"
+    },
+    "age=2": {
+      "model": "herbalcurative:block/forest_berry_bush_stage2"
+    }
+  }
+}

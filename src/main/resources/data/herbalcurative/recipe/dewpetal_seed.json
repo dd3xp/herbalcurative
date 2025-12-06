@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "herbalcurative:dewpetal"
+    }
+  ],
+  "result": {
+    "id": "herbalcurative:dewpetal_seed",
+    "count": 3
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "itemGroup.herbalcurative": "草药学",
+  
+  "block.herbalcurative.verdscale_fern": "绿鳞蕨",
+  "block.herbalcurative.dewpetal": "雨露花",
+  "block.herbalcurative.zephyr_lily": "和风铃兰",
+  "block.herbalcurative.crystbud": "晶芽",
+  "block.herbalcurative.pyrisage": "炼狱草",
+  "block.herbalcurative.rosynia": "星语蔷薇",
+  "block.herbalcurative.forest_heartwood_log": "森林心木原木",
+  "block.herbalcurative.forest_heartwood_planks": "森林心木木板",
+  "block.herbalcurative.forest_heartwood_leaves": "森林心木树叶",
+  "block.herbalcurative.forest_heartwood_sapling": "森林心木树苗",
+  "block.herbalcurative.forest_berry_bush": "森林浆果丛",
+  
+  "item.herbalcurative.scaleplate": "鳞甲",
+  "item.herbalcurative.dewpetal_shard": "雨露花瓣",
+  "item.herbalcurative.golden_lilybell": "金铃花",
+  "item.herbalcurative.cryst_spine": "晶刺",
+  "item.herbalcurative.burnt_node": "焰节",
+  "item.herbalcurative.heart_of_stardream": "星忆花心",
+  
+  "item.herbalcurative.verdscale_fern_seed": "绿鳞蕨种子",
+  "item.herbalcurative.dewpetal_seed": "雨露花籽",
+  "item.herbalcurative.zephyr_lily_seed": "和风铃兰花籽",
+  "item.herbalcurative.crystbud_seed": "晶化种子",
+  "item.herbalcurative.pyrisage_seed": "能量之种",
+  "item.herbalcurative.rosynia_seed": "神秘之种",
+  
+  "item.herbalcurative.forest_heartwood_stick": "森林心木木棍",
+  "item.herbalcurative.forest_berry": "森林浆果",
+  
+  "item.herbalcurative.weaveleaf_helmet": "织叶兜帽",
+  "item.herbalcurative.weaveleaf_chestplate": "织叶大衣",
+  "item.herbalcurative.weaveleaf_leggings": "织叶短袍",
+  "item.herbalcurative.weaveleaf_boots": "织叶靴子",
+  
+  "item.herbalcurative.thornmark_sword": "棘纹剑",
+  "item.herbalcurative.thornmark_pickaxe": "棘纹镐",
+  "item.herbalcurative.thornmark_axe": "棘纹斧",
+  "item.herbalcurative.thornmark_shovel": "棘纹铲",
+  "item.herbalcurative.thornmark_hoe": "棘纹锄",
+  "item.herbalcurative.thornmark_crossbow": "荆条弩",
+  "item.herbalcurative.thornmark_bolt_magazine": "荆木弩匣",
+  
+  "item.herbalcurative.weaveflow_loop": "织流环",
+  "item.herbalcurative.herb_box": "草药箱",
+  
+  "block.herbalcurative.herb_cabinet": "草药柜"
+}

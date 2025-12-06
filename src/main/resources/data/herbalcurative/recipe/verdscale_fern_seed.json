@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "herbalcurative:verdscale_fern"
+    }
+  ],
+  "result": {
+    "id": "herbalcurative:verdscale_fern_seed",
+    "count": 3
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "herbalcurative:block/zephyr_lily"
+  },
+  "render_type": "cutout"
+}

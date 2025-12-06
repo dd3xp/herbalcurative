@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P",
+    "P"
+  ],
+  "key": {
+    "P": {
+      "item": "herbalcurative:forest_heartwood_planks"
+    }
+  },
+  "result": {
+    "id": "herbalcurative:forest_heartwood_stick",
+    "count": 4
+  }
+}

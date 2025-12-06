@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "herbalcurative:crystbud"
+    }
+  ],
+  "result": {
+    "id": "herbalcurative:crystbud_seed",
+    "count": 3
+  }
+}

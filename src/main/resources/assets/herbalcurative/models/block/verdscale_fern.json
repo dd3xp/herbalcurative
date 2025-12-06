@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "herbalcurative:block/verdscale_fern"
+  },
+  "render_type": "cutout"
+}

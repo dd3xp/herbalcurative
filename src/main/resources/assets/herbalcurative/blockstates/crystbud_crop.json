@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "age=0": { "model": "herbalcurative:block/crystbud_crop_stage0" },
+    "age=1": { "model": "herbalcurative:block/crystbud_crop_stage1" },
+    "age=2": { "model": "herbalcurative:block/crystbud_crop_stage2" },
+    "age=3": { "model": "herbalcurative:block/crystbud_crop_stage3" },
+    "age=4": { "model": "herbalcurative:block/crystbud_crop_stage4" },
+    "age=5": { "model": "herbalcurative:block/crystbud_crop_stage5" },
+    "age=6": { "model": "herbalcurative:block/crystbud_crop_stage6" },
+    "age=7": { "model": "herbalcurative:block/crystbud_crop_stage7" },
+    "age=8": { "model": "herbalcurative:block/crystbud_crop_stage8" },
+    "age=9": { "model": "herbalcurative:block/crystbud_crop_stage9" }
+  }
+}
