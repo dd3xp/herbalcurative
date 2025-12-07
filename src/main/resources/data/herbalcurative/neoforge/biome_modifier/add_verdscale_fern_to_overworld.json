@@ -1,6 +1,0 @@
-{
-  "type": "neoforge:add_features",
-  "biomes": "#herbalcurative:has_verdscale_fern",
-  "features": "herbalcurative:verdscale_fern_placed",
-  "step": "vegetal_decoration"
-}

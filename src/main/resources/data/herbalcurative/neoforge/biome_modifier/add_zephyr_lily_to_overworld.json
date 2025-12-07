@@ -1,6 +1,0 @@
-{
-  "type": "neoforge:add_features",
-  "biomes": "#herbalcurative:has_zephyr_lily",
-  "features": "herbalcurative:zephyr_lily_placed",
-  "step": "vegetal_decoration"
-}

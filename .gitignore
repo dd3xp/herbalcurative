@@ -23,5 +23,8 @@ run
 runs
 run-data
 
+# Data generation
+src/main/generated/
+
 othermods/
 repo
