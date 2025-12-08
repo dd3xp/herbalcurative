@@ -13,15 +13,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 /**
- * Thornmark Crossbow
- * Supports Thornmark Bolt Magazine as ammo
+ * Red Cherry Crossbow
+ * Supports Red Cherry Bolt Magazine as ammo
  * Arrows from bolt magazine cannot be picked up
  * Arrows from regular arrows can be picked up
  * Bolt magazine is consumed via durability, not item count
  */
-public class ThornmarkCrossbowItem extends CrossbowItem {
+public class RedCherryCrossbowItem extends CrossbowItem {
     
-    public ThornmarkCrossbowItem(Properties properties) {
+    public RedCherryCrossbowItem(Properties properties) {
         super(properties);
     }
     
@@ -30,7 +30,7 @@ public class ThornmarkCrossbowItem extends CrossbowItem {
         return (stack) -> stack.is(Items.ARROW) || 
                           stack.is(Items.SPECTRAL_ARROW) || 
                           stack.is(Items.TIPPED_ARROW) ||
-                          stack.getItem() instanceof ThornmarkBoltMagazineItem;
+                          stack.getItem() instanceof RedCherryBoltMagazineItem;
     }
     
     @Override
@@ -45,7 +45,7 @@ public class ThornmarkCrossbowItem extends CrossbowItem {
             // Find ammo
             ItemStack ammo = player.getProjectile(crossbow);
             
-            if (!ammo.isEmpty() && ammo.getItem() instanceof ThornmarkBoltMagazineItem) {
+            if (!ammo.isEmpty() && ammo.getItem() instanceof RedCherryBoltMagazineItem) {
                 // For bolt magazine: temporarily replace with arrow, load, then restore magazine
                 int magazineSlot = findItemSlot(player, ammo);
                 if (magazineSlot >= 0) {
@@ -104,7 +104,7 @@ public class ThornmarkCrossbowItem extends CrossbowItem {
     private ItemStack findBoltMagazine(Player player) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof ThornmarkBoltMagazineItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof RedCherryBoltMagazineItem) {
                 if (stack.getDamageValue() < stack.getMaxDamage()) {
                     return stack;
                 }

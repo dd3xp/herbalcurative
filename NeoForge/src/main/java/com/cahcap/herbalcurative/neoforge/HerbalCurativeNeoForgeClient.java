@@ -77,7 +77,7 @@ public class HerbalCurativeNeoForgeClient {
                 // Red Cherry Leaves
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.RED_CHERRY_LEAVES.get(), RenderType.cutout());
                 
-                // Register Thornmark Crossbow item properties for animations
+                // Register Red Cherry Crossbow item properties for animations
                 registerCrossbowItemProperties();
             });
             
@@ -85,11 +85,11 @@ public class HerbalCurativeNeoForgeClient {
         }
         
         /**
-         * Register item properties for Thornmark Crossbow to enable pulling and charged animations
+         * Register item properties for Red Cherry Crossbow to enable pulling and charged animations
          */
         private static void registerCrossbowItemProperties() {
             // Register "pulling" predicate - returns 1 when crossbow is being pulled (charged)
-            ItemProperties.register(ModItems.THORNMARK_CROSSBOW.get(),
+            ItemProperties.register(ModItems.RED_CHERRY_CROSSBOW.get(),
                     ResourceLocation.withDefaultNamespace("pulling"),
                     (stack, level, entity, seed) -> {
                         if (entity == null) {
@@ -99,7 +99,7 @@ public class HerbalCurativeNeoForgeClient {
                     });
             
             // Register "pull" predicate - returns progress of pulling (0.0 to 1.0)
-            ItemProperties.register(ModItems.THORNMARK_CROSSBOW.get(),
+            ItemProperties.register(ModItems.RED_CHERRY_CROSSBOW.get(),
                     ResourceLocation.withDefaultNamespace("pull"),
                     (stack, level, entity, seed) -> {
                         if (entity == null) {
@@ -111,12 +111,12 @@ public class HerbalCurativeNeoForgeClient {
                     });
             
             // Register "charged" predicate - returns 1 when crossbow is fully charged
-            ItemProperties.register(ModItems.THORNMARK_CROSSBOW.get(),
+            ItemProperties.register(ModItems.RED_CHERRY_CROSSBOW.get(),
                     ResourceLocation.withDefaultNamespace("charged"),
                     (stack, level, entity, seed) -> CrossbowItem.isCharged(stack) ? 1.0F : 0.0F);
             
             // Register "firework" predicate - returns 1 when loaded with firework rocket
-            ItemProperties.register(ModItems.THORNMARK_CROSSBOW.get(),
+            ItemProperties.register(ModItems.RED_CHERRY_CROSSBOW.get(),
                     ResourceLocation.withDefaultNamespace("firework"),
                     (stack, level, entity, seed) -> {
                         if (!CrossbowItem.isCharged(stack)) {

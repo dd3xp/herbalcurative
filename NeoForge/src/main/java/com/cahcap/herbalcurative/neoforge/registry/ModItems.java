@@ -66,40 +66,40 @@ public class ModItems {
             () -> new WeaveleafArmorItem(ModArmorMaterials.WEAVELEAF, ArmorItem.Type.BOOTS,
                     new Item.Properties().durability(90)));
 
-    // ==================== Thornmark Tools ====================
+    // ==================== Lumistone Tools ====================
     
-    public static final DeferredItem<SwordItem> THORNMARK_SWORD = ITEMS.register("thornmark_sword",
-            () -> new ThornmarkSwordItem(new Item.Properties()
+    public static final DeferredItem<SwordItem> LUMISTONE_SWORD = ITEMS.register("lumistone_sword",
+            () -> new LumistoneSwordItem(new Item.Properties()
                     .durability(80)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 3, -2.4F))));
     
-    public static final DeferredItem<PickaxeItem> THORNMARK_PICKAXE = ITEMS.register("thornmark_pickaxe",
-            () -> new ThornmarkPickaxeItem(new Item.Properties()
+    public static final DeferredItem<PickaxeItem> LUMISTONE_PICKAXE = ITEMS.register("lumistone_pickaxe",
+            () -> new LumistonePickaxeItem(new Item.Properties()
                     .durability(80)
                     .attributes(PickaxeItem.createAttributes(Tiers.IRON, 1.0F, -2.8F))));
     
-    public static final DeferredItem<AxeItem> THORNMARK_AXE = ITEMS.register("thornmark_axe",
-            () -> new ThornmarkAxeItem(new Item.Properties()
+    public static final DeferredItem<AxeItem> LUMISTONE_AXE = ITEMS.register("lumistone_axe",
+            () -> new LumistoneAxeItem(new Item.Properties()
                     .durability(80)
                     .attributes(AxeItem.createAttributes(Tiers.IRON, 6.0F, -3.1F))));
     
-    public static final DeferredItem<ShovelItem> THORNMARK_SHOVEL = ITEMS.register("thornmark_shovel",
-            () -> new ThornmarkShovelItem(new Item.Properties()
+    public static final DeferredItem<ShovelItem> LUMISTONE_SHOVEL = ITEMS.register("lumistone_shovel",
+            () -> new LumistoneShovelItem(new Item.Properties()
                     .durability(80)
                     .attributes(ShovelItem.createAttributes(Tiers.IRON, 1.5F, -3.0F))));
     
-    public static final DeferredItem<HoeItem> THORNMARK_HOE = ITEMS.register("thornmark_hoe",
-            () -> new ThornmarkHoeItem(new Item.Properties()
+    public static final DeferredItem<HoeItem> LUMISTONE_HOE = ITEMS.register("lumistone_hoe",
+            () -> new LumistoneHoeItem(new Item.Properties()
                     .durability(80)
                     .attributes(HoeItem.createAttributes(Tiers.IRON, -2.0F, -1.0F))));
 
-    // ==================== Thornmark Crossbow ====================
+    // ==================== Red Cherry Crossbow ====================
     
-    public static final DeferredItem<ThornmarkCrossbowItem> THORNMARK_CROSSBOW = ITEMS.register("thornmark_crossbow",
-            () -> new ThornmarkCrossbowItem(new Item.Properties().durability(80)));
+    public static final DeferredItem<RedCherryCrossbowItem> RED_CHERRY_CROSSBOW = ITEMS.register("red_cherry_crossbow",
+            () -> new RedCherryCrossbowItem(new Item.Properties().durability(80)));
     
-    public static final DeferredItem<ThornmarkBoltMagazineItem> THORNMARK_BOLT_MAGAZINE = ITEMS.register("thornmark_bolt_magazine",
-            () -> new ThornmarkBoltMagazineItem(new Item.Properties().durability(80).stacksTo(1)));
+    public static final DeferredItem<RedCherryBoltMagazineItem> RED_CHERRY_BOLT_MAGAZINE = ITEMS.register("red_cherry_bolt_magazine",
+            () -> new RedCherryBoltMagazineItem(new Item.Properties().durability(80).stacksTo(1)));
 
     // ==================== Special Items ====================
     

@@ -4,14 +4,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Thornmark Bolt Magazine
+ * Red Cherry Bolt Magazine
  * 80 durability
  * When in inventory, crossbow prioritizes using bolt magazine instead of arrows
  * Arrows fired from bolt magazine cannot be picked up
  */
-public class ThornmarkBoltMagazineItem extends Item {
+public class RedCherryBoltMagazineItem extends Item {
     
-    public ThornmarkBoltMagazineItem(Properties properties) {
+    public RedCherryBoltMagazineItem(Properties properties) {
         super(properties);
     }
     

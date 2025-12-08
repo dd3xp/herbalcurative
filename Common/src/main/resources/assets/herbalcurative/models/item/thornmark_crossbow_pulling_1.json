@@ -1,6 +1,0 @@
-{
-  "parent": "herbalcurative:item/thornmark_crossbow_pulling_0",
-  "textures": {
-    "layer0": "herbalcurative:item/thornmark_crossbow_pulling_1"
-  }
-}

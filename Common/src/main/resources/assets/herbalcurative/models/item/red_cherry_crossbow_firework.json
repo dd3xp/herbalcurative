@@ -1,0 +1,6 @@
+{
+  "parent": "herbalcurative:item/red_cherry_crossbow_pulling_0",
+  "textures": {
+    "layer0": "herbalcurative:item/red_cherry_crossbow_firework"
+  }
+}

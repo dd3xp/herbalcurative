@@ -1,7 +1,7 @@
 package com.cahcap.herbalcurative.neoforge.handler;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.item.ThornmarkCrossbowItem;
+import com.cahcap.herbalcurative.item.RedCherryCrossbowItem;
 import com.cahcap.herbalcurative.neoforge.registry.ModItems;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CrossbowItem;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 /**
  * Handler for durability regeneration
- * Weaveleaf Armor and Thornmark Tools regenerate 1 durability per second
+ * Leafweave Armor and Lumistone Tools regenerate 1 durability per second
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID)
 public class DurabilityRegenHandler {
@@ -39,7 +39,7 @@ public class DurabilityRegenHandler {
         boolean isUsingItem = player.isUsingItem();
         ItemStack activeItem = player.getUseItem();
         boolean isChargingCrossbow = isUsingItem && !activeItem.isEmpty() && 
-                                     activeItem.getItem() instanceof ThornmarkCrossbowItem &&
+                                     activeItem.getItem() instanceof RedCherryCrossbowItem &&
                                      !CrossbowItem.isCharged(activeItem);
         
         Boolean wasCharging = wasChargingCrossbow.getOrDefault(playerUUID, false);
@@ -65,7 +65,7 @@ public class DurabilityRegenHandler {
         
         ItemStack offhand = player.getOffhandItem();
         if (!offhand.isEmpty() && offhand.isDamaged() && isRegenerableItem(offhand)) {
-            if (isChargingCrossbow && offhand.getItem() instanceof ThornmarkCrossbowItem) {
+            if (isChargingCrossbow && offhand.getItem() instanceof RedCherryCrossbowItem) {
                 int pending = pendingCrossbowRepair.getOrDefault(playerUUID, 0);
                 pendingCrossbowRepair.put(playerUUID, pending + 1);
             } else {
@@ -76,7 +76,7 @@ public class DurabilityRegenHandler {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
             if (!stack.isEmpty() && stack.isDamaged() && isRegenerableItem(stack)) {
-                if (isChargingCrossbow && stack.getItem() instanceof ThornmarkCrossbowItem) {
+                if (isChargingCrossbow && stack.getItem() instanceof RedCherryCrossbowItem) {
                     int pending = pendingCrossbowRepair.getOrDefault(playerUUID, 0);
                     pendingCrossbowRepair.put(playerUUID, pending + 1);
                     continue;
@@ -89,20 +89,20 @@ public class DurabilityRegenHandler {
     
     private static void applyPendingCrossbowRepair(Player player, int repairPoints) {
         ItemStack mainhand = player.getMainHandItem();
-        if (!mainhand.isEmpty() && mainhand.getItem() instanceof ThornmarkCrossbowItem && mainhand.isDamaged()) {
+        if (!mainhand.isEmpty() && mainhand.getItem() instanceof RedCherryCrossbowItem && mainhand.isDamaged()) {
             mainhand.setDamageValue(Math.max(0, mainhand.getDamageValue() - repairPoints));
             return;
         }
         
         ItemStack offhand = player.getOffhandItem();
-        if (!offhand.isEmpty() && offhand.getItem() instanceof ThornmarkCrossbowItem && offhand.isDamaged()) {
+        if (!offhand.isEmpty() && offhand.getItem() instanceof RedCherryCrossbowItem && offhand.isDamaged()) {
             offhand.setDamageValue(Math.max(0, offhand.getDamageValue() - repairPoints));
             return;
         }
         
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof ThornmarkCrossbowItem && stack.isDamaged()) {
+            if (!stack.isEmpty() && stack.getItem() instanceof RedCherryCrossbowItem && stack.isDamaged()) {
                 stack.setDamageValue(Math.max(0, stack.getDamageValue() - repairPoints));
                 return;
             }
@@ -115,13 +115,13 @@ public class DurabilityRegenHandler {
                item == ModItems.WEAVELEAF_CHESTPLATE.get() ||
                item == ModItems.WEAVELEAF_LEGGINGS.get() ||
                item == ModItems.WEAVELEAF_BOOTS.get() ||
-               item == ModItems.THORNMARK_SWORD.get() ||
-               item == ModItems.THORNMARK_PICKAXE.get() ||
-               item == ModItems.THORNMARK_AXE.get() ||
-               item == ModItems.THORNMARK_SHOVEL.get() ||
-               item == ModItems.THORNMARK_HOE.get() ||
-               item == ModItems.THORNMARK_CROSSBOW.get() ||
-               item == ModItems.THORNMARK_BOLT_MAGAZINE.get();
+               item == ModItems.LUMISTONE_SWORD.get() ||
+               item == ModItems.LUMISTONE_PICKAXE.get() ||
+               item == ModItems.LUMISTONE_AXE.get() ||
+               item == ModItems.LUMISTONE_SHOVEL.get() ||
+               item == ModItems.LUMISTONE_HOE.get() ||
+               item == ModItems.RED_CHERRY_CROSSBOW.get() ||
+               item == ModItems.RED_CHERRY_BOLT_MAGAZINE.get();
     }
 }
 

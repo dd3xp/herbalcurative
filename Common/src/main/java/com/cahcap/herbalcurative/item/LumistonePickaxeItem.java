@@ -8,15 +8,15 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Thornmark Pickaxe
+ * Lumistone Pickaxe
  * 80 durability, same stats as iron pickaxe
  * Can quickly break gravel and dirt (same speed as iron shovel - 6.0)
  * 
  * Subclasses can override getDestroySpeed() to customize mining speeds for different blocks
  */
-public class ThornmarkPickaxeItem extends PickaxeItem {
+public class LumistonePickaxeItem extends PickaxeItem {
 
-    public ThornmarkPickaxeItem(Properties properties) {
+    public LumistonePickaxeItem(Properties properties) {
         super(Tiers.IRON, properties);
     }
     

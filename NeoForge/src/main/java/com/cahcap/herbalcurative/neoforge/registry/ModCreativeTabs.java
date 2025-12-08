@@ -58,16 +58,16 @@ public class ModCreativeTabs {
                         output.accept(ModItems.WEAVELEAF_LEGGINGS.get());
                         output.accept(ModItems.WEAVELEAF_BOOTS.get());
                         
-                        // Thornmark Tools
-                        output.accept(ModItems.THORNMARK_SWORD.get());
-                        output.accept(ModItems.THORNMARK_PICKAXE.get());
-                        output.accept(ModItems.THORNMARK_AXE.get());
-                        output.accept(ModItems.THORNMARK_SHOVEL.get());
-                        output.accept(ModItems.THORNMARK_HOE.get());
+                        // Lumistone Tools
+                        output.accept(ModItems.LUMISTONE_SWORD.get());
+                        output.accept(ModItems.LUMISTONE_PICKAXE.get());
+                        output.accept(ModItems.LUMISTONE_AXE.get());
+                        output.accept(ModItems.LUMISTONE_SHOVEL.get());
+                        output.accept(ModItems.LUMISTONE_HOE.get());
                         
-                        // Thornmark Crossbow
-                        output.accept(ModItems.THORNMARK_CROSSBOW.get());
-                        output.accept(ModItems.THORNMARK_BOLT_MAGAZINE.get());
+                        // Red Cherry Crossbow
+                        output.accept(ModItems.RED_CHERRY_CROSSBOW.get());
+                        output.accept(ModItems.RED_CHERRY_BOLT_MAGAZINE.get());
                         
                         // Special Items
                         output.accept(ModItems.WEAVEFLOW_LOOP.get());

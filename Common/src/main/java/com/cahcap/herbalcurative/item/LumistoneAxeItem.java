@@ -8,16 +8,16 @@ import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Thornmark Axe
+ * Lumistone Axe
  * 80 durability, same stats as iron axe
  * Can quickly break leaves and vines (same speed as shears)
- * Makes leaves and vines drop themselves (handled by ThornmarkToolHandler event)
+ * Makes leaves and vines drop themselves (handled by LumistoneToolHandler event)
  * 
- * Any subclass of ThornmarkAxeItem will automatically inherit these behaviors
+ * Any subclass of LumistoneAxeItem will automatically inherit these behaviors
  */
-public class ThornmarkAxeItem extends AxeItem {
+public class LumistoneAxeItem extends AxeItem {
 
-    public ThornmarkAxeItem(Properties properties) {
+    public LumistoneAxeItem(Properties properties) {
         super(Tiers.IRON, properties);
     }
 

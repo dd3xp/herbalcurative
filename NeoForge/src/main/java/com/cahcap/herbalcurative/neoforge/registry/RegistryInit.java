@@ -54,13 +54,13 @@ public class RegistryInit {
         ModRegistries.WEAVELEAF_LEGGINGS = () -> ModItems.WEAVELEAF_LEGGINGS.get();
         ModRegistries.WEAVELEAF_BOOTS = () -> ModItems.WEAVELEAF_BOOTS.get();
         
-        ModRegistries.THORNMARK_SWORD = () -> ModItems.THORNMARK_SWORD.get();
-        ModRegistries.THORNMARK_PICKAXE = () -> ModItems.THORNMARK_PICKAXE.get();
-        ModRegistries.THORNMARK_AXE = () -> ModItems.THORNMARK_AXE.get();
-        ModRegistries.THORNMARK_SHOVEL = () -> ModItems.THORNMARK_SHOVEL.get();
-        ModRegistries.THORNMARK_HOE = () -> ModItems.THORNMARK_HOE.get();
-        ModRegistries.THORNMARK_CROSSBOW = () -> ModItems.THORNMARK_CROSSBOW.get();
-        ModRegistries.THORNMARK_BOLT_MAGAZINE = () -> ModItems.THORNMARK_BOLT_MAGAZINE.get();
+        ModRegistries.LUMISTONE_SWORD = () -> ModItems.LUMISTONE_SWORD.get();
+        ModRegistries.LUMISTONE_PICKAXE = () -> ModItems.LUMISTONE_PICKAXE.get();
+        ModRegistries.LUMISTONE_AXE = () -> ModItems.LUMISTONE_AXE.get();
+        ModRegistries.LUMISTONE_SHOVEL = () -> ModItems.LUMISTONE_SHOVEL.get();
+        ModRegistries.LUMISTONE_HOE = () -> ModItems.LUMISTONE_HOE.get();
+        ModRegistries.RED_CHERRY_CROSSBOW = () -> ModItems.RED_CHERRY_CROSSBOW.get();
+        ModRegistries.RED_CHERRY_BOLT_MAGAZINE = () -> ModItems.RED_CHERRY_BOLT_MAGAZINE.get();
         
         ModRegistries.WEAVEFLOW_LOOP = () -> ModItems.WEAVEFLOW_LOOP.get();
         ModRegistries.HERB_BOX = () -> ModItems.HERB_BOX.get();

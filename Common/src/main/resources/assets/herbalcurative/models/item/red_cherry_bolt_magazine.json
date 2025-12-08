@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "herbalcurative:item/thornmark_bolt_magazine"
+    "layer0": "herbalcurative:item/red_cherry_bolt_magazine"
   }
 }

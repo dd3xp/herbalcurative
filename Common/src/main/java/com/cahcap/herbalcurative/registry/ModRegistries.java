@@ -59,13 +59,13 @@ public class ModRegistries {
     public static Supplier<Item> WEAVELEAF_LEGGINGS;
     public static Supplier<Item> WEAVELEAF_BOOTS;
     
-    public static Supplier<Item> THORNMARK_SWORD;
-    public static Supplier<Item> THORNMARK_PICKAXE;
-    public static Supplier<Item> THORNMARK_AXE;
-    public static Supplier<Item> THORNMARK_SHOVEL;
-    public static Supplier<Item> THORNMARK_HOE;
-    public static Supplier<Item> THORNMARK_CROSSBOW;
-    public static Supplier<Item> THORNMARK_BOLT_MAGAZINE;
+    public static Supplier<Item> LUMISTONE_SWORD;
+    public static Supplier<Item> LUMISTONE_PICKAXE;
+    public static Supplier<Item> LUMISTONE_AXE;
+    public static Supplier<Item> LUMISTONE_SHOVEL;
+    public static Supplier<Item> LUMISTONE_HOE;
+    public static Supplier<Item> RED_CHERRY_CROSSBOW;
+    public static Supplier<Item> RED_CHERRY_BOLT_MAGAZINE;
     
     public static Supplier<Item> WEAVEFLOW_LOOP;
     public static Supplier<Item> HERB_BOX;

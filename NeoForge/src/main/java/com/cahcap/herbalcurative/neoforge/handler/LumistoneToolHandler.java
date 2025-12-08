@@ -1,10 +1,10 @@
 package com.cahcap.herbalcurative.neoforge.handler;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.item.ThornmarkAxeItem;
-import com.cahcap.herbalcurative.item.ThornmarkHoeItem;
-import com.cahcap.herbalcurative.item.ThornmarkShovelItem;
-import com.cahcap.herbalcurative.item.ThornmarkSwordItem;
+import com.cahcap.herbalcurative.item.LumistoneAxeItem;
+import com.cahcap.herbalcurative.item.LumistoneHoeItem;
+import com.cahcap.herbalcurative.item.LumistoneShovelItem;
+import com.cahcap.herbalcurative.item.LumistoneSwordItem;
 import com.cahcap.herbalcurative.neoforge.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -26,11 +26,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 
 /**
- * Event handler for Thornmark Tools special effects
+ * Event handler for Lumistone Tools special effects
  * Uses instanceof checks to support inheritance - all subclasses automatically get the same behaviors
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID)
-public class ThornmarkToolHandler {
+public class LumistoneToolHandler {
 
     /**
      * Handle shovel: increase flint drop chance from 10% to 50% when breaking gravel
@@ -53,9 +53,9 @@ public class ThornmarkToolHandler {
         Block block = state.getBlock();
 
         // Handle shovel: increase flint drop chance from 10% to 50%
-        if (tool instanceof ThornmarkShovelItem && block == Blocks.GRAVEL) {
+        if (tool instanceof LumistoneShovelItem && block == Blocks.GRAVEL) {
             // Vanilla gravel drops flint 10% of the time, gravel 90% of the time
-            // With Thornmark Shovel (or any subclass), increase flint chance to 50%
+            // With Lumistone Shovel (or any subclass), increase flint chance to 50%
             // Clear existing drops and add either flint (50%) or gravel (50%)
             event.getDrops().clear();
             if (player.level().random.nextFloat() < 0.5F) { // 50% chance for flint
@@ -78,7 +78,7 @@ public class ThornmarkToolHandler {
         }
 
         // Handle axe: make leaves and vines drop themselves (like shears)
-        if (tool instanceof ThornmarkAxeItem && (block instanceof LeavesBlock || block instanceof VineBlock)) {
+        if (tool instanceof LumistoneAxeItem && (block instanceof LeavesBlock || block instanceof VineBlock)) {
             // Clear normal drops and add the block itself (silk touch effect)
             event.getDrops().clear();
 
@@ -102,7 +102,7 @@ public class ThornmarkToolHandler {
         Player player = event.getEntity();
         ItemStack heldItem = player.getItemInHand(event.getHand());
         
-        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof ThornmarkHoeItem)) {
+        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof LumistoneHoeItem)) {
             return;
         }
         
@@ -174,8 +174,8 @@ public class ThornmarkToolHandler {
             Player player = (Player) source.getEntity();
             ItemStack heldItem = player.getMainHandItem();
 
-            // Check if player is holding Thornmark Sword or any subclass
-            if (!heldItem.isEmpty() && heldItem.getItem() instanceof ThornmarkSwordItem) {
+            // Check if player is holding Lumistone Sword or any subclass
+            if (!heldItem.isEmpty() && heldItem.getItem() instanceof LumistoneSwordItem) {
                 Item sword = heldItem.getItem();
 
                 // Check cooldown

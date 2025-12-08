@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "herbalcurative:item/thornmark_hoe"
+    "layer0": "herbalcurative:item/lumistone_pickaxe"
   }
 }
