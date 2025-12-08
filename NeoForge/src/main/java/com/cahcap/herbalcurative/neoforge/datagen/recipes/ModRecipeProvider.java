@@ -63,20 +63,20 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .unlockedBy("has_zephyr_lily", has(ModBlocks.ZEPHYR_LILY.get()))
             .save(output);
         
-        // ==================== Forest Heartwood Recipes ====================
+        // ==================== Red Cherry Recipes ====================
         
-        // Forest Heartwood Planks: 1 log → 4 planks (shapeless)
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.FOREST_HEARTWOOD_PLANKS.get(), 4)
-            .requires(ModBlocks.FOREST_HEARTWOOD_LOG.get())
-            .unlockedBy("has_forest_heartwood_log", has(ModBlocks.FOREST_HEARTWOOD_LOG.get()))
+        // Red Cherry Planks: 1 log → 4 planks (shapeless)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_PLANKS.get(), 4)
+            .requires(ModBlocks.RED_CHERRY_LOG.get())
+            .unlockedBy("has_red_cherry_log", has(ModBlocks.RED_CHERRY_LOG.get()))
             .save(output);
         
-        // Forest Heartwood Stick: 2 planks → 4 sticks (shaped, vertical)
+        // Red Cherry Stick: 2 planks → 4 sticks (shaped, vertical)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK, 4)
-            .define('#', ModBlocks.FOREST_HEARTWOOD_PLANKS.get())
+            .define('#', ModBlocks.RED_CHERRY_PLANKS.get())
             .pattern("#")
             .pattern("#")
-            .unlockedBy("has_forest_heartwood_planks", has(ModBlocks.FOREST_HEARTWOOD_PLANKS.get()))
-            .save(output, "herbalcurative:forest_heartwood_stick");
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
+            .save(output, "herbalcurative:red_cherry_stick");
     }
 }

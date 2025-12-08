@@ -18,7 +18,7 @@ public class BlockColorHandler {
     
     @SubscribeEvent
     public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        // Forest Heartwood Leaves - use biome foliage color
+        // Red Cherry Leaves - use biome foliage color
         BlockColor leavesColor = (state, level, pos, tintIndex) -> {
             if (tintIndex == 0 && level != null && pos != null) {
                 return BiomeColors.getAverageFoliageColor(level, pos);
@@ -26,15 +26,15 @@ public class BlockColorHandler {
             return 0xFFFFFF; // White (no tint) for other tint indices
         };
         
-        event.register(leavesColor, ModBlocks.FOREST_HEARTWOOD_LEAVES.get());
+        event.register(leavesColor, ModBlocks.RED_CHERRY_LEAVES.get());
         
-        // Forest Berry Bush - also use biome foliage color
-        event.register(leavesColor, ModBlocks.FOREST_BERRY_BUSH.get());
+        // Red Cherry Bush - also use biome foliage color
+        event.register(leavesColor, ModBlocks.RED_CHERRY_BUSH.get());
     }
     
     @SubscribeEvent
     public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        // Forest Heartwood Leaves item - green color in inventory
+        // Red Cherry Leaves item - green color in inventory
         ItemColor leavesItemColor = (stack, tintIndex) -> {
             if (tintIndex == 0) {
                 return 0x48B518; // Green color (similar to vanilla foliage)
@@ -42,10 +42,10 @@ public class BlockColorHandler {
             return 0xFFFFFF;
         };
         
-        event.register(leavesItemColor, ModBlocks.FOREST_HEARTWOOD_LEAVES.get());
+        event.register(leavesItemColor, ModBlocks.RED_CHERRY_LEAVES.get());
         
-        // Forest Berry Bush item - also green in inventory
-        event.register(leavesItemColor, ModBlocks.FOREST_BERRY_BUSH.get());
+        // Red Cherry Bush item - also green in inventory
+        event.register(leavesItemColor, ModBlocks.RED_CHERRY_BUSH.get());
     }
 }
 

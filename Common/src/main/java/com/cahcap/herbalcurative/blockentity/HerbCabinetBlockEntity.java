@@ -196,7 +196,7 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
                 
                 if (level.getBlockState(targetPos).is(ModRegistries.HERB_CABINET.get())) {
                     if (!targetPos.equals(breakPos)) {
-                        level.setBlock(targetPos, ModRegistries.FOREST_HEARTWOOD_LOG.get().defaultBlockState(), 2);
+                        level.setBlock(targetPos, ModRegistries.RED_CHERRY_LOG.get().defaultBlockState(), 2);
                     }
                 }
             }
@@ -207,7 +207,7 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
     
     @Override
     public ItemStack getOriginalBlock() {
-        return new ItemStack(ModRegistries.FOREST_HEARTWOOD_LOG.get());
+        return new ItemStack(ModRegistries.RED_CHERRY_LOG.get());
     }
     
     public static Item[] getAllHerbItems() {

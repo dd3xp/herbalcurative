@@ -1,6 +1,6 @@
 package com.cahcap.herbalcurative.neoforge.datagen.loot;
 
-import com.cahcap.herbalcurative.block.ForestBerryBushBlock;
+import com.cahcap.herbalcurative.block.RedCherryBushBlock;
 import com.cahcap.herbalcurative.block.HerbCropBlock;
 import com.cahcap.herbalcurative.neoforge.registry.ModBlocks;
 import com.cahcap.herbalcurative.neoforge.registry.ModItems;
@@ -56,10 +56,10 @@ public class ModBlockLootProvider extends LootTableProvider {
             this.dropSelf(ModBlocks.VERDSCALE_FERN.get());
             this.dropSelf(ModBlocks.ZEPHYR_LILY.get());
             
-            // Forest Heartwood blocks
-            this.dropSelf(ModBlocks.FOREST_HEARTWOOD_LOG.get());
-            this.dropSelf(ModBlocks.FOREST_HEARTWOOD_PLANKS.get());
-            this.dropSelf(ModBlocks.FOREST_HEARTWOOD_SAPLING.get());
+            // Red Cherry blocks
+            this.dropSelf(ModBlocks.RED_CHERRY_LOG.get());
+            this.dropSelf(ModBlocks.RED_CHERRY_PLANKS.get());
+            this.dropSelf(ModBlocks.RED_CHERRY_SAPLING.get());
             
             // Herb Cabinet
             this.dropSelf(ModBlocks.HERB_CABINET.get());
@@ -92,9 +92,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             
             // ==================== Special blocks ====================
             
-            // Forest Heartwood Leaves (drops saplings and sticks)
-            this.add(ModBlocks.FOREST_HEARTWOOD_LEAVES.get(), block ->
-                createLeavesDrops(block, ModBlocks.FOREST_HEARTWOOD_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES)
+            // Red Cherry Leaves (drops saplings and sticks)
+            this.add(ModBlocks.RED_CHERRY_LEAVES.get(), block ->
+                createLeavesDrops(block, ModBlocks.RED_CHERRY_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES)
                     .withPool(LootPool.lootPool()
                         .setRolls(UniformGenerator.between(1.0F, 2.0F))
                         .add(applyExplosionDecay(block, LootItem.lootTableItem(Items.STICK)
@@ -102,29 +102,29 @@ public class ModBlockLootProvider extends LootTableProvider {
                         .when(HAS_SHEARS.invert()))
             );
             
-            // Forest Berry Bush - drops berries at all stages
+            // Red Cherry Bush - drops berries at all stages
             // age 0-1: drops 1 berry, age 2: drops 1-2 berries (mature)
-            this.add(ModBlocks.FOREST_BERRY_BUSH.get(), block -> 
+            this.add(ModBlocks.RED_CHERRY_BUSH.get(), block -> 
                 applyExplosionDecay(block, LootTable.lootTable()
                     .withPool(LootPool.lootPool()
                         // age 2 (mature): drops 1-2 berries
                         .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                             .setProperties(StatePropertiesPredicate.Builder.properties()
-                                .hasProperty(ForestBerryBushBlock.AGE, 2)))
-                        .add(LootItem.lootTableItem(ModItems.FOREST_BERRY.get()))
+                                .hasProperty(RedCherryBushBlock.AGE, 2)))
+                        .add(LootItem.lootTableItem(ModItems.RED_CHERRY.get()))
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
                     .withPool(LootPool.lootPool()
                         // age 1: drops 1 berry
                         .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                             .setProperties(StatePropertiesPredicate.Builder.properties()
-                                .hasProperty(ForestBerryBushBlock.AGE, 1)))
-                        .add(LootItem.lootTableItem(ModItems.FOREST_BERRY.get())))
+                                .hasProperty(RedCherryBushBlock.AGE, 1)))
+                        .add(LootItem.lootTableItem(ModItems.RED_CHERRY.get())))
                     .withPool(LootPool.lootPool()
                         // age 0: drops 1 berry
                         .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                             .setProperties(StatePropertiesPredicate.Builder.properties()
-                                .hasProperty(ForestBerryBushBlock.AGE, 0)))
-                        .add(LootItem.lootTableItem(ModItems.FOREST_BERRY.get())))
+                                .hasProperty(RedCherryBushBlock.AGE, 0)))
+                        .add(LootItem.lootTableItem(ModItems.RED_CHERRY.get())))
                 )
             );
         }

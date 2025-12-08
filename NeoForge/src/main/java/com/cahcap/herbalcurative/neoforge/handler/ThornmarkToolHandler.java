@@ -190,8 +190,8 @@ public class ThornmarkToolHandler {
 
                     // Spawn particle effect on server side
                     if (level instanceof ServerLevel serverLevel) {
-                        BlockState particleState = ModBlocks.FOREST_HEARTWOOD_LEAVES.get() != null ?
-                            ModBlocks.FOREST_HEARTWOOD_LEAVES.get().defaultBlockState() : Blocks.OAK_LEAVES.defaultBlockState();
+                        BlockState particleState = ModBlocks.RED_CHERRY_LEAVES.get() != null ?
+                            ModBlocks.RED_CHERRY_LEAVES.get().defaultBlockState() : Blocks.OAK_LEAVES.defaultBlockState();
 
                         // Spawn particles around the target for a powerful hit effect
                         double centerX = target.getX();

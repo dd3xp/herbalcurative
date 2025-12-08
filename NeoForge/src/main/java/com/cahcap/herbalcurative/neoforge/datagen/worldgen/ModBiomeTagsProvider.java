@@ -62,8 +62,8 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
             Biomes.WINDSWEPT_GRAVELLY_HILLS
         );
         
-        // Forest Heartwood Trees - Generates in all forest biomes
-        this.tag(ModWorldGenProvider.HAS_FOREST_HEARTWOOD_TREES).add(
+        // Red Cherry Trees - Generates in all forest biomes
+        this.tag(ModWorldGenProvider.HAS_RED_CHERRY_TREES).add(
             Biomes.FOREST,
             Biomes.BIRCH_FOREST,
             Biomes.DARK_FOREST,

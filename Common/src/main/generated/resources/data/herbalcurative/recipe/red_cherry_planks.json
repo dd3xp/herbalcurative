@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "herbalcurative:red_cherry_log"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "herbalcurative:red_cherry_planks"
+  }
+}

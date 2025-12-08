@@ -36,12 +36,12 @@ public class ModItems {
     public static final DeferredItem<Item> ROSYNIA_SEED = ITEMS.register("rosynia_seed",
             () -> new HerbSeedItem(ModBlocks.ROSYNIA_CROP.get(), new Item.Properties()));
 
-    // ==================== Forest Heartwood Items ====================
+    // ==================== Red Cherry Items ====================
     
-    public static final DeferredItem<Item> FOREST_HEARTWOOD_STICK = ITEMS.registerSimpleItem("forest_heartwood_stick");
+    public static final DeferredItem<Item> RED_CHERRY_STICK = ITEMS.registerSimpleItem("red_cherry_stick");
     
-    public static final DeferredItem<Item> FOREST_BERRY = ITEMS.register("forest_berry",
-            () -> new ForestBerryItem(new Item.Properties()
+    public static final DeferredItem<Item> RED_CHERRY = ITEMS.register("red_cherry",
+            () -> new RedCherryItem(new Item.Properties()
                     .food(new FoodProperties.Builder()
                             .nutrition(4)
                             .saturationModifier(1.0F)

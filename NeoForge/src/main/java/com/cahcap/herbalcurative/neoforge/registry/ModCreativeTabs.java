@@ -34,9 +34,9 @@ public class ModCreativeTabs {
                         output.accept(ModItems.PYRISAGE_SEED.get());
                         output.accept(ModItems.ROSYNIA_SEED.get());
                         
-                        // Forest Heartwood Items
-                        output.accept(ModItems.FOREST_HEARTWOOD_STICK.get());
-                        output.accept(ModItems.FOREST_BERRY.get());
+                        // Red Cherry Items
+                        output.accept(ModItems.RED_CHERRY_STICK.get());
+                        output.accept(ModItems.RED_CHERRY.get());
                         
                         // Herb Flowers
                         output.accept(ModBlocks.VERDSCALE_FERN.get());
@@ -46,11 +46,11 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.PYRISAGE.get());
                         output.accept(ModBlocks.ROSYNIA.get());
                         
-                        // Forest Heartwood Blocks
-                        output.accept(ModBlocks.FOREST_HEARTWOOD_LOG.get());
-                        output.accept(ModBlocks.FOREST_HEARTWOOD_PLANKS.get());
-                        output.accept(ModBlocks.FOREST_HEARTWOOD_LEAVES.get());
-                        output.accept(ModBlocks.FOREST_HEARTWOOD_SAPLING.get());
+                        // Red Cherry Blocks
+                        output.accept(ModBlocks.RED_CHERRY_LOG.get());
+                        output.accept(ModBlocks.RED_CHERRY_PLANKS.get());
+                        output.accept(ModBlocks.RED_CHERRY_LEAVES.get());
+                        output.accept(ModBlocks.RED_CHERRY_SAPLING.get());
                         
                         // Weaveleaf Armor
                         output.accept(ModItems.WEAVELEAF_HELMET.get());

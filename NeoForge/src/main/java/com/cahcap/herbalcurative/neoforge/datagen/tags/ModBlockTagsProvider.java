@@ -34,33 +34,33 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.ROSYNIA.get()
         );
         
-        // minecraft:leaves - Forest Heartwood leaves
+        // minecraft:leaves - Red Cherry leaves
         this.tag(BlockTags.LEAVES).add(
-            ModBlocks.FOREST_HEARTWOOD_LEAVES.get()
+            ModBlocks.RED_CHERRY_LEAVES.get()
         );
         
-        // minecraft:logs - Forest Heartwood logs
+        // minecraft:logs - Red Cherry logs
         this.tag(BlockTags.LOGS).add(
-            ModBlocks.FOREST_HEARTWOOD_LOG.get()
+            ModBlocks.RED_CHERRY_LOG.get()
         );
         
-        // minecraft:planks - Forest Heartwood planks
+        // minecraft:planks - Red Cherry planks
         this.tag(BlockTags.PLANKS).add(
-            ModBlocks.FOREST_HEARTWOOD_PLANKS.get()
+            ModBlocks.RED_CHERRY_PLANKS.get()
         );
         
-        // minecraft:saplings - Forest Heartwood saplings
+        // minecraft:saplings - Red Cherry saplings
         this.tag(BlockTags.SAPLINGS).add(
-            ModBlocks.FOREST_HEARTWOOD_SAPLING.get()
+            ModBlocks.RED_CHERRY_SAPLING.get()
         );
         
         // ==================== Mineable tags ====================
         
         // minecraft:mineable/axe - Blocks mineable with axe
         this.tag(BlockTags.MINEABLE_WITH_AXE).add(
-            ModBlocks.FOREST_HEARTWOOD_LOG.get(),
-            ModBlocks.FOREST_HEARTWOOD_PLANKS.get(),
-            ModBlocks.FOREST_HEARTWOOD_LEAVES.get()
+            ModBlocks.RED_CHERRY_LOG.get(),
+            ModBlocks.RED_CHERRY_PLANKS.get(),
+            ModBlocks.RED_CHERRY_LEAVES.get()
         );
         
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)
@@ -79,8 +79,8 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.CRYSTBUD_CROP.get(),
             ModBlocks.PYRISAGE_CROP.get(),
             ModBlocks.ROSYNIA_CROP.get(),
-            // Forest Berry Bush
-            ModBlocks.FOREST_BERRY_BUSH.get()
+            // Red Cherry Bush
+            ModBlocks.RED_CHERRY_BUSH.get()
         );
     }
 }

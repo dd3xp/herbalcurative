@@ -45,8 +45,8 @@ public class ModWorldGenProvider {
         createConfiguredFeatureKey("crystbud");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEWPETAL_CONFIGURED = 
         createConfiguredFeatureKey("dewpetal");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> FOREST_HEARTWOOD_TREE_CONFIGURED = 
-        createConfiguredFeatureKey("forest_heartwood_tree");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> RED_CHERRY_TREE_CONFIGURED = 
+        createConfiguredFeatureKey("red_cherry_tree");
     public static final ResourceKey<ConfiguredFeature<?, ?>> PYRISAGE_CONFIGURED = 
         createConfiguredFeatureKey("pyrisage");
     public static final ResourceKey<ConfiguredFeature<?, ?>> ROSYNIA_CONFIGURED = 
@@ -61,8 +61,8 @@ public class ModWorldGenProvider {
         createPlacedFeatureKey("crystbud_placed");
     public static final ResourceKey<PlacedFeature> DEWPETAL_PLACED = 
         createPlacedFeatureKey("dewpetal_placed");
-    public static final ResourceKey<PlacedFeature> FOREST_HEARTWOOD_TREE_PLACED = 
-        createPlacedFeatureKey("forest_heartwood_tree_placed");
+    public static final ResourceKey<PlacedFeature> RED_CHERRY_TREE_PLACED = 
+        createPlacedFeatureKey("red_cherry_tree_placed");
     public static final ResourceKey<PlacedFeature> PYRISAGE_PLACED = 
         createPlacedFeatureKey("pyrisage_placed");
     public static final ResourceKey<PlacedFeature> ROSYNIA_PLACED = 
@@ -80,8 +80,8 @@ public class ModWorldGenProvider {
         createBiomeModifierKey("overworld/verdscale_fern");
     public static final ResourceKey<BiomeModifier> ZEPHYR_LILY_OVERWORLD = 
         createBiomeModifierKey("overworld/zephyr_lily");
-    public static final ResourceKey<BiomeModifier> FOREST_HEARTWOOD_OVERWORLD = 
-        createBiomeModifierKey("overworld/forest_heartwood_tree");
+    public static final ResourceKey<BiomeModifier> RED_CHERRY_TREE_OVERWORLD = 
+        createBiomeModifierKey("overworld/red_cherry_tree");
     
     // Nether
     public static final ResourceKey<BiomeModifier> CRYSTBUD_NETHER = 
@@ -98,8 +98,8 @@ public class ModWorldGenProvider {
         createBiomeTag("has_crystbud");
     public static final TagKey<Biome> HAS_DEWPETAL = 
         createBiomeTag("has_dewpetal");
-    public static final TagKey<Biome> HAS_FOREST_HEARTWOOD_TREES = 
-        createBiomeTag("has_forest_heartwood_trees");
+    public static final TagKey<Biome> HAS_RED_CHERRY_TREES = 
+        createBiomeTag("has_red_cherry_trees");
     public static final TagKey<Biome> HAS_PYRISAGE = 
         createBiomeTag("has_pyrisage");
     public static final TagKey<Biome> HAS_ROSYNIA = 
@@ -166,9 +166,9 @@ public class ModWorldGenProvider {
             NoneFeatureConfiguration.INSTANCE
         ));
         
-        // Forest Heartwood Tree (Overworld)
-        context.register(FOREST_HEARTWOOD_TREE_CONFIGURED, new ConfiguredFeature<>(
-            ModFeatures.FOREST_HEARTWOOD_TREE.get(),
+        // Red Cherry Tree (Overworld)
+        context.register(RED_CHERRY_TREE_CONFIGURED, new ConfiguredFeature<>(
+            ModFeatures.RED_CHERRY_TREE.get(),
             NoneFeatureConfiguration.INSTANCE
         ));
         
@@ -240,8 +240,8 @@ public class ModWorldGenProvider {
             configuredFeatures.getOrThrow(ROSYNIA_CONFIGURED), herbPlacement));
         
         // Trees
-        context.register(FOREST_HEARTWOOD_TREE_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(FOREST_HEARTWOOD_TREE_CONFIGURED), treePlacement));
+        context.register(RED_CHERRY_TREE_PLACED, new PlacedFeature(
+            configuredFeatures.getOrThrow(RED_CHERRY_TREE_CONFIGURED), treePlacement));
     }
     
     // ==================== Biome Modifiers ====================
@@ -269,10 +269,10 @@ public class ModWorldGenProvider {
             GenerationStep.Decoration.VEGETAL_DECORATION
         ));
         
-        // Forest Heartwood Trees - Add to overworld forest biomes
-        context.register(FOREST_HEARTWOOD_OVERWORLD, new BiomeModifiers.AddFeaturesBiomeModifier(
-            biomes.getOrThrow(HAS_FOREST_HEARTWOOD_TREES),
-            HolderSet.direct(placedFeatures.getOrThrow(FOREST_HEARTWOOD_TREE_PLACED)),
+        // Red Cherry Trees - Add to overworld forest biomes
+        context.register(RED_CHERRY_TREE_OVERWORLD, new BiomeModifiers.AddFeaturesBiomeModifier(
+            biomes.getOrThrow(HAS_RED_CHERRY_TREES),
+            HolderSet.direct(placedFeatures.getOrThrow(RED_CHERRY_TREE_PLACED)),
             GenerationStep.Decoration.VEGETAL_DECORATION
         ));
         

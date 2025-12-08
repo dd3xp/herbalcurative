@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "herbalcurative:block/forest_heartwood_log_top",
-    "side": "herbalcurative:block/forest_heartwood_log"
-  }
-}

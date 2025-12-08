@@ -50,22 +50,22 @@ public class ModBlocks {
     public static final DeferredBlock<HerbCropBlock> ROSYNIA_CROP = registerCrop("rosynia_crop", 
             () -> ModItems.ROSYNIA_SEED);
 
-    // ==================== Forest Heartwood Blocks ====================
+    // ==================== Red Cherry Blocks ====================
     
-    public static final DeferredBlock<Block> FOREST_HEARTWOOD_LOG = registerBlockWithItem("forest_heartwood_log",
+    public static final DeferredBlock<Block> RED_CHERRY_LOG = registerBlockWithItem("red_cherry_log",
             () -> new net.minecraft.world.level.block.RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)));
     
-    public static final DeferredBlock<Block> FOREST_HEARTWOOD_PLANKS = registerBlockWithItem("forest_heartwood_planks",
+    public static final DeferredBlock<Block> RED_CHERRY_PLANKS = registerBlockWithItem("red_cherry_planks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)));
     
-    public static final DeferredBlock<ForestHeartwoodLeavesBlock> FOREST_HEARTWOOD_LEAVES = registerBlockWithItem("forest_heartwood_leaves",
-            () -> new ForestHeartwoodLeavesBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<RedCherryLeavesBlock> RED_CHERRY_LEAVES = registerBlockWithItem("red_cherry_leaves",
+            () -> new RedCherryLeavesBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)
                     .strength(0.2F)
                     .randomTicks()
@@ -77,8 +77,8 @@ public class ModBlocks {
                     .ignitedByLava()
                     .pushReaction(PushReaction.DESTROY)));
     
-    public static final DeferredBlock<ForestHeartwoodSaplingBlock> FOREST_HEARTWOOD_SAPLING = registerBlockWithItem("forest_heartwood_sapling",
-            () -> new ForestHeartwoodSaplingBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<RedCherrySaplingBlock> RED_CHERRY_SAPLING = registerBlockWithItem("red_cherry_sapling",
+            () -> new RedCherrySaplingBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)
                     .noCollission()
                     .randomTicks()
@@ -86,8 +86,8 @@ public class ModBlocks {
                     .sound(SoundType.GRASS)
                     .pushReaction(PushReaction.DESTROY)));
     
-    public static final DeferredBlock<ForestBerryBushBlock> FOREST_BERRY_BUSH = BLOCKS.register("forest_berry_bush",
-            () -> new ForestBerryBushBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<RedCherryBushBlock> RED_CHERRY_BUSH = BLOCKS.register("red_cherry_bush",
+            () -> new RedCherryBushBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)
                     .noCollission()
                     .randomTicks()

@@ -24,11 +24,11 @@ public class RegistryInit {
         ModRegistries.PYRISAGE_CROP = () -> ModBlocks.PYRISAGE_CROP.get();
         ModRegistries.ROSYNIA_CROP = () -> ModBlocks.ROSYNIA_CROP.get();
         
-        ModRegistries.FOREST_HEARTWOOD_LOG = () -> ModBlocks.FOREST_HEARTWOOD_LOG.get();
-        ModRegistries.FOREST_HEARTWOOD_PLANKS = () -> ModBlocks.FOREST_HEARTWOOD_PLANKS.get();
-        ModRegistries.FOREST_HEARTWOOD_LEAVES = () -> ModBlocks.FOREST_HEARTWOOD_LEAVES.get();
-        ModRegistries.FOREST_HEARTWOOD_SAPLING = () -> ModBlocks.FOREST_HEARTWOOD_SAPLING.get();
-        ModRegistries.FOREST_BERRY_BUSH = () -> ModBlocks.FOREST_BERRY_BUSH.get();
+        ModRegistries.RED_CHERRY_LOG = () -> ModBlocks.RED_CHERRY_LOG.get();
+        ModRegistries.RED_CHERRY_PLANKS = () -> ModBlocks.RED_CHERRY_PLANKS.get();
+        ModRegistries.RED_CHERRY_LEAVES = () -> ModBlocks.RED_CHERRY_LEAVES.get();
+        ModRegistries.RED_CHERRY_SAPLING = () -> ModBlocks.RED_CHERRY_SAPLING.get();
+        ModRegistries.RED_CHERRY_BUSH = () -> ModBlocks.RED_CHERRY_BUSH.get();
         ModRegistries.HERB_CABINET = () -> ModBlocks.HERB_CABINET.get();
         
         // Items
@@ -46,8 +46,8 @@ public class RegistryInit {
         ModRegistries.PYRISAGE_SEED = () -> ModItems.PYRISAGE_SEED.get();
         ModRegistries.ROSYNIA_SEED = () -> ModItems.ROSYNIA_SEED.get();
         
-        ModRegistries.FOREST_HEARTWOOD_STICK = () -> ModItems.FOREST_HEARTWOOD_STICK.get();
-        ModRegistries.FOREST_BERRY = () -> ModItems.FOREST_BERRY.get();
+        ModRegistries.RED_CHERRY_STICK = () -> ModItems.RED_CHERRY_STICK.get();
+        ModRegistries.RED_CHERRY = () -> ModItems.RED_CHERRY.get();
         
         ModRegistries.WEAVELEAF_HELMET = () -> ModItems.WEAVELEAF_HELMET.get();
         ModRegistries.WEAVELEAF_CHESTPLATE = () -> ModItems.WEAVELEAF_CHESTPLATE.get();

@@ -1,7 +1,7 @@
 package com.cahcap.herbalcurative.neoforge.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.worldgen.ForestHeartwoodTreeFeature;
+import com.cahcap.herbalcurative.worldgen.RedCherryTreeFeature;
 import com.cahcap.herbalcurative.worldgen.HerbFlowerPatchFeature;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -15,9 +15,9 @@ public class ModFeatures {
         DeferredRegister.create(Registries.FEATURE, HerbalCurativeCommon.MOD_ID);
 
     // Tree features
-    public static final DeferredHolder<Feature<?>, ForestHeartwoodTreeFeature> FOREST_HEARTWOOD_TREE = 
-        FEATURES.register("forest_heartwood_tree", 
-            () -> new ForestHeartwoodTreeFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, RedCherryTreeFeature> RED_CHERRY_TREE = 
+        FEATURES.register("red_cherry_tree", 
+            () -> new RedCherryTreeFeature(NoneFeatureConfiguration.CODEC));
     
     // Herb flower patch features (2-3 per cluster)
     

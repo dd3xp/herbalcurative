@@ -22,7 +22,7 @@ public class MultiblockHerbCabinet {
     public static final MultiblockHerbCabinet INSTANCE = new MultiblockHerbCabinet();
     
     public boolean isBlockTrigger(BlockState state) {
-        return state.is(ModRegistries.FOREST_HEARTWOOD_LOG.get());
+        return state.is(ModRegistries.RED_CHERRY_LOG.get());
     }
     
     public boolean createStructure(Level level, BlockPos clickedPos, Direction side, Player player) {
@@ -49,7 +49,7 @@ public class MultiblockHerbCabinet {
                 BlockPos checkPos = bottomLeft.relative(Direction.UP, h).relative(right, w);
                 BlockState state = level.getBlockState(checkPos);
                 
-                if (!state.is(ModRegistries.FOREST_HEARTWOOD_LOG.get())) {
+                if (!state.is(ModRegistries.RED_CHERRY_LOG.get())) {
                     return false;
                 }
             }

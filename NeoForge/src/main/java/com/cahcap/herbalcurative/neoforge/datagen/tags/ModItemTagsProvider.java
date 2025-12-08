@@ -54,6 +54,6 @@ public class ModItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvide
         // ==================== Custom item tags ====================
         
         // Add forest heartwood stick to c:rods/wooden tag (allows use in vanilla recipes)
-        tag(STICKS).add(ModItems.FOREST_HEARTWOOD_STICK.get());
+        tag(STICKS).add(ModItems.RED_CHERRY_STICK.get());
     }
 }

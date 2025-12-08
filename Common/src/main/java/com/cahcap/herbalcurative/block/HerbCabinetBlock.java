@@ -219,7 +219,7 @@ public class HerbCabinetBlock extends BaseEntityBlock {
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         // Return the forest heartwood log (construction material) for creative pick block
         // Note: Jade icon is overridden by HerbCabinetIconProvider to show herb cabinet item
-        return new ItemStack(ModRegistries.FOREST_HEARTWOOD_LOG.get());
+        return new ItemStack(ModRegistries.RED_CHERRY_LOG.get());
     }
     
     @Override
@@ -232,7 +232,7 @@ public class HerbCabinetBlock extends BaseEntityBlock {
             }
         }
         // Drop forest heartwood log instead of herb cabinet
-        return Collections.singletonList(new ItemStack(ModRegistries.FOREST_HEARTWOOD_LOG.get()));
+        return Collections.singletonList(new ItemStack(ModRegistries.RED_CHERRY_LOG.get()));
     }
     
 }

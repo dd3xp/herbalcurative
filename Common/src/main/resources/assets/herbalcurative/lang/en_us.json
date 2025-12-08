@@ -7,11 +7,11 @@
   "block.herbalcurative.crystbud": "Crystbud",
   "block.herbalcurative.pyrisage": "Pyrisage",
   "block.herbalcurative.rosynia": "Rosynia",
-  "block.herbalcurative.forest_heartwood_log": "Forest Heartwood Log",
-  "block.herbalcurative.forest_heartwood_planks": "Forest Heartwood Planks",
-  "block.herbalcurative.forest_heartwood_leaves": "Forest Heartwood Leaves",
-  "block.herbalcurative.forest_heartwood_sapling": "Forest Heartwood Sapling",
-  "block.herbalcurative.forest_berry_bush": "Forest Berry Bush",
+  "block.herbalcurative.red_cherry_log": "Red Cherry Log",
+  "block.herbalcurative.red_cherry_planks": "Red Cherry Planks",
+  "block.herbalcurative.red_cherry_leaves": "Red Cherry Leaves",
+  "block.herbalcurative.red_cherry_sapling": "Red Cherry Sapling",
+  "block.herbalcurative.red_cherry_bush": "Red Cherry Bush",
   
   "item.herbalcurative.scaleplate": "Scaleplate",
   "item.herbalcurative.dewpetal_shard": "Dewpetal Shard",
@@ -27,8 +27,8 @@
   "item.herbalcurative.pyrisage_seed": "Ember Seed",
   "item.herbalcurative.rosynia_seed": "Mysterious Seed",
   
-  "item.herbalcurative.forest_heartwood_stick": "Forest Heartwood Stick",
-  "item.herbalcurative.forest_berry": "Forest Berry",
+  "item.herbalcurative.red_cherry_stick": "Red Cherry Stick",
+  "item.herbalcurative.red_cherry": "Red Cherry",
   
   "item.herbalcurative.weaveleaf_helmet": "Weaveleaf Hood",
   "item.herbalcurative.weaveleaf_chestplate": "Weaveleaf Coat",

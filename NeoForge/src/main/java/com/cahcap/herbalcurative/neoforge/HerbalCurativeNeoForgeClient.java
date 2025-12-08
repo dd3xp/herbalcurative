@@ -68,14 +68,14 @@ public class HerbalCurativeNeoForgeClient {
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.PYRISAGE.get(), RenderType.cutout());
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.ROSYNIA.get(), RenderType.cutout());
                 
-                // Forest Heartwood Sapling
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.FOREST_HEARTWOOD_SAPLING.get(), RenderType.cutout());
+                // Red Cherry Sapling
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.RED_CHERRY_SAPLING.get(), RenderType.cutout());
                 
-                // Forest Berry Bush
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.FOREST_BERRY_BUSH.get(), RenderType.cutout());
+                // Red Cherry Bush
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.RED_CHERRY_BUSH.get(), RenderType.cutout());
                 
-                // Forest Heartwood Leaves
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.FOREST_HEARTWOOD_LEAVES.get(), RenderType.cutout());
+                // Red Cherry Leaves
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.RED_CHERRY_LEAVES.get(), RenderType.cutout());
                 
                 // Register Thornmark Crossbow item properties for animations
                 registerCrossbowItemProperties();

@@ -29,11 +29,11 @@ public class ModRegistries {
     public static Supplier<Block> PYRISAGE_CROP;
     public static Supplier<Block> ROSYNIA_CROP;
     
-    public static Supplier<Block> FOREST_HEARTWOOD_LOG;
-    public static Supplier<Block> FOREST_HEARTWOOD_PLANKS;
-    public static Supplier<Block> FOREST_HEARTWOOD_LEAVES;
-    public static Supplier<Block> FOREST_HEARTWOOD_SAPLING;
-    public static Supplier<Block> FOREST_BERRY_BUSH;
+    public static Supplier<Block> RED_CHERRY_LOG;
+    public static Supplier<Block> RED_CHERRY_PLANKS;
+    public static Supplier<Block> RED_CHERRY_LEAVES;
+    public static Supplier<Block> RED_CHERRY_SAPLING;
+    public static Supplier<Block> RED_CHERRY_BUSH;
     public static Supplier<Block> HERB_CABINET;
     
     // ==================== Items ====================
@@ -51,8 +51,8 @@ public class ModRegistries {
     public static Supplier<Item> PYRISAGE_SEED;
     public static Supplier<Item> ROSYNIA_SEED;
     
-    public static Supplier<Item> FOREST_HEARTWOOD_STICK;
-    public static Supplier<Item> FOREST_BERRY;
+    public static Supplier<Item> RED_CHERRY_STICK;
+    public static Supplier<Item> RED_CHERRY;
     
     public static Supplier<Item> WEAVELEAF_HELMET;
     public static Supplier<Item> WEAVELEAF_CHESTPLATE;
