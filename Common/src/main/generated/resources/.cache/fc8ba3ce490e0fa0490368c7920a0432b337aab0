@@ -1,0 +1,8 @@
+// 1.21.1	2025-12-08T07:57:56.3447571	Tags for minecraft:block mod id herbalcurative
+cf8511379d7389774acd9ef892d5555f2405e767 data/minecraft/tags/block/flowers.json
+e52f727969704ec9a39b88155419434ee9109841 data/minecraft/tags/block/leaves.json
+dd110c7237577a3ea7c558cfd85f98fde70c1e75 data/minecraft/tags/block/logs.json
+4d63963bae62a854a060a1f322863c8a40f25605 data/minecraft/tags/block/mineable/axe.json
+f4cc52f6172b72c655d2ef6adea041f407db406b data/minecraft/tags/block/mineable/hoe.json
+0eb653dc97aaf75b56dc335ac00d72f0ec29ecce data/minecraft/tags/block/planks.json
+29ed616b2aa27447214449a38f7186b4ea4fe81c data/minecraft/tags/block/saplings.json

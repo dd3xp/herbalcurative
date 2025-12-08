@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "herbalcurative:verdscale_fern_seed"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_verdscale_fern": {
+      "conditions": {
+        "items": [
+          {
+            "items": "herbalcurative:verdscale_fern"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_verdscale_fern"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "herbalcurative:verdscale_fern_seed"
+    ]
+  }
+}

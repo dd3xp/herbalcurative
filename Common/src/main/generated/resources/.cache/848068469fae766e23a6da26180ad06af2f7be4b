@@ -1,0 +1,7 @@
+// 1.21.1	2025-12-08T08:55:45.1651107	Tags for minecraft:item mod id herbalcurative
+58c35dc6b33c664f6c103d8aa6156f2fd75c14df data/c/tags/item/rods/wooden.json
+cf8511379d7389774acd9ef892d5555f2405e767 data/minecraft/tags/item/flowers.json
+e52f727969704ec9a39b88155419434ee9109841 data/minecraft/tags/item/leaves.json
+dd110c7237577a3ea7c558cfd85f98fde70c1e75 data/minecraft/tags/item/logs.json
+0eb653dc97aaf75b56dc335ac00d72f0ec29ecce data/minecraft/tags/item/planks.json
+29ed616b2aa27447214449a38f7186b4ea4fe81c data/minecraft/tags/item/saplings.json

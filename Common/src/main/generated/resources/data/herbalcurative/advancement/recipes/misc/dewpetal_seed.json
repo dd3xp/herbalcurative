@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dewpetal": {
+      "conditions": {
+        "items": [
+          {
+            "items": "herbalcurative:dewpetal"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "herbalcurative:dewpetal_seed"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dewpetal"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "herbalcurative:dewpetal_seed"
+    ]
+  }
+}

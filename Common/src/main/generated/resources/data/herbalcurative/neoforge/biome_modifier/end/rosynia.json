@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#herbalcurative:has_rosynia",
+  "features": "herbalcurative:rosynia_placed",
+  "step": "vegetal_decoration"
+}

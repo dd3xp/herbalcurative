@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rosynia": {
+      "conditions": {
+        "items": [
+          {
+            "items": "herbalcurative:rosynia"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "herbalcurative:rosynia_seed"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rosynia"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "herbalcurative:rosynia_seed"
+    ]
+  }
+}

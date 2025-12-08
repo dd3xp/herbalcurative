@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_crystbud": {
+      "conditions": {
+        "items": [
+          {
+            "items": "herbalcurative:crystbud"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "herbalcurative:crystbud_seed"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_crystbud"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "herbalcurative:crystbud_seed"
+    ]
+  }
+}
