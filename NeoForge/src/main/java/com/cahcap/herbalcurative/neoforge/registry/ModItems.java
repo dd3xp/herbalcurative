@@ -103,8 +103,8 @@ public class ModItems {
 
     // ==================== Special Items ====================
     
-    public static final DeferredItem<WeaveflowRingItem> WEAVEFLOW_RING = ITEMS.register("weaveflow_ring",
-            () -> new WeaveflowRingItem(new Item.Properties()
+    public static final DeferredItem<FlowweaveRingItem> FLOWWEAVE_RING = ITEMS.register("flowweave_ring",
+            () -> new FlowweaveRingItem(new Item.Properties()
                     .stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 5, -2.4F))));
     

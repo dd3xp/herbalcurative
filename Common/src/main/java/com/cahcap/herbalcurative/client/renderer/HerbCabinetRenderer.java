@@ -114,9 +114,7 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
                 float slotCenterX = 8.0f + xOffsets[col];
                 float slotCenterY = 8.0f + yOffsets[row];
                 
-                if (index == 2) {
-                    slotCenterY += 1 * itemSize;
-                }
+                // Special offset for Burnt Node (index 4) to align with slot
                 if (index == 4) {
                     slotCenterX += 0.5f * itemSize;
                 }
@@ -157,5 +155,13 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
     public boolean shouldRenderOffScreen(HerbCabinetBlockEntity blockEntity) {
         return true;
     }
+    
+    /**
+     * Increase view distance to render like normal blocks
+     * Returns 256 blocks (4x the default 64 blocks)
+     */
+    @Override
+    public int getViewDistance() {
+        return 256;
+    }
 }
-

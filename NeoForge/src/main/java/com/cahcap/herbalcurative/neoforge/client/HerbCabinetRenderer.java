@@ -27,26 +27,33 @@ public class HerbCabinetRenderer extends com.cahcap.herbalcurative.client.render
     /**
      * Override render bounding box to include entire multiblock structure
      * This ensures the structure renders even when only part of it is visible
+     * Caches the AABB to avoid recalculation every frame
      */
     @Override
     public AABB getRenderBoundingBox(HerbCabinetBlockEntity blockEntity) {
-        if (!blockEntity.formed) {
-            return AABB.ofSize(blockEntity.getBlockPos().getCenter(), 1, 1, 1);
+        // Return cached AABB if available
+        if (blockEntity.renderAABB != null) {
+            return blockEntity.renderAABB;
         }
         
-        // Get master position
+        // If not formed, use small box around this block
+        if (!blockEntity.formed) {
+            blockEntity.renderAABB = AABB.ofSize(blockEntity.getBlockPos().getCenter(), 1, 1, 1);
+            return blockEntity.renderAABB;
+        }
+        
+        // Calculate and cache the bounding box for the entire 3x2 multiblock
         BlockPos pos = blockEntity.getBlockPos();
         int[] offset = blockEntity.offset;
         BlockPos masterPos = pos.offset(-offset[0], -offset[1], -offset[2]);
         
-        // Calculate the bounding box for the entire 3x2 multiblock
         Direction facing = blockEntity.facing;
         Direction right = facing.getClockWise();
         BlockPos bottomLeft = masterPos.relative(right.getOpposite());
         BlockPos topRight = bottomLeft.relative(Direction.UP, 1).relative(right, 2);
         
-        // Create AABB that encompasses all blocks in the structure
-        return new AABB(
+        // Create and cache AABB that encompasses all blocks in the structure
+        blockEntity.renderAABB = new AABB(
             Math.min(bottomLeft.getX(), topRight.getX()),
             Math.min(bottomLeft.getY(), topRight.getY()),
             Math.min(bottomLeft.getZ(), topRight.getZ()),
@@ -54,5 +61,7 @@ public class HerbCabinetRenderer extends com.cahcap.herbalcurative.client.render
             Math.max(bottomLeft.getY(), topRight.getY()) + 1,
             Math.max(bottomLeft.getZ(), topRight.getZ()) + 1
         );
+        
+        return blockEntity.renderAABB;
     }
 }

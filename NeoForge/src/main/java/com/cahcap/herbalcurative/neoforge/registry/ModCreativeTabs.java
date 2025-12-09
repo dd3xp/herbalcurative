@@ -70,7 +70,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.RED_CHERRY_BOLT_MAGAZINE.get());
                         
                         // Special Items
-                        output.accept(ModItems.WEAVEFLOW_RING.get());
+                        output.accept(ModItems.FLOWWEAVE_RING.get());
                         output.accept(ModItems.HERB_BOX.get());
                     })
                     .build());

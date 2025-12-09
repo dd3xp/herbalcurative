@@ -20,7 +20,6 @@ public class HerbalCurativeNeoForge {
         LOGGER.info("Herbal Curative NeoForge is loading...");
         
         modEventBus.addListener(this::commonSetup);
-        modContainer.registerConfig(ModConfig.Type.COMMON, NeoForgeConfig.SPEC);
         
         // Register armor materials BEFORE items (items depend on armor materials)
         ModArmorMaterials.register(modEventBus);

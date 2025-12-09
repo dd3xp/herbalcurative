@@ -84,6 +84,7 @@ public class MultiblockHerbCabinet {
                     cabinet.formed = true;
                     cabinet.posInMultiblock = h * 3 + w;
                     cabinet.offset = new int[]{offsetX, offsetY, offsetZ};
+                    cabinet.renderAABB = null; // Clear cached render box when forming
                     cabinet.setChanged();
                     level.sendBlockUpdated(targetPos, newState, newState, 3);
                 }

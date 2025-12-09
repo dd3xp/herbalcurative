@@ -83,6 +83,11 @@ public class HerbCabinetTooltipHandler {
         String herbKey = getHerbKey(herbIndex);
         int amount = cabinet.getHerbAmount(herbKey);
 
+        // Don't render if slot is empty
+        if (amount <= 0) {
+            return;
+        }
+
         // Prepare item stack for rendering
         ItemStack stack = new ItemStack(herb);
 

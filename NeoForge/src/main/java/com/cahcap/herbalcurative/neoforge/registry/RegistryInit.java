@@ -62,7 +62,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_CROSSBOW = () -> ModItems.RED_CHERRY_CROSSBOW.get();
         ModRegistries.RED_CHERRY_BOLT_MAGAZINE = () -> ModItems.RED_CHERRY_BOLT_MAGAZINE.get();
         
-        ModRegistries.WEAVEFLOW_RING = () -> ModItems.WEAVEFLOW_RING.get();
+        ModRegistries.FLOWWEAVE_RING = () -> ModItems.FLOWWEAVE_RING.get();
         ModRegistries.HERB_BOX = () -> ModItems.HERB_BOX.get();
         ModRegistries.HERB_CABINET_ITEM = () -> ModItems.HERB_CABINET.get();
         

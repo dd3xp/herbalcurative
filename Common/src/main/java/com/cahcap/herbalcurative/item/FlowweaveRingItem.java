@@ -6,9 +6,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
-public class WeaveflowRingItem extends Item {
+/**
+ * Flowweave Ring
+ * 80 durability, can be held in offhand
+ * Has same attack attributes as iron sword (5 attack damage, -2.4 attack speed)
+ * Can be used to form Herb Cabinet multiblock structure
+ */
+public class FlowweaveRingItem extends Item {
     
-    public WeaveflowRingItem(Properties properties) {
+    public FlowweaveRingItem(Properties properties) {
         super(properties);
     }
     
@@ -37,4 +43,3 @@ public class WeaveflowRingItem extends Item {
         return false;
     }
 }
-

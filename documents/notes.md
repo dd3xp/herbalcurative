@@ -5,6 +5,7 @@
 - 把™的 Extension Pack for Jvav 给禁用掉，sb东西一个
 - .\gradlew.bat clean build 构建模组
 - .\gradlew.bat runClient 启动客户端
+- gradlew 的警告千万别修，修了会影响逻辑，能跑的情况下这些警告全是氛围灯，心情好再修
 
 ## 材质相关
 
@@ -28,3 +29,8 @@
         <td>null</td><td>null</td><td>null</td>
     </tr>
     </table>
+
+## 模组实现相关
+
+- 做相同的东西的时候记得抽象出一个基类
+- cursor 闲置的时候记得检查一下代码质量，硬编码之类的

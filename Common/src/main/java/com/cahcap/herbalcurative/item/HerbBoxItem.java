@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -208,16 +210,32 @@ public class HerbBoxItem extends Item {
      * Fill the box from the herb cabinet
      */
     private void fillFromCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, Player player) {
-        fillHerbFromCabinet(box, cabinet, "scaleplate");
-        fillHerbFromCabinet(box, cabinet, "dewpetal_shard");
-        fillHerbFromCabinet(box, cabinet, "golden_lilybell");
-        fillHerbFromCabinet(box, cabinet, "cryst_spine");
-        fillHerbFromCabinet(box, cabinet, "burnt_node");
-        fillHerbFromCabinet(box, cabinet, "heart_of_stardream");
+        boolean anyTransferred = false;
+        
+        anyTransferred |= fillHerbFromCabinet(box, cabinet, "scaleplate");
+        anyTransferred |= fillHerbFromCabinet(box, cabinet, "dewpetal_shard");
+        anyTransferred |= fillHerbFromCabinet(box, cabinet, "golden_lilybell");
+        anyTransferred |= fillHerbFromCabinet(box, cabinet, "cryst_spine");
+        anyTransferred |= fillHerbFromCabinet(box, cabinet, "burnt_node");
+        anyTransferred |= fillHerbFromCabinet(box, cabinet, "heart_of_stardream");
         cabinet.setChanged();
+        
+        // Play pickup sound if any herbs were transferred
+        if (anyTransferred && player != null) {
+            player.level().playSound(
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.ITEM_PICKUP,
+                SoundSource.PLAYERS,
+                0.4F,
+                ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.0F) * 2.0F
+            );
+        }
     }
 
-    private void fillHerbFromCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, String herbKey) {
+    private boolean fillHerbFromCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, String herbKey) {
         int boxCurrent = getHerbAmount(box, herbKey);
         int needed = MAX_CAPACITY - boxCurrent;
 
@@ -228,24 +246,42 @@ public class HerbBoxItem extends Item {
             if (toTake > 0) {
                 cabinet.removeHerb(herbKey, toTake);
                 addHerb(box, herbKey, toTake);
+                return true; // Herbs were transferred
             }
         }
+        return false; // No herbs transferred
     }
 
     /**
      * Transfer herbs from box to cabinet
      */
     private void transferToCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, Player player) {
-        transferHerbToCabinet(box, cabinet, "scaleplate");
-        transferHerbToCabinet(box, cabinet, "dewpetal_shard");
-        transferHerbToCabinet(box, cabinet, "golden_lilybell");
-        transferHerbToCabinet(box, cabinet, "cryst_spine");
-        transferHerbToCabinet(box, cabinet, "burnt_node");
-        transferHerbToCabinet(box, cabinet, "heart_of_stardream");
+        boolean anyTransferred = false;
+        
+        anyTransferred |= transferHerbToCabinet(box, cabinet, "scaleplate");
+        anyTransferred |= transferHerbToCabinet(box, cabinet, "dewpetal_shard");
+        anyTransferred |= transferHerbToCabinet(box, cabinet, "golden_lilybell");
+        anyTransferred |= transferHerbToCabinet(box, cabinet, "cryst_spine");
+        anyTransferred |= transferHerbToCabinet(box, cabinet, "burnt_node");
+        anyTransferred |= transferHerbToCabinet(box, cabinet, "heart_of_stardream");
         cabinet.setChanged();
+        
+        // Play place sound (lower pitch than pickup) if any herbs were transferred
+        if (anyTransferred && player != null) {
+            player.level().playSound(
+                null,
+                player.getX(),
+                player.getY(),
+                player.getZ(),
+                SoundEvents.ITEM_PICKUP,
+                SoundSource.PLAYERS,
+                0.4F,
+                0.8F  // Lower pitch (0.8) for placing items, vs higher pitch (2.0) for picking up
+            );
+        }
     }
 
-    private void transferHerbToCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, String herbKey) {
+    private boolean transferHerbToCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, String herbKey) {
         int boxAmount = getHerbAmount(box, herbKey);
 
         if (boxAmount > 0) {
@@ -253,8 +289,10 @@ public class HerbBoxItem extends Item {
 
             if (added > 0) {
                 removeHerb(box, herbKey, added);
+                return true; // Herbs were transferred
             }
         }
+        return false; // No herbs transferred
     }
 }
 

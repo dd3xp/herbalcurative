@@ -67,7 +67,7 @@ public class ModRegistries {
     public static Supplier<Item> RED_CHERRY_CROSSBOW;
     public static Supplier<Item> RED_CHERRY_BOLT_MAGAZINE;
     
-    public static Supplier<Item> WEAVEFLOW_RING;
+    public static Supplier<Item> FLOWWEAVE_RING;
     public static Supplier<Item> HERB_BOX;
     public static Supplier<Item> HERB_CABINET_ITEM;
     

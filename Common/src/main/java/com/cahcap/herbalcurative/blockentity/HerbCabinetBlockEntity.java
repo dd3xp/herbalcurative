@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,9 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
     private UUID lastClickUUID;
     
     public boolean suppressDrops = false;
+    
+    // Cached render bounding box to avoid recalculation every frame
+    public AABB renderAABB = null;
     
     public HerbCabinetBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state, new int[]{2, 1, 3});
@@ -176,6 +180,7 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
                 if (level.getBlockState(targetPos).is(ModRegistries.HERB_CABINET.get())) {
                     if (level.getBlockEntity(targetPos) instanceof HerbCabinetBlockEntity cabinet) {
                         cabinet.formed = false;
+                        cabinet.renderAABB = null; // Clear cached render box when breaking
                         
                         if (!targetPos.equals(breakPos)) {
                             cabinet.suppressDrops = true;

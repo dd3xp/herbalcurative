@@ -1,8 +1,11 @@
 package com.cahcap.herbalcurative.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,25 +18,24 @@ import java.util.function.Supplier;
 
 /**
  * Base class for herb crops
- * Has 10 growth stages (0-9), more than vanilla crops (0-7)
- * Uses parent CropBlock's randomTick for growth logic
+ * - 4 growth stages (0-3)
+ * - Fixed growth time: 5 minutes (6000 ticks) per stage
+ * - Total time to mature: 15 minutes (3 stages × 5 minutes)
+ * - Uses scheduleTick for deterministic growth (no randomness)
  */
 public class HerbCropBlock extends CropBlock {
     
-    public static final int MAX_AGE = 9;
+    public static final int MAX_AGE = 3;
     public static final IntegerProperty AGE = IntegerProperty.create("age", 0, MAX_AGE);
     
+    /** Growth interval: 5 minutes = 6000 ticks */
+    private static final int GROWTH_INTERVAL = 6000;
+    
     private static final VoxelShape[] SHAPE_BY_AGE = new VoxelShape[]{
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.6D, 16.0D),   // Stage 0
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 3.2D, 16.0D),   // Stage 1
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.8D, 16.0D),   // Stage 2
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.4D, 16.0D),   // Stage 3
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),   // Stage 4
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 9.6D, 16.0D),   // Stage 5
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 11.2D, 16.0D),  // Stage 6
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.8D, 16.0D),  // Stage 7
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.4D, 16.0D),  // Stage 8
-            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)   // Stage 9 (mature)
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),   // Stage 0
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),   // Stage 1
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D),  // Stage 2
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)   // Stage 3 (mature)
     };
     
     private final Supplier<? extends ItemLike> seedSupplier;
@@ -68,7 +70,52 @@ public class HerbCropBlock extends CropBlock {
         return seedSupplier.get();
     }
     
-    // Note: We don't override randomTick() - parent CropBlock handles growth correctly
-    // using our getMaxAge() value of 9
+    /**
+     * When crop is placed, schedule first growth tick
+     */
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+        
+        // Only schedule tick on server side and if not already mature
+        if (!level.isClientSide() && !this.isMaxAge(state)) {
+            level.scheduleTick(pos, this, GROWTH_INTERVAL);
+        }
+    }
+    
+    /**
+     * Disable random tick growth - we use scheduled ticks instead
+     */
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        // Do nothing - we use scheduleTick for deterministic growth
+    }
+    
+    /**
+     * Fixed-time growth logic
+     * Called every GROWTH_INTERVAL ticks (5 minutes)
+     */
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        super.tick(state, level, pos, random);
+        
+        // Check light level (crops need light to grow)
+        if (level.getRawBrightness(pos, 0) >= 9) {
+            int currentAge = this.getAge(state);
+            
+            // Grow to next stage if not mature
+            if (currentAge < this.getMaxAge()) {
+                level.setBlock(pos, this.getStateForAge(currentAge + 1), 2);
+                
+                // Schedule next growth tick if not mature yet
+                if (currentAge + 1 < this.getMaxAge()) {
+                    level.scheduleTick(pos, this, GROWTH_INTERVAL);
+                }
+            }
+        } else {
+            // If not enough light, check again later
+            level.scheduleTick(pos, this, GROWTH_INTERVAL);
+        }
+    }
 }
 
