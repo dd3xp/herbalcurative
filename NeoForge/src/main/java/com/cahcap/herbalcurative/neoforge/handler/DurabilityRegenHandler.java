@@ -111,10 +111,10 @@ public class DurabilityRegenHandler {
     
     private static boolean isRegenerableItem(ItemStack stack) {
         Item item = stack.getItem();
-        return item == ModItems.WEAVELEAF_HELMET.get() ||
-               item == ModItems.WEAVELEAF_CHESTPLATE.get() ||
-               item == ModItems.WEAVELEAF_LEGGINGS.get() ||
-               item == ModItems.WEAVELEAF_BOOTS.get() ||
+        return item == ModItems.LEAFWEAVE_HELMET.get() ||
+               item == ModItems.LEAFWEAVE_CHESTPLATE.get() ||
+               item == ModItems.LEAFWEAVE_LEGGINGS.get() ||
+               item == ModItems.LEAFWEAVE_BOOTS.get() ||
                item == ModItems.LUMISTONE_SWORD.get() ||
                item == ModItems.LUMISTONE_PICKAXE.get() ||
                item == ModItems.LUMISTONE_AXE.get() ||

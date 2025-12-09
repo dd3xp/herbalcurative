@@ -5,11 +5,11 @@ import net.minecraft.world.item.Tiers;
 
 /**
  * Lumistone Shovel
- * 80 durability, same stats as iron shovel
- * Breaking gravel has 50% chance to drop flint (instead of vanilla 10%)
+ * - 80 durability, same stats as iron shovel
+ * - Regenerates 1 durability per second
+ * - Auto-pickup: Broken block drops go directly to inventory
  * 
- * The flint drop behavior is handled by GravelFlintDropHandler event
- * Any subclass of LumistoneShovelItem will automatically inherit this behavior
+ * Auto-pickup is handled by LumistoneToolHandler event
  */
 public class LumistoneShovelItem extends ShovelItem {
 

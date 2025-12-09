@@ -1,44 +1,42 @@
 package com.cahcap.herbalcurative.neoforge.handler;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.item.LumistoneAxeItem;
-import com.cahcap.herbalcurative.item.LumistoneHoeItem;
-import com.cahcap.herbalcurative.item.LumistoneShovelItem;
-import com.cahcap.herbalcurative.item.LumistoneSwordItem;
+import com.cahcap.herbalcurative.item.*;
 import com.cahcap.herbalcurative.neoforge.registry.ModBlocks;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 
 /**
  * Event handler for Lumistone Tools special effects
- * Uses instanceof checks to support inheritance - all subclasses automatically get the same behaviors
+ * - Pickaxe, Axe, Shovel, Hoe: Auto-pickup broken block drops
+ * - Sword: Magic damage with particle effects
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID)
 public class LumistoneToolHandler {
 
     /**
-     * Handle shovel: increase flint drop chance from 10% to 50% when breaking gravel
-     * Handle axe: make leaves and vines drop themselves (like shears)
+     * Auto-pickup for Lumistone Tools (except sword)
+     * When breaking blocks with pickaxe/axe/shovel/hoe, drops go directly to inventory
      */
     @SubscribeEvent
     public static void onBlockDrops(BlockDropsEvent event) {
-        // Get the entity that broke the block
+        // Only process for players
         if (!(event.getBreaker() instanceof Player player)) {
             return;
         }
@@ -49,109 +47,49 @@ public class LumistoneToolHandler {
         }
 
         Item tool = heldItem.getItem();
-        BlockState state = event.getState();
-        Block block = state.getBlock();
-
-        // Handle shovel: increase flint drop chance from 10% to 50%
-        if (tool instanceof LumistoneShovelItem && block == Blocks.GRAVEL) {
-            // Vanilla gravel drops flint 10% of the time, gravel 90% of the time
-            // With Lumistone Shovel (or any subclass), increase flint chance to 50%
-            // Clear existing drops and add either flint (50%) or gravel (50%)
-            event.getDrops().clear();
-            if (player.level().random.nextFloat() < 0.5F) { // 50% chance for flint
-                event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(
-                    player.level(),
-                    event.getPos().getX() + 0.5,
-                    event.getPos().getY() + 0.5,
-                    event.getPos().getZ() + 0.5,
-                    new ItemStack(Items.FLINT, 1)
-                ));
-            } else {
-                event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(
-                    player.level(),
-                    event.getPos().getX() + 0.5,
-                    event.getPos().getY() + 0.5,
-                    event.getPos().getZ() + 0.5,
-                    new ItemStack(Blocks.GRAVEL, 1)
-                ));
-            }
-        }
-
-        // Handle axe: make leaves and vines drop themselves (like shears)
-        if (tool instanceof LumistoneAxeItem && (block instanceof LeavesBlock || block instanceof VineBlock)) {
-            // Clear normal drops and add the block itself (silk touch effect)
-            event.getDrops().clear();
-
-            // Create ItemStack from block (like silk touch)
-            ItemStack blockItem = new ItemStack(block.asItem(), 1);
-            event.getDrops().add(new net.minecraft.world.entity.item.ItemEntity(
-                player.level(),
-                event.getPos().getX() + 0.5,
-                event.getPos().getY() + 0.5,
-                event.getPos().getZ() + 0.5,
-                blockItem
-            ));
-        }
-    }
-    
-    /**
-     * Handle hoe: right-click to harvest crops
-     */
-    @SubscribeEvent
-    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        Player player = event.getEntity();
-        ItemStack heldItem = player.getItemInHand(event.getHand());
         
-        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof LumistoneHoeItem)) {
+        // Check if using a Lumistone tool (excluding sword)
+        boolean isLumistoneTool = tool instanceof LumistonePickaxeItem ||
+                                  tool instanceof LumistoneAxeItem ||
+                                  tool instanceof LumistoneShovelItem ||
+                                  tool instanceof LumistoneHoeItem;
+        
+        if (!isLumistoneTool) {
             return;
         }
         
-        Level world = event.getLevel();
-        BlockPos pos = event.getPos();
-        BlockState state = world.getBlockState(pos);
-        Block block = state.getBlock();
+        // Auto-pickup: add all drops directly to player inventory
+        boolean pickedUpAny = false;
         
-        // Check if it's a crop that can be harvested
-        if (block instanceof CropBlock) {
-            CropBlock crop = (CropBlock) block;
-            
-            // Check if crop is fully grown
-            if (crop.isMaxAge(state)) {
-                if (!world.isClientSide()) {
-                    // Get the drops from the crop
-                    java.util.List<ItemStack> drops = Block.getDrops(state, (ServerLevel) world, pos, null, player, heldItem);
-                    
-                    // Identify the seed item by comparing to the crop's clone item stack
-                    ItemStack seedStack = crop.getCloneItemStack(world, pos, state);
-                    Item seedItem = seedStack.getItem();
-                    
-                    // Count how many seeds are in the drops
-                    int seedCount = 0;
-                    for (ItemStack drop : drops) {
-                        if (drop.getItem() == seedItem) {
-                            seedCount += drop.getCount();
-                        }
-                    }
-                    
-                    // Drop all items
-                    for (ItemStack drop : drops) {
-                        Block.popResource(world, pos, drop);
-                    }
-                    
-                    // Only consume 1 seed (replant), so add back (seedCount - 1) seeds
-                    if (seedCount > 1) {
-                        Block.popResource(world, pos, new ItemStack(seedItem, seedCount - 1));
-                    }
-                    
-                    // Reset crop to initial growth stage
-                    world.setBlock(pos, crop.getStateForAge(0), 2);
-                    
-                    // Damage the hoe
-                    heldItem.hurtAndBreak(1, player, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
-                }
-                
-                event.setCanceled(true);
+        for (ItemEntity itemEntity : event.getDrops()) {
+            ItemStack drop = itemEntity.getItem();
+        
+            // Try to add to player inventory
+            if (!player.getInventory().add(drop)) {
+                // If inventory is full, drop it normally (don't delete items)
+                continue;
             }
+            
+            // Successfully added to inventory, remove from world drops
+            drop.setCount(0);
+            pickedUpAny = true;
+        }
+        
+        // Remove all items that were successfully picked up (count = 0)
+        event.getDrops().removeIf(itemEntity -> itemEntity.getItem().isEmpty());
+                    
+        // Play pickup sound if any items were picked up
+        if (pickedUpAny && !player.level().isClientSide()) {
+            player.level().playSound(
+                null, // null = broadcast to all nearby players
+                player.getX(), 
+                player.getY(), 
+                player.getZ(),
+                SoundEvents.ITEM_PICKUP, // Original vanilla pickup sound
+                SoundSource.PLAYERS,
+                0.25F, // Volume (0.25 = subtle, not too loud)
+                ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.0F) * 2.0F // Pitch variation
+            );
         }
     }
 

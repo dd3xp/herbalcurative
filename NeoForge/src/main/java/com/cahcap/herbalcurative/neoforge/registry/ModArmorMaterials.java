@@ -21,7 +21,7 @@ public class ModArmorMaterials {
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = 
             DeferredRegister.create(Registries.ARMOR_MATERIAL, HerbalCurativeCommon.MOD_ID);
     
-    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> WEAVELEAF = ARMOR_MATERIALS.register("weaveleaf",
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> LEAFWEAVE = ARMOR_MATERIALS.register("leafweave",
             () -> new ArmorMaterial(
                     Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                         map.put(ArmorItem.Type.BOOTS, 1);
@@ -33,7 +33,7 @@ public class ModArmorMaterials {
                     0, // enchantability
                     SoundEvents.ARMOR_EQUIP_LEATHER,
                     () -> Ingredient.of(ModItems.SCALEPLATE.get()),
-                    List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "weaveleaf"))),
+                    List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "leafweave"))),
                     0.5F, // toughness
                     0.0F  // knockback resistance
             ));

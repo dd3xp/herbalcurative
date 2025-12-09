@@ -204,7 +204,7 @@ public class ModWorldGenProvider {
         
         // Common placement modifiers (rarity, distribution, height, biome filter)
         List<PlacementModifier> herbPlacement = List.of(
-            RarityFilter.onAverageOnceEvery(16),  // Try once every 16 chunks
+            RarityFilter.onAverageOnceEvery(8),  // Try once every 8 chunks (increased frequency)
             InSquarePlacement.spread(),             // Random position in chunk
             PlacementUtils.HEIGHTMAP_WORLD_SURFACE, // Surface height
             BiomeFilter.biome()                     // Biome filter

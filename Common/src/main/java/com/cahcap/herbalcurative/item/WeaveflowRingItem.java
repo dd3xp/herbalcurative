@@ -6,9 +6,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 
-public class WeaveflowLoopItem extends Item {
+public class WeaveflowRingItem extends Item {
     
-    public WeaveflowLoopItem(Properties properties) {
+    public WeaveflowRingItem(Properties properties) {
         super(properties);
     }
     

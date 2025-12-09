@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "herbalcurative:item/weaveleaf_leggings"
+    "layer0": "herbalcurative:item/weaveflow_ring"
   }
 }

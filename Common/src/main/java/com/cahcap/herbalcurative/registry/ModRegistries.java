@@ -54,10 +54,10 @@ public class ModRegistries {
     public static Supplier<Item> RED_CHERRY_STICK;
     public static Supplier<Item> RED_CHERRY;
     
-    public static Supplier<Item> WEAVELEAF_HELMET;
-    public static Supplier<Item> WEAVELEAF_CHESTPLATE;
-    public static Supplier<Item> WEAVELEAF_LEGGINGS;
-    public static Supplier<Item> WEAVELEAF_BOOTS;
+    public static Supplier<Item> LEAFWEAVE_HELMET;
+    public static Supplier<Item> LEAFWEAVE_CHESTPLATE;
+    public static Supplier<Item> LEAFWEAVE_LEGGINGS;
+    public static Supplier<Item> LEAFWEAVE_BOOTS;
     
     public static Supplier<Item> LUMISTONE_SWORD;
     public static Supplier<Item> LUMISTONE_PICKAXE;
@@ -67,12 +67,12 @@ public class ModRegistries {
     public static Supplier<Item> RED_CHERRY_CROSSBOW;
     public static Supplier<Item> RED_CHERRY_BOLT_MAGAZINE;
     
-    public static Supplier<Item> WEAVEFLOW_LOOP;
+    public static Supplier<Item> WEAVEFLOW_RING;
     public static Supplier<Item> HERB_BOX;
     public static Supplier<Item> HERB_CABINET_ITEM;
     
     // ==================== Armor Materials ====================
-    public static Supplier<Holder<ArmorMaterial>> WEAVELEAF_ARMOR_MATERIAL;
+    public static Supplier<Holder<ArmorMaterial>> LEAFWEAVE_ARMOR_MATERIAL;
     
     // ==================== Block Entities ====================
     public static Supplier<BlockEntityType<?>> HERB_CABINET_BE;

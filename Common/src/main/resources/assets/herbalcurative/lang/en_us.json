@@ -30,10 +30,10 @@
   "item.herbalcurative.red_cherry_stick": "Red Cherry Stick",
   "item.herbalcurative.red_cherry": "Red Cherry",
   
-  "item.herbalcurative.weaveleaf_helmet": "Weaveleaf Hood",
-  "item.herbalcurative.weaveleaf_chestplate": "Weaveleaf Coat",
-  "item.herbalcurative.weaveleaf_leggings": "Weaveleaf Robe",
-  "item.herbalcurative.weaveleaf_boots": "Weaveleaf Boots",
+  "item.herbalcurative.leafweave_helmet": "Leafweave Hood",
+  "item.herbalcurative.leafweave_chestplate": "Leafweave Coat",
+  "item.herbalcurative.leafweave_leggings": "Leafweave Robe",
+  "item.herbalcurative.leafweave_boots": "Leafweave Boots",
   
   "item.herbalcurative.lumistone_sword": "Lumistone Sword",
   "item.herbalcurative.lumistone_pickaxe": "Lumistone Pickaxe",
@@ -43,7 +43,7 @@
   "item.herbalcurative.red_cherry_crossbow": "Red Cherry Crossbow",
   "item.herbalcurative.red_cherry_bolt_magazine": "Red Cherry Bolt Magazine",
   
-  "item.herbalcurative.weaveflow_loop": "Weaveflow Loop",
+  "item.herbalcurative.flowweave_ring": "Flowweave Ring",
   "item.herbalcurative.herb_box": "Herb Box",
   
   "block.herbalcurative.herb_cabinet": "Herb Cabinet"

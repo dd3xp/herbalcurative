@@ -6,12 +6,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 
-public class WeaveleafArmorItem extends ArmorItem {
+public class LeafweaveArmorItem extends ArmorItem {
     
     public static final ResourceLocation ARMOR_TEXTURE = 
-            ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "textures/models/armor/weaveleaf_armor.png");
+            ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "textures/models/armor/leafweave_armor.png");
     
-    public WeaveleafArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
+    public LeafweaveArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
         super(material, type, properties);
     }
     

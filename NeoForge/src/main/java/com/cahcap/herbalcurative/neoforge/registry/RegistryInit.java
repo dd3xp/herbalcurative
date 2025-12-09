@@ -49,10 +49,10 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_STICK = () -> ModItems.RED_CHERRY_STICK.get();
         ModRegistries.RED_CHERRY = () -> ModItems.RED_CHERRY.get();
         
-        ModRegistries.WEAVELEAF_HELMET = () -> ModItems.WEAVELEAF_HELMET.get();
-        ModRegistries.WEAVELEAF_CHESTPLATE = () -> ModItems.WEAVELEAF_CHESTPLATE.get();
-        ModRegistries.WEAVELEAF_LEGGINGS = () -> ModItems.WEAVELEAF_LEGGINGS.get();
-        ModRegistries.WEAVELEAF_BOOTS = () -> ModItems.WEAVELEAF_BOOTS.get();
+        ModRegistries.LEAFWEAVE_HELMET = () -> ModItems.LEAFWEAVE_HELMET.get();
+        ModRegistries.LEAFWEAVE_CHESTPLATE = () -> ModItems.LEAFWEAVE_CHESTPLATE.get();
+        ModRegistries.LEAFWEAVE_LEGGINGS = () -> ModItems.LEAFWEAVE_LEGGINGS.get();
+        ModRegistries.LEAFWEAVE_BOOTS = () -> ModItems.LEAFWEAVE_BOOTS.get();
         
         ModRegistries.LUMISTONE_SWORD = () -> ModItems.LUMISTONE_SWORD.get();
         ModRegistries.LUMISTONE_PICKAXE = () -> ModItems.LUMISTONE_PICKAXE.get();
@@ -62,12 +62,12 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_CROSSBOW = () -> ModItems.RED_CHERRY_CROSSBOW.get();
         ModRegistries.RED_CHERRY_BOLT_MAGAZINE = () -> ModItems.RED_CHERRY_BOLT_MAGAZINE.get();
         
-        ModRegistries.WEAVEFLOW_LOOP = () -> ModItems.WEAVEFLOW_LOOP.get();
+        ModRegistries.WEAVEFLOW_RING = () -> ModItems.WEAVEFLOW_RING.get();
         ModRegistries.HERB_BOX = () -> ModItems.HERB_BOX.get();
         ModRegistries.HERB_CABINET_ITEM = () -> ModItems.HERB_CABINET.get();
         
         // Armor Materials
-        ModRegistries.WEAVELEAF_ARMOR_MATERIAL = () -> ModArmorMaterials.WEAVELEAF;
+        ModRegistries.LEAFWEAVE_ARMOR_MATERIAL = () -> ModArmorMaterials.LEAFWEAVE;
         
         // Block Entities
         ModRegistries.HERB_CABINET_BE = () -> ModBlockEntities.HERB_CABINET.get();

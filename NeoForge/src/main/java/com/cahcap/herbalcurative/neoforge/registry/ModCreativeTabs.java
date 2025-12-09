@@ -52,11 +52,11 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.RED_CHERRY_LEAVES.get());
                         output.accept(ModBlocks.RED_CHERRY_SAPLING.get());
                         
-                        // Weaveleaf Armor
-                        output.accept(ModItems.WEAVELEAF_HELMET.get());
-                        output.accept(ModItems.WEAVELEAF_CHESTPLATE.get());
-                        output.accept(ModItems.WEAVELEAF_LEGGINGS.get());
-                        output.accept(ModItems.WEAVELEAF_BOOTS.get());
+                        // Leafweave Armor
+                        output.accept(ModItems.LEAFWEAVE_HELMET.get());
+                        output.accept(ModItems.LEAFWEAVE_CHESTPLATE.get());
+                        output.accept(ModItems.LEAFWEAVE_LEGGINGS.get());
+                        output.accept(ModItems.LEAFWEAVE_BOOTS.get());
                         
                         // Lumistone Tools
                         output.accept(ModItems.LUMISTONE_SWORD.get());
@@ -70,7 +70,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.RED_CHERRY_BOLT_MAGAZINE.get());
                         
                         // Special Items
-                        output.accept(ModItems.WEAVEFLOW_LOOP.get());
+                        output.accept(ModItems.WEAVEFLOW_RING.get());
                         output.accept(ModItems.HERB_BOX.get());
                     })
                     .build());

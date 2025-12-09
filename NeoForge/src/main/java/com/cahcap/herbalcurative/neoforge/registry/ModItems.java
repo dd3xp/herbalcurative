@@ -2,7 +2,7 @@ package com.cahcap.herbalcurative.neoforge.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.item.*;
-import com.cahcap.herbalcurative.neoforge.item.WeaveleafArmorItem;
+import com.cahcap.herbalcurative.neoforge.item.LeafweaveArmorItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -48,22 +48,22 @@ public class ModItems {
                             .fast()
                             .build())));
 
-    // ==================== Weaveleaf Armor ====================
+    // ==================== Leafweave Armor ====================
     
-    public static final DeferredItem<ArmorItem> WEAVELEAF_HELMET = ITEMS.register("weaveleaf_helmet",
-            () -> new WeaveleafArmorItem(ModArmorMaterials.WEAVELEAF, ArmorItem.Type.HELMET,
+    public static final DeferredItem<ArmorItem> LEAFWEAVE_HELMET = ITEMS.register("leafweave_helmet",
+            () -> new LeafweaveArmorItem(ModArmorMaterials.LEAFWEAVE, ArmorItem.Type.HELMET,
                     new Item.Properties().durability(92)));
     
-    public static final DeferredItem<ArmorItem> WEAVELEAF_CHESTPLATE = ITEMS.register("weaveleaf_chestplate",
-            () -> new WeaveleafArmorItem(ModArmorMaterials.WEAVELEAF, ArmorItem.Type.CHESTPLATE,
+    public static final DeferredItem<ArmorItem> LEAFWEAVE_CHESTPLATE = ITEMS.register("leafweave_chestplate",
+            () -> new LeafweaveArmorItem(ModArmorMaterials.LEAFWEAVE, ArmorItem.Type.CHESTPLATE,
                     new Item.Properties().durability(95)));
     
-    public static final DeferredItem<ArmorItem> WEAVELEAF_LEGGINGS = ITEMS.register("weaveleaf_leggings",
-            () -> new WeaveleafArmorItem(ModArmorMaterials.WEAVELEAF, ArmorItem.Type.LEGGINGS,
+    public static final DeferredItem<ArmorItem> LEAFWEAVE_LEGGINGS = ITEMS.register("leafweave_leggings",
+            () -> new LeafweaveArmorItem(ModArmorMaterials.LEAFWEAVE, ArmorItem.Type.LEGGINGS,
                     new Item.Properties().durability(98)));
     
-    public static final DeferredItem<ArmorItem> WEAVELEAF_BOOTS = ITEMS.register("weaveleaf_boots",
-            () -> new WeaveleafArmorItem(ModArmorMaterials.WEAVELEAF, ArmorItem.Type.BOOTS,
+    public static final DeferredItem<ArmorItem> LEAFWEAVE_BOOTS = ITEMS.register("leafweave_boots",
+            () -> new LeafweaveArmorItem(ModArmorMaterials.LEAFWEAVE, ArmorItem.Type.BOOTS,
                     new Item.Properties().durability(90)));
 
     // ==================== Lumistone Tools ====================
@@ -103,8 +103,8 @@ public class ModItems {
 
     // ==================== Special Items ====================
     
-    public static final DeferredItem<WeaveflowLoopItem> WEAVEFLOW_LOOP = ITEMS.register("weaveflow_loop",
-            () -> new WeaveflowLoopItem(new Item.Properties()
+    public static final DeferredItem<WeaveflowRingItem> WEAVEFLOW_RING = ITEMS.register("weaveflow_ring",
+            () -> new WeaveflowRingItem(new Item.Properties()
                     .stacksTo(1)
                     .attributes(SwordItem.createAttributes(Tiers.IRON, 5, -2.4F))));
     

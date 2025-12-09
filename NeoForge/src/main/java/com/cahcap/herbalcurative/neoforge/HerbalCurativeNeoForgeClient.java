@@ -4,7 +4,7 @@ import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.client.model.HerbBoxModel;
 import com.cahcap.herbalcurative.client.model.HerbCabinetModel;
 import com.cahcap.herbalcurative.client.model.ItemHerbBoxModel;
-import com.cahcap.herbalcurative.client.model.WeaveleafArmorModel;
+import com.cahcap.herbalcurative.client.model.LeafweaveArmorModel;
 import com.cahcap.herbalcurative.client.renderer.HerbBoxItemRenderer;
 import com.cahcap.herbalcurative.client.renderer.HerbCabinetItemRenderer;
 import com.cahcap.herbalcurative.neoforge.client.HerbBoxPlayerLayer;
@@ -44,7 +44,7 @@ public class HerbalCurativeNeoForgeClient {
     @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
     public static class ClientModEvents {
         
-        private static WeaveleafArmorModel<?> armorModel;
+        private static LeafweaveArmorModel<?> armorModel;
         
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
@@ -139,7 +139,7 @@ public class HerbalCurativeNeoForgeClient {
 
         @SubscribeEvent
         public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-            event.registerLayerDefinition(WeaveleafArmorModel.LAYER_LOCATION, WeaveleafArmorModel::createBodyLayer);
+            event.registerLayerDefinition(LeafweaveArmorModel.LAYER_LOCATION, LeafweaveArmorModel::createBodyLayer);
             event.registerLayerDefinition(HerbBoxModel.LAYER_LOCATION, HerbBoxModel::createBodyLayer);
             event.registerLayerDefinition(ItemHerbBoxModel.LAYER_LOCATION, ItemHerbBoxModel::createBodyLayer);
             event.registerLayerDefinition(HerbCabinetModel.LAYER_LOCATION, HerbCabinetModel::createBodyLayer);
@@ -162,15 +162,15 @@ public class HerbalCurativeNeoForgeClient {
 
         @SubscribeEvent
         public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-            // Weaveleaf Armor
-            IClientItemExtensions weaveleafArmorExtensions = new IClientItemExtensions() {
+            // Leafweave Armor
+            IClientItemExtensions leafweaveArmorExtensions = new IClientItemExtensions() {
                 @Override
                 public @NotNull Model getGenericArmorModel(LivingEntity livingEntity, ItemStack itemStack, 
                         EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
                     if (armorModel == null) {
-                        armorModel = new WeaveleafArmorModel<>(
+                        armorModel = new LeafweaveArmorModel<>(
                                 net.minecraft.client.Minecraft.getInstance().getEntityModels()
-                                        .bakeLayer(WeaveleafArmorModel.LAYER_LOCATION));
+                                        .bakeLayer(LeafweaveArmorModel.LAYER_LOCATION));
                     }
                     
                     armorModel.copyPoseFrom(original);
@@ -180,11 +180,11 @@ public class HerbalCurativeNeoForgeClient {
                 }
             };
 
-            event.registerItem(weaveleafArmorExtensions,
-                    ModItems.WEAVELEAF_HELMET.get(),
-                    ModItems.WEAVELEAF_CHESTPLATE.get(),
-                    ModItems.WEAVELEAF_LEGGINGS.get(),
-                    ModItems.WEAVELEAF_BOOTS.get());
+            event.registerItem(leafweaveArmorExtensions,
+                    ModItems.LEAFWEAVE_HELMET.get(),
+                    ModItems.LEAFWEAVE_CHESTPLATE.get(),
+                    ModItems.LEAFWEAVE_LEGGINGS.get(),
+                    ModItems.LEAFWEAVE_BOOTS.get());
             
             // Herb Box
             IClientItemExtensions herbBoxExtensions = new IClientItemExtensions() {

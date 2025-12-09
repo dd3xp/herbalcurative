@@ -12,10 +12,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 
-public class WeaveleafArmorModel<T extends LivingEntity> extends HumanoidModel<T> {
+public class LeafweaveArmorModel<T extends LivingEntity> extends HumanoidModel<T> {
     
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "weaveleaf_armor"), "main");
+            ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "leafweave_armor"), "main");
 
     private final ModelPart Head;
     private final ModelPart Body;
@@ -28,7 +28,7 @@ public class WeaveleafArmorModel<T extends LivingEntity> extends HumanoidModel<T
     
     private EquipmentSlot currentSlot = EquipmentSlot.CHEST;
 
-    public WeaveleafArmorModel(ModelPart root) {
+    public LeafweaveArmorModel(ModelPart root) {
         super(root);
         this.Head = root.getChild("Head");
         this.Body = root.getChild("Body");

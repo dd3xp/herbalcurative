@@ -9,11 +9,11 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * NeoForge-specific WeaveleafArmorItem with getArmorTexture override
+ * NeoForge-specific LeafweaveArmorItem with getArmorTexture override
  */
-public class WeaveleafArmorItem extends com.cahcap.herbalcurative.item.WeaveleafArmorItem {
+public class LeafweaveArmorItem extends com.cahcap.herbalcurative.item.LeafweaveArmorItem {
     
-    public WeaveleafArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
+    public LeafweaveArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
         super(material, type, properties);
     }
     

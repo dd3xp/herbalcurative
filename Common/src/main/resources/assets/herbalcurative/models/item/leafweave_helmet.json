@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "herbalcurative:item/weaveleaf_helmet"
+    "layer0": "herbalcurative:item/leafweave_helmet"
   }
 }

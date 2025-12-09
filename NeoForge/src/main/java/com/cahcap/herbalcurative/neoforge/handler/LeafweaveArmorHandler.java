@@ -18,20 +18,20 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
- * Event handler for Weaveleaf Armor special effects
+ * Event handler for Leafweave Armor special effects
  * Note: Durability regeneration is handled by DurabilityRegenHandler
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID)
-public class WeaveleafArmorHandler {
+public class LeafweaveArmorHandler {
 
     private static final int HEALTH_REGEN_TICK_INTERVAL = 100; // 5 seconds (100 ticks)
     
     // ResourceLocation for the step height attribute modifier (1.21 uses ResourceLocation instead of UUID)
     private static final ResourceLocation STEP_HEIGHT_MODIFIER_ID = 
-        ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "weaveleaf_boots_step_height");
+        ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "leafweave_boots_step_height");
 
     /**
-     * Handle Weaveleaf Armor special effects (for players only)
+     * Handle Leafweave Armor special effects (for players only)
      * - Health regeneration (1 HP per 5 seconds for helmet)
      * - Haste 1 buff (permanent for chestplate)
      * - Movement speed boost and auto-step (for boots)
@@ -41,16 +41,16 @@ public class WeaveleafArmorHandler {
     public static void onPlayerTick(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         
-        // Quick check: if player has no Weaveleaf armor at all, skip everything
+        // Quick check: if player has no Leafweave armor at all, skip everything
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
         ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
         
-        boolean hasHelmet = helmet.is(ModItems.WEAVELEAF_HELMET.get());
-        boolean hasChestplate = chestplate.is(ModItems.WEAVELEAF_CHESTPLATE.get());
-        boolean hasBoots = boots.is(ModItems.WEAVELEAF_BOOTS.get());
+        boolean hasHelmet = helmet.is(ModItems.LEAFWEAVE_HELMET.get());
+        boolean hasChestplate = chestplate.is(ModItems.LEAFWEAVE_CHESTPLATE.get());
+        boolean hasBoots = boots.is(ModItems.LEAFWEAVE_BOOTS.get());
         
-        // Early exit if no Weaveleaf armor equipped
+        // Early exit if no Leafweave armor equipped
         if (!hasHelmet && !hasChestplate && !hasBoots) {
             // Remove step height modifier if it was applied before
             var stepHeightAttribute = player.getAttribute(Attributes.STEP_HEIGHT);
@@ -138,7 +138,7 @@ public class WeaveleafArmorHandler {
 
         // If wearing boots, increase safe fall height by 1 block (from 3 to 4 blocks)
         // Since boots allow jumping to 2 blocks, safe fall height should be 4 blocks
-        if (boots.is(ModItems.WEAVELEAF_BOOTS.get()) && !boots.isEmpty()) {
+        if (boots.is(ModItems.LEAFWEAVE_BOOTS.get()) && !boots.isEmpty()) {
             if (fallDistance <= 4.0F) {
                 event.setCanceled(true);
                 return;
@@ -146,7 +146,7 @@ public class WeaveleafArmorHandler {
         }
 
         // Reduce fall damage by 30% if wearing leggings
-        if (leggings.is(ModItems.WEAVELEAF_LEGGINGS.get()) && !leggings.isEmpty()) {
+        if (leggings.is(ModItems.LEAFWEAVE_LEGGINGS.get()) && !leggings.isEmpty()) {
             event.setDamageMultiplier(0.7F);
         }
     }
@@ -164,7 +164,7 @@ public class WeaveleafArmorHandler {
 
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
 
-        if (boots.is(ModItems.WEAVELEAF_BOOTS.get()) && !boots.isEmpty()) {
+        if (boots.is(ModItems.LEAFWEAVE_BOOTS.get()) && !boots.isEmpty()) {
             // Increase jump height by 50% (multiply vertical velocity by 1.5)
             // This allows jumping to ~2 blocks height
             double currentMotionY = player.getDeltaMovement().y;
