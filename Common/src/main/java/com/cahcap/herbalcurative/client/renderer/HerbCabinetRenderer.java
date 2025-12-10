@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -132,7 +133,13 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
                 // Scale up to make the item visible (fix Y-axis to prevent upside-down)
                 poseStack.scale(16, -16, 1);
                 
-                itemRenderer.renderStatic(stack, ItemDisplayContext.GUI, packedLight, 
+                // Enhance environmental lighting to make icons brighter
+                int blockLight = LightTexture.block(packedLight);
+                int skyLight = LightTexture.sky(packedLight);
+                // Boost both light values by 3 (capped at 15)
+                int enhancedLight = LightTexture.pack(Math.min(blockLight + 3, 15), Math.min(skyLight + 3, 15));
+                
+                itemRenderer.renderStatic(stack, ItemDisplayContext.GUI, enhancedLight, 
                         OverlayTexture.NO_OVERLAY, poseStack, bufferSource, 
                         be.getLevel(), 0);
                 

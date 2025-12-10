@@ -1,0 +1,8 @@
+{
+  "herbalcurative:plugin": {
+    "entrypoints": {
+      "common": "com.cahcap.herbalcurative.compat.wthit.HerbalCurativeWTHITPlugin",
+      "client": "com.cahcap.herbalcurative.compat.wthit.HerbalCurativeWTHITPlugin"
+    }
+  }
+}

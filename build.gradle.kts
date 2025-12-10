@@ -58,6 +58,9 @@ subprojects {
         })
 
         compileOnly("org.jetbrains:annotations:26.0.1")
+        
+        // WTHIT/Jade API support (compileOnly for optional compatibility)
+        "modCompileOnly"("mcp.mobius.waila:wthit-api:fabric-12.8.2")
     }
 
     java {

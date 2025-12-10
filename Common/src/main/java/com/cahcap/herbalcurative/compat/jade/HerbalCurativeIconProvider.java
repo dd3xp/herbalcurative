@@ -36,4 +36,3 @@ public class HerbalCurativeIconProvider implements IBlockComponentProvider {
         return ID;
     }
 }
-
