@@ -10,7 +10,7 @@
 ## 材质相关
 
 - blockbench右键拖住可以平移
-- blockbench如果要导出1.12.2的Java模型，需要先新建1.12.2的Java Entity模型，然后导入现有的bbmodel文件
+- blockbench如果要导出1.12.2的Jvav模型，需要先新建1.12.2的Jvav Entity模型，然后导入现有的bbmodel文件
 - blockbench里面的各个部位的枢轴点记得要调对，不然盔甲位置会错乱，枢轴点参考Armor(main)和Armor(leggings)里面自带的，这样导出后的setRotationPoint方法里面的参数才是正确适配mc的
 - 如果模型位置很奇怪可能是json和渲染文件的旋转重叠作用
 - 需要搞水池那种方块的话需要用Jvav版物品/方块
@@ -34,3 +34,4 @@
 
 - 做相同的东西的时候记得抽象出一个基类
 - cursor 闲置的时候记得检查一下代码质量，硬编码之类的
+- wthit 就是个傻逼模组，有问题别管
