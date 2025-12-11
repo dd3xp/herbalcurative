@@ -1,7 +1,18 @@
-// 1.21.1	2025-12-08T17:44:56.5872956	Tags for minecraft:item mod id herbalcurative
+// 1.21.1	2025-12-11T15:50:28.0570829	Tags for minecraft:item mod id herbalcurative
 f56c4de24a0014f37fc98b956a78ef540cabfcd9 data/c/tags/item/rods/wooden.json
+66fa708944126a94ed6d2d6640f8ddb158da164f data/minecraft/tags/item/axes.json
+0b71e3c0340d3caf6bb3610e6b0774e42cceda2d data/minecraft/tags/item/chest_armor.json
+3b2d729b38ae0a65128fe35196488209de3221b3 data/minecraft/tags/item/enchantable/crossbow.json
+bcc9c685c4b6ffecd4a1e713b542b2152d930ff7 data/minecraft/tags/item/enchantable/durability.json
 cf8511379d7389774acd9ef892d5555f2405e767 data/minecraft/tags/item/flowers.json
+1940a35fe58226ea6068baa91682ab51c9abd912 data/minecraft/tags/item/foot_armor.json
+0b1183fc5f4a0d60f88e696bed653829203cae72 data/minecraft/tags/item/head_armor.json
+c0d3871c3a3137074071ed311ca9e5827f507c8e data/minecraft/tags/item/hoes.json
 cac8611abec82bb1379cb3623de7351b2359122d data/minecraft/tags/item/leaves.json
+8b39c7fb936203b8ed58adfb7d880fb06a11b024 data/minecraft/tags/item/leg_armor.json
 722eeb936cdf395b29226d34b6dff6716bb679f2 data/minecraft/tags/item/logs.json
+40a651d5c137e47aff1018f57eb5c9d4ea426925 data/minecraft/tags/item/pickaxes.json
 81a822347c96b86d3610880bee90697b489ae1fb data/minecraft/tags/item/planks.json
 4c329aac2d865a419beabf56e8feab16b0cda0a3 data/minecraft/tags/item/saplings.json
+f8fd11658a551cc093b0e230816f6bbf0f6eb86d data/minecraft/tags/item/shovels.json
+da66a30023ef409065436b96e29a58f6f1bfc7d7 data/minecraft/tags/item/swords.json

@@ -1,7 +1,7 @@
 package com.cahcap.herbalcurative.neoforge;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.neoforge.registry.*;
+import com.cahcap.herbalcurative.neoforge.common.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

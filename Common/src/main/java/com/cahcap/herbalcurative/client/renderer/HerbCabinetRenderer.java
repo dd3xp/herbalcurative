@@ -1,7 +1,7 @@
 package com.cahcap.herbalcurative.client.renderer;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.herbalcurative.client.model.HerbCabinetModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
