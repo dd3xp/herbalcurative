@@ -28,23 +28,23 @@ IMAGE_RESIZE_HEIGHT = 16
 
 # 是否保持宽高比
 # True = 保持宽高比，False = 拉伸到指定尺寸
-IMAGE_RESIZE_KEEP_ASPECT_RATIO = True
+IMAGE_RESIZE_KEEP_ASPECT_RATIO = False
 
 # 调整大小时使用的采样方法
 # 'NEAREST' = 最近邻采样（像素风格，适合像素艺术）
 # 可选值: 'NEAREST', 'BILINEAR', 'BICUBIC', 'LANCZOS'
-IMAGE_RESIZE_SAMPLING = 'BICUBIC'
+IMAGE_RESIZE_SAMPLING = 'LANCZOS'
 
 # ========== 颜色映射配置 ==========
 # 目标调色板（十六进制颜色代码列表）
 # 图片中的每个非黑色、非透明像素将被替换为此列表中最接近的颜色
 COLOR_PALETTE = [
-    "#31210b",
-    "#503a12",
-    "#4a3411",
-    "#442f0f",
-    "#3e2a0e",
-    "#37260c"
+    "#192a1a",
+    "#243c25",
+    "#2f4f2f",
+    "#3c613a",
+    "#497445",
+    "#568650"
 ]
 
 # 颜色映射模式
