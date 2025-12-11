@@ -14,6 +14,9 @@
 - blockbench里面的各个部位的枢轴点记得要调对，不然盔甲位置会错乱，枢轴点参考Armor(main)和Armor(leggings)里面自带的，这样导出后的setRotationPoint方法里面的参数才是正确适配mc的
 - 如果模型位置很奇怪可能是json和渲染文件的旋转重叠作用
 - 需要搞水池那种方块的话需要用Jvav版物品/方块
+- 控制手拿在某个方块的哪里的方法：
+  - 把枢轴点放到想要拿的地方
+  - 在 `poseStack.translate` 里面设置补偿值
 
 ## md语句相关
 

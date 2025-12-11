@@ -122,6 +122,9 @@ public class ModItems {
     
     public static final DeferredItem<HerbBoxItem> HERB_BOX = ITEMS.register("herb_box",
             () -> new HerbBoxItem(new Item.Properties().stacksTo(1)));
+    
+    // Technical item for rendering herb_box 2D texture (not shown in creative tabs)
+    public static final DeferredItem<Item> HERB_BOX_ICON = ITEMS.registerSimpleItem("herb_box_icon");
 
     // ==================== Multiblock Structures ====================
     

@@ -2,6 +2,7 @@ package com.cahcap.herbalcurative.client.renderer;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.client.model.ItemHerbBoxModel;
+import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -29,6 +30,16 @@ public class HerbBoxItemRenderer extends BlockEntityWithoutLevelRenderer {
     @Override
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, 
                              MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        // In inventory/GUI context, render 2D texture instead of 3D model
+        if (displayContext == ItemDisplayContext.GUI || 
+            displayContext == ItemDisplayContext.FIXED ||
+            displayContext == ItemDisplayContext.GROUND) {
+            // Render 2D texture (temporarily using flowweave_ring texture)
+            render2DTexture(stack, poseStack, buffer, packedLight, packedOverlay);
+            return;
+        }
+        
+        // For hand-held contexts, render 3D model
         if (model == null) {
             model = new ItemHerbBoxModel<>(
                     Minecraft.getInstance().getEntityModels().bakeLayer(ItemHerbBoxModel.LAYER_LOCATION));
@@ -36,17 +47,47 @@ public class HerbBoxItemRenderer extends BlockEntityWithoutLevelRenderer {
         
         poseStack.pushPose();
         
-        // Center the model
+        // Center the model in hand
         poseStack.translate(0.5F, 0.5F, 0.5F);
-
-        // Flip the model
+        
+        // Flip the model (X-axis 180°) because it's upside down from Blockbench
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-
-        // Compensate for model's Y=19 offset
-        poseStack.translate(0.0F, -1.1875F, 0.0F);
+        
+        // Rotate around Y-axis (180°) to face the player (fix front-back orientation)
+        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+        
+        // Compensate for the Y=24 offset in the model (move up by 24/16 = 1.5 blocks)
+        poseStack.translate(0.0F, -1.125F, 0.2F);
         
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
         model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
+        
+        poseStack.popPose();
+    }
+    
+    /**
+     * Render 2D texture in GUI/inventory context
+     * Uses a technical item (herb_box_icon) that has a normal generated model (like flowweave_ring)
+     * This avoids infinite recursion because the technical item doesn't have a custom BEWLR
+     */
+    private void render2DTexture(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, 
+                                 int packedLight, int packedOverlay) {
+        poseStack.pushPose();
+        
+        // Correct the offset - move right and up to center the item
+        poseStack.translate(0.5, 0.5, 0);
+        
+        // Get the technical item from the cross-platform registry
+        net.minecraft.world.item.Item iconItem = ModRegistries.HERB_BOX_ICON.get();
+        
+        // Create an ItemStack of the technical item
+        ItemStack iconStack = new ItemStack(iconItem);
+        
+        // Render the technical item using the standard renderer
+        // This works because herb_box_icon uses minecraft:item/generated (no custom BEWLR)
+        Minecraft.getInstance().getItemRenderer().renderStatic(
+                iconStack, ItemDisplayContext.GUI, packedLight, packedOverlay, 
+                poseStack, buffer, null, 0);
         
         poseStack.popPose();
     }

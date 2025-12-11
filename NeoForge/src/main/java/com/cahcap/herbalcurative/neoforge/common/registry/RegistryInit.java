@@ -64,6 +64,7 @@ public class RegistryInit {
         
         ModRegistries.FLOWWEAVE_RING = () -> ModItems.FLOWWEAVE_RING.get();
         ModRegistries.HERB_BOX = () -> ModItems.HERB_BOX.get();
+        ModRegistries.HERB_BOX_ICON = () -> ModItems.HERB_BOX_ICON.get();
         ModRegistries.HERB_CABINET_ITEM = () -> ModItems.HERB_CABINET.get();
         
         // Armor Materials
