@@ -34,8 +34,8 @@ public class HerbBoxItemRenderer extends BlockEntityWithoutLevelRenderer {
         if (displayContext == ItemDisplayContext.GUI || 
             displayContext == ItemDisplayContext.FIXED ||
             displayContext == ItemDisplayContext.GROUND) {
-            // Render 2D texture (temporarily using flowweave_ring texture)
-            render2DTexture(stack, poseStack, buffer, packedLight, packedOverlay);
+            // Render 2D texture with correct display context
+            render2DTexture(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
             return;
         }
         
@@ -66,16 +66,16 @@ public class HerbBoxItemRenderer extends BlockEntityWithoutLevelRenderer {
     }
     
     /**
-     * Render 2D texture in GUI/inventory context
+     * Render 2D texture in GUI/inventory/ground context
      * Uses a technical item (herb_box_icon) that has a normal generated model (like flowweave_ring)
      * This avoids infinite recursion because the technical item doesn't have a custom BEWLR
      */
-    private void render2DTexture(ItemStack stack, PoseStack poseStack, MultiBufferSource buffer, 
-                                 int packedLight, int packedOverlay) {
+    private void render2DTexture(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, 
+                                 MultiBufferSource buffer, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         
         // Correct the offset - move right and up to center the item
-        poseStack.translate(0.5, 0.5, 0);
+        poseStack.translate(0.5, 0.5, 0.5);
         
         // Get the technical item from the cross-platform registry
         net.minecraft.world.item.Item iconItem = ModRegistries.HERB_BOX_ICON.get();
@@ -83,10 +83,11 @@ public class HerbBoxItemRenderer extends BlockEntityWithoutLevelRenderer {
         // Create an ItemStack of the technical item
         ItemStack iconStack = new ItemStack(iconItem);
         
-        // Render the technical item using the standard renderer
+        // Render the technical item using the standard renderer with CORRECT display context
+        // Using the actual displayContext (not hardcoded GUI) ensures proper rotation behavior
         // This works because herb_box_icon uses minecraft:item/generated (no custom BEWLR)
         Minecraft.getInstance().getItemRenderer().renderStatic(
-                iconStack, ItemDisplayContext.GUI, packedLight, packedOverlay, 
+                iconStack, displayContext, packedLight, packedOverlay, 
                 poseStack, buffer, null, 0);
         
         poseStack.popPose();
