@@ -14,10 +14,15 @@ import java.util.function.Predicate;
 
 /**
  * Red Cherry Crossbow
- * Supports Red Cherry Bolt Magazine as ammo
- * Arrows from bolt magazine cannot be picked up
- * Arrows from regular arrows can be picked up
- * Bolt magazine is consumed via durability, not item count
+ * Supports all bolt magazines (BoltMagazineItem subclasses) as ammo
+ * - Arrows from bolt magazine cannot be picked up (by default)
+ * - Arrows from regular arrows can be picked up
+ * - Bolt magazine is consumed via durability when loading (not when shooting)
+ * 
+ * Architecture:
+ * - Magazines define what projectile to load (arrow, firework, etc.) via createProjectile()
+ * - Magazines consume durability when loading via consumeOnLoad()
+ * - Magazines can apply special effects after shooting via onProjectileShot()
  */
 public class RedCherryCrossbowItem extends CrossbowItem {
     
@@ -35,7 +40,7 @@ public class RedCherryCrossbowItem extends CrossbowItem {
         return (stack) -> stack.is(Items.ARROW) || 
                           stack.is(Items.SPECTRAL_ARROW) || 
                           stack.is(Items.TIPPED_ARROW) ||
-                          stack.getItem() instanceof RedCherryBoltMagazineItem;
+                          stack.getItem() instanceof BoltMagazineItem;
     }
     
     @Override
@@ -50,23 +55,30 @@ public class RedCherryCrossbowItem extends CrossbowItem {
             // Find ammo
             ItemStack ammo = player.getProjectile(crossbow);
             
-            if (!ammo.isEmpty() && ammo.getItem() instanceof RedCherryBoltMagazineItem) {
-                // For bolt magazine: temporarily replace with arrow, load, then restore magazine
-                int magazineSlot = findItemSlot(player, ammo);
-                if (magazineSlot >= 0) {
-                    // Save magazine state
-                    ItemStack originalMagazine = ammo.copy();
-                    
-                    // Temporarily replace with arrow
-                    ItemStack tempArrow = new ItemStack(Items.ARROW, 1);
-                    player.getInventory().setItem(magazineSlot, tempArrow);
-                    
-                    // Load crossbow (will consume the temp arrow)
-                    super.releaseUsing(crossbow, level, entity, timeLeft);
-                    
-                    // Restore original magazine
-                    player.getInventory().setItem(magazineSlot, originalMagazine);
-                    return;
+            // Check if using a bolt magazine
+            if (!ammo.isEmpty() && ammo.getItem() instanceof BoltMagazineItem magazine) {
+                // Check if magazine has durability remaining
+                if (magazine.canUse(ammo)) {
+                    int magazineSlot = findItemSlot(player, ammo);
+                    if (magazineSlot >= 0) {
+                        // 1. Get the projectile from the magazine (could be arrow, firework, etc.)
+                        ItemStack projectile = magazine.createProjectile(ammo, crossbow, player);
+                        
+                        // 2. CONSUME MAGAZINE DURABILITY WHEN LOADING (not when shooting)
+                        magazine.consumeOnLoad(ammo, player);
+                        
+                        // 3. Temporarily replace magazine with the projectile in inventory
+                        ItemStack originalMagazine = ammo.copy();
+                        player.getInventory().setItem(magazineSlot, projectile);
+                        
+                        // 4. Load crossbow (will consume the temporary projectile)
+                        super.releaseUsing(crossbow, level, entity, timeLeft);
+                        
+                        // 5. Restore the magazine to inventory
+                        player.getInventory().setItem(magazineSlot, originalMagazine);
+                        
+                        return;
+                    }
                 }
             }
         }
@@ -75,6 +87,9 @@ public class RedCherryCrossbowItem extends CrossbowItem {
         super.releaseUsing(crossbow, level, entity, timeLeft);
     }
     
+    /**
+     * Find the slot of a specific item stack in player's inventory
+     */
     private int findItemSlot(Player player, ItemStack target) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
@@ -90,15 +105,12 @@ public class RedCherryCrossbowItem extends CrossbowItem {
                                     float inaccuracy, float angle, @Nullable LivingEntity target) {
         super.shootProjectile(shooter, projectile, index, velocity, inaccuracy, angle, target);
         
-        // Handle bolt magazine consumption and arrow pickup status
+        // Apply magazine special effects to the projectile after shooting
         if (projectile instanceof AbstractArrow arrow && shooter instanceof Player player) {
-            // Find and consume bolt magazine durability
             ItemStack magazine = findBoltMagazine(player);
-            if (magazine != null && !magazine.isEmpty()) {
-                // Consume magazine durability
-                magazine.hurtAndBreak(1, player, player.getEquipmentSlotForItem(magazine));
-                // Set arrow to not be pickupable
-                arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+            if (magazine != null && !magazine.isEmpty() && magazine.getItem() instanceof BoltMagazineItem boltMag) {
+                // Let the magazine apply its special effects (e.g., make arrow non-pickupable)
+                boltMag.onProjectileShot(arrow, magazine, player);
             }
         }
     }
@@ -109,8 +121,8 @@ public class RedCherryCrossbowItem extends CrossbowItem {
     private ItemStack findBoltMagazine(Player player) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
-            if (!stack.isEmpty() && stack.getItem() instanceof RedCherryBoltMagazineItem) {
-                if (stack.getDamageValue() < stack.getMaxDamage()) {
+            if (!stack.isEmpty() && stack.getItem() instanceof BoltMagazineItem magazine) {
+                if (magazine.canUse(stack)) {
                     return stack;
                 }
             }
