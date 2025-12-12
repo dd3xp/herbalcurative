@@ -3,8 +3,6 @@ package com.cahcap.herbalcurative.neoforge.common.handler;
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.neoforge.common.registry.ModItems;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -20,64 +18,35 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 /**
  * Event handler for Leafweave Armor special effects
  * Note: Durability regeneration is handled by DurabilityRegenHandler
+ * 
+ * BOOTS EFFECTS ARE PRESERVED BUT DISABLED FOR FUTURE JOURNAL IMPLEMENTATION
+ * 
+ * @EventBusSubscriber annotation removed because all events are currently disabled
  */
-@EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID)
+// @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID)
 public class LeafweaveArmorHandler {
 
-    private static final int HEALTH_REGEN_TICK_INTERVAL = 100; // 5 seconds (100 ticks)
+    // ==================== BOOTS EFFECTS - PRESERVED FOR JOURNAL IMPLEMENTATION ====================
+    // The following code implements boots special effects but is currently disabled
+    // These will be re-enabled through the journal/research system in future updates
     
+    /*
     // ResourceLocation for the step height attribute modifier (1.21 uses ResourceLocation instead of UUID)
     private static final ResourceLocation STEP_HEIGHT_MODIFIER_ID = 
         ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "leafweave_boots_step_height");
 
     /**
-     * Handle Leafweave Armor special effects (for players only)
-     * - Health regeneration (1 HP per 5 seconds for helmet)
-     * - Haste 1 buff (permanent for chestplate)
-     * - Movement speed boost and auto-step (for boots)
-     * Note: Durability regeneration is handled by DurabilityRegenHandler
+     * Handle Leafweave Boots special effects (for players only)
+     * - Movement speed boost (30% on ground, 15% in air)
+     * - Auto-step (can walk up 1 block without jumping)
      */
+    /*
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
-        
-        // Quick check: if player has no Leafweave armor at all, skip everything
-        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
-        ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-        
-        boolean hasHelmet = helmet.is(ModItems.LEAFWEAVE_HELMET.get());
-        boolean hasChestplate = chestplate.is(ModItems.LEAFWEAVE_CHESTPLATE.get());
         boolean hasBoots = boots.is(ModItems.LEAFWEAVE_BOOTS.get());
         
-        // Early exit if no Leafweave armor equipped
-        if (!hasHelmet && !hasChestplate && !hasBoots) {
-            // Remove step height modifier if it was applied before
-            var stepHeightAttribute = player.getAttribute(Attributes.STEP_HEIGHT);
-            if (stepHeightAttribute != null && stepHeightAttribute.getModifier(STEP_HEIGHT_MODIFIER_ID) != null) {
-                stepHeightAttribute.removeModifier(STEP_HEIGHT_MODIFIER_ID);
-            }
-            return;
-        }
-
-        // Server-side effects (health regen, haste) - only check occasionally
-        if (!player.level().isClientSide()) {
-            int tickMod = player.tickCount % HEALTH_REGEN_TICK_INTERVAL;
-            
-            // Health regeneration (1 HP per 5 seconds for helmet)
-            if (hasHelmet && tickMod == 0) {
-                if (player.getHealth() < player.getMaxHealth()) {
-                    player.heal(1.0F);
-                }
-            }
-
-            // Haste 1 buff (permanent for chestplate) - refresh every 1.5 seconds
-            if (hasChestplate && tickMod % 30 == 0) {
-                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 40, 0, false, false));
-            }
-        }
-
-        // Handle boots effects (auto-step and movement speed)
         if (hasBoots) {
             // Auto-step using attribute modifiers (more efficient and compatible)
             var stepHeightAttribute = player.getAttribute(Attributes.STEP_HEIGHT);
@@ -121,19 +90,17 @@ public class LeafweaveArmorHandler {
     }
 
     /**
-     * Handle fall damage reduction (for players only)
+     * Handle fall damage reduction for boots (for players only)
      * Boots: Increase safe fall height from 3 to 4 blocks
-     * Leggings: Reduce fall damage by 30%
      */
+    /*
     @SubscribeEvent
     public static void onLivingFall(LivingFallEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
 
-        ItemStack leggings = player.getItemBySlot(EquipmentSlot.LEGS);
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-
         float fallDistance = event.getDistance();
 
         // If wearing boots, increase safe fall height by 1 block (from 3 to 4 blocks)
@@ -144,18 +111,13 @@ public class LeafweaveArmorHandler {
                 return;
             }
         }
-
-        // Reduce fall damage by 30% if wearing leggings
-        if (leggings.is(ModItems.LEAFWEAVE_LEGGINGS.get()) && !leggings.isEmpty()) {
-            event.setDamageMultiplier(0.7F);
-        }
     }
 
-
     /**
-     * Handle jump height increase (for players only)
+     * Handle jump height increase for boots (for players only)
      * Allows jumping to 2 blocks height by increasing vertical jump velocity by 50%
      */
+    /*
     @SubscribeEvent
     public static void onLivingJump(LivingEvent.LivingJumpEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
@@ -176,9 +138,11 @@ public class LeafweaveArmorHandler {
                 );
             }
 
-            // Note: Horizontal movement speed during jump is handled by onLivingUpdate
+            // Note: Horizontal movement speed during jump is handled by onPlayerTick
             // using moveRelative with half the speed boost
         }
     }
+    */
+    // ==================== END BOOTS EFFECTS ====================
 }
 

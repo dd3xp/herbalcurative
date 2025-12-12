@@ -103,7 +103,7 @@ public class ModItems {
             () -> new RedCherryCrossbowItem(new Item.Properties().durability(80)));
     
     public static final DeferredItem<RedCherryBoltMagazineItem> RED_CHERRY_BOLT_MAGAZINE = ITEMS.register("red_cherry_bolt_magazine",
-            () -> new RedCherryBoltMagazineItem(new Item.Properties().durability(80).stacksTo(1)));
+            () -> new RedCherryBoltMagazineItem(new Item.Properties().durability(10).stacksTo(1)));
 
     // ==================== Special Items ====================
     

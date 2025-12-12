@@ -1,8 +1,8 @@
-// 1.21.1	2025-12-08T17:44:56.5802166	Tags for minecraft:worldgen/biome mod id herbalcurative
+// 1.21.1	2025-12-12T14:05:08.4209533	Tags for minecraft:worldgen/biome mod id herbalcurative
 9bc246ab0a3c31ac744b981fdf4ee1619eb68493 data/herbalcurative/tags/worldgen/biome/has_crystbud.json
 c55c7f0fcabed370e4a4927e0cd3b12cb96692fa data/herbalcurative/tags/worldgen/biome/has_dewpetal.json
 b8aed3f6aec8c6b789554ebeed9e8ceb96464021 data/herbalcurative/tags/worldgen/biome/has_pyrisage.json
-4bb1d7051fe5a80869107bfedd754de2c98cf712 data/herbalcurative/tags/worldgen/biome/has_red_cherry_trees.json
+b7f6bbde384c3cad65a1571a8e984b1fc626e612 data/herbalcurative/tags/worldgen/biome/has_red_cherry_trees.json
 0feb162ab903da5277fc542ac0c9da88656f33eb data/herbalcurative/tags/worldgen/biome/has_rosynia.json
 4bb1d7051fe5a80869107bfedd754de2c98cf712 data/herbalcurative/tags/worldgen/biome/has_verdscale_fern.json
 e92adccc1d6c9061d94279ba14ac5c4d491845c9 data/herbalcurative/tags/worldgen/biome/has_zephyr_lily.json

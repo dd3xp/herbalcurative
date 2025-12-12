@@ -115,7 +115,6 @@ public class ModBlocks {
                         .noCollission()
                         .instabreak()
                         .sound(SoundType.GRASS)
-                        .lightLevel(state -> lightLevel)
                         .pushReaction(PushReaction.DESTROY)
         ));
         // Register BlockItem

@@ -22,8 +22,12 @@ public class RosyniaFlowerBlock extends HerbFlowerBlock {
     
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-        // Only allow placement on End Stone
-        return state.is(Blocks.END_STONE);
+        // Allow placement on End Stone
+        // Also allow placement on dirt variants for decoration in overworld
+        return state.is(Blocks.END_STONE) || state.is(Blocks.GRASS_BLOCK) || 
+               state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT) || 
+               state.is(Blocks.PODZOL) || state.is(Blocks.ROOTED_DIRT) || 
+               state.is(Blocks.FARMLAND);
     }
     
     /**

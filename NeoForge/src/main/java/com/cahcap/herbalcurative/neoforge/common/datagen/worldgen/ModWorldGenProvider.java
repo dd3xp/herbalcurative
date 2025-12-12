@@ -203,42 +203,86 @@ public class ModWorldGenProvider {
     private static void bootstrapPlacedFeatures(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
         
-        // Common placement modifiers (rarity, distribution, height, biome filter)
-        List<PlacementModifier> herbPlacement = List.of(
-            RarityFilter.onAverageOnceEvery(8),  // Try once every 8 chunks (increased frequency)
-            InSquarePlacement.spread(),             // Random position in chunk
-            PlacementUtils.HEIGHTMAP_WORLD_SURFACE, // Surface height
-            BiomeFilter.biome()                     // Biome filter
-        );
+        // ==================== Individual Herb Placement Configurations ====================
         
-        // Tree placement modifiers - try once every 2 chunks
-        List<PlacementModifier> treePlacement = List.of(
-            RarityFilter.onAverageOnceEvery(2),  // Try once every 2 chunks
+        // Dewpetal - Rare (16 chunks, half frequency)
+        List<PlacementModifier> dewpetalPlacement = List.of(
+            RarityFilter.onAverageOnceEvery(16),
             InSquarePlacement.spread(),
             PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
             BiomeFilter.biome()
         );
         
+        // Verdscale Fern - Normal (8 chunks, unchanged)
+        List<PlacementModifier> verdscaleFernPlacement = List.of(
+            RarityFilter.onAverageOnceEvery(8),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+        
+        // Zephyr Lily - Rare (16 chunks, half frequency)
+        List<PlacementModifier> zephyrLilyPlacement = List.of(
+            RarityFilter.onAverageOnceEvery(16),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+        
+        // Crystbud - Common (4 chunks, double frequency)
+        List<PlacementModifier> crystbudPlacement = List.of(
+            RarityFilter.onAverageOnceEvery(4),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+        
+        // Pyrisage - Common (4 chunks, double frequency)
+        List<PlacementModifier> pyrisagePlacement = List.of(
+            RarityFilter.onAverageOnceEvery(4),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+        
+        // Rosynia - Normal (8 chunks, unchanged)
+        List<PlacementModifier> rosyniaPlacement = List.of(
+            RarityFilter.onAverageOnceEvery(8),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+        
+        // Tree placement modifiers - try once every 2 chunks
+        List<PlacementModifier> treePlacement = List.of(
+            RarityFilter.onAverageOnceEvery(2),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+        
+        // ==================== Register Placed Features ====================
+        
         // Overworld herbs
         context.register(DEWPETAL_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(DEWPETAL_CONFIGURED), herbPlacement));
+            configuredFeatures.getOrThrow(DEWPETAL_CONFIGURED), dewpetalPlacement));
         
         context.register(VERDSCALE_FERN_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(VERDSCALE_FERN_CONFIGURED), herbPlacement));
+            configuredFeatures.getOrThrow(VERDSCALE_FERN_CONFIGURED), verdscaleFernPlacement));
         
         context.register(ZEPHYR_LILY_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(ZEPHYR_LILY_CONFIGURED), herbPlacement));
+            configuredFeatures.getOrThrow(ZEPHYR_LILY_CONFIGURED), zephyrLilyPlacement));
         
         // Nether herbs
         context.register(CRYSTBUD_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(CRYSTBUD_CONFIGURED), herbPlacement));
+            configuredFeatures.getOrThrow(CRYSTBUD_CONFIGURED), crystbudPlacement));
         
         context.register(PYRISAGE_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(PYRISAGE_CONFIGURED), herbPlacement));
+            configuredFeatures.getOrThrow(PYRISAGE_CONFIGURED), pyrisagePlacement));
         
         // End herbs
         context.register(ROSYNIA_PLACED, new PlacedFeature(
-            configuredFeatures.getOrThrow(ROSYNIA_CONFIGURED), herbPlacement));
+            configuredFeatures.getOrThrow(ROSYNIA_CONFIGURED), rosyniaPlacement));
         
         // Trees
         context.register(RED_CHERRY_TREE_PLACED, new PlacedFeature(

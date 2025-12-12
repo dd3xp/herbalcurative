@@ -74,8 +74,7 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
             Biomes.OLD_GROWTH_PINE_TAIGA,
             Biomes.OLD_GROWTH_SPRUCE_TAIGA,
             Biomes.SNOWY_TAIGA,
-            Biomes.WINDSWEPT_FOREST,
-            Biomes.CHERRY_GROVE
+            Biomes.WINDSWEPT_FOREST
         );
         
         // ==================== Nether Herbs ====================

@@ -5,9 +5,10 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Red Cherry Bolt Magazine
- * 80 durability
+ * 10 durability
  * When in inventory, crossbow prioritizes using bolt magazine instead of arrows
  * Arrows fired from bolt magazine cannot be picked up
+ * Can only be enchanted with Unbreaking (naturally limited by vanilla enchantment system)
  */
 public class RedCherryBoltMagazineItem extends Item {
     
