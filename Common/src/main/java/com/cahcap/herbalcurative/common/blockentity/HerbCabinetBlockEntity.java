@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
     
-    private static final int MAX_CAPACITY = 4096;
+    private static final int MAX_CAPACITY = 2048;
     
     private final Map<Item, Integer> herbStorage = new HashMap<>();
     

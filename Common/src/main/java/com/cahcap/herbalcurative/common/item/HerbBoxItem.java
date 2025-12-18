@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class HerbBoxItem extends Item {
     
-    private static final int MAX_CAPACITY = 1024;
+    private static final int MAX_CAPACITY = 512;
     
     // Herb registry names for storage
     private static final String[] HERB_KEYS = {
@@ -174,9 +174,11 @@ public class HerbBoxItem extends Item {
     private void extractHerb(ItemStack box, Player player, Item herb, String herbKey) {
         int amount = getHerbAmount(box, herbKey);
         while (amount > 0) {
-            ItemStack herbStack = new ItemStack(herb, Math.min(amount, 64));
+            // Ensure we never create a stack larger than the max stack size (64)
+            int stackSize = Math.min(amount, herb.getDefaultMaxStackSize());
+            ItemStack herbStack = new ItemStack(herb, stackSize);
             if (player.getInventory().add(herbStack)) {
-                int added = Math.min(amount, 64) - herbStack.getCount();
+                int added = stackSize - herbStack.getCount();
                 amount -= added;
             } else {
                 break;
