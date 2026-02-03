@@ -67,6 +67,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             // Herb Basket
             this.dropSelf(ModBlocks.HERB_BASKET.get());
             
+            // Red Cherry Shelf
+            this.dropSelf(ModBlocks.RED_CHERRY_SHELF.get());
+            
             // ==================== Crop blocks (drop seeds and products when mature at age 9) ====================
             
             // Crystbud crop - drops Cryst Spine

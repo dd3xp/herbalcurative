@@ -3,8 +3,10 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.herbalcurative.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.herbalcurative.neoforge.common.handler.HerbBasketItemHandler;
 import com.cahcap.herbalcurative.neoforge.common.handler.HerbCabinetItemHandler;
+import com.cahcap.herbalcurative.neoforge.common.handler.RedCherryShelfItemHandler;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -40,6 +42,18 @@ public class ModCapabilities {
             (blockEntity, context) -> {
                 if (blockEntity instanceof HerbBasketBlockEntity basket) {
                     return new HerbBasketItemHandler(basket);
+                }
+                return null;
+            }
+        );
+        
+        // Register IItemHandler capability for RedCherryShelfBlockEntity
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.RED_CHERRY_SHELF.get(),
+            (blockEntity, context) -> {
+                if (blockEntity instanceof RedCherryShelfBlockEntity shelf) {
+                    return new RedCherryShelfItemHandler(shelf);
                 }
                 return null;
             }

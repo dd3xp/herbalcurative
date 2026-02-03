@@ -4,6 +4,7 @@ import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.block.*;
 import com.cahcap.herbalcurative.neoforge.common.block.HerbCabinetBlock;
 import com.cahcap.herbalcurative.neoforge.common.block.HerbBasketBlock;
+import com.cahcap.herbalcurative.common.block.RedCherryShelfBlock;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -111,6 +112,14 @@ public class ModBlocks {
                     .strength(0.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
+    
+    public static final DeferredBlock<RedCherryShelfBlock> RED_CHERRY_SHELF = BLOCKS.register("red_cherry_shelf",
+            () -> new RedCherryShelfBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(1.0F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
 
     // ==================== Helper Methods ====================
     

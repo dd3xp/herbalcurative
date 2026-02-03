@@ -23,12 +23,9 @@ public class CrystbudFlowerBlock extends HerbFlowerBlock {
     
     @Override
     protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
-        // Allow placement on Basalt or Netherrack (stone-like blocks)
-        // Also allow placement on dirt variants for decoration in overworld
-        return state.is(Blocks.BASALT) || state.is(Blocks.NETHERRACK) ||
-               state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT) || 
-               state.is(Blocks.COARSE_DIRT) || state.is(Blocks.PODZOL) || 
-               state.is(Blocks.ROOTED_DIRT) || state.is(Blocks.FARMLAND);
+        // Only allow placement on Basalt or Netherrack (Nether stone-like blocks)
+        return state.is(Blocks.BASALT) || state.is(Blocks.NETHERRACK) || 
+               state.is(Blocks.BLACKSTONE) || state.is(Blocks.POLISHED_BASALT);
     }
     
     /**

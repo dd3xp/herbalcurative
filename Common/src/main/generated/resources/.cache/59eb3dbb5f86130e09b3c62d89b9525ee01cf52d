@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-03T22:06:43.0782498	Loot Tables
+// 1.21.1	2026-02-04T04:12:58.046482	Loot Tables
 3ac9d531ee8d933d461225618401a225ecd060d1 data/herbalcurative/loot_table/blocks/crystbud.json
 1b63e0a2c844163d496aa1937eba198523009877 data/herbalcurative/loot_table/blocks/crystbud_crop.json
 55468bf46b0d519db67eaf9dda62f123eb412c20 data/herbalcurative/loot_table/blocks/dewpetal.json
@@ -12,6 +12,7 @@ d72fa239c52036dbe0944cf38fa9b2cc84a939ff data/herbalcurative/loot_table/blocks/r
 0c4f04ac8364edd9c32a8f585692adf0ecb374e9 data/herbalcurative/loot_table/blocks/red_cherry_log.json
 e83ba94c97adebed1ac60d4eff2700d88fc9ecde data/herbalcurative/loot_table/blocks/red_cherry_planks.json
 dbfa035fed293062a48b90c62310b6abeb28c2aa data/herbalcurative/loot_table/blocks/red_cherry_sapling.json
+507ea4ce50f92eb5f8f4448d3df20f79a4871f87 data/herbalcurative/loot_table/blocks/red_cherry_shelf.json
 6d98c02bb567eba8c2009093b35cc31a606f16c0 data/herbalcurative/loot_table/blocks/rosynia.json
 f7a0506ebb2fda1d2debe58615753770112f1e71 data/herbalcurative/loot_table/blocks/rosynia_crop.json
 40b0b81a03e179c3939225a7e50dc170fa25f5aa data/herbalcurative/loot_table/blocks/verdscale_fern.json

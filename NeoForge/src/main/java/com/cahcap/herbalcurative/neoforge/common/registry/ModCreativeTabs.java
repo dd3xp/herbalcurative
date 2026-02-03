@@ -73,6 +73,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.FLOWWEAVE_RING.get());
                         output.accept(ModItems.HERB_BOX.get());
                         output.accept(ModItems.HERB_BASKET.get());
+                        output.accept(ModItems.RED_CHERRY_SHELF.get());
                     })
                     .build());
 }
