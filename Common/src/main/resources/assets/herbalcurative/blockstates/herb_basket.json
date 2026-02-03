@@ -1,34 +1,66 @@
 {
   "variants": {
-    "facing=north,on_wall=true": {
-      "model": "herbalcurative:block/herb_basket_wall"
-    },
-    "facing=south,on_wall=true": {
-      "model": "herbalcurative:block/herb_basket_wall",
-      "y": 180
-    },
-    "facing=west,on_wall=true": {
-      "model": "herbalcurative:block/herb_basket_wall",
-      "y": 270
-    },
-    "facing=east,on_wall=true": {
-      "model": "herbalcurative:block/herb_basket_wall",
-      "y": 90
-    },
-    "facing=north,on_wall=false": {
-      "model": "herbalcurative:block/herb_basket_floor"
-    },
-    "facing=south,on_wall=false": {
-      "model": "herbalcurative:block/herb_basket_floor",
-      "y": 180
-    },
-    "facing=west,on_wall=false": {
-      "model": "herbalcurative:block/herb_basket_floor",
-      "y": 270
-    },
-    "facing=east,on_wall=false": {
-      "model": "herbalcurative:block/herb_basket_floor",
-      "y": 90
-    }
+    "facing=north,on_wall=false,herb_type=0": { "model": "herbalcurative:block/herb_basket_floor_empty" },
+    "facing=south,on_wall=false,herb_type=0": { "model": "herbalcurative:block/herb_basket_floor_empty", "y": 180 },
+    "facing=west,on_wall=false,herb_type=0": { "model": "herbalcurative:block/herb_basket_floor_empty", "y": 270 },
+    "facing=east,on_wall=false,herb_type=0": { "model": "herbalcurative:block/herb_basket_floor_empty", "y": 90 },
+    "facing=north,on_wall=true,herb_type=0": { "model": "herbalcurative:block/herb_basket_wall_empty" },
+    "facing=south,on_wall=true,herb_type=0": { "model": "herbalcurative:block/herb_basket_wall_empty", "y": 180 },
+    "facing=west,on_wall=true,herb_type=0": { "model": "herbalcurative:block/herb_basket_wall_empty", "y": 270 },
+    "facing=east,on_wall=true,herb_type=0": { "model": "herbalcurative:block/herb_basket_wall_empty", "y": 90 },
+
+    "facing=north,on_wall=false,herb_type=1": { "model": "herbalcurative:block/herb_basket_floor_scaleplate" },
+    "facing=south,on_wall=false,herb_type=1": { "model": "herbalcurative:block/herb_basket_floor_scaleplate", "y": 180 },
+    "facing=west,on_wall=false,herb_type=1": { "model": "herbalcurative:block/herb_basket_floor_scaleplate", "y": 270 },
+    "facing=east,on_wall=false,herb_type=1": { "model": "herbalcurative:block/herb_basket_floor_scaleplate", "y": 90 },
+    "facing=north,on_wall=true,herb_type=1": { "model": "herbalcurative:block/herb_basket_wall_scaleplate" },
+    "facing=south,on_wall=true,herb_type=1": { "model": "herbalcurative:block/herb_basket_wall_scaleplate", "y": 180 },
+    "facing=west,on_wall=true,herb_type=1": { "model": "herbalcurative:block/herb_basket_wall_scaleplate", "y": 270 },
+    "facing=east,on_wall=true,herb_type=1": { "model": "herbalcurative:block/herb_basket_wall_scaleplate", "y": 90 },
+
+    "facing=north,on_wall=false,herb_type=2": { "model": "herbalcurative:block/herb_basket_floor_dewpetal_shard" },
+    "facing=south,on_wall=false,herb_type=2": { "model": "herbalcurative:block/herb_basket_floor_dewpetal_shard", "y": 180 },
+    "facing=west,on_wall=false,herb_type=2": { "model": "herbalcurative:block/herb_basket_floor_dewpetal_shard", "y": 270 },
+    "facing=east,on_wall=false,herb_type=2": { "model": "herbalcurative:block/herb_basket_floor_dewpetal_shard", "y": 90 },
+    "facing=north,on_wall=true,herb_type=2": { "model": "herbalcurative:block/herb_basket_wall_dewpetal_shard" },
+    "facing=south,on_wall=true,herb_type=2": { "model": "herbalcurative:block/herb_basket_wall_dewpetal_shard", "y": 180 },
+    "facing=west,on_wall=true,herb_type=2": { "model": "herbalcurative:block/herb_basket_wall_dewpetal_shard", "y": 270 },
+    "facing=east,on_wall=true,herb_type=2": { "model": "herbalcurative:block/herb_basket_wall_dewpetal_shard", "y": 90 },
+
+    "facing=north,on_wall=false,herb_type=3": { "model": "herbalcurative:block/herb_basket_floor_golden_lilybell" },
+    "facing=south,on_wall=false,herb_type=3": { "model": "herbalcurative:block/herb_basket_floor_golden_lilybell", "y": 180 },
+    "facing=west,on_wall=false,herb_type=3": { "model": "herbalcurative:block/herb_basket_floor_golden_lilybell", "y": 270 },
+    "facing=east,on_wall=false,herb_type=3": { "model": "herbalcurative:block/herb_basket_floor_golden_lilybell", "y": 90 },
+    "facing=north,on_wall=true,herb_type=3": { "model": "herbalcurative:block/herb_basket_wall_golden_lilybell" },
+    "facing=south,on_wall=true,herb_type=3": { "model": "herbalcurative:block/herb_basket_wall_golden_lilybell", "y": 180 },
+    "facing=west,on_wall=true,herb_type=3": { "model": "herbalcurative:block/herb_basket_wall_golden_lilybell", "y": 270 },
+    "facing=east,on_wall=true,herb_type=3": { "model": "herbalcurative:block/herb_basket_wall_golden_lilybell", "y": 90 },
+
+    "facing=north,on_wall=false,herb_type=4": { "model": "herbalcurative:block/herb_basket_floor_cryst_spine" },
+    "facing=south,on_wall=false,herb_type=4": { "model": "herbalcurative:block/herb_basket_floor_cryst_spine", "y": 180 },
+    "facing=west,on_wall=false,herb_type=4": { "model": "herbalcurative:block/herb_basket_floor_cryst_spine", "y": 270 },
+    "facing=east,on_wall=false,herb_type=4": { "model": "herbalcurative:block/herb_basket_floor_cryst_spine", "y": 90 },
+    "facing=north,on_wall=true,herb_type=4": { "model": "herbalcurative:block/herb_basket_wall_cryst_spine" },
+    "facing=south,on_wall=true,herb_type=4": { "model": "herbalcurative:block/herb_basket_wall_cryst_spine", "y": 180 },
+    "facing=west,on_wall=true,herb_type=4": { "model": "herbalcurative:block/herb_basket_wall_cryst_spine", "y": 270 },
+    "facing=east,on_wall=true,herb_type=4": { "model": "herbalcurative:block/herb_basket_wall_cryst_spine", "y": 90 },
+
+    "facing=north,on_wall=false,herb_type=5": { "model": "herbalcurative:block/herb_basket_floor_burnt_node" },
+    "facing=south,on_wall=false,herb_type=5": { "model": "herbalcurative:block/herb_basket_floor_burnt_node", "y": 180 },
+    "facing=west,on_wall=false,herb_type=5": { "model": "herbalcurative:block/herb_basket_floor_burnt_node", "y": 270 },
+    "facing=east,on_wall=false,herb_type=5": { "model": "herbalcurative:block/herb_basket_floor_burnt_node", "y": 90 },
+    "facing=north,on_wall=true,herb_type=5": { "model": "herbalcurative:block/herb_basket_wall_burnt_node" },
+    "facing=south,on_wall=true,herb_type=5": { "model": "herbalcurative:block/herb_basket_wall_burnt_node", "y": 180 },
+    "facing=west,on_wall=true,herb_type=5": { "model": "herbalcurative:block/herb_basket_wall_burnt_node", "y": 270 },
+    "facing=east,on_wall=true,herb_type=5": { "model": "herbalcurative:block/herb_basket_wall_burnt_node", "y": 90 },
+
+    "facing=north,on_wall=false,herb_type=6": { "model": "herbalcurative:block/herb_basket_floor_heart_of_stardream" },
+    "facing=south,on_wall=false,herb_type=6": { "model": "herbalcurative:block/herb_basket_floor_heart_of_stardream", "y": 180 },
+    "facing=west,on_wall=false,herb_type=6": { "model": "herbalcurative:block/herb_basket_floor_heart_of_stardream", "y": 270 },
+    "facing=east,on_wall=false,herb_type=6": { "model": "herbalcurative:block/herb_basket_floor_heart_of_stardream", "y": 90 },
+    "facing=north,on_wall=true,herb_type=6": { "model": "herbalcurative:block/herb_basket_wall_heart_of_stardream" },
+    "facing=south,on_wall=true,herb_type=6": { "model": "herbalcurative:block/herb_basket_wall_heart_of_stardream", "y": 180 },
+    "facing=west,on_wall=true,herb_type=6": { "model": "herbalcurative:block/herb_basket_wall_heart_of_stardream", "y": 270 },
+    "facing=east,on_wall=true,herb_type=6": { "model": "herbalcurative:block/herb_basket_wall_heart_of_stardream", "y": 90 }
   }
 }

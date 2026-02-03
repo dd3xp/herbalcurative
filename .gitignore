@@ -26,6 +26,9 @@ run-data
 # Data generation
 src/main/generated/
 
-othermods/
-documents/modpacks
+# private
+private/othermods/
+private/documents/modpacks
+
+# repo
 repo

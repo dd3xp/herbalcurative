@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -48,21 +49,24 @@ public class HerbBasketBlock extends BaseEntityBlock {
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ON_WALL = BooleanProperty.create("on_wall");
+    // 0 = empty, 1-6 = herb types (scaleplate, dewpetal_shard, golden_lilybell, cryst_spine, burnt_node, heart_of_stardream)
+    public static final IntegerProperty HERB_TYPE = IntegerProperty.create("herb_type", 0, 6);
     
-    // VoxelShape for wall placement (8 pixels thick)
-    protected static final VoxelShape WALL_SHAPE_NORTH = Block.box(0, 0, 8, 16, 16, 16);
-    protected static final VoxelShape WALL_SHAPE_SOUTH = Block.box(0, 0, 0, 16, 16, 8);
-    protected static final VoxelShape WALL_SHAPE_WEST = Block.box(8, 0, 0, 16, 16, 16);
-    protected static final VoxelShape WALL_SHAPE_EAST = Block.box(0, 0, 0, 8, 16, 16);
+    // VoxelShape for wall placement (6 pixels thick)
+    protected static final VoxelShape WALL_SHAPE_NORTH = Block.box(0, 0, 10, 16, 16, 16);
+    protected static final VoxelShape WALL_SHAPE_SOUTH = Block.box(0, 0, 0, 16, 16, 6);
+    protected static final VoxelShape WALL_SHAPE_WEST = Block.box(10, 0, 0, 16, 16, 16);
+    protected static final VoxelShape WALL_SHAPE_EAST = Block.box(0, 0, 0, 6, 16, 16);
     
-    // VoxelShape for floor placement (10 pixels tall, full width)
-    protected static final VoxelShape FLOOR_SHAPE = Block.box(0, 0, 0, 16, 10, 16);
+    // VoxelShape for floor placement (6 pixels tall, full width)
+    protected static final VoxelShape FLOOR_SHAPE = Block.box(0, 0, 0, 16, 6, 16);
     
     public HerbBasketBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(ON_WALL, false));
+                .setValue(ON_WALL, false)
+                .setValue(HERB_TYPE, 0));
     }
     
     @Override
@@ -72,7 +76,21 @@ public class HerbBasketBlock extends BaseEntityBlock {
     
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, ON_WALL);
+        builder.add(FACING, ON_WALL, HERB_TYPE);
+    }
+    
+    /**
+     * Get the herb type index for a given herb item.
+     * @return 0 if not a valid herb, 1-6 for valid herbs
+     */
+    public static int getHerbTypeIndex(Item herb) {
+        Item[] herbs = HerbCabinetBlockEntity.getAllHerbItems();
+        for (int i = 0; i < herbs.length; i++) {
+            if (herbs[i] == herb) {
+                return i + 1; // 1-based index
+            }
+        }
+        return 0;
     }
     
     @Override
