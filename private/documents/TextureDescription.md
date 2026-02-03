@@ -9,11 +9,11 @@
 - **光影**：光源一般在左上，因此左上比较亮，右下比较暗。一般有3-5个亮度层级。
 - **噪声**：边缘不平滑，颜色有轻微跳变，不规则，不对称。
 - **大概就是像这样的**：
-    ![铁锭](modpacks/1.21.1/images/IronIngot.png)
-    ![胡萝卜](modpacks/1.21.1/images/Carrot.png)
-    ![紫水晶碎片](modpacks/1.21.1/images/AmethystShard.png)
+    ![铁锭](../modpacks/1.21.1/images/IronIngot.png)
+    ![胡萝卜](../modpacks/1.21.1/images/Carrot.png)
+    ![紫水晶碎片](../modpacks/1.21.1/images/AmethystShard.png)
     不过我描述的很不专业，最好还是上游戏里看一下。或者如果是Item的话，也可以参考这个模组的风格而不是原版的，因为这个模组的风格也很好看：
-    ![VH](modpacks/1.21.1/images/VitalHerbs.png)
+    ![VH](../modpacks/1.21.1/images/VitalHerbs.png)
 
 ## 目前需要的材质
 
@@ -23,9 +23,9 @@
 
 - **Scalepalte**：
   - 形状类似于下面这个，绿色叶片，略微弯曲，像是从植物上抠下来的，稍微有一点硬的质感。但是这个图片里面的光照位置和minecraft原版的不太一样，所以需要把光照位置改成左上角。
-    ![scaleplate](modpacks/1.21.1/images/Scaleplate.png)
+    ![scaleplate](../modpacks/1.21.1/images/Scaleplate.png)
   - 颜色也需要改一下，改成下面这张图片类似的颜色，可以直接从 `1.21.1/images/verdscale_fern.png` 这张图片中提取（非常小，需要用画画工具打开）。不用完全一样，可以采集一下其中一个颜色然后根据这个颜色变化颜色。
 - **Dewpetal Shard**：
   - 形状类似下面这个，蓝色的花瓣，比较柔软，依旧是略微卷曲。图片里的光照位置依旧和原版不太一样，依旧需要把光照位置改成左上角。
-    ![dewpetalshard](modpacks/1.21.1/images/DewpetalShard.png)
+    ![dewpetalshard](../modpacks/1.21.1/images/DewpetalShard.png)
   - 颜色也需要改一下，改成下面这张图片类似的颜色，可以直接从 `1.21.1/images/dewpetal_shard.png` 这张图片中提取（非常小，需要用画画工具打开）。不用完全一样，可以采集一下其中一个颜色然后根据这个颜色变化颜色。
