@@ -72,6 +72,7 @@ public class ModCreativeTabs {
                         // Special Items
                         output.accept(ModItems.FLOWWEAVE_RING.get());
                         output.accept(ModItems.HERB_BOX.get());
+                        output.accept(ModItems.HERB_BASKET.get());
                     })
                     .build());
 }

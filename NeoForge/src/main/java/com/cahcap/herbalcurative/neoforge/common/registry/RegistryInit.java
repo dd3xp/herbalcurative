@@ -30,6 +30,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_SAPLING = () -> ModBlocks.RED_CHERRY_SAPLING.get();
         ModRegistries.RED_CHERRY_BUSH = () -> ModBlocks.RED_CHERRY_BUSH.get();
         ModRegistries.HERB_CABINET = () -> ModBlocks.HERB_CABINET.get();
+        ModRegistries.HERB_BASKET = () -> ModBlocks.HERB_BASKET.get();
         
         // Items
         ModRegistries.SCALEPLATE = () -> ModItems.SCALEPLATE.get();
@@ -66,12 +67,14 @@ public class RegistryInit {
         ModRegistries.HERB_BOX = () -> ModItems.HERB_BOX.get();
         ModRegistries.HERB_BOX_ICON = () -> ModItems.HERB_BOX_ICON.get();
         ModRegistries.HERB_CABINET_ITEM = () -> ModItems.HERB_CABINET.get();
+        ModRegistries.HERB_BASKET_ITEM = () -> ModItems.HERB_BASKET.get();
         
         // Armor Materials
         ModRegistries.LEAFWEAVE_ARMOR_MATERIAL = () -> ModArmorMaterials.LEAFWEAVE;
         
         // Block Entities
         ModRegistries.HERB_CABINET_BE = () -> ModBlockEntities.HERB_CABINET.get();
+        ModRegistries.HERB_BASKET_BE = () -> ModBlockEntities.HERB_BASKET.get();
     }
 }
 

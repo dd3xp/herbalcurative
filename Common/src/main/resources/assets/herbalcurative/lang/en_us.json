@@ -46,6 +46,9 @@
   "item.herbalcurative.flowweave_ring": "Flowweave Ring",
   "item.herbalcurative.herb_box": "Herb Box",
   
-  "block.herbalcurative.herb_cabinet": "Herb Cabinet"
+  "block.herbalcurative.herb_cabinet": "Herb Cabinet",
+  "block.herbalcurative.herb_basket": "Herb Basket",
+  
+  "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d"
 }
 

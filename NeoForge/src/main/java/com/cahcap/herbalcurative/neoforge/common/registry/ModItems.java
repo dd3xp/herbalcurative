@@ -130,5 +130,8 @@ public class ModItems {
     
     public static final DeferredItem<BlockItem> HERB_CABINET = ITEMS.register("herb_cabinet",
             () -> new BlockItem(ModBlocks.HERB_CABINET.get(), new Item.Properties()));
+    
+    public static final DeferredItem<BlockItem> HERB_BASKET = ITEMS.register("herb_basket",
+            () -> new BlockItem(ModBlocks.HERB_BASKET.get(), new Item.Properties()));
 }
 

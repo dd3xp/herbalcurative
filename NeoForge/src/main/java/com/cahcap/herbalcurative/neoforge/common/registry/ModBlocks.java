@@ -3,6 +3,7 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.block.*;
 import com.cahcap.herbalcurative.neoforge.common.block.HerbCabinetBlock;
+import com.cahcap.herbalcurative.neoforge.common.block.HerbBasketBlock;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -101,6 +102,13 @@ public class ModBlocks {
             () -> new HerbCabinetBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()));
+    
+    public static final DeferredBlock<HerbBasketBlock> HERB_BASKET = BLOCKS.register("herb_basket",
+            () -> new HerbBasketBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.PLANT)
+                    .strength(0.5F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
 

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,on_wall=true": {
+      "model": "herbalcurative:block/herb_basket_wall"
+    },
+    "facing=south,on_wall=true": {
+      "model": "herbalcurative:block/herb_basket_wall",
+      "y": 180
+    },
+    "facing=west,on_wall=true": {
+      "model": "herbalcurative:block/herb_basket_wall",
+      "y": 270
+    },
+    "facing=east,on_wall=true": {
+      "model": "herbalcurative:block/herb_basket_wall",
+      "y": 90
+    },
+    "facing=north,on_wall=false": {
+      "model": "herbalcurative:block/herb_basket_floor"
+    },
+    "facing=south,on_wall=false": {
+      "model": "herbalcurative:block/herb_basket_floor",
+      "y": 180
+    },
+    "facing=west,on_wall=false": {
+      "model": "herbalcurative:block/herb_basket_floor",
+      "y": 270
+    },
+    "facing=east,on_wall=false": {
+      "model": "herbalcurative:block/herb_basket_floor",
+      "y": 90
+    }
+  }
+}

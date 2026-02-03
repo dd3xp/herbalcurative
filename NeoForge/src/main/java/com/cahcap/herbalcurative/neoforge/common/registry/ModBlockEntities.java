@@ -1,6 +1,7 @@
 package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
+import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -16,6 +17,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("herb_cabinet", () -> BlockEntityType.Builder.of(
                     HerbCabinetBlockEntity::new,
                     ModBlocks.HERB_CABINET.get()
+            ).build(null));
+    
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HerbBasketBlockEntity>> HERB_BASKET =
+            BLOCK_ENTITIES.register("herb_basket", () -> BlockEntityType.Builder.of(
+                    HerbBasketBlockEntity::new,
+                    ModBlocks.HERB_BASKET.get()
             ).build(null));
 }
 

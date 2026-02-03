@@ -1,8 +1,9 @@
-// 1.21.1	2025-12-09T23:06:42.6452313	Loot Tables
+// 1.21.1	2026-02-03T22:06:43.0782498	Loot Tables
 3ac9d531ee8d933d461225618401a225ecd060d1 data/herbalcurative/loot_table/blocks/crystbud.json
 1b63e0a2c844163d496aa1937eba198523009877 data/herbalcurative/loot_table/blocks/crystbud_crop.json
 55468bf46b0d519db67eaf9dda62f123eb412c20 data/herbalcurative/loot_table/blocks/dewpetal.json
 708bf1fcb3f79ca85ce22520a3d83a21e644f0e0 data/herbalcurative/loot_table/blocks/dewpetal_crop.json
+0b1b506a5c724f3948bce7368013baa8c76ef5ac data/herbalcurative/loot_table/blocks/herb_basket.json
 a5c322fdd6dcfadde2433e00d637b597931cf689 data/herbalcurative/loot_table/blocks/herb_cabinet.json
 195c3384e78120cf384987c0447f0f6da87f50e7 data/herbalcurative/loot_table/blocks/pyrisage.json
 02eed08d47458d80cef9988865352c72b6fb10a3 data/herbalcurative/loot_table/blocks/pyrisage_crop.json
