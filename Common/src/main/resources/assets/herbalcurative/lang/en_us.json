@@ -51,6 +51,11 @@
   "block.herbalcurative.red_cherry_shelf": "Red Cherry Shelf",
   "block.herbalcurative.workbench": "Workbench",
   
+  "item.herbalcurative.wood_chisel": "Wood Chisel",
+  "item.herbalcurative.feather_quill": "Feather Quill",
+  "item.herbalcurative.rope": "Rope",
+  "item.herbalcurative.forge_hammer": "Forge Hammer",
+  
   "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d"
 }
 

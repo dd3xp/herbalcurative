@@ -5,6 +5,7 @@ import com.cahcap.herbalcurative.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockHerbCabinet;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockHerbalBlending;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockHerbalBlending.BlendingStructure;
+import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
 import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,9 +16,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Flowweave Ring
@@ -96,15 +101,55 @@ public class FlowweaveRingItem extends Item {
             return false;
         }
         
-        // TODO: Implement actual recipe checking once WorkbenchRecipe system is implemented
-        // For now, just play a sound to indicate the action was recognized
-        level.playSound(null, centerPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+        // Create recipe input from workbench state
+        WorkbenchRecipe.WorkbenchInput input = new WorkbenchRecipe.WorkbenchInput(workbench);
         
-        // Placeholder: In the future, this will:
-        // 1. Check if there's a matching recipe
-        // 2. Consume inputs (tools durability, center item, materials)
-        // 3. Spawn output item
-        // 4. Handle returns if any
+        // Find matching recipe
+        Optional<RecipeHolder<WorkbenchRecipe>> recipeHolder = level.getRecipeManager()
+                .getRecipeFor(ModRegistries.WORKBENCH_RECIPE_TYPE.get(), input, level);
+        
+        if (recipeHolder.isEmpty()) {
+            return false;
+        }
+        
+        WorkbenchRecipe recipe = recipeHolder.get().value();
+        
+        // Calculate how many to craft
+        int craftCount = craftAll ? recipe.getMaxCraftCount(input) : 1;
+        if (craftCount <= 0) {
+            return false;
+        }
+        
+        // Perform crafting
+        for (int i = 0; i < craftCount; i++) {
+            // Damage tools
+            for (WorkbenchRecipe.ToolRequirement tool : recipe.getTools()) {
+                for (int d = 0; d < tool.damage(); d++) {
+                    workbench.damageTool(tool.slot());
+                }
+            }
+            
+            // Consume materials by type
+            for (WorkbenchRecipe.MaterialRequirement req : recipe.getMaterials()) {
+                workbench.consumeMaterialByType(req.item(), req.count());
+            }
+            
+            // Consume input
+            workbench.consumeInput(1);
+        }
+        
+        // Create result and drop it
+        ItemStack result = recipe.getResult();
+        result.setCount(result.getCount() * craftCount);
+        
+        // Drop the result (pop out from center)
+        ItemEntity itemEntity = new ItemEntity(level, 
+                centerPos.getX() + 0.5, centerPos.getY() + 1.0, centerPos.getZ() + 0.5, result);
+        itemEntity.setDeltaMovement(0, 0.2, 0); // Small upward velocity
+        level.addFreshEntity(itemEntity);
+        
+        // Play success sound
+        level.playSound(null, centerPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
         
         return true;
     }

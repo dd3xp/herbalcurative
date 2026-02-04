@@ -2,13 +2,20 @@ package com.cahcap.herbalcurative.common.recipe;
 
 import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.RedCherryShelfBlockEntity;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,12 +134,12 @@ public class HerbalBlendingRecipe implements Recipe<HerbalBlendingRecipe.Blendin
     
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializerHolder.HERBAL_BLENDING.get();
+        return Serializer.INSTANCE;
     }
     
     @Override
     public RecipeType<?> getType() {
-        return ModRecipeTypeHolder.HERBAL_BLENDING.get();
+        return com.cahcap.herbalcurative.common.registry.ModRegistries.HERBAL_BLENDING_RECIPE_TYPE.get();
     }
     
     @Override
@@ -179,6 +186,68 @@ public class HerbalBlendingRecipe implements Recipe<HerbalBlendingRecipe.Blendin
         @Override
         public int size() {
             return 15; // 6 baskets + 9 shelves
+        }
+    }
+    
+    // ==================== Serializer ====================
+    
+    public static class Serializer implements RecipeSerializer<HerbalBlendingRecipe> {
+        
+        public static final Serializer INSTANCE = new Serializer();
+        
+        // Codec for IngredientWithCount
+        private static final Codec<IngredientWithCount> INGREDIENT_WITH_COUNT_CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        Ingredient.CODEC.fieldOf("ingredient").forGetter(IngredientWithCount::ingredient),
+                        Codec.INT.fieldOf("count").orElse(1).forGetter(IngredientWithCount::count)
+                ).apply(instance, IngredientWithCount::new)
+        );
+        
+        // StreamCodec for IngredientWithCount (network)
+        private static final StreamCodec<RegistryFriendlyByteBuf, IngredientWithCount> INGREDIENT_WITH_COUNT_STREAM_CODEC =
+                StreamCodec.composite(
+                        Ingredient.CONTENTS_STREAM_CODEC, IngredientWithCount::ingredient,
+                        ByteBufCodecs.INT, IngredientWithCount::count,
+                        IngredientWithCount::new
+                );
+        
+        // Helper to convert List to NonNullList with exactly 9 elements
+        private static NonNullList<Ingredient> listToShelfPattern(List<Ingredient> list) {
+            NonNullList<Ingredient> pattern = NonNullList.withSize(9, Ingredient.EMPTY);
+            for (int i = 0; i < Math.min(list.size(), 9); i++) {
+                pattern.set(i, list.get(i));
+            }
+            return pattern;
+        }
+        
+        // MapCodec for the recipe
+        private static final MapCodec<HerbalBlendingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
+                instance.group(
+                        INGREDIENT_WITH_COUNT_CODEC.listOf().fieldOf("basket_inputs").forGetter(HerbalBlendingRecipe::getBasketInputs),
+                        Ingredient.CODEC.listOf().fieldOf("shelf_pattern").forGetter(r -> new ArrayList<>(r.getShelfPattern())),
+                        ItemStack.CODEC.fieldOf("result").forGetter(HerbalBlendingRecipe::getOutput)
+                ).apply(instance, (baskets, shelves, output) -> new HerbalBlendingRecipe(baskets, listToShelfPattern(shelves), output))
+        );
+        
+        // StreamCodec for network
+        private static final StreamCodec<RegistryFriendlyByteBuf, HerbalBlendingRecipe> STREAM_CODEC =
+                StreamCodec.composite(
+                        INGREDIENT_WITH_COUNT_STREAM_CODEC.apply(ByteBufCodecs.list()), HerbalBlendingRecipe::getBasketInputs,
+                        Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), r -> new ArrayList<>(r.getShelfPattern()),
+                        ItemStack.STREAM_CODEC, HerbalBlendingRecipe::getOutput,
+                        (baskets, shelves, output) -> new HerbalBlendingRecipe(baskets, listToShelfPattern(shelves), output)
+                );
+        
+        private Serializer() {}
+        
+        @Override
+        public MapCodec<HerbalBlendingRecipe> codec() {
+            return CODEC;
+        }
+        
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, HerbalBlendingRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
 }

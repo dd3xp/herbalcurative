@@ -1,8 +1,12 @@
 package com.cahcap.herbalcurative.common.registry;
 
+import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
+import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -77,6 +81,11 @@ public class ModRegistries {
     public static Supplier<Item> RED_CHERRY_SHELF_ITEM;
     public static Supplier<Item> WORKBENCH_ITEM;
     
+    public static Supplier<Item> WOOD_CHISEL;
+    public static Supplier<Item> FEATHER_QUILL;
+    public static Supplier<Item> ROPE;
+    public static Supplier<Item> FORGE_HAMMER;
+    
     // ==================== Armor Materials ====================
     public static Supplier<Holder<ArmorMaterial>> LEAFWEAVE_ARMOR_MATERIAL;
     
@@ -85,5 +94,10 @@ public class ModRegistries {
     public static Supplier<BlockEntityType<?>> HERB_BASKET_BE;
     public static Supplier<BlockEntityType<?>> RED_CHERRY_SHELF_BE;
     public static Supplier<BlockEntityType<?>> WORKBENCH_BE;
+    
+    // ==================== Recipe Types ====================
+    public static Supplier<RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING_RECIPE_TYPE;
+    public static Supplier<RecipeType<WorkbenchRecipe>> WORKBENCH_RECIPE_TYPE;
+    public static Supplier<RecipeSerializer<WorkbenchRecipe>> WORKBENCH_RECIPE_SERIALIZER;
 }
 

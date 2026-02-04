@@ -2,6 +2,10 @@
   "values": [
     "herbalcurative:red_cherry_log",
     "herbalcurative:red_cherry_planks",
-    "herbalcurative:red_cherry_leaves"
+    "herbalcurative:red_cherry_leaves",
+    "herbalcurative:herb_cabinet",
+    "herbalcurative:herb_basket",
+    "herbalcurative:red_cherry_shelf",
+    "herbalcurative:workbench"
   ]
 }

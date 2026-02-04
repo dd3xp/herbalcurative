@@ -2,8 +2,8 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
-import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipeSerializer;
-import com.cahcap.herbalcurative.common.recipe.ModRecipeSerializerHolder;
+import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
+import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.bus.api.IEventBus;
@@ -20,7 +20,10 @@ public class ModRecipeSerializers {
             DeferredRegister.create(Registries.RECIPE_SERIALIZER, HerbalCurativeCommon.MOD_ID);
     
     public static final Supplier<RecipeSerializer<HerbalBlendingRecipe>> HERBAL_BLENDING = 
-            RECIPE_SERIALIZERS.register("herbal_blending", () -> HerbalBlendingRecipeSerializer.INSTANCE);
+            RECIPE_SERIALIZERS.register("herbal_blending", () -> HerbalBlendingRecipe.Serializer.INSTANCE);
+    
+    public static final Supplier<RecipeSerializer<WorkbenchRecipe>> WORKBENCH = 
+            RECIPE_SERIALIZERS.register("workbench", WorkbenchRecipe.Serializer::new);
     
     public static void register(IEventBus modEventBus) {
         RECIPE_SERIALIZERS.register(modEventBus);
@@ -31,6 +34,6 @@ public class ModRecipeSerializers {
      * Call this after registration.
      */
     public static void initCommonReferences() {
-        ModRecipeSerializerHolder.HERBAL_BLENDING = HERBAL_BLENDING;
+        ModRegistries.WORKBENCH_RECIPE_SERIALIZER = WORKBENCH;
     }
 }

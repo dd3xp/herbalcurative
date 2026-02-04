@@ -1,0 +1,33 @@
+{
+  "type": "herbalcurative:workbench",
+  "input": {
+    "item": "minecraft:book"
+  },
+  "materials": [
+    {
+      "count": 8,
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "result": {
+    "components": {
+      "minecraft:stored_enchantments": {
+        "levels": {
+          "minecraft:efficiency": 5
+        }
+      }
+    },
+    "count": 1,
+    "id": "minecraft:enchanted_book"
+  },
+  "tools": [
+    {
+      "item": "herbalcurative:feather_quill",
+      "slot": 1
+    },
+    {
+      "item": "herbalcurative:forge_hammer",
+      "slot": 3
+    }
+  ]
+}

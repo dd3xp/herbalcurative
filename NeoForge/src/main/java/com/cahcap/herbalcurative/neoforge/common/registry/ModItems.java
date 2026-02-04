@@ -2,6 +2,7 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.item.*;
+import com.cahcap.herbalcurative.common.item.WorkbenchToolItem;
 import com.cahcap.herbalcurative.neoforge.common.item.LeafweaveArmorItem;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -136,5 +137,19 @@ public class ModItems {
     
     public static final DeferredItem<BlockItem> WORKBENCH = ITEMS.register("workbench",
             () -> new BlockItem(ModBlocks.WORKBENCH.get(), new Item.Properties()));
+    
+    // ==================== Workbench Tools ====================
+    
+    public static final DeferredItem<WorkbenchToolItem> WOOD_CHISEL = ITEMS.register("wood_chisel",
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+    
+    public static final DeferredItem<WorkbenchToolItem> FEATHER_QUILL = ITEMS.register("feather_quill",
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+    
+    public static final DeferredItem<WorkbenchToolItem> ROPE = ITEMS.register("rope",
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+    
+    public static final DeferredItem<WorkbenchToolItem> FORGE_HAMMER = ITEMS.register("forge_hammer",
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
 }
 

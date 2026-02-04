@@ -60,7 +60,11 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         this.tag(BlockTags.MINEABLE_WITH_AXE).add(
             ModBlocks.RED_CHERRY_LOG.get(),
             ModBlocks.RED_CHERRY_PLANKS.get(),
-            ModBlocks.RED_CHERRY_LEAVES.get()
+            ModBlocks.RED_CHERRY_LEAVES.get(),
+            ModBlocks.HERB_CABINET.get(),
+            ModBlocks.HERB_BASKET.get(),
+            ModBlocks.RED_CHERRY_SHELF.get(),
+            ModBlocks.WORKBENCH.get()
         );
         
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)

@@ -2,14 +2,21 @@ package com.cahcap.herbalcurative.neoforge.common.datagen.recipes;
 
 import com.cahcap.herbalcurative.neoforge.common.registry.ModBlocks;
 import com.cahcap.herbalcurative.neoforge.common.registry.ModItems;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,17 +24,30 @@ import java.util.concurrent.CompletableFuture;
  * Recipe provider for all recipes:
  * - Vanilla crafting recipes
  * - Herbal Blending Rack recipes
+ * - Workbench recipes
  */
 public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
     
+    private final CompletableFuture<HolderLookup.Provider> lookupProvider;
+    
     public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, lookupProvider);
+        this.lookupProvider = lookupProvider;
     }
     
     @Override
     protected void buildRecipes(RecipeOutput output) {
         buildCraftingRecipes(output);
         buildHerbalBlendingRecipes(output);
+        
+        // Get registries for enchantments
+        HolderLookup.Provider registries;
+        try {
+            registries = lookupProvider.get();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get registries", e);
+        }
+        buildWorkbenchRecipes(output, registries);
     }
     
     /**
@@ -111,5 +131,60 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .define('S', ItemTags.SAPLINGS)
                 .output(ModBlocks.RED_CHERRY_SAPLING.get())
                 .build(output, "red_cherry_sapling");
+    }
+    
+    /**
+     * Workbench recipes.
+     * Structure: 3-block wide workbench
+     * - Left block: 4 tool slots
+     * - Center block: 1 input slot
+     * - Right block: 6 material slots (LIFO stack)
+     * 
+     * Tool slots (looking down at left block):
+     * [0: top-left] [1: top-right]
+     * [2: bot-left] [3: bot-right]
+     */
+    private void buildWorkbenchRecipes(RecipeOutput output, HolderLookup.Provider registries) {
+        // Efficiency V Enchanted Book
+        // Tools: Feather Quill (slot 1), Forge Hammer (slot 3)
+        // Input: Book
+        // Materials: 8 Obsidian
+        // Result: Efficiency V Enchanted Book
+        HolderLookup.RegistryLookup<Enchantment> enchantmentRegistry = registries.lookupOrThrow(Registries.ENCHANTMENT);
+        Holder<Enchantment> efficiency = enchantmentRegistry.getOrThrow(Enchantments.EFFICIENCY);
+        
+        ItemStack efficiencyBook = new ItemStack(Items.ENCHANTED_BOOK);
+        ItemEnchantments.Mutable enchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        enchantments.set(efficiency, 5);
+        efficiencyBook.set(DataComponents.STORED_ENCHANTMENTS, enchantments.toImmutable());
+        
+        WorkbenchRecipeBuilder.builder()
+                .tool(1, ModItems.FEATHER_QUILL.get())
+                .tool(3, ModItems.FORGE_HAMMER.get())
+                .input(Items.BOOK)
+                .material(Items.OBSIDIAN, 8)
+                .result(efficiencyBook)
+                .build(output, "efficiency_5_enchanted_book");
+        
+        // Smite V Enchanted Book
+        // Tools: Feather Quill (slot 1), Forge Hammer (slot 3)
+        // Input: Book
+        // Materials: 16 Rotten Flesh, 16 Bone
+        // Result: Smite V Enchanted Book
+        Holder<Enchantment> smite = enchantmentRegistry.getOrThrow(Enchantments.SMITE);
+        
+        ItemStack smiteBook = new ItemStack(Items.ENCHANTED_BOOK);
+        ItemEnchantments.Mutable smiteEnchantments = new ItemEnchantments.Mutable(ItemEnchantments.EMPTY);
+        smiteEnchantments.set(smite, 5);
+        smiteBook.set(DataComponents.STORED_ENCHANTMENTS, smiteEnchantments.toImmutable());
+        
+        WorkbenchRecipeBuilder.builder()
+                .tool(1, ModItems.FEATHER_QUILL.get())
+                .tool(3, ModItems.FORGE_HAMMER.get())
+                .input(Items.BOOK)
+                .material(Items.ROTTEN_FLESH, 16)
+                .material(Items.BONE, 16)
+                .result(smiteBook)
+                .build(output, "smite_5_enchanted_book");
     }
 }

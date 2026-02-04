@@ -2,7 +2,8 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
-import com.cahcap.herbalcurative.common.recipe.ModRecipeTypeHolder;
+import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
+import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -27,6 +28,14 @@ public class ModRecipeTypes {
                 }
             });
     
+    public static final Supplier<RecipeType<WorkbenchRecipe>> WORKBENCH = 
+            RECIPE_TYPES.register("workbench", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "workbench").toString();
+                }
+            });
+    
     public static void register(IEventBus modEventBus) {
         RECIPE_TYPES.register(modEventBus);
     }
@@ -36,6 +45,7 @@ public class ModRecipeTypes {
      * Call this after registration.
      */
     public static void initCommonReferences() {
-        ModRecipeTypeHolder.HERBAL_BLENDING = HERBAL_BLENDING;
+        ModRegistries.HERBAL_BLENDING_RECIPE_TYPE = HERBAL_BLENDING;
+        ModRegistries.WORKBENCH_RECIPE_TYPE = WORKBENCH;
     }
 }

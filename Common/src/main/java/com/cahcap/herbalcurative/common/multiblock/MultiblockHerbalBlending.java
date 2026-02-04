@@ -4,7 +4,7 @@ import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe.IngredientWithCount;
-import com.cahcap.herbalcurative.common.recipe.ModRecipeTypeHolder;
+import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -191,7 +191,7 @@ public class MultiblockHerbalBlending {
         
         // Find matching recipe
         Optional<RecipeHolder<HerbalBlendingRecipe>> recipeHolder = level.getRecipeManager()
-                .getRecipeFor(ModRecipeTypeHolder.HERBAL_BLENDING.get(), input, level);
+                .getRecipeFor(ModRegistries.HERBAL_BLENDING_RECIPE_TYPE.get(), input, level);
         
         if (recipeHolder.isEmpty()) {
             return false;

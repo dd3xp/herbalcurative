@@ -109,15 +109,15 @@ public class ModBlocks {
     
     public static final DeferredBlock<HerbBasketBlock> HERB_BASKET = BLOCKS.register("herb_basket",
             () -> new HerbBasketBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.PLANT)
-                    .strength(0.5F)
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
     
     public static final DeferredBlock<RedCherryShelfBlock> RED_CHERRY_SHELF = BLOCKS.register("red_cherry_shelf",
             () -> new RedCherryShelfBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
-                    .strength(1.0F)
+                    .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)));
@@ -125,7 +125,7 @@ public class ModBlocks {
     public static final DeferredBlock<WorkbenchBlock> WORKBENCH = BLOCKS.register("workbench",
             () -> new WorkbenchBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
-                    .strength(2.0F)
+                    .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
 

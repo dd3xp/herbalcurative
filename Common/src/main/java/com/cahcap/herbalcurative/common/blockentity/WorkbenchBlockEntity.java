@@ -226,6 +226,15 @@ public class WorkbenchBlockEntity extends BlockEntity {
         return false;
     }
     
+    /**
+     * Set the input item directly (for crafting results).
+     */
+    public void setInputItemDirect(ItemStack stack) {
+        inputSlot = stack.copy();
+        setChanged();
+        syncToClient();
+    }
+    
     // ==================== Material Stack (Right Block) ====================
     
     /**
@@ -316,6 +325,29 @@ public class WorkbenchBlockEntity extends BlockEntity {
     }
     
     /**
+     * Consume a specific amount from a material at a given index.
+     * @param index The index of the material in the stack
+     * @param count The amount to consume
+     * @return true if successful
+     */
+    public boolean consumeMaterial(int index, int count) {
+        if (index < 0 || index >= materialStack.size()) {
+            return false;
+        }
+        ItemStack mat = materialStack.get(index);
+        if (mat.getCount() < count) {
+            return false;
+        }
+        mat.shrink(count);
+        if (mat.isEmpty()) {
+            materialStack.remove(index);
+        }
+        setChanged();
+        syncToClient();
+        return true;
+    }
+    
+    /**
      * Consume materials that match the given requirements.
      * @param requirements List of (item, count) pairs to consume
      * @return true if all materials were consumed successfully
@@ -345,6 +377,44 @@ public class WorkbenchBlockEntity extends BlockEntity {
                     if (mat.isEmpty()) {
                         materialStack.remove(i);
                     }
+                }
+            }
+        }
+        
+        setChanged();
+        syncToClient();
+        return true;
+    }
+    
+    /**
+     * Consume a specific item type from the material stack.
+     * Will consume from multiple stacks if needed.
+     * @param item The item type to consume
+     * @param count The amount to consume
+     * @return true if successful
+     */
+    public boolean consumeMaterialByType(net.minecraft.world.item.Item item, int count) {
+        // First verify we have enough
+        int available = 0;
+        for (ItemStack mat : materialStack) {
+            if (mat.is(item)) {
+                available += mat.getCount();
+            }
+        }
+        if (available < count) {
+            return false;
+        }
+        
+        // Actually consume (from top of stack first - LIFO)
+        int toConsume = count;
+        for (int i = materialStack.size() - 1; i >= 0 && toConsume > 0; i--) {
+            ItemStack mat = materialStack.get(i);
+            if (mat.is(item)) {
+                int consume = Math.min(toConsume, mat.getCount());
+                mat.shrink(consume);
+                toConsume -= consume;
+                if (mat.isEmpty()) {
+                    materialStack.remove(i);
                 }
             }
         }

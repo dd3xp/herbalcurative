@@ -16,7 +16,7 @@ public class ModCreativeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> HERBAL_CURATIVE_TAB = TABS.register("herbalcurative_tab",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup." + HerbalCurativeCommon.MOD_ID))
-                    .icon(() -> new ItemStack(ModItems.SCALEPLATE.get()))
+                    .icon(() -> new ItemStack(ModItems.FLOWWEAVE_RING.get()))
                     .displayItems((parameters, output) -> {
                         // Herb Products
                         output.accept(ModItems.SCALEPLATE.get());
@@ -75,6 +75,12 @@ public class ModCreativeTabs {
                         output.accept(ModItems.HERB_BASKET.get());
                         output.accept(ModItems.RED_CHERRY_SHELF.get());
                         output.accept(ModItems.WORKBENCH.get());
+                        
+                        // Workbench Tools
+                        output.accept(ModItems.WOOD_CHISEL.get());
+                        output.accept(ModItems.FEATHER_QUILL.get());
+                        output.accept(ModItems.ROPE.get());
+                        output.accept(ModItems.FORGE_HAMMER.get());
                     })
                     .build());
 }
