@@ -32,6 +32,7 @@ public class RegistryInit {
         ModRegistries.HERB_CABINET = () -> ModBlocks.HERB_CABINET.get();
         ModRegistries.HERB_BASKET = () -> ModBlocks.HERB_BASKET.get();
         ModRegistries.RED_CHERRY_SHELF = () -> ModBlocks.RED_CHERRY_SHELF.get();
+        ModRegistries.WORKBENCH = () -> ModBlocks.WORKBENCH.get();
         
         // Items
         ModRegistries.SCALEPLATE = () -> ModItems.SCALEPLATE.get();
@@ -69,6 +70,7 @@ public class RegistryInit {
         ModRegistries.HERB_CABINET_ITEM = () -> ModItems.HERB_CABINET.get();
         ModRegistries.HERB_BASKET_ITEM = () -> ModItems.HERB_BASKET.get();
         ModRegistries.RED_CHERRY_SHELF_ITEM = () -> ModItems.RED_CHERRY_SHELF.get();
+        ModRegistries.WORKBENCH_ITEM = () -> ModItems.WORKBENCH.get();
         
         // Armor Materials
         ModRegistries.LEAFWEAVE_ARMOR_MATERIAL = () -> ModArmorMaterials.LEAFWEAVE;
@@ -77,6 +79,7 @@ public class RegistryInit {
         ModRegistries.HERB_CABINET_BE = () -> ModBlockEntities.HERB_CABINET.get();
         ModRegistries.HERB_BASKET_BE = () -> ModBlockEntities.HERB_BASKET.get();
         ModRegistries.RED_CHERRY_SHELF_BE = () -> ModBlockEntities.RED_CHERRY_SHELF.get();
+        ModRegistries.WORKBENCH_BE = () -> ModBlockEntities.WORKBENCH.get();
         
         // Recipe Types and Serializers
         ModRecipeTypes.initCommonReferences();

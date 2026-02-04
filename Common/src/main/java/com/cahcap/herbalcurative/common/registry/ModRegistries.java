@@ -37,6 +37,7 @@ public class ModRegistries {
     public static Supplier<Block> HERB_CABINET;
     public static Supplier<Block> HERB_BASKET;
     public static Supplier<Block> RED_CHERRY_SHELF;
+    public static Supplier<Block> WORKBENCH;
     
     // ==================== Items ====================
     public static Supplier<Item> SCALEPLATE;
@@ -74,6 +75,7 @@ public class ModRegistries {
     public static Supplier<Item> HERB_CABINET_ITEM;
     public static Supplier<Item> HERB_BASKET_ITEM;
     public static Supplier<Item> RED_CHERRY_SHELF_ITEM;
+    public static Supplier<Item> WORKBENCH_ITEM;
     
     // ==================== Armor Materials ====================
     public static Supplier<Holder<ArmorMaterial>> LEAFWEAVE_ARMOR_MATERIAL;
@@ -82,5 +84,6 @@ public class ModRegistries {
     public static Supplier<BlockEntityType<?>> HERB_CABINET_BE;
     public static Supplier<BlockEntityType<?>> HERB_BASKET_BE;
     public static Supplier<BlockEntityType<?>> RED_CHERRY_SHELF_BE;
+    public static Supplier<BlockEntityType<?>> WORKBENCH_BE;
 }
 

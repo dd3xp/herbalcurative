@@ -74,6 +74,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.HERB_BOX.get());
                         output.accept(ModItems.HERB_BASKET.get());
                         output.accept(ModItems.RED_CHERRY_SHELF.get());
+                        output.accept(ModItems.WORKBENCH.get());
                     })
                     .build());
 }

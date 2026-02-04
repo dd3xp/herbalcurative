@@ -49,6 +49,7 @@
   "block.herbalcurative.herb_cabinet": "Herb Cabinet",
   "block.herbalcurative.herb_basket": "Herb Basket",
   "block.herbalcurative.red_cherry_shelf": "Red Cherry Shelf",
+  "block.herbalcurative.workbench": "Workbench",
   
   "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d"
 }

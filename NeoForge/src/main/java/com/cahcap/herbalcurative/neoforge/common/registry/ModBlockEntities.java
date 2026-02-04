@@ -4,6 +4,7 @@ import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.herbalcurative.common.blockentity.WorkbenchBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -30,6 +31,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("red_cherry_shelf", () -> BlockEntityType.Builder.of(
                     RedCherryShelfBlockEntity::new,
                     ModBlocks.RED_CHERRY_SHELF.get()
+            ).build(null));
+    
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WorkbenchBlockEntity>> WORKBENCH =
+            BLOCK_ENTITIES.register("workbench", () -> BlockEntityType.Builder.of(
+                    WorkbenchBlockEntity::new,
+                    ModBlocks.WORKBENCH.get()
             ).build(null));
 }
 

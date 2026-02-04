@@ -5,6 +5,7 @@ import com.cahcap.herbalcurative.common.block.*;
 import com.cahcap.herbalcurative.neoforge.common.block.HerbCabinetBlock;
 import com.cahcap.herbalcurative.neoforge.common.block.HerbBasketBlock;
 import com.cahcap.herbalcurative.common.block.RedCherryShelfBlock;
+import com.cahcap.herbalcurative.common.block.WorkbenchBlock;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -120,6 +121,13 @@ public class ModBlocks {
                     .sound(SoundType.WOOD)
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)));
+    
+    public static final DeferredBlock<WorkbenchBlock> WORKBENCH = BLOCKS.register("workbench",
+            () -> new WorkbenchBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)
+                    .noOcclusion()));
 
     // ==================== Helper Methods ====================
     
