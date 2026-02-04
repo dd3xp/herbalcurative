@@ -62,20 +62,25 @@ public class MultiblockHerbCabinet {
             for (int w = 0; w < 3; w++) {
                 BlockPos targetPos = bottomLeft.relative(Direction.UP, h).relative(right, w);
                 
-                // Calculate offset relative to the facing direction
-                // This ensures consistent behavior regardless of cardinal direction
-                int offsetRight = w - 1;  // -1 (left), 0 (center), 1 (right)
-                int offsetUp = h;          // 0 (bottom), 1 (top)
-                int offsetForward = 0;     // Always 0 for 2D multiblock
+                // Master block is center-bottom (h=0, w=1)
+                // Note: h=0 is bottom row (bottomLeft), h=1 is top row (bottomLeft + UP)
+                // offset = (0, 0, 0) for master block
+                int offsetRight = w - 1;   // -1 (left), 0 (center), 1 (right)
+                int offsetUp = h;          // 0 (bottom/h=0), 1 (top/h=1)
+                int offsetForward = 0;
                 
-                // Convert direction-relative offset to world coordinates
-                int offsetX = right.getStepX() * offsetRight + Direction.UP.getStepX() * offsetUp + facing.getStepX() * offsetForward;
-                int offsetY = right.getStepY() * offsetRight + Direction.UP.getStepY() * offsetUp + facing.getStepY() * offsetForward;
-                int offsetZ = right.getStepZ() * offsetRight + Direction.UP.getStepZ() * offsetUp + facing.getStepZ() * offsetForward;
+                // Convert to world coordinates
+                int offsetX = right.getStepX() * offsetRight + facing.getStepX() * offsetForward;
+                int offsetY = offsetUp;
+                int offsetZ = right.getStepZ() * offsetRight + facing.getStepZ() * offsetForward;
+                
+                // Master block at h=0, w=1 (center-bottom)
+                boolean isMaster = (h == 0 && w == 1);
                 
                 BlockState newState = ModRegistries.HERB_CABINET.get().defaultBlockState()
                         .setValue(HerbCabinetBlock.FACING, facing)
-                        .setValue(HerbCabinetBlock.FORMED, true);
+                        .setValue(HerbCabinetBlock.FORMED, true)
+                        .setValue(HerbCabinetBlock.IS_MASTER, isMaster);
                 
                 level.setBlock(targetPos, newState, 3);
                 

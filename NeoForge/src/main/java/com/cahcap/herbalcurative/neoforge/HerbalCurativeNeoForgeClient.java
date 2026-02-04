@@ -2,11 +2,7 @@ package com.cahcap.herbalcurative.neoforge;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.client.model.HerbBoxModel;
-import com.cahcap.herbalcurative.client.model.HerbCabinetModel;
-import com.cahcap.herbalcurative.client.model.ItemHerbBoxModel;
 import com.cahcap.herbalcurative.client.model.LeafweaveArmorModel;
-import com.cahcap.herbalcurative.client.renderer.HerbBoxItemRenderer;
-import com.cahcap.herbalcurative.client.renderer.HerbCabinetItemRenderer;
 import com.cahcap.herbalcurative.client.renderer.RedCherryShelfRenderer;
 import com.cahcap.herbalcurative.neoforge.client.layer.HerbBoxPlayerLayer;
 import com.cahcap.herbalcurative.neoforge.client.renderer.HerbCabinetRenderer;
@@ -142,8 +138,6 @@ public class HerbalCurativeNeoForgeClient {
         public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
             event.registerLayerDefinition(LeafweaveArmorModel.LAYER_LOCATION, LeafweaveArmorModel::createBodyLayer);
             event.registerLayerDefinition(HerbBoxModel.LAYER_LOCATION, HerbBoxModel::createBodyLayer);
-            event.registerLayerDefinition(ItemHerbBoxModel.LAYER_LOCATION, ItemHerbBoxModel::createBodyLayer);
-            event.registerLayerDefinition(HerbCabinetModel.LAYER_LOCATION, HerbCabinetModel::createBodyLayer);
         }
         
         @SubscribeEvent
@@ -187,36 +181,6 @@ public class HerbalCurativeNeoForgeClient {
                     ModItems.LEAFWEAVE_CHESTPLATE.get(),
                     ModItems.LEAFWEAVE_LEGGINGS.get(),
                     ModItems.LEAFWEAVE_BOOTS.get());
-            
-            // Herb Box
-            IClientItemExtensions herbBoxExtensions = new IClientItemExtensions() {
-                private HerbBoxItemRenderer renderer;
-                
-                @Override
-                public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                    if (renderer == null) {
-                        renderer = new HerbBoxItemRenderer();
-                    }
-                    return renderer;
-                }
-            };
-            
-            event.registerItem(herbBoxExtensions, ModItems.HERB_BOX.get());
-            
-            // Herb Cabinet - custom renderer for multiblock icon display in WAILA/Jade/WTHIT
-            IClientItemExtensions herbCabinetExtensions = new IClientItemExtensions() {
-                private HerbCabinetItemRenderer renderer;
-                
-                @Override
-                public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                    if (renderer == null) {
-                        renderer = new HerbCabinetItemRenderer();
-                    }
-                    return renderer;
-                }
-            };
-            
-            event.registerItem(herbCabinetExtensions, ModItems.HERB_CABINET.get());
         }
     }
 }

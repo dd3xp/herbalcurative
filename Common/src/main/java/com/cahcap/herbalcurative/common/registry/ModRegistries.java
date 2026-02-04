@@ -71,7 +71,6 @@ public class ModRegistries {
     
     public static Supplier<Item> FLOWWEAVE_RING;
     public static Supplier<Item> HERB_BOX;
-    public static Supplier<Item> HERB_BOX_ICON; // Technical item for herb_box 2D rendering
     public static Supplier<Item> HERB_CABINET_ITEM;
     public static Supplier<Item> HERB_BASKET_ITEM;
     public static Supplier<Item> RED_CHERRY_SHELF_ITEM;

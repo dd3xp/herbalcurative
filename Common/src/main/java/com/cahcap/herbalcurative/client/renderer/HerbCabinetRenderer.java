@@ -1,36 +1,28 @@
 package com.cahcap.herbalcurative.client.renderer;
 
-import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
-import com.cahcap.herbalcurative.client.model.HerbCabinetModel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 
+/**
+ * Renderer for Herb Cabinet - renders herb item icons on the cabinet front.
+ * The cabinet structure itself uses JSON model rendering.
+ */
 public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlockEntity> {
     
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
-            HerbalCurativeCommon.MOD_ID, "textures/models/herb_cabinet.png");
-    
-    private final HerbCabinetModel model;
-    
     public HerbCabinetRenderer(BlockEntityRendererProvider.Context context) {
-        this.model = new HerbCabinetModel(context.bakeLayer(HerbCabinetModel.LAYER_LOCATION));
+        // No model initialization needed - using JSON model for cabinet structure
     }
     
     @Override
@@ -41,31 +33,8 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
             return;
         }
         
-        poseStack.pushPose();
-        
-        // Translate to block center and flip
-        poseStack.translate(0.5, 1.5, 0.5);
-        poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-        
-        // Rotate based on facing direction
-        Direction facing = blockEntity.facing;
-        float rotation = switch (facing) {
-            case NORTH -> 180;
-            case SOUTH -> 0;
-            case WEST -> 90;
-            case EAST -> 270;
-            default -> 0;
-        };
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        
-        // Render the model
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-        model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, -1);
-        
-        poseStack.popPose();
-        
-        // Render herb item icons
-        renderHerbIcons(blockEntity, poseStack, bufferSource, packedLight, facing);
+        // Render herb item icons on the cabinet front
+        renderHerbIcons(blockEntity, poseStack, bufferSource, packedLight, blockEntity.facing);
     }
     
     private void renderHerbIcons(HerbCabinetBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource,

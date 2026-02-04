@@ -42,12 +42,14 @@ public class HerbCabinetBlock extends BaseEntityBlock {
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
+    public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
     
     public HerbCabinetBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(FORMED, false));
+                .setValue(FORMED, false)
+                .setValue(IS_MASTER, false));
     }
     
     @Override
@@ -57,7 +59,7 @@ public class HerbCabinetBlock extends BaseEntityBlock {
     
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED);
+        builder.add(FACING, FORMED, IS_MASTER);
     }
     
     @Nullable
@@ -74,12 +76,37 @@ public class HerbCabinetBlock extends BaseEntityBlock {
     
     @Override
     protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        // Use MODEL to render JSON model, BlockEntityRenderer will add herb icons on top
+        return RenderShape.MODEL;
     }
     
     @Override
     protected boolean isOcclusionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return false;
+    }
+    
+    @Override
+    protected boolean useShapeForLightOcclusion(BlockState state) {
+        // Don't use block shape for light occlusion since model extends beyond block bounds
+        return false;
+    }
+    
+    @Override
+    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+        // Formed multiblock should let light through (model renders separately)
+        if (state.getValue(FORMED)) {
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
+    protected int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        // Formed multiblock should not block light
+        if (state.getValue(FORMED)) {
+            return 0;
+        }
+        return super.getLightBlock(state, level, pos);
     }
     
     @Override
