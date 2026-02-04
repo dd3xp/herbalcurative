@@ -34,7 +34,7 @@ public class ModDataGenerator {
             // Loot Tables
             generator.addProvider(true, new ModBlockLootProvider(packOutput, lookupProvider));
             
-            // Recipes
+            // Recipes (vanilla crafting + herbal blending)
             generator.addProvider(true, new ModRecipeProvider(packOutput, lookupProvider));
             
             // Tags

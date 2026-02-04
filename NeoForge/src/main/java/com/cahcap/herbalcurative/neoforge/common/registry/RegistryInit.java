@@ -78,6 +78,10 @@ public class RegistryInit {
         ModRegistries.HERB_CABINET_BE = () -> ModBlockEntities.HERB_CABINET.get();
         ModRegistries.HERB_BASKET_BE = () -> ModBlockEntities.HERB_BASKET.get();
         ModRegistries.RED_CHERRY_SHELF_BE = () -> ModBlockEntities.RED_CHERRY_SHELF.get();
+        
+        // Recipe Types and Serializers
+        ModRecipeTypes.initCommonReferences();
+        ModRecipeSerializers.initCommonReferences();
     }
 }
 

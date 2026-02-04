@@ -8,13 +8,15 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Recipe provider
- * Generates 8 crafting recipes
+ * Recipe provider for all recipes:
+ * - Vanilla crafting recipes
+ * - Herbal Blending Rack recipes
  */
 public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
     
@@ -24,6 +26,14 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
     
     @Override
     protected void buildRecipes(RecipeOutput output) {
+        buildCraftingRecipes(output);
+        buildHerbalBlendingRecipes(output);
+    }
+    
+    /**
+     * Vanilla crafting table recipes
+     */
+    private void buildCraftingRecipes(RecipeOutput output) {
         // ==================== Herb to Seed Recipes (Shapeless) ====================
         // All herbs: 1 flower -> 3 seeds
         
@@ -63,7 +73,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .unlockedBy("has_zephyr_lily", has(ModBlocks.ZEPHYR_LILY.get()))
             .save(output);
         
-        // ==================== Red Cherry Recipes ====================
+        // ==================== Red Cherry Series Recipes ====================
         
         // Red Cherry Planks: 1 log -> 4 planks (shapeless)
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_PLANKS.get(), 4)
@@ -78,5 +88,28 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .pattern("#")
             .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
             .save(output, "herbalcurative:red_cherry_stick");
+    }
+    
+    /**
+     * Herbal Blending Rack multiblock recipes.
+     * Structure: 6 Herb Baskets (sides) + 9 Red Cherry Shelves (center 3x3)
+     * Use Flowweave Ring to trigger crafting.
+     * 
+     * Shelf positions (like crafting table 3x3):
+     * [0][1][2]
+     * [3][4][5]  <- 4 is center, output replaces item at this position
+     * [6][7][8]
+     */
+    private void buildHerbalBlendingRecipes(RecipeOutput output) {
+        // Red Cherry Sapling from any sapling
+        // Input: 4 Dewpetal Shard in basket
+        //        Any sapling on center shelf
+        // Output: 1 Red Cherry Sapling
+        HerbalBlendingRecipeBuilder.builder()
+                .basketInput(ModItems.DEWPETAL_SHARD.get(), 4)
+                .pattern("   ", " S ", "   ")
+                .define('S', ItemTags.SAPLINGS)
+                .output(ModBlocks.RED_CHERRY_SAPLING.get())
+                .build(output, "red_cherry_sapling");
     }
 }

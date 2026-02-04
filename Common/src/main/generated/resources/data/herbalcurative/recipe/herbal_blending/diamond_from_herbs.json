@@ -1,0 +1,38 @@
+{
+  "type": "herbalcurative:herbal_blending",
+  "basket_inputs": [
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "herbalcurative:scaleplate"
+      }
+    },
+    {
+      "count": 8,
+      "ingredient": {
+        "item": "herbalcurative:cryst_spine"
+      }
+    },
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "herbalcurative:heart_of_stardream"
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:diamond"
+  },
+  "shelf_pattern": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
+}

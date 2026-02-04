@@ -1,0 +1,28 @@
+{
+  "type": "herbalcurative:herbal_blending",
+  "basket_inputs": [
+    {
+      "count": 4,
+      "ingredient": {
+        "item": "herbalcurative:dewpetal_shard"
+      }
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "herbalcurative:red_cherry_sapling"
+  },
+  "shelf_pattern": [
+    [],
+    [],
+    [],
+    [],
+    {
+      "tag": "minecraft:saplings"
+    },
+    [],
+    [],
+    [],
+    []
+  ]
+}

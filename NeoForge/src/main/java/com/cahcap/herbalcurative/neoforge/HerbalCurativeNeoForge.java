@@ -34,6 +34,10 @@ public class HerbalCurativeNeoForge {
         ModSounds.SOUNDS.register(modEventBus);
         ModFeatures.FEATURES.register(modEventBus);
         
+        // Register recipe types and serializers
+        ModRecipeTypes.register(modEventBus);
+        ModRecipeSerializers.register(modEventBus);
+        
         // Initialize common registries
         RegistryInit.init();
         
