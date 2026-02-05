@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "herbalcurative:block/stripped_red_cherry_log_top",
+    "side": "herbalcurative:block/stripped_red_cherry_log"
+  }
+}

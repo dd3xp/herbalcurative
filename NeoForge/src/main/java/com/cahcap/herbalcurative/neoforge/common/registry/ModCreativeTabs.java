@@ -48,7 +48,12 @@ public class ModCreativeTabs {
                         
                         // Red Cherry Blocks
                         output.accept(ModBlocks.RED_CHERRY_LOG.get());
+                        output.accept(ModBlocks.STRIPPED_RED_CHERRY_LOG.get());
+                        output.accept(ModBlocks.RED_CHERRY_WOOD.get());
+                        output.accept(ModBlocks.STRIPPED_RED_CHERRY_WOOD.get());
                         output.accept(ModBlocks.RED_CHERRY_PLANKS.get());
+                        output.accept(ModBlocks.RED_CHERRY_STAIRS.get());
+                        output.accept(ModBlocks.RED_CHERRY_SLAB.get());
                         output.accept(ModBlocks.RED_CHERRY_LEAVES.get());
                         output.accept(ModBlocks.RED_CHERRY_SAPLING.get());
                         

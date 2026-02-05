@@ -1,5 +1,8 @@
 {
   "values": [
-    "herbalcurative:red_cherry_log"
+    "herbalcurative:red_cherry_log",
+    "herbalcurative:stripped_red_cherry_log",
+    "herbalcurative:red_cherry_wood",
+    "herbalcurative:stripped_red_cherry_wood"
   ]
 }

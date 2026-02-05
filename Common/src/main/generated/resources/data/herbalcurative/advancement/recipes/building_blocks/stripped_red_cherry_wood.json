@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_red_cherry_log": {
+    "has_stripped_red_cherry_log": {
       "conditions": {
         "items": [
           {
-            "items": "herbalcurative:red_cherry_log"
+            "items": "herbalcurative:stripped_red_cherry_log"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "herbalcurative:red_cherry_planks"
+        "recipe": "herbalcurative:stripped_red_cherry_wood"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_red_cherry_log"
+      "has_stripped_red_cherry_log"
     ]
   ],
   "rewards": {
     "recipes": [
-      "herbalcurative:red_cherry_planks"
+      "herbalcurative:stripped_red_cherry_wood"
     ]
   }
 }

@@ -1,7 +1,12 @@
 {
   "values": [
     "herbalcurative:red_cherry_log",
+    "herbalcurative:stripped_red_cherry_log",
+    "herbalcurative:red_cherry_wood",
+    "herbalcurative:stripped_red_cherry_wood",
     "herbalcurative:red_cherry_planks",
+    "herbalcurative:red_cherry_stairs",
+    "herbalcurative:red_cherry_slab",
     "herbalcurative:red_cherry_leaves",
     "herbalcurative:herb_cabinet",
     "herbalcurative:herb_basket",

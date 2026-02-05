@@ -1,6 +1,7 @@
 package com.cahcap.herbalcurative.neoforge;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
+import com.cahcap.herbalcurative.neoforge.common.handler.StrippingHandler;
 import com.cahcap.herbalcurative.neoforge.common.registry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,11 @@ public class HerbalCurativeNeoForge {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            // Initialize stripping handler (Red Cherry log -> Stripped Red Cherry log, etc.)
+            StrippingHandler.init();
+        });
+        
         HerbalCurativeCommon.commonSetup();
         LOGGER.info("Herbal Curative NeoForge common setup complete");
     }

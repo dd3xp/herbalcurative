@@ -48,9 +48,12 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.RED_CHERRY_LEAVES.get()
         );
         
-        // minecraft:logs - Red Cherry logs
+        // minecraft:logs - Red Cherry logs (all log variants)
         this.tag(BlockTags.LOGS).add(
-            ModBlocks.RED_CHERRY_LOG.get()
+            ModBlocks.RED_CHERRY_LOG.get(),
+            ModBlocks.STRIPPED_RED_CHERRY_LOG.get(),
+            ModBlocks.RED_CHERRY_WOOD.get(),
+            ModBlocks.STRIPPED_RED_CHERRY_WOOD.get()
         );
         
         // minecraft:planks - Red Cherry planks
@@ -68,7 +71,12 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         // minecraft:mineable/axe - Blocks mineable with axe
         this.tag(BlockTags.MINEABLE_WITH_AXE).add(
             ModBlocks.RED_CHERRY_LOG.get(),
+            ModBlocks.STRIPPED_RED_CHERRY_LOG.get(),
+            ModBlocks.RED_CHERRY_WOOD.get(),
+            ModBlocks.STRIPPED_RED_CHERRY_WOOD.get(),
             ModBlocks.RED_CHERRY_PLANKS.get(),
+            ModBlocks.RED_CHERRY_STAIRS.get(),
+            ModBlocks.RED_CHERRY_SLAB.get(),
             ModBlocks.RED_CHERRY_LEAVES.get(),
             ModBlocks.HERB_CABINET.get(),
             ModBlocks.HERB_BASKET.get(),
@@ -109,12 +117,24 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         
         // minecraft:slabs - All slab blocks
         this.tag(BlockTags.SLABS).add(
+            ModBlocks.RED_CHERRY_SLAB.get(),
             ModBlocks.LUMISTONE_BRICK_SLAB.get()
         );
         
         // minecraft:stairs - All stair blocks
         this.tag(BlockTags.STAIRS).add(
+            ModBlocks.RED_CHERRY_STAIRS.get(),
             ModBlocks.LUMISTONE_BRICK_STAIRS.get()
+        );
+        
+        // minecraft:wooden_slabs - Wooden slab blocks
+        this.tag(BlockTags.WOODEN_SLABS).add(
+            ModBlocks.RED_CHERRY_SLAB.get()
+        );
+        
+        // minecraft:wooden_stairs - Wooden stair blocks
+        this.tag(BlockTags.WOODEN_STAIRS).add(
+            ModBlocks.RED_CHERRY_STAIRS.get()
         );
         
         // ==================== Common tags (c: namespace) for cross-mod compatibility ====================

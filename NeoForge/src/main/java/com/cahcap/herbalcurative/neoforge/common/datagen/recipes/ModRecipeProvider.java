@@ -102,10 +102,57 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         
         // ==================== Red Cherry Series Recipes ====================
         
-        // Red Cherry Planks: 1 log -> 4 planks (shapeless)
+        // Red Cherry Planks: 1 log -> 4 planks (shapeless, from any log variant)
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_PLANKS.get(), 4)
             .requires(ModBlocks.RED_CHERRY_LOG.get())
             .unlockedBy("has_red_cherry_log", has(ModBlocks.RED_CHERRY_LOG.get()))
+            .save(output, "herbalcurative:red_cherry_planks_from_log");
+        
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_PLANKS.get(), 4)
+            .requires(ModBlocks.STRIPPED_RED_CHERRY_LOG.get())
+            .unlockedBy("has_stripped_red_cherry_log", has(ModBlocks.STRIPPED_RED_CHERRY_LOG.get()))
+            .save(output, "herbalcurative:red_cherry_planks_from_stripped_log");
+        
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_PLANKS.get(), 4)
+            .requires(ModBlocks.RED_CHERRY_WOOD.get())
+            .unlockedBy("has_red_cherry_wood", has(ModBlocks.RED_CHERRY_WOOD.get()))
+            .save(output, "herbalcurative:red_cherry_planks_from_wood");
+        
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_PLANKS.get(), 4)
+            .requires(ModBlocks.STRIPPED_RED_CHERRY_WOOD.get())
+            .unlockedBy("has_stripped_red_cherry_wood", has(ModBlocks.STRIPPED_RED_CHERRY_WOOD.get()))
+            .save(output, "herbalcurative:red_cherry_planks_from_stripped_wood");
+        
+        // Red Cherry Wood: 4 logs -> 3 wood (6-sided bark)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_WOOD.get(), 3)
+            .define('#', ModBlocks.RED_CHERRY_LOG.get())
+            .pattern("##")
+            .pattern("##")
+            .unlockedBy("has_red_cherry_log", has(ModBlocks.RED_CHERRY_LOG.get()))
+            .save(output);
+        
+        // Stripped Red Cherry Wood: 4 stripped logs -> 3 stripped wood
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.STRIPPED_RED_CHERRY_WOOD.get(), 3)
+            .define('#', ModBlocks.STRIPPED_RED_CHERRY_LOG.get())
+            .pattern("##")
+            .pattern("##")
+            .unlockedBy("has_stripped_red_cherry_log", has(ModBlocks.STRIPPED_RED_CHERRY_LOG.get()))
+            .save(output);
+        
+        // Red Cherry Stairs: 6 planks -> 4 stairs
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_STAIRS.get(), 4)
+            .define('#', ModBlocks.RED_CHERRY_PLANKS.get())
+            .pattern("#  ")
+            .pattern("## ")
+            .pattern("###")
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
+            .save(output);
+        
+        // Red Cherry Slab: 3 planks -> 6 slabs
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.RED_CHERRY_SLAB.get(), 6)
+            .define('#', ModBlocks.RED_CHERRY_PLANKS.get())
+            .pattern("###")
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
             .save(output);
         
         // Red Cherry Stick: 2 planks -> 4 sticks (shaped, vertical)

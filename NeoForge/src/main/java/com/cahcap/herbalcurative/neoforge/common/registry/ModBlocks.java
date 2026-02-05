@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -57,14 +58,48 @@ public class ModBlocks {
 
     // ==================== Red Cherry Blocks ====================
     
-    public static final DeferredBlock<Block> RED_CHERRY_LOG = registerBlockWithItem("red_cherry_log",
-            () -> new net.minecraft.world.level.block.RotatedPillarBlock(BlockBehaviour.Properties.of()
+    // Logs
+    public static final DeferredBlock<RotatedPillarBlock> RED_CHERRY_LOG = registerBlockWithItem("red_cherry_log",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)));
     
+    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_RED_CHERRY_LOG = registerBlockWithItem("stripped_red_cherry_log",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)));
+    
+    // Wood (6-sided bark/stripped texture)
+    public static final DeferredBlock<RotatedPillarBlock> RED_CHERRY_WOOD = registerBlockWithItem("red_cherry_wood",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)));
+    
+    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_RED_CHERRY_WOOD = registerBlockWithItem("stripped_red_cherry_wood",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F)
+                    .sound(SoundType.WOOD)));
+    
+    // Planks
     public static final DeferredBlock<Block> RED_CHERRY_PLANKS = registerBlockWithItem("red_cherry_planks",
             () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F, 3.0F)
+                    .sound(SoundType.WOOD)));
+    
+    // Stairs and Slabs
+    public static final DeferredBlock<StairBlock> RED_CHERRY_STAIRS = registerBlockWithItem("red_cherry_stairs",
+            () -> new StairBlock(RED_CHERRY_PLANKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F, 3.0F)
+                    .sound(SoundType.WOOD)));
+    
+    public static final DeferredBlock<SlabBlock> RED_CHERRY_SLAB = registerBlockWithItem("red_cherry_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)));

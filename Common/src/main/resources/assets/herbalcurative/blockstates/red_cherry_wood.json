@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "axis=x": { "model": "herbalcurative:block/red_cherry_wood", "x": 90, "y": 90 },
+    "axis=y": { "model": "herbalcurative:block/red_cherry_wood" },
+    "axis=z": { "model": "herbalcurative:block/red_cherry_wood", "x": 90 }
+  }
+}

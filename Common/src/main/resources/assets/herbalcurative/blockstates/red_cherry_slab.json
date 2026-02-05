@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "type=bottom": { "model": "herbalcurative:block/red_cherry_slab" },
+    "type=top": { "model": "herbalcurative:block/red_cherry_slab_top" },
+    "type=double": { "model": "herbalcurative:block/red_cherry_planks" }
+  }
+}
