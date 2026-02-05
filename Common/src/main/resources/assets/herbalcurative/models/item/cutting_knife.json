@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "herbalcurative:item/wood_chisel"
+    "layer0": "herbalcurative:item/cutting_knife"
   }
 }

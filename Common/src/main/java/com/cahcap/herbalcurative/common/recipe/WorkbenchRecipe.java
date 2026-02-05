@@ -51,10 +51,17 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
             return false;
         }
         
-        // Check tools
+        // Check tools - can be in any slot
         for (ToolRequirement tool : tools) {
-            ItemStack toolStack = container.getTool(tool.slot());
-            if (toolStack.isEmpty() || !toolStack.is(tool.item())) {
+            boolean found = false;
+            for (int i = 0; i < 4; i++) {
+                ItemStack toolStack = container.getTool(i);
+                if (!toolStack.isEmpty() && toolStack.is(tool.item())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 return false;
             }
         }
@@ -172,17 +179,15 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
     
     // ==================== Nested Types ====================
     
-    public record ToolRequirement(int slot, Item item, int damage) {
+    public record ToolRequirement(Item item, int damage) {
         public static final Codec<ToolRequirement> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                Codec.INT.fieldOf("slot").forGetter(ToolRequirement::slot),
                 BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ToolRequirement::item),
                 Codec.INT.optionalFieldOf("damage", 1).forGetter(ToolRequirement::damage)
             ).apply(instance, ToolRequirement::new)
         );
         
         public static final StreamCodec<RegistryFriendlyByteBuf, ToolRequirement> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, ToolRequirement::slot,
             ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()), ToolRequirement::item,
             ByteBufCodecs.INT, ToolRequirement::damage,
             ToolRequirement::new

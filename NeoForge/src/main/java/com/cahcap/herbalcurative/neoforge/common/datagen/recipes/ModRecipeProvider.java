@@ -146,10 +146,9 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
      */
     private void buildWorkbenchRecipes(RecipeOutput output, HolderLookup.Provider registries) {
         // Efficiency V Enchanted Book
-        // Tools: Feather Quill (slot 1), Forge Hammer (slot 3)
+        // Tools: Feather Quill, Forge Hammer
         // Input: Book
         // Materials: 8 Obsidian
-        // Result: Efficiency V Enchanted Book
         HolderLookup.RegistryLookup<Enchantment> enchantmentRegistry = registries.lookupOrThrow(Registries.ENCHANTMENT);
         Holder<Enchantment> efficiency = enchantmentRegistry.getOrThrow(Enchantments.EFFICIENCY);
         
@@ -159,18 +158,17 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         efficiencyBook.set(DataComponents.STORED_ENCHANTMENTS, enchantments.toImmutable());
         
         WorkbenchRecipeBuilder.builder()
-                .tool(1, ModItems.FEATHER_QUILL.get())
-                .tool(3, ModItems.FORGE_HAMMER.get())
+                .tool(ModItems.FEATHER_QUILL.get())
+                .tool(ModItems.FORGE_HAMMER.get())
                 .input(Items.BOOK)
                 .material(Items.OBSIDIAN, 8)
                 .result(efficiencyBook)
                 .build(output, "efficiency_5_enchanted_book");
         
         // Smite V Enchanted Book
-        // Tools: Feather Quill (slot 1), Forge Hammer (slot 3)
+        // Tools: Feather Quill, Cutting Knife
         // Input: Book
         // Materials: 16 Rotten Flesh, 16 Bone
-        // Result: Smite V Enchanted Book
         Holder<Enchantment> smite = enchantmentRegistry.getOrThrow(Enchantments.SMITE);
         
         ItemStack smiteBook = new ItemStack(Items.ENCHANTED_BOOK);
@@ -179,8 +177,8 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         smiteBook.set(DataComponents.STORED_ENCHANTMENTS, smiteEnchantments.toImmutable());
         
         WorkbenchRecipeBuilder.builder()
-                .tool(1, ModItems.FEATHER_QUILL.get())
-                .tool(3, ModItems.FORGE_HAMMER.get())
+                .tool(ModItems.FEATHER_QUILL.get())
+                .tool(ModItems.CUTTING_KNIFE.get())
                 .input(Items.BOOK)
                 .material(Items.ROTTEN_FLESH, 16)
                 .material(Items.BONE, 16)

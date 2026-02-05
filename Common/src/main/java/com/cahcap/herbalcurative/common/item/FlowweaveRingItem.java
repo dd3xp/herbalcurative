@@ -122,10 +122,10 @@ public class FlowweaveRingItem extends Item {
         
         // Perform crafting
         for (int i = 0; i < craftCount; i++) {
-            // Damage tools
+            // Damage tools by item type (tools can be in any slot)
             for (WorkbenchRecipe.ToolRequirement tool : recipe.getTools()) {
                 for (int d = 0; d < tool.damage(); d++) {
-                    workbench.damageTool(tool.slot());
+                    workbench.damageToolByItem(tool.item());
                 }
             }
             

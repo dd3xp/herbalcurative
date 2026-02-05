@@ -18,10 +18,7 @@ import java.util.List;
  * Builder for Workbench recipes.
  * Used in data generation to create recipes for the Workbench.
  * 
- * Tool slots (looking down at the left block):
- * [0: top-left] [1: top-right]
- * [2: bot-left] [3: bot-right]
- * 
+ * Tools can be placed in any slot on the workbench.
  * Material stack: LIFO order (first added = bottom, last added = top)
  */
 public class WorkbenchRecipeBuilder {
@@ -40,25 +37,20 @@ public class WorkbenchRecipeBuilder {
     
     /**
      * Add a tool requirement.
-     * @param slot Tool slot (0-3)
      * @param item The tool item
      * @param damage Durability consumed per craft (default 1)
      */
-    public WorkbenchRecipeBuilder tool(int slot, ItemLike item, int damage) {
-        if (slot < 0 || slot > 3) {
-            throw new IllegalArgumentException("Tool slot must be 0-3!");
-        }
-        tools.add(new ToolRequirement(slot, item.asItem(), damage));
+    public WorkbenchRecipeBuilder tool(ItemLike item, int damage) {
+        tools.add(new ToolRequirement(item.asItem(), damage));
         return this;
     }
     
     /**
      * Add a tool requirement with default 1 damage.
-     * @param slot Tool slot (0-3)
      * @param item The tool item
      */
-    public WorkbenchRecipeBuilder tool(int slot, ItemLike item) {
-        return tool(slot, item, 1);
+    public WorkbenchRecipeBuilder tool(ItemLike item) {
+        return tool(item, 1);
     }
     
     /**

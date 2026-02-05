@@ -72,7 +72,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_SHELF_ITEM = () -> ModItems.RED_CHERRY_SHELF.get();
         ModRegistries.WORKBENCH_ITEM = () -> ModItems.WORKBENCH.get();
         
-        ModRegistries.WOOD_CHISEL = () -> ModItems.WOOD_CHISEL.get();
+        ModRegistries.CUTTING_KNIFE = () -> ModItems.CUTTING_KNIFE.get();
         ModRegistries.FEATHER_QUILL = () -> ModItems.FEATHER_QUILL.get();
         ModRegistries.ROPE = () -> ModItems.ROPE.get();
         ModRegistries.FORGE_HAMMER = () -> ModItems.FORGE_HAMMER.get();

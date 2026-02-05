@@ -139,17 +139,18 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.WORKBENCH.get(), new Item.Properties()));
     
     // ==================== Workbench Tools ====================
+    // Repair materials: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Rope = String
     
-    public static final DeferredItem<WorkbenchToolItem> WOOD_CHISEL = ITEMS.register("wood_chisel",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+    public static final DeferredItem<WorkbenchToolItem> CUTTING_KNIFE = ITEMS.register("cutting_knife",
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.IRON_INGOT));
     
     public static final DeferredItem<WorkbenchToolItem> FEATHER_QUILL = ITEMS.register("feather_quill",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.INK_SAC));
     
     public static final DeferredItem<WorkbenchToolItem> ROPE = ITEMS.register("rope",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.STRING));
     
     public static final DeferredItem<WorkbenchToolItem> FORGE_HAMMER = ITEMS.register("forge_hammer",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1)));
+            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.IRON_INGOT));
 }
 

@@ -81,7 +81,7 @@ public class ModRegistries {
     public static Supplier<Item> RED_CHERRY_SHELF_ITEM;
     public static Supplier<Item> WORKBENCH_ITEM;
     
-    public static Supplier<Item> WOOD_CHISEL;
+    public static Supplier<Item> CUTTING_KNIFE;
     public static Supplier<Item> FEATHER_QUILL;
     public static Supplier<Item> ROPE;
     public static Supplier<Item> FORGE_HAMMER;

@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-05T05:26:18.374402	Recipes
+// 1.21.1	2026-02-05T08:02:42.1607149	Recipes
 0ae43693811002bce3447c42194d32c735326350 data/herbalcurative/advancement/recipes/building_blocks/red_cherry_planks.json
 e5ee491d2067d169cc3dcfa08923a8e19c2a5346 data/herbalcurative/advancement/recipes/misc/crystbud_seed.json
 7403b88ed15d1d0698424ed0e9ebf7987124feec data/herbalcurative/advancement/recipes/misc/dewpetal_seed.json
@@ -15,6 +15,6 @@ b980531ab2aeee9c96ae22a6ebd9986301deed4e data/herbalcurative/recipe/herbal_blend
 b2e78e652d7c795ad9801c0ad6285976d6ca5eec data/herbalcurative/recipe/red_cherry_stick.json
 3ea50454e168d330f283f108660c129ca9c7dfec data/herbalcurative/recipe/rosynia_seed.json
 87dff2e453b84510a8b6bc695dec88fcdf66df6b data/herbalcurative/recipe/verdscale_fern_seed.json
-e5d3c19cdd5ef1a0872121fafb98f01d1d65417a data/herbalcurative/recipe/workbench/efficiency_5_enchanted_book.json
-1a4449a8f4421da75caf1c8037c879a1ebe8d7fa data/herbalcurative/recipe/workbench/smite_5_enchanted_book.json
+2451afac7bd29b423a08e0cd3bf57f234a875fb9 data/herbalcurative/recipe/workbench/efficiency_5_enchanted_book.json
+2faa8a764616ae76164098538b168edb07c4b35b data/herbalcurative/recipe/workbench/smite_5_enchanted_book.json
 138b88f8a44e51e200028f1a23369146482db319 data/herbalcurative/recipe/zephyr_lily_seed.json

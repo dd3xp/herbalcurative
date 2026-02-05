@@ -148,6 +148,20 @@ public class WorkbenchBlockEntity extends BlockEntity {
         return false;
     }
     
+    /**
+     * Damage a tool by item type (finds it in any slot).
+     * @param item The item type to find and damage
+     * @return true if a matching tool was damaged
+     */
+    public boolean damageToolByItem(net.minecraft.world.item.Item item) {
+        for (int i = 0; i < TOOL_SLOTS; i++) {
+            if (!toolSlots[i].isEmpty() && toolSlots[i].is(item)) {
+                return damageTool(i);
+            }
+        }
+        return false;
+    }
+    
     // ==================== Input Slot (Center Block) ====================
     
     /**

@@ -77,7 +77,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.WORKBENCH.get());
                         
                         // Workbench Tools
-                        output.accept(ModItems.WOOD_CHISEL.get());
+                        output.accept(ModItems.CUTTING_KNIFE.get());
                         output.accept(ModItems.FEATHER_QUILL.get());
                         output.accept(ModItems.ROPE.get());
                         output.accept(ModItems.FORGE_HAMMER.get());

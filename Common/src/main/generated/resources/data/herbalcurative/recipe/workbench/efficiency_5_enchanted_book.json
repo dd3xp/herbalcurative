@@ -22,12 +22,10 @@
   },
   "tools": [
     {
-      "item": "herbalcurative:feather_quill",
-      "slot": 1
+      "item": "herbalcurative:feather_quill"
     },
     {
-      "item": "herbalcurative:forge_hammer",
-      "slot": 3
+      "item": "herbalcurative:forge_hammer"
     }
   ]
 }
