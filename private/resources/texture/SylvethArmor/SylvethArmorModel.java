@@ -1,11 +1,11 @@
-// Made with Blockbench 5.0.4
+// Made with Blockbench 5.0.7
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
 
-public class weaveleaf_armor<T extends Entity> extends EntityModel<T> {
+public class SylvethArmorModel<T extends Entity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "weaveleaf_armor"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("modid", "sylvetharmormodel"), "main");
 	private final ModelPart Head;
 	private final ModelPart Body;
 	private final ModelPart RightArm;
@@ -21,7 +21,7 @@ public class weaveleaf_armor<T extends Entity> extends EntityModel<T> {
 	private final ModelPart RightLegBoots;
 	private final ModelPart LeftLegBoots;
 
-	public weaveleaf_armor(ModelPart root) {
+	public SylvethArmorModel(ModelPart root) {
 		this.Head = root.getChild("Head");
 		this.Body = root.getChild("Body");
 		this.RightArm = root.getChild("RightArm");
