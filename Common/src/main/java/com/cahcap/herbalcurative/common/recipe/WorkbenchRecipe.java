@@ -35,13 +35,20 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
     private final Ingredient input;
     private final List<MaterialRequirement> materials;
     private final ItemStack result;
+    private final int experienceCost;
     
     public WorkbenchRecipe(List<ToolRequirement> tools, Ingredient input, 
                            List<MaterialRequirement> materials, ItemStack result) {
+        this(tools, input, materials, result, 0);
+    }
+    
+    public WorkbenchRecipe(List<ToolRequirement> tools, Ingredient input, 
+                           List<MaterialRequirement> materials, ItemStack result, int experienceCost) {
         this.tools = tools;
         this.input = input;
         this.materials = materials;
         this.result = result;
+        this.experienceCost = experienceCost;
     }
     
     @Override
@@ -177,6 +184,10 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
         return result.copy();
     }
     
+    public int getExperienceCost() {
+        return experienceCost;
+    }
+    
     // ==================== Nested Types ====================
     
     public record ToolRequirement(Item item, int damage) {
@@ -269,7 +280,8 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
                 ToolRequirement.CODEC.listOf().fieldOf("tools").forGetter(WorkbenchRecipe::getTools),
                 Ingredient.CODEC.fieldOf("input").forGetter(WorkbenchRecipe::getInput),
                 MaterialRequirement.CODEC.listOf().fieldOf("materials").forGetter(WorkbenchRecipe::getMaterials),
-                ItemStack.CODEC.fieldOf("result").forGetter(r -> r.result)
+                ItemStack.CODEC.fieldOf("result").forGetter(r -> r.result),
+                Codec.INT.optionalFieldOf("experience_cost", 0).forGetter(WorkbenchRecipe::getExperienceCost)
             ).apply(instance, WorkbenchRecipe::new)
         );
         
@@ -278,6 +290,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
             Ingredient.CONTENTS_STREAM_CODEC, WorkbenchRecipe::getInput,
             MaterialRequirement.STREAM_CODEC.apply(ByteBufCodecs.list()), WorkbenchRecipe::getMaterials,
             ItemStack.STREAM_CODEC, r -> r.result,
+            ByteBufCodecs.INT, WorkbenchRecipe::getExperienceCost,
             WorkbenchRecipe::new
         );
         

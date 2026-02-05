@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -79,7 +80,7 @@ public class FlowweaveRingItem extends Item {
         if (clickedState.is(ModRegistries.WORKBENCH.get())) {
             if (clickedState.getValue(WorkbenchBlock.PART) == WorkbenchBlock.WorkbenchPart.CENTER) {
                 boolean isShift = context.getPlayer() != null && context.getPlayer().isShiftKeyDown();
-                if (tryWorkbenchCraft(context.getLevel(), context.getClickedPos(), isShift)) {
+                if (tryWorkbenchCraft(context.getLevel(), context.getClickedPos(), context.getPlayer(), isShift)) {
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -92,10 +93,11 @@ public class FlowweaveRingItem extends Item {
      * Try to craft using the workbench.
      * @param level The world level
      * @param centerPos The position of the center workbench block
+     * @param player The player performing the craft (can be null)
      * @param craftAll If true, craft as many as possible; if false, craft one
      * @return true if crafting was successful
      */
-    private boolean tryWorkbenchCraft(Level level, BlockPos centerPos, boolean craftAll) {
+    private boolean tryWorkbenchCraft(Level level, BlockPos centerPos, Player player, boolean craftAll) {
         BlockEntity be = level.getBlockEntity(centerPos);
         if (!(be instanceof WorkbenchBlockEntity workbench)) {
             return false;
@@ -120,6 +122,24 @@ public class FlowweaveRingItem extends Item {
             return false;
         }
         
+        // Check experience cost (if recipe requires experience and player exists)
+        int expCost = recipe.getExperienceCost();
+        if (expCost > 0 && player != null && !player.isCreative()) {
+            // Calculate total experience cost
+            int totalExpCost = expCost * craftCount;
+            int playerExp = getTotalExperience(player);
+            
+            if (playerExp < totalExpCost) {
+                // Not enough experience - limit craft count to what player can afford
+                craftCount = playerExp / expCost;
+                if (craftCount <= 0) {
+                    // Play failure sound
+                    level.playSound(null, centerPos, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return false;
+                }
+            }
+        }
+        
         // Perform crafting
         for (int i = 0; i < craftCount; i++) {
             // Damage tools by item type (tools can be in any slot)
@@ -136,6 +156,11 @@ public class FlowweaveRingItem extends Item {
             
             // Consume input
             workbench.consumeInput(1);
+            
+            // Consume experience
+            if (expCost > 0 && player != null && !player.isCreative()) {
+                player.giveExperiencePoints(-expCost);
+            }
         }
         
         // Create result and drop it
@@ -152,6 +177,44 @@ public class FlowweaveRingItem extends Item {
         level.playSound(null, centerPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
         
         return true;
+    }
+    
+    /**
+     * Calculate total experience points the player has.
+     * Experience is stored as levels + progress, need to convert to total points.
+     */
+    private int getTotalExperience(Player player) {
+        int level = player.experienceLevel;
+        float progress = player.experienceProgress;
+        
+        // Calculate points needed to reach current level
+        int totalPoints;
+        if (level <= 16) {
+            totalPoints = level * level + 6 * level;
+        } else if (level <= 31) {
+            totalPoints = (int) (2.5 * level * level - 40.5 * level + 360);
+        } else {
+            totalPoints = (int) (4.5 * level * level - 162.5 * level + 2220);
+        }
+        
+        // Add progress towards next level
+        int pointsForNextLevel = getExperienceForLevel(level + 1) - getExperienceForLevel(level);
+        totalPoints += (int) (progress * pointsForNextLevel);
+        
+        return totalPoints;
+    }
+    
+    /**
+     * Get total experience points needed to reach a specific level.
+     */
+    private int getExperienceForLevel(int level) {
+        if (level <= 16) {
+            return level * level + 6 * level;
+        } else if (level <= 31) {
+            return (int) (2.5 * level * level - 40.5 * level + 360);
+        } else {
+            return (int) (4.5 * level * level - 162.5 * level + 2220);
+        }
     }
     
     @Override

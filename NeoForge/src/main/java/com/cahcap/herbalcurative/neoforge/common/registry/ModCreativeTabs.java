@@ -34,6 +34,15 @@ public class ModCreativeTabs {
                         output.accept(ModItems.PYRISAGE_SEED.get());
                         output.accept(ModItems.ROSYNIA_SEED.get());
                         
+                        // Crafting Materials
+                        output.accept(ModItems.LEATHER_ARMOR.get());
+                        output.accept(ModItems.VELVET_ARMOR.get());
+                        output.accept(ModItems.SILK_ARMOR.get());
+                        output.accept(ModItems.MAGIC_ALLOY_DUST.get());
+                        output.accept(ModItems.MAGIC_ALLOY_INGOT.get());
+                        output.accept(ModItems.BRILLIANT_GEM_DUST.get());
+                        output.accept(ModItems.BRILLIANT_GEM.get());
+                        
                         // Red Cherry Items
                         output.accept(ModItems.RED_CHERRY_STICK.get());
                         output.accept(ModItems.RED_CHERRY.get());

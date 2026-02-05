@@ -41,6 +41,21 @@ public class ModItems {
     public static final DeferredItem<Item> ROSYNIA_SEED = ITEMS.register("rosynia_seed",
             () -> new HerbSeedItem(ModBlocks.ROSYNIA_CROP.get(), new Item.Properties()));
 
+    // ==================== Crafting Materials ====================
+    
+    // Armor materials
+    public static final DeferredItem<Item> LEATHER_ARMOR = ITEMS.registerSimpleItem("leather_armor");
+    public static final DeferredItem<Item> VELVET_ARMOR = ITEMS.registerSimpleItem("velvet_armor");
+    public static final DeferredItem<Item> SILK_ARMOR = ITEMS.registerSimpleItem("silk_armor");
+    
+    // Magic Alloy materials
+    public static final DeferredItem<Item> MAGIC_ALLOY_DUST = ITEMS.registerSimpleItem("magic_alloy_dust");
+    public static final DeferredItem<Item> MAGIC_ALLOY_INGOT = ITEMS.registerSimpleItem("magic_alloy_ingot");
+    
+    // Brilliant Gem materials
+    public static final DeferredItem<Item> BRILLIANT_GEM_DUST = ITEMS.registerSimpleItem("brilliant_gem_dust");
+    public static final DeferredItem<Item> BRILLIANT_GEM = ITEMS.registerSimpleItem("brilliant_gem");
+
     // ==================== Red Cherry Items ====================
     
     public static final DeferredItem<Item> RED_CHERRY_STICK = ITEMS.registerSimpleItem("red_cherry_stick");

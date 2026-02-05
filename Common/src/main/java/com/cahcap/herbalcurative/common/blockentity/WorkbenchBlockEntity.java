@@ -23,12 +23,12 @@ import java.util.List;
  * Stores:
  * - 4 tool slots (left block, each can hold full stack)
  * - 1 input slot (center block)
- * - 6 material slots as a stack (right block, LIFO order)
+ * - 9 material slots as a 3x3 grid (right block, LIFO order)
  */
 public class WorkbenchBlockEntity extends BlockEntity {
     
     public static final int TOOL_SLOTS = 4;
-    public static final int MATERIAL_SLOTS = 6;
+    public static final int MATERIAL_SLOTS = 9;
     
     // Tool slots [0-3]: top-left, top-right, bottom-left, bottom-right
     private final ItemStack[] toolSlots = new ItemStack[TOOL_SLOTS];

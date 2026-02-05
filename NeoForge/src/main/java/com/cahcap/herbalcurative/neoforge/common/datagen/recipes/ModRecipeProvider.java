@@ -228,7 +228,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
      * Structure: 3-block wide workbench
      * - Left block: 4 tool slots
      * - Center block: 1 input slot
-     * - Right block: 6 material slots (LIFO stack)
+     * - Right block: 9 material slots (3x3 grid, LIFO stack)
      * 
      * Tool slots (looking down at left block):
      * [0: top-left] [1: top-right]
@@ -238,7 +238,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         // Efficiency V Enchanted Book
         // Tools: Feather Quill, Forge Hammer
         // Input: Book
-        // Materials: 8 Obsidian
+        // Materials: 8 Amethyst Shard
         HolderLookup.RegistryLookup<Enchantment> enchantmentRegistry = registries.lookupOrThrow(Registries.ENCHANTMENT);
         Holder<Enchantment> efficiency = enchantmentRegistry.getOrThrow(Enchantments.EFFICIENCY);
         
@@ -251,7 +251,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .tool(ModItems.FEATHER_QUILL.get())
                 .tool(ModItems.FORGE_HAMMER.get())
                 .input(Items.BOOK)
-                .material(Items.OBSIDIAN, 8)
+                .material(Items.AMETHYST_SHARD, 8)
                 .result(efficiencyBook)
                 .build(output, "efficiency_5_enchanted_book");
         

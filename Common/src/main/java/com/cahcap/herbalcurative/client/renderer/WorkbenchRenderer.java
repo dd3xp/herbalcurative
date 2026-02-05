@@ -25,7 +25,7 @@ import java.util.List;
  * Layout on table top (when facing north):
  * - Left block: 4 tool slots in a 2x2 grid
  * - Center block: 1 input slot in the middle
- * - Right block: 6 material slots stacked visually
+ * - Right block: 9 material slots in a 3x3 grid
  */
 public class WorkbenchRenderer implements BlockEntityRenderer<WorkbenchBlockEntity> {
     
@@ -160,9 +160,16 @@ public class WorkbenchRenderer implements BlockEntityRenderer<WorkbenchBlockEnti
         }
         
         // Material positions on the right block (x offset +1 from center in local space)
-        // Render stacked slightly above each other
+        // Render as a 3x3 grid layout
+        // Grid positions (row, col) -> slot index:
+        // [0][1][2]   front row
+        // [3][4][5]   middle row
+        // [6][7][8]   back row
+        
         float baseY = 1.02f;
-        float stackOffset = 0.08f;
+        float cellSize = 0.28f;  // Size of each grid cell
+        float gridStartX = 0.18f;  // Start position (left edge of grid on right block)
+        float gridStartZ = 0.18f;  // Start position (front edge of grid)
         
         for (int i = 0; i < materials.size(); i++) {
             ItemStack mat = materials.get(i);
@@ -170,20 +177,22 @@ public class WorkbenchRenderer implements BlockEntityRenderer<WorkbenchBlockEnti
             
             poseStack.pushPose();
             
-            // Position on right block, slightly offset for each layer
-            float yOffset = baseY + (i * stackOffset);
+            // Calculate grid position (3x3)
+            int col = i % 3;  // 0, 1, 2
+            int row = i / 3;  // 0, 1, 2
             
-            // Stagger positions slightly for visual interest
-            float xOffset = 0.5f + (i % 2) * 0.15f - 0.075f;
-            float zOffset = 0.5f + ((i / 2) % 2) * 0.15f - 0.075f;
+            // Position on right block in 3x3 grid
+            float xOffset = gridStartX + col * cellSize;
+            float zOffset = gridStartZ + row * cellSize;
             
-            poseStack.translate(1.0f + xOffset, yOffset, zOffset);
+            poseStack.translate(1.0f + xOffset, baseY, zOffset);
             
-            // Lay flat on the table with slight rotation for variety
+            // Lay flat on the table
             poseStack.mulPose(Axis.XP.rotationDegrees(90));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(i * 15f));
             
-            poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
+            // Slightly smaller scale for 3x3 grid to fit
+            float gridScale = ITEM_SCALE * 0.8f;
+            poseStack.scale(gridScale, gridScale, gridScale);
             
             itemRenderer.renderStatic(mat, ItemDisplayContext.FIXED, light,
                     OverlayTexture.NO_OVERLAY, poseStack, bufferSource,

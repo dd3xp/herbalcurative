@@ -27,6 +27,7 @@ public class WorkbenchRecipeBuilder {
     private Ingredient input = Ingredient.EMPTY;
     private final List<MaterialRequirement> materials = new ArrayList<>();
     private ItemStack result = ItemStack.EMPTY;
+    private int experienceCost = 0;
     
     private WorkbenchRecipeBuilder() {
     }
@@ -77,8 +78,8 @@ public class WorkbenchRecipeBuilder {
      * @param count Amount required per craft
      */
     public WorkbenchRecipeBuilder material(ItemLike item, int count) {
-        if (materials.size() >= 6) {
-            throw new IllegalStateException("Cannot add more than 6 materials!");
+        if (materials.size() >= 9) {
+            throw new IllegalStateException("Cannot add more than 9 materials!");
         }
         materials.add(new MaterialRequirement(item.asItem(), count));
         return this;
@@ -121,6 +122,16 @@ public class WorkbenchRecipeBuilder {
     }
     
     /**
+     * Set the experience cost for this recipe.
+     * The player must have at least this many experience points to craft.
+     * @param cost The experience point cost (not levels, but points)
+     */
+    public WorkbenchRecipeBuilder experience(int cost) {
+        this.experienceCost = cost;
+        return this;
+    }
+    
+    /**
      * Build and save the recipe.
      * @param recipeOutput The recipe output
      * @param name The recipe name (without namespace)
@@ -149,7 +160,8 @@ public class WorkbenchRecipeBuilder {
                 new ArrayList<>(tools),
                 input,
                 new ArrayList<>(materials),
-                result.copy()
+                result.copy(),
+                experienceCost
         );
         
         recipeOutput.accept(id, recipe, null);

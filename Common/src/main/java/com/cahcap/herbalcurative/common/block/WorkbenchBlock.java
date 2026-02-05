@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * Left block: 4 tool slots (top-left, top-right, bottom-left, bottom-right on top face)
  * Center block: 1 input slot, also the main block that stores all data
- * Right block: 6 material slots (stack structure - LIFO)
+ * Right block: 9 material slots (3x3 grid, stack structure - LIFO)
  * 
  * Interaction:
  * - Right-click with item: place item in appropriate slot
