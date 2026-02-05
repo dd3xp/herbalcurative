@@ -1,5 +1,6 @@
-// 1.21.1	2025-12-11T15:50:28.0570829	Tags for minecraft:item mod id herbalcurative
+// 1.21.1	2026-02-05T09:31:10.5624096	Tags for minecraft:item mod id herbalcurative
 f56c4de24a0014f37fc98b956a78ef540cabfcd9 data/c/tags/item/rods/wooden.json
+ed245ddc60be584b325fb47d0873fb59df4bb266 data/herbalcurative/tags/item/herb_products.json
 66fa708944126a94ed6d2d6640f8ddb158da164f data/minecraft/tags/item/axes.json
 0b71e3c0340d3caf6bb3610e6b0774e42cceda2d data/minecraft/tags/item/chest_armor.json
 3b2d729b38ae0a65128fe35196488209de3221b3 data/minecraft/tags/item/enchantable/crossbow.json
@@ -15,4 +16,6 @@ cac8611abec82bb1379cb3623de7351b2359122d data/minecraft/tags/item/leaves.json
 81a822347c96b86d3610880bee90697b489ae1fb data/minecraft/tags/item/planks.json
 4c329aac2d865a419beabf56e8feab16b0cda0a3 data/minecraft/tags/item/saplings.json
 f8fd11658a551cc093b0e230816f6bbf0f6eb86d data/minecraft/tags/item/shovels.json
+7c1d12a3e5e62b2f558b1c15d66cb6679a37e1a2 data/minecraft/tags/item/slabs.json
+90b617ef7d2f7a4da0337d48e963e4927901f6f0 data/minecraft/tags/item/stairs.json
 da66a30023ef409065436b96e29a58f6f1bfc7d7 data/minecraft/tags/item/swords.json

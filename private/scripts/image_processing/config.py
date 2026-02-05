@@ -6,7 +6,7 @@
 
 # ========== 资源目录配置 ==========
 # 资源目录路径（相对于脚本所在目录）
-RESOURCE_DIR = "../../Common/src/main/resources"
+RESOURCE_DIR = "../../../Common/src/main/resources"
 
 # ========== 图片处理设置 ==========
 # 是否覆盖原文件
@@ -33,7 +33,7 @@ IMAGE_RESIZE_KEEP_ASPECT_RATIO = False
 # 调整大小时使用的采样方法
 # 'NEAREST' = 最近邻采样（像素风格，适合像素艺术）
 # 可选值: 'NEAREST', 'BILINEAR', 'BICUBIC', 'LANCZOS'
-IMAGE_RESIZE_SAMPLING = 'LANCZOS'
+IMAGE_RESIZE_SAMPLING = 'NEAREST'
 
 # ========== 颜色映射配置 ==========
 # 目标调色板（十六进制颜色代码列表）

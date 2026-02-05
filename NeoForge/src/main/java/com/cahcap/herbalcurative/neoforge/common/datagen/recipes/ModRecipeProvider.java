@@ -11,7 +11,10 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -27,6 +30,10 @@ import java.util.concurrent.CompletableFuture;
  * - Workbench recipes
  */
 public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
+    
+    // Mod-specific item tags
+    private static final TagKey<Item> HERB_PRODUCTS = ItemTags.create(
+            ResourceLocation.fromNamespaceAndPath("herbalcurative", "herb_products"));
     
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
     
@@ -108,6 +115,42 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .pattern("#")
             .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
             .save(output, "herbalcurative:red_cherry_stick");
+        
+        // ==================== Lumistone Series Recipes ====================
+        
+        // Lumistone: 8 stone + 1 herb product (any) -> 8 lumistone
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE.get(), 8)
+            .define('S', Items.STONE)
+            .define('H', HERB_PRODUCTS)
+            .pattern("SSS")
+            .pattern("SHS")
+            .pattern("SSS")
+            .unlockedBy("has_herb_product", has(HERB_PRODUCTS))
+            .save(output);
+        
+        // Lumistone Bricks: 4 lumistone -> 4 lumistone bricks (like stone bricks)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE_BRICKS.get(), 4)
+            .define('L', ModBlocks.LUMISTONE.get())
+            .pattern("LL")
+            .pattern("LL")
+            .unlockedBy("has_lumistone", has(ModBlocks.LUMISTONE.get()))
+            .save(output);
+        
+        // Lumistone Brick Stairs: 6 lumistone bricks -> 4 stairs
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE_BRICK_STAIRS.get(), 4)
+            .define('L', ModBlocks.LUMISTONE_BRICKS.get())
+            .pattern("L  ")
+            .pattern("LL ")
+            .pattern("LLL")
+            .unlockedBy("has_lumistone_bricks", has(ModBlocks.LUMISTONE_BRICKS.get()))
+            .save(output);
+        
+        // Lumistone Brick Slab: 3 lumistone bricks -> 6 slabs
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE_BRICK_SLAB.get(), 6)
+            .define('L', ModBlocks.LUMISTONE_BRICKS.get())
+            .pattern("LLL")
+            .unlockedBy("has_lumistone_bricks", has(ModBlocks.LUMISTONE_BRICKS.get()))
+            .save(output);
     }
     
     /**
@@ -184,5 +227,16 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .material(Items.BONE, 16)
                 .result(smiteBook)
                 .build(output, "smite_5_enchanted_book");
+        
+        // Rune Stone Bricks
+        // Tools: Cutting Knife
+        // Input: Lumistone Bricks
+        // Materials: 4 Glowstone Dust
+        WorkbenchRecipeBuilder.builder()
+                .tool(ModItems.CUTTING_KNIFE.get())
+                .input(ModBlocks.LUMISTONE_BRICKS.get())
+                .material(Items.GLOWSTONE_DUST, 4)
+                .result(new ItemStack(ModBlocks.RUNE_STONE_BRICKS.get()))
+                .build(output, "rune_stone_bricks");
     }
 }

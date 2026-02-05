@@ -4,7 +4,10 @@ import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.neoforge.common.registry.ModBlocks;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +18,12 @@ import java.util.concurrent.CompletableFuture;
  * Generates minecraft:flowers, leaves, logs, planks, saplings and other tags
  */
 public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.BlockTagsProvider {
+    
+    // Common tags (c: namespace) for cross-mod compatibility
+    private static final TagKey<Block> C_STONES = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, 
+            ResourceLocation.fromNamespaceAndPath("c", "stones"));
+    private static final TagKey<Block> C_STONE_BRICKS = TagKey.create(net.minecraft.core.registries.Registries.BLOCK, 
+            ResourceLocation.fromNamespaceAndPath("c", "stone_bricks"));
     
     public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, HerbalCurativeCommon.MOD_ID, existingFileHelper);
@@ -67,6 +76,15 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.WORKBENCH.get()
         );
         
+        // minecraft:mineable/pickaxe - Blocks mineable with pickaxe
+        this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
+            ModBlocks.LUMISTONE.get(),
+            ModBlocks.LUMISTONE_BRICKS.get(),
+            ModBlocks.RUNE_STONE_BRICKS.get(),
+            ModBlocks.LUMISTONE_BRICK_SLAB.get(),
+            ModBlocks.LUMISTONE_BRICK_STAIRS.get()
+        );
+        
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)
         this.tag(BlockTags.MINEABLE_WITH_HOE).add(
             // Herb flowers
@@ -85,6 +103,31 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.ROSYNIA_CROP.get(),
             // Red Cherry Bush
             ModBlocks.RED_CHERRY_BUSH.get()
+        );
+        
+        // ==================== Minecraft structure tags ====================
+        
+        // minecraft:slabs - All slab blocks
+        this.tag(BlockTags.SLABS).add(
+            ModBlocks.LUMISTONE_BRICK_SLAB.get()
+        );
+        
+        // minecraft:stairs - All stair blocks
+        this.tag(BlockTags.STAIRS).add(
+            ModBlocks.LUMISTONE_BRICK_STAIRS.get()
+        );
+        
+        // ==================== Common tags (c: namespace) for cross-mod compatibility ====================
+        
+        // c:stones - Stone-like blocks (for crafting recipes that accept any stone)
+        this.tag(C_STONES).add(
+            ModBlocks.LUMISTONE.get()
+        );
+        
+        // c:stone_bricks - Stone brick blocks
+        this.tag(C_STONE_BRICKS).add(
+            ModBlocks.LUMISTONE_BRICKS.get(),
+            ModBlocks.RUNE_STONE_BRICKS.get()
         );
     }
 }

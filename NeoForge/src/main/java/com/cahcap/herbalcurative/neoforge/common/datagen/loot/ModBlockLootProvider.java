@@ -73,6 +73,14 @@ public class ModBlockLootProvider extends LootTableProvider {
             // Workbench (center part only drops itself, left/right parts drop nothing - handled by block)
             this.dropSelf(ModBlocks.WORKBENCH.get());
             
+            // ==================== Lumistone blocks ====================
+            
+            this.dropSelf(ModBlocks.LUMISTONE.get());
+            this.dropSelf(ModBlocks.LUMISTONE_BRICKS.get());
+            this.dropSelf(ModBlocks.RUNE_STONE_BRICKS.get());
+            this.add(ModBlocks.LUMISTONE_BRICK_SLAB.get(), this::createSlabItemTable);
+            this.dropSelf(ModBlocks.LUMISTONE_BRICK_STAIRS.get());
+            
             // ==================== Crop blocks (drop seeds and products when mature at age 9) ====================
             
             // Crystbud crop - drops Cryst Spine

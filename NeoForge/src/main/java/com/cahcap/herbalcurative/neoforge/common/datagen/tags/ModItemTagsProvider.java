@@ -24,6 +24,10 @@ public class ModItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvide
     // Common tag for sticks (allows mod sticks to be used in vanilla recipes)
     private static final TagKey<Item> STICKS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "rods/wooden"));
     
+    // Mod-specific tags
+    public static final TagKey<Item> HERB_PRODUCTS = ItemTags.create(
+            ResourceLocation.fromNamespaceAndPath("herbalcurative", "herb_products"));
+    
     public ModItemTagsProvider(
             PackOutput output, 
             CompletableFuture<HolderLookup.Provider> lookupProvider,
@@ -51,10 +55,27 @@ public class ModItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvide
         // minecraft:saplings - Auto-copy from block tags
         copy(BlockTags.SAPLINGS, ItemTags.SAPLINGS);
         
+        // minecraft:slabs - Auto-copy from block tags
+        copy(BlockTags.SLABS, ItemTags.SLABS);
+        
+        // minecraft:stairs - Auto-copy from block tags
+        copy(BlockTags.STAIRS, ItemTags.STAIRS);
+        
         // ==================== Custom item tags ====================
         
         // Add forest heartwood stick to c:rods/wooden tag (allows use in vanilla recipes)
         tag(STICKS).add(ModItems.RED_CHERRY_STICK.get());
+        
+        // herbalcurative:herb_products - All herb products (scaleplate, dewpetal_shard, etc.)
+        // Used in recipes that accept any herb product (e.g. crafting Lumistone)
+        tag(HERB_PRODUCTS).add(
+            ModItems.SCALEPLATE.get(),
+            ModItems.DEWPETAL_SHARD.get(),
+            ModItems.GOLDEN_LILYBELL.get(),
+            ModItems.CRYST_SPINE.get(),
+            ModItems.BURNT_NODE.get(),
+            ModItems.HEART_OF_STARDREAM.get()
+        );
         
         // ==================== Minecraft tool/armor tags (required for enchanting) ====================
         

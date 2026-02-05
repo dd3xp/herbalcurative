@@ -52,6 +52,13 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.RED_CHERRY_LEAVES.get());
                         output.accept(ModBlocks.RED_CHERRY_SAPLING.get());
                         
+                        // Lumistone Blocks
+                        output.accept(ModBlocks.LUMISTONE.get());
+                        output.accept(ModBlocks.LUMISTONE_BRICKS.get());
+                        output.accept(ModBlocks.RUNE_STONE_BRICKS.get());
+                        output.accept(ModBlocks.LUMISTONE_BRICK_SLAB.get());
+                        output.accept(ModBlocks.LUMISTONE_BRICK_STAIRS.get());
+                        
                         // Leafweave Armor
                         output.accept(ModItems.LEAFWEAVE_HELMET.get());
                         output.accept(ModItems.LEAFWEAVE_CHESTPLATE.get());

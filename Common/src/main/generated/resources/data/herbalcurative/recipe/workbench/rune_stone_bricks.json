@@ -1,0 +1,21 @@
+{
+  "type": "herbalcurative:workbench",
+  "input": {
+    "item": "herbalcurative:lumistone_bricks"
+  },
+  "materials": [
+    {
+      "count": 4,
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "herbalcurative:rune_stone_bricks"
+  },
+  "tools": [
+    {
+      "item": "herbalcurative:cutting_knife"
+    }
+  ]
+}

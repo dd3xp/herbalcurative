@@ -1,8 +1,13 @@
-// 1.21.1	2026-02-05T05:26:18.3779234	Tags for minecraft:block mod id herbalcurative
+// 1.21.1	2026-02-05T09:31:10.5598721	Tags for minecraft:block mod id herbalcurative
+938206c39a7e96b6d46b0eda6d1458df024a6218 data/c/tags/block/stones.json
+dc8f2520569e19559c350f0993a2d5b2f3e510e6 data/c/tags/block/stone_bricks.json
 cf8511379d7389774acd9ef892d5555f2405e767 data/minecraft/tags/block/flowers.json
 cac8611abec82bb1379cb3623de7351b2359122d data/minecraft/tags/block/leaves.json
 722eeb936cdf395b29226d34b6dff6716bb679f2 data/minecraft/tags/block/logs.json
 c70658f90677a26106cdc4a9636a9a78f8f9d8f6 data/minecraft/tags/block/mineable/axe.json
 eafcaab92dc78835a44b4209f76b2cdb48273e28 data/minecraft/tags/block/mineable/hoe.json
+5841312cae839ef6839a6eca11b5841c6be2be52 data/minecraft/tags/block/mineable/pickaxe.json
 81a822347c96b86d3610880bee90697b489ae1fb data/minecraft/tags/block/planks.json
 4c329aac2d865a419beabf56e8feab16b0cda0a3 data/minecraft/tags/block/saplings.json
+7c1d12a3e5e62b2f558b1c15d66cb6679a37e1a2 data/minecraft/tags/block/slabs.json
+90b617ef7d2f7a4da0337d48e963e4927901f6f0 data/minecraft/tags/block/stairs.json

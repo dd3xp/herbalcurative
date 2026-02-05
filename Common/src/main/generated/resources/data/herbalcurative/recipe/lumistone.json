@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "H": {
+      "tag": "herbalcurative:herb_products"
+    },
+    "S": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SHS",
+    "SSS"
+  ],
+  "result": {
+    "count": 8,
+    "id": "herbalcurative:lumistone"
+  }
+}

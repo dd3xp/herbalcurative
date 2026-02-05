@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_herb_product": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#herbalcurative:herb_products"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "herbalcurative:lumistone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_herb_product"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "herbalcurative:lumistone"
+    ]
+  }
+}

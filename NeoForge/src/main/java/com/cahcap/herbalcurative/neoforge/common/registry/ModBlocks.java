@@ -10,6 +10,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -97,6 +99,49 @@ public class ModBlocks {
                     .instabreak()
                     .sound(SoundType.SWEET_BERRY_BUSH)
                     .pushReaction(PushReaction.DESTROY)));
+
+    // ==================== Lumistone Blocks ====================
+    // Light levels: Lumistone series = 7 (weak glow), Rune Stone Bricks = 15 (glowstone level)
+    
+    public static final DeferredBlock<Block> LUMISTONE = registerBlockWithItem("lumistone",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
+    
+    public static final DeferredBlock<Block> LUMISTONE_BRICKS = registerBlockWithItem("lumistone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
+    
+    public static final DeferredBlock<Block> RUNE_STONE_BRICKS = registerBlockWithItem("rune_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 15)));
+    
+    public static final DeferredBlock<SlabBlock> LUMISTONE_BRICK_SLAB = registerBlockWithItem("lumistone_brick_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
+    
+    public static final DeferredBlock<StairBlock> LUMISTONE_BRICK_STAIRS = registerBlockWithItem("lumistone_brick_stairs",
+            () -> new StairBlock(LUMISTONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
 
     // ==================== Multiblock Structures ====================
     
