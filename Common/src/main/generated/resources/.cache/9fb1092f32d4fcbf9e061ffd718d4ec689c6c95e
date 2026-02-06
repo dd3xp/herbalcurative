@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-05T11:19:05.7096875	Recipes
+// 1.21.1	2026-02-06T10:40:23.7040981	Recipes
 26bef6d7606d006967e73b540786020759ff24b3 data/herbalcurative/advancement/recipes/building_blocks/lumistone.json
 078f474aab4adcf44c51e63dcd6cce54dee4d920 data/herbalcurative/advancement/recipes/building_blocks/lumistone_bricks.json
 8bb38edf43e778856ffad99f2e30f06d3ab63b7b data/herbalcurative/advancement/recipes/building_blocks/lumistone_brick_slab.json
@@ -37,7 +37,7 @@ b2e78e652d7c795ad9801c0ad6285976d6ca5eec data/herbalcurative/recipe/red_cherry_s
 3ea50454e168d330f283f108660c129ca9c7dfec data/herbalcurative/recipe/rosynia_seed.json
 6fe9a031a810d5663270b0120601bc6592682044 data/herbalcurative/recipe/stripped_red_cherry_wood.json
 87dff2e453b84510a8b6bc695dec88fcdf66df6b data/herbalcurative/recipe/verdscale_fern_seed.json
-2451afac7bd29b423a08e0cd3bf57f234a875fb9 data/herbalcurative/recipe/workbench/efficiency_5_enchanted_book.json
+5532cb7de039b3899ab6c5688308bddf9a353470 data/herbalcurative/recipe/workbench/efficiency_5_enchanted_book.json
 f58e73da20d2adf56b2b32ffed9742406262aa63 data/herbalcurative/recipe/workbench/rune_stone_bricks.json
 2faa8a764616ae76164098538b168edb07c4b35b data/herbalcurative/recipe/workbench/smite_5_enchanted_book.json
 138b88f8a44e51e200028f1a23369146482db319 data/herbalcurative/recipe/zephyr_lily_seed.json

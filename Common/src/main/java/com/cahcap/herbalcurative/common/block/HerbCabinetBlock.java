@@ -31,12 +31,23 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 
 public class HerbCabinetBlock extends BaseEntityBlock {
+    
+    // Collision/selection shapes for original block types
+    // Currently all positions use full block (Red Cherry Log), but this allows
+    // easy modification if the multiblock structure changes in the future
+    private static final VoxelShape FULL_BLOCK = Shapes.block();
+    private static final VoxelShape TOP_SLAB = Block.box(0, 8, 0, 16, 16, 16);
+    private static final VoxelShape BOTTOM_SLAB = Block.box(0, 0, 0, 16, 8, 16);
+    private static final VoxelShape EMPTY = Shapes.empty();
     
     public static final MapCodec<HerbCabinetBlock> CODEC = simpleCodec(HerbCabinetBlock::new);
     
@@ -78,6 +89,53 @@ public class HerbCabinetBlock extends BaseEntityBlock {
     protected RenderShape getRenderShape(BlockState state) {
         // Use MODEL to render JSON model, BlockEntityRenderer will add herb icons on top
         return RenderShape.MODEL;
+    }
+    
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (!state.getValue(FORMED)) {
+            return Shapes.block();
+        }
+        
+        // Each block has its own selection shape based on original block type
+        if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
+            return getOriginalShape(be.posInMultiblock);
+        }
+        
+        return Shapes.block();
+    }
+    
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        if (!state.getValue(FORMED)) {
+            return Shapes.block();
+        }
+        
+        // Each block has its own collision shape based on original block type
+        if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
+            return getOriginalShape(be.posInMultiblock);
+        }
+        
+        return Shapes.block();
+    }
+    
+    /**
+     * Get the collision/selection shape for a position based on original block type.
+     * Currently all positions use full block (Red Cherry Log).
+     * Modify this method if the multiblock structure changes to use different block types.
+     * 
+     * Layout (3x2, posInMultiblock = row * 3 + col):
+     * [0][1][2]  <- Top row (h=1)
+     * [3][4][5]  <- Bottom row (h=0), [4] is master
+     */
+    private VoxelShape getOriginalShape(int posInMultiblock) {
+        // Currently all positions are Red Cherry Log (full block)
+        // Example of how to modify for different block types:
+        // switch (posInMultiblock) {
+        //     case 4: return TOP_SLAB;  // Center-bottom is a slab
+        //     default: return FULL_BLOCK;
+        // }
+        return FULL_BLOCK;
     }
     
     @Override

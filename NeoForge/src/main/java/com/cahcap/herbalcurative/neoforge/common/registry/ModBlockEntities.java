@@ -1,6 +1,7 @@
 package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
+import com.cahcap.herbalcurative.common.blockentity.CauldronBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.RedCherryShelfBlockEntity;
@@ -37,6 +38,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("workbench", () -> BlockEntityType.Builder.of(
                     WorkbenchBlockEntity::new,
                     ModBlocks.WORKBENCH.get()
+            ).build(null));
+    
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CauldronBlockEntity>> CAULDRON =
+            BLOCK_ENTITIES.register("cauldron", () -> BlockEntityType.Builder.of(
+                    CauldronBlockEntity::new,
+                    ModBlocks.CAULDRON.get()
             ).build(null));
 }
 

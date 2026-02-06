@@ -86,6 +86,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             this.add(ModBlocks.LUMISTONE_BRICK_SLAB.get(), this::createSlabItemTable);
             this.dropSelf(ModBlocks.LUMISTONE_BRICK_STAIRS.get());
             
+            // Cauldron - drops handled by block's getDrops method (position-based original blocks)
+            this.add(ModBlocks.CAULDRON.get(), noDrop());
+            
             // ==================== Crop blocks (drop seeds and products when mature at age 9) ====================
             
             // Crystbud crop - drops Cryst Spine

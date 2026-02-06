@@ -3,7 +3,7 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.block.*;
 import com.cahcap.herbalcurative.neoforge.common.block.HerbCabinetBlock;
-import com.cahcap.herbalcurative.neoforge.common.block.HerbBasketBlock;
+import com.cahcap.herbalcurative.common.block.HerbBasketBlock;
 import com.cahcap.herbalcurative.common.block.RedCherryShelfBlock;
 import com.cahcap.herbalcurative.common.block.WorkbenchBlock;
 import net.minecraft.world.effect.MobEffects;
@@ -192,7 +192,8 @@ public class ModBlocks {
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion()));
+                    .noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
     
     public static final DeferredBlock<RedCherryShelfBlock> RED_CHERRY_SHELF = BLOCKS.register("red_cherry_shelf",
             () -> new RedCherryShelfBlock(BlockBehaviour.Properties.of()
@@ -208,6 +209,15 @@ public class ModBlocks {
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)
                     .noOcclusion()));
+    
+    public static final DeferredBlock<com.cahcap.herbalcurative.neoforge.common.block.CauldronBlock> CAULDRON = BLOCKS.register("cauldron",
+            () -> new com.cahcap.herbalcurative.neoforge.common.block.CauldronBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(2.0F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()
+                    .noOcclusion()
+                    .lightLevel(state -> state.getValue(com.cahcap.herbalcurative.common.block.CauldronBlock.FORMED) ? 7 : 0)));
 
     // ==================== Helper Methods ====================
     

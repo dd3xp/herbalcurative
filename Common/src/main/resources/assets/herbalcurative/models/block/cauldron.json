@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [256, 256],
 	"textures": {
-		"0": "cauldron",
-		"particle": "cauldron"
+		"0": "herbalcurative:block/cauldron",
+		"particle": "herbalcurative:block/cauldron"
 	},
 	"elements": [
 		{

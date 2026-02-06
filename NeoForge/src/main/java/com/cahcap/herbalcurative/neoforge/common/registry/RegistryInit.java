@@ -33,6 +33,10 @@ public class RegistryInit {
         ModRegistries.HERB_BASKET = () -> ModBlocks.HERB_BASKET.get();
         ModRegistries.RED_CHERRY_SHELF = () -> ModBlocks.RED_CHERRY_SHELF.get();
         ModRegistries.WORKBENCH = () -> ModBlocks.WORKBENCH.get();
+        ModRegistries.CAULDRON = () -> ModBlocks.CAULDRON.get();
+        ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
+        ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
+        ModRegistries.LUMISTONE_BRICK_SLAB = () -> ModBlocks.LUMISTONE_BRICK_SLAB.get();
         
         // Items
         ModRegistries.SCALEPLATE = () -> ModItems.SCALEPLATE.get();
@@ -76,6 +80,8 @@ public class RegistryInit {
         ModRegistries.FEATHER_QUILL = () -> ModItems.FEATHER_QUILL.get();
         ModRegistries.ROPE = () -> ModItems.ROPE.get();
         ModRegistries.FORGE_HAMMER = () -> ModItems.FORGE_HAMMER.get();
+        ModRegistries.POT = () -> ModItems.POT.get();
+        ModRegistries.CAULDRON_ITEM = () -> ModItems.CAULDRON.get();
         
         // Armor Materials
         ModRegistries.LEAFWEAVE_ARMOR_MATERIAL = () -> ModArmorMaterials.LEAFWEAVE;
@@ -85,6 +91,7 @@ public class RegistryInit {
         ModRegistries.HERB_BASKET_BE = () -> ModBlockEntities.HERB_BASKET.get();
         ModRegistries.RED_CHERRY_SHELF_BE = () -> ModBlockEntities.RED_CHERRY_SHELF.get();
         ModRegistries.WORKBENCH_BE = () -> ModBlockEntities.WORKBENCH.get();
+        ModRegistries.CAULDRON_BE = () -> ModBlockEntities.CAULDRON.get();
         
         // Recipe Types and Serializers
         ModRecipeTypes.initCommonReferences();

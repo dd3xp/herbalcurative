@@ -69,11 +69,14 @@
   "block.herbalcurative.herb_basket": "Herb Basket",
   "block.herbalcurative.red_cherry_shelf": "Red Cherry Shelf",
   "block.herbalcurative.workbench": "Workbench",
+  "block.herbalcurative.cauldron": "Cauldron",
   
   "item.herbalcurative.cutting_knife": "Cutting Knife",
   "item.herbalcurative.feather_quill": "Feather Quill",
   "item.herbalcurative.rope": "Rope",
   "item.herbalcurative.forge_hammer": "Forge Hammer",
+  "item.herbalcurative.pot": "Pot",
+  "item.herbalcurative.cauldron": "Cauldron",
   
   "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d"
 }

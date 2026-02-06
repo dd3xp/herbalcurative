@@ -46,6 +46,13 @@ public abstract class MultiblockPartBlockEntity extends BlockEntity {
         return formed && offset[0] == 0 && offset[1] == 0 && offset[2] == 0;
     }
     
+    public BlockPos getMasterPos() {
+        if (!formed) {
+            return null;
+        }
+        return this.getBlockPos().offset(-offset[0], -offset[1], -offset[2]);
+    }
+    
     public boolean isFormed() {
         return formed;
     }

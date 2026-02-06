@@ -138,6 +138,9 @@ public class ModItems {
     
     public static final DeferredItem<HerbBoxItem> HERB_BOX = ITEMS.register("herb_box",
             () -> new HerbBoxItem(new Item.Properties().stacksTo(1)));
+    
+    public static final DeferredItem<PotItem> POT = ITEMS.register("pot",
+            () -> new PotItem(new Item.Properties().stacksTo(1)));
 
     // ==================== Multiblock Structures ====================
     
@@ -152,6 +155,9 @@ public class ModItems {
     
     public static final DeferredItem<BlockItem> WORKBENCH = ITEMS.register("workbench",
             () -> new BlockItem(ModBlocks.WORKBENCH.get(), new Item.Properties()));
+    
+    // Cauldron display item (for JADE/WTHIT, not placeable)
+    public static final DeferredItem<Item> CAULDRON = ITEMS.registerSimpleItem("cauldron");
     
     // ==================== Workbench Tools ====================
     // Repair materials: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Rope = String
