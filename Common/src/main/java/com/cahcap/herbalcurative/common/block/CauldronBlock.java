@@ -235,7 +235,7 @@ public class CauldronBlock extends BaseEntityBlock {
             
             // Handle water bucket - add water
             if (stack.is(Items.WATER_BUCKET)) {
-                if (master.addWater()) {
+                if (master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000)) {
                     if (!player.isCreative()) {
                         player.setItemInHand(hand, new ItemStack(Items.BUCKET));
                     }
@@ -244,26 +244,44 @@ public class CauldronBlock extends BaseEntityBlock {
                 }
             }
             
-            // Handle Flowweave Ring - start/finish brewing or other interactions
-            if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
-                master.onFlowweaveRingUse(player);
-                return ItemInteractionResult.SUCCESS;
-            }
-            
-            // Handle material/herb input
-            if (!stack.isEmpty()) {
-                // Phase 3: Try cauldron crafting first
-                if (master.getPhase() == CauldronBlockEntity.PHASE_COMPLETE) {
-                    if (master.addCraftingItem(stack)) {
-                        if (!player.isCreative()) {
-                            stack.shrink(1);
+            // Handle empty bucket - extract fluid and return materials
+            if (stack.is(Items.BUCKET) && master.hasFluid() && !master.isBrewing() && !master.isInfusing()) {
+                // Return materials to player first
+                for (ItemStack material : master.getMaterials()) {
+                    if (!material.isEmpty()) {
+                        if (!player.getInventory().add(material.copy())) {
+                            player.drop(material.copy(), false);
                         }
-                        level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.0F);
-                        return ItemInteractionResult.SUCCESS;
                     }
                 }
                 
-                // Phase 1 or 2: Add material/herb
+                net.minecraft.world.level.material.Fluid extracted = master.extractFluidWithClear(1000);
+                if (extracted != null && extracted == net.minecraft.world.level.material.Fluids.WATER) {
+                    if (!player.isCreative()) {
+                        stack.shrink(1);
+                        ItemStack filledBucket = new ItemStack(Items.WATER_BUCKET);
+                        if (!player.getInventory().add(filledBucket)) {
+                            player.drop(filledBucket, false);
+                        }
+                    }
+                    level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+            
+            // Handle Flowweave Ring - start/finish brewing or force clear
+            if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
+                if (player.isShiftKeyDown()) {
+                    master.onFlowweaveRingShiftUse(player);
+                } else {
+                    master.onFlowweaveRingUse(player);
+                }
+                return ItemInteractionResult.SUCCESS;
+            }
+            
+            // Handle material/herb/infusing input
+            if (!stack.isEmpty()) {
+                // Try to add item (will handle brewing materials, herbs, or start infusing)
                 if (master.addItem(stack, player)) {
                     level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
@@ -272,9 +290,10 @@ public class CauldronBlock extends BaseEntityBlock {
             
             // Shift + empty hand - try to extract
             if (stack.isEmpty() && player.isShiftKeyDown()) {
-                // Phase 3: Try to extract crafting output first
-                if (master.getPhase() == CauldronBlockEntity.PHASE_COMPLETE) {
-                    ItemStack output = master.extractCraftingOutput();
+                // Try to extract infusing output first
+                ItemStack output = master.getInfusingOutput();
+                if (!output.isEmpty() && !master.isInfusing()) {
+                    output = master.extractItem(player);
                     if (!output.isEmpty()) {
                         if (!player.getInventory().add(output)) {
                             player.drop(output, false);
@@ -400,42 +419,63 @@ public class CauldronBlock extends BaseEntityBlock {
             return;
         }
         
-        int phase = be.getPhase();
-        
-        // Phase 2: Brewing - add bubbles and steam
-        if (phase == CauldronBlockEntity.PHASE_BREWING && be.hasHeatSource()) {
-            // Bubbles rising from the liquid
+        // Brewing - add bubbles and steam (vigorous boiling effect)
+        if (be.isBrewing() && be.hasHeatSource()) {
+            // Many bubbles rising from the liquid - boiling effect
+            for (int i = 0; i < 8; i++) {
+                double x = pos.getX() - 1 + random.nextDouble() * 3;
+                double y = pos.getY() + 0.85;
+                double z = pos.getZ() - 1 + random.nextDouble() * 3;
+                level.addParticle(ParticleTypes.BUBBLE_POP, x, y, z, 0, 0.08 + random.nextDouble() * 0.05, 0);
+            }
+            
+            // Steam/smoke rising - more frequent
             for (int i = 0; i < 3; i++) {
-                if (random.nextInt(3) == 0) {
-                    double x = pos.getX() + 0.2 + random.nextDouble() * 0.6;
-                    double y = pos.getY() + 0.85;
-                    double z = pos.getZ() + 0.2 + random.nextDouble() * 0.6;
-                    level.addParticle(ParticleTypes.BUBBLE_POP, x, y, z, 0, 0.05, 0);
+                if (random.nextInt(2) == 0) {
+                    double x = pos.getX() - 0.5 + random.nextDouble() * 2;
+                    double y = pos.getY() + 1.0;
+                    double z = pos.getZ() - 0.5 + random.nextDouble() * 2;
+                    level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 
+                            (random.nextDouble() - 0.5) * 0.02, 0.05, (random.nextDouble() - 0.5) * 0.02);
                 }
             }
             
-            // Steam/smoke rising
-            if (random.nextInt(5) == 0) {
-                double x = pos.getX() + 0.3 + random.nextDouble() * 0.4;
-                double y = pos.getY() + 1.0;
-                double z = pos.getZ() + 0.3 + random.nextDouble() * 0.4;
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0, 0.05, 0);
+            // Splash particles to show boiling
+            for (int i = 0; i < 4; i++) {
+                if (random.nextInt(3) == 0) {
+                    double x = pos.getX() - 0.5 + random.nextDouble() * 2;
+                    double y = pos.getY() + 0.9;
+                    double z = pos.getZ() - 0.5 + random.nextDouble() * 2;
+                    level.addParticle(ParticleTypes.SPLASH, x, y, z, 0, 0.1, 0);
+                }
             }
             
-            // Enchanting glint particles (magical brewing)
-            if (random.nextInt(8) == 0) {
-                double x = pos.getX() + random.nextDouble();
-                double y = pos.getY() + 0.5 + random.nextDouble() * 0.5;
-                double z = pos.getZ() + random.nextDouble();
-                level.addParticle(ParticleTypes.ENCHANT, x, y, z, 
-                        (random.nextDouble() - 0.5) * 0.5, 
-                        random.nextDouble() * 0.2, 
-                        (random.nextDouble() - 0.5) * 0.5);
+            // Enchanting glint particles (magical brewing) - more frequent
+            for (int i = 0; i < 2; i++) {
+                if (random.nextInt(3) == 0) {
+                    double x = pos.getX() - 1 + random.nextDouble() * 3;
+                    double y = pos.getY() + 0.5 + random.nextDouble() * 0.8;
+                    double z = pos.getZ() - 1 + random.nextDouble() * 3;
+                    level.addParticle(ParticleTypes.ENCHANT, x, y, z, 
+                            (random.nextDouble() - 0.5) * 0.5, 
+                            random.nextDouble() * 0.3, 
+                            (random.nextDouble() - 0.5) * 0.5);
+                }
             }
         }
         
-        // Phase 3: Complete - gentle glow effect
-        if (phase == CauldronBlockEntity.PHASE_COMPLETE) {
+        // Infusing - gentle glow effect
+        if (be.isInfusing() && be.hasHeatSource()) {
+            if (random.nextInt(10) == 0) {
+                double x = pos.getX() + 0.3 + random.nextDouble() * 0.4;
+                double y = pos.getY() + 0.9;
+                double z = pos.getZ() + 0.3 + random.nextDouble() * 0.4;
+                level.addParticle(ParticleTypes.ENCHANTED_HIT, x, y, z, 0, 0.02, 0);
+            }
+        }
+        
+        // Potion ready - gentle glow effect
+        if (be.getFluid().isPotion() && !be.isInfusing()) {
             if (random.nextInt(15) == 0) {
                 double x = pos.getX() + 0.3 + random.nextDouble() * 0.4;
                 double y = pos.getY() + 0.9;

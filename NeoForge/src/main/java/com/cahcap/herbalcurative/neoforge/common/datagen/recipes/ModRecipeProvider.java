@@ -20,6 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -46,6 +47,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
     protected void buildRecipes(RecipeOutput output) {
         buildCraftingRecipes(output);
         buildHerbalBlendingRecipes(output);
+        buildCauldronRecipes(output);
         
         // Get registries for enchantments
         HolderLookup.Provider registries;
@@ -285,5 +287,59 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .material(Items.GLOWSTONE_DUST, 4)
                 .result(new ItemStack(ModBlocks.RUNE_STONE_BRICKS.get()))
                 .build(output, "rune_stone_bricks");
+    }
+    
+    /**
+     * Cauldron recipes: Brewing and Infusing.
+     * 
+     * Brewing: Materials + Water -> Potion (herbs add duration/amplifier)
+     * Infusing: Item + Fluid/Potion -> Product (automatic process)
+     */
+    private void buildCauldronRecipes(RecipeOutput output) {
+        // ==================== Brewing Recipes ====================
+        
+        // Regeneration Potion
+        // Materials: 4 Nether Wart + 8 Ghast Tear
+        // Effect: regeneration
+        // Color: 0xCD5CAB (regeneration potion pink)
+        CauldronBrewingRecipeBuilder.builder()
+                .material(Items.NETHER_WART, 4)
+                .material(Items.GHAST_TEAR, 8)
+                .effect("minecraft:regeneration")
+                .color(0xCD5CAB)
+                .build(output, "regeneration_potion");
+        
+        // ==================== Infusing Recipes ====================
+        // Note: All infusing takes 5 seconds. Materials must EXACTLY match.
+        
+        // Wet Sponge: Water + 1 Sponge -> Wet Sponge
+        CauldronInfusingRecipeBuilder.builder()
+                .requireFluid(Fluids.WATER)
+                .input(Items.SPONGE, 1)  // Exactly 1 sponge
+                .output(Items.WET_SPONGE)
+                .build(output, "wet_sponge");
+        
+        // Enchanted Golden Apple: Regeneration 2 Potion (8+ min) + 1 Apple -> Enchanted Golden Apple
+        CauldronInfusingRecipeBuilder.builder()
+                .requirePotion("minecraft:regeneration", 480, 2)  // 480 seconds = 8 minutes
+                .input(Items.APPLE, 1)  // Exactly 1 apple
+                .output(Items.ENCHANTED_GOLDEN_APPLE)
+                .build(output, "enchanted_golden_apple");
+        
+        // ==================== Flowweave Ring Binding ====================
+        // Binding a Flowweave Ring to a potion (any effect, 8+ min duration)
+        // Output is DYNAMIC - the ring stores the bound potion's properties
+        // Use flowweaveRingBinding() instead of regular input/output
+        CauldronInfusingRecipeBuilder.builder()
+                .flowweaveRingBinding()  // Special: dynamic output based on potion
+                .requirePotion("", 8, 1)  // Any potion with 8+ min, any level
+                .build(output, "flowweave_ring_binding");
+        
+        // ==================== Flowweave Ring Unbinding ====================
+        // Soaking a Flowweave Ring in water clears its binding
+        CauldronInfusingRecipeBuilder.builder()
+                .flowweaveRingUnbinding()  // Special: clear ring binding
+                .requireFluid("minecraft:water")
+                .build(output, "flowweave_ring_unbinding");
     }
 }

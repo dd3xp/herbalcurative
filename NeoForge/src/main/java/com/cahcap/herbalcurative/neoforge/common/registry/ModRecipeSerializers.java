@@ -1,7 +1,8 @@
 package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.common.recipe.CauldronRecipe;
+import com.cahcap.herbalcurative.common.recipe.CauldronBrewingRecipe;
+import com.cahcap.herbalcurative.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
 import com.cahcap.herbalcurative.common.registry.ModRegistries;
@@ -26,8 +27,11 @@ public class ModRecipeSerializers {
     public static final Supplier<RecipeSerializer<WorkbenchRecipe>> WORKBENCH = 
             RECIPE_SERIALIZERS.register("workbench", WorkbenchRecipe.Serializer::new);
     
-    public static final Supplier<RecipeSerializer<CauldronRecipe>> CAULDRON = 
-            RECIPE_SERIALIZERS.register("cauldron", () -> CauldronRecipe.Serializer.INSTANCE);
+    public static final Supplier<RecipeSerializer<CauldronInfusingRecipe>> CAULDRON_INFUSING = 
+            RECIPE_SERIALIZERS.register("cauldron_infusing", () -> CauldronInfusingRecipe.Serializer.INSTANCE);
+    
+    public static final Supplier<RecipeSerializer<CauldronBrewingRecipe>> CAULDRON_BREWING = 
+            RECIPE_SERIALIZERS.register("cauldron_brewing", () -> CauldronBrewingRecipe.Serializer.INSTANCE);
     
     public static void register(IEventBus modEventBus) {
         RECIPE_SERIALIZERS.register(modEventBus);

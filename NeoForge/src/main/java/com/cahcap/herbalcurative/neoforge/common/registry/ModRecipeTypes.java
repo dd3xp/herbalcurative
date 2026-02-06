@@ -1,7 +1,8 @@
 package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
-import com.cahcap.herbalcurative.common.recipe.CauldronRecipe;
+import com.cahcap.herbalcurative.common.recipe.CauldronBrewingRecipe;
+import com.cahcap.herbalcurative.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
 import com.cahcap.herbalcurative.common.registry.ModRegistries;
@@ -37,11 +38,19 @@ public class ModRecipeTypes {
                 }
             });
     
-    public static final Supplier<RecipeType<CauldronRecipe>> CAULDRON = 
-            RECIPE_TYPES.register("cauldron", () -> new RecipeType<>() {
+    public static final Supplier<RecipeType<CauldronInfusingRecipe>> CAULDRON_INFUSING = 
+            RECIPE_TYPES.register("cauldron_infusing", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
-                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "cauldron").toString();
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "cauldron_infusing").toString();
+                }
+            });
+    
+    public static final Supplier<RecipeType<CauldronBrewingRecipe>> CAULDRON_BREWING = 
+            RECIPE_TYPES.register("cauldron_brewing", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "cauldron_brewing").toString();
                 }
             });
     
@@ -56,6 +65,7 @@ public class ModRecipeTypes {
     public static void initCommonReferences() {
         ModRegistries.HERBAL_BLENDING_RECIPE_TYPE = HERBAL_BLENDING;
         ModRegistries.WORKBENCH_RECIPE_TYPE = WORKBENCH;
-        ModRegistries.CAULDRON_RECIPE_TYPE = CAULDRON;
+        ModRegistries.CAULDRON_INFUSING_RECIPE_TYPE = CAULDRON_INFUSING;
+        ModRegistries.CAULDRON_BREWING_RECIPE_TYPE = CAULDRON_BREWING;
     }
 }

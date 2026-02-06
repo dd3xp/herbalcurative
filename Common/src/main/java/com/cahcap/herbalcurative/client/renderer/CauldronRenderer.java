@@ -64,23 +64,13 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
             return;
         }
         
-        // Only render liquid if cauldron has water
-        if (!blockEntity.hasWater()) {
+        // Only render liquid if cauldron has fluid
+        if (!blockEntity.hasFluid()) {
             return;
         }
         
-        int phase = blockEntity.getPhase();
-        int potionColor = blockEntity.getPotionColor();
-        
-        // Determine liquid color based on phase
-        int liquidColor;
-        if (phase == CauldronBlockEntity.PHASE_WATER) {
-            // Blue water color
-            liquidColor = 0x3F76E4;
-        } else {
-            // Potion color
-            liquidColor = potionColor;
-        }
+        // Get liquid color from the fluid
+        int liquidColor = blockEntity.getFluidColor();
         
         // Calculate light
         BlockPos pos = blockEntity.getBlockPos();
@@ -93,15 +83,19 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
         // Render liquid surface
         renderLiquidSurface(poseStack, bufferSource, light, liquidColor);
         
-        // Render materials floating in the liquid (phase 1)
-        if (phase == CauldronBlockEntity.PHASE_WATER) {
+        // Render materials floating in the liquid (when not brewing)
+        if (!blockEntity.isBrewing()) {
             renderMaterials(blockEntity, poseStack, bufferSource, light, partialTick);
         }
         
-        // Render herbs floating in the liquid (phase 2)
-        if (phase == CauldronBlockEntity.PHASE_BREWING) {
+        // Render herbs floating in the liquid (during brewing)
+        if (blockEntity.isBrewing()) {
             renderHerbs(blockEntity, poseStack, bufferSource, light, partialTick);
         }
+        
+        // Note: Infusing output is now added to materials list after infusing completes,
+        // so it's rendered by renderMaterials() along with other materials.
+        // No separate renderInfusingOutput() call needed.
     }
     
     private void renderLiquidSurface(PoseStack poseStack, MultiBufferSource bufferSource, 
@@ -206,7 +200,7 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
         float bobOffset = (float) Math.sin((gameTime + partialTick) * 0.1) * 0.02f;
         
         // Render materials in a circular pattern on the liquid surface
-        int count = Math.min(materials.size(), 9);
+        int count = Math.min(materials.size(), 10);
         float radius = 0.6f;
         
         for (int i = 0; i < count; i++) {

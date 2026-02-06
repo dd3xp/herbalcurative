@@ -1,0 +1,14 @@
+{
+  "type": "herbalcurative:cauldron_infusing",
+  "fluid": "minecraft:water",
+  "inputs": [
+    {
+      "count": 1,
+      "id": "minecraft:sponge"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "minecraft:wet_sponge"
+  }
+}

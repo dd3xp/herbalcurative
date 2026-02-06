@@ -37,7 +37,7 @@ import java.util.List;
  * Can store:
  * - Potion type (healing, strength, etc.)
  * - Potion color
- * - Effect duration (in minutes)
+ * - Effect duration (in seconds)
  * - Effect level
  * 
  * When used (right-click while holding):
@@ -52,6 +52,10 @@ public class PotItem extends Item {
     private static final String TAG_DURATION = "Duration";
     private static final String TAG_LEVEL = "Level";
     private static final String TAG_FILLED = "Filled";
+    private static final String TAG_USES = "Uses";
+    
+    // Max uses per pot
+    public static final int MAX_USES = 16;
     
     public PotItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -84,8 +88,8 @@ public class PotItem extends Item {
             return InteractionResult.PASS;
         }
         
-        // Can only collect from phase 3 (complete)
-        if (master.getPhase() != CauldronBlockEntity.PHASE_COMPLETE) {
+        // Can only collect potion (not regular fluid)
+        if (!master.getFluid().isPotion()) {
             return InteractionResult.PASS;
         }
         
@@ -96,12 +100,29 @@ public class PotItem extends Item {
             return InteractionResult.PASS;
         }
         
+        // Get effect ID for pot
+        net.minecraft.world.effect.MobEffect effect = master.getPotionEffect();
+        String effectId = effect != null ? 
+                net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect).toString() : "";
+        
         // Fill the pot with potion
-        fillPot(stack, master.getPotionType(), master.getPotionColor(), 
+        fillPot(stack, effectId, master.getFluidColor(), 
                 master.getPotionDuration(), master.getPotionLevel());
         
-        // Empty the cauldron
-        master.resetCauldron();
+        // Return any floating materials (infusion products) to player
+        Player player = context.getPlayer();
+        if (player != null) {
+            for (ItemStack material : master.getMaterials()) {
+                if (!material.isEmpty()) {
+                    if (!player.getInventory().add(material.copy())) {
+                        player.drop(material.copy(), false);
+                    }
+                }
+            }
+        }
+        
+        // Clear the cauldron fluid (this also clears materials)
+        master.clearFluid();
         
         level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
         
@@ -118,8 +139,15 @@ public class PotItem extends Item {
                 // Apply effect
                 applyPotionEffect(stack, player);
                 
-                // Empty the pot
-                emptyPot(stack);
+                // Decrease uses
+                int uses = getUses(stack) - 1;
+                if (uses <= 0) {
+                    // Empty the pot when all uses are consumed
+                    emptyPot(stack);
+                } else {
+                    // Update uses count
+                    setUses(stack, uses);
+                }
                 
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.GENERIC_DRINK, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -165,12 +193,31 @@ public class PotItem extends Item {
         tag.putInt(TAG_POTION_COLOR, color);
         tag.putInt(TAG_DURATION, duration);
         tag.putInt(TAG_LEVEL, level);
+        tag.putInt(TAG_USES, MAX_USES);
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
     
     public static void emptyPot(ItemStack stack) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(TAG_FILLED, false);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+    
+    public static int getUses(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) {
+            return 0;
+        }
+        int uses = customData.copyTag().getInt(TAG_USES);
+        return uses > 0 ? uses : MAX_USES; // Default to MAX_USES for old pots
+    }
+    
+    public static void setUses(ItemStack stack, int uses) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) return;
+        
+        CompoundTag tag = customData.copyTag();
+        tag.putInt(TAG_USES, uses);
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
     
@@ -208,7 +255,7 @@ public class PotItem extends Item {
     
     private void applyPotionEffect(ItemStack stack, Player player) {
         String potionType = getPotionType(stack);
-        int duration = getDuration(stack) * 60 * 20; // Convert minutes to ticks
+        int duration = getDuration(stack) * 20; // Convert seconds to ticks
         int level = getLevel(stack) - 1; // MobEffectInstance uses 0-based amplifier
         
         Holder<MobEffect> effect = getEffectForType(potionType);
@@ -218,6 +265,16 @@ public class PotItem extends Item {
     }
     
     private Holder<MobEffect> getEffectForType(String type) {
+        // Try to parse as ResourceLocation first
+        ResourceLocation id = ResourceLocation.tryParse(type);
+        if (id != null) {
+            MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+            if (effect != null) {
+                return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
+            }
+        }
+        
+        // Fallback to old string matching
         return switch (type) {
             case "healing" -> MobEffects.HEAL;
             case "regeneration" -> MobEffects.REGENERATION;
@@ -233,27 +290,42 @@ public class PotItem extends Item {
         };
     }
     
+    private String getEffectDisplayName(String type) {
+        // Try to get display name from registry
+        ResourceLocation id = ResourceLocation.tryParse(type);
+        if (id != null) {
+            MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+            if (effect != null) {
+                return effect.getDisplayName().getString();
+            }
+        }
+        
+        // Fallback to old string matching
+        return switch (type) {
+            case "healing" -> "Healing";
+            case "regeneration" -> "Regeneration";
+            case "strength" -> "Strength";
+            case "speed" -> "Speed";
+            case "fire_resistance" -> "Fire Resistance";
+            case "night_vision" -> "Night Vision";
+            case "invisibility" -> "Invisibility";
+            case "water_breathing" -> "Water Breathing";
+            case "jump_boost" -> "Jump Boost";
+            case "slow_falling" -> "Slow Falling";
+            default -> "Unknown";
+        };
+    }
+    
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (isFilled(stack)) {
             String type = getPotionType(stack);
             int duration = getDuration(stack);
             int level = getLevel(stack);
+            int uses = getUses(stack);
             
-            // Potion type
-            String typeName = switch (type) {
-                case "healing" -> "Healing";
-                case "regeneration" -> "Regeneration";
-                case "strength" -> "Strength";
-                case "speed" -> "Speed";
-                case "fire_resistance" -> "Fire Resistance";
-                case "night_vision" -> "Night Vision";
-                case "invisibility" -> "Invisibility";
-                case "water_breathing" -> "Water Breathing";
-                case "jump_boost" -> "Jump Boost";
-                case "slow_falling" -> "Slow Falling";
-                default -> "Unknown";
-            };
+            // Potion type - try to get display name from registry
+            String typeName = getEffectDisplayName(type);
             
             tooltip.add(Component.literal("Potion of " + typeName)
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -264,9 +336,16 @@ public class PotItem extends Item {
                         .withStyle(ChatFormatting.BLUE));
             }
             
-            // Duration
-            tooltip.add(Component.literal("Duration: " + duration + " min")
+            // Duration is stored in seconds, display as "mm:ss"
+            int minutes = duration / 60;
+            int seconds = duration % 60;
+            String durationText = String.format("%02d:%02d", minutes, seconds);
+            tooltip.add(Component.literal("Duration: " + durationText)
                     .withStyle(ChatFormatting.GRAY));
+            
+            // Uses remaining
+            tooltip.add(Component.literal("Uses: " + uses + "/" + MAX_USES)
+                    .withStyle(ChatFormatting.AQUA));
         } else {
             tooltip.add(Component.literal("Empty")
                     .withStyle(ChatFormatting.GRAY));

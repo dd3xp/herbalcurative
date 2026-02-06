@@ -1,6 +1,7 @@
 package com.cahcap.herbalcurative.common.registry;
 
-import com.cahcap.herbalcurative.common.recipe.CauldronRecipe;
+import com.cahcap.herbalcurative.common.recipe.CauldronBrewingRecipe;
+import com.cahcap.herbalcurative.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
 import net.minecraft.core.Holder;
@@ -107,6 +108,7 @@ public class ModRegistries {
     public static Supplier<RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING_RECIPE_TYPE;
     public static Supplier<RecipeType<WorkbenchRecipe>> WORKBENCH_RECIPE_TYPE;
     public static Supplier<RecipeSerializer<WorkbenchRecipe>> WORKBENCH_RECIPE_SERIALIZER;
-    public static Supplier<RecipeType<CauldronRecipe>> CAULDRON_RECIPE_TYPE;
+    public static Supplier<RecipeType<CauldronInfusingRecipe>> CAULDRON_INFUSING_RECIPE_TYPE;
+    public static Supplier<RecipeType<CauldronBrewingRecipe>> CAULDRON_BREWING_RECIPE_TYPE;
 }
 

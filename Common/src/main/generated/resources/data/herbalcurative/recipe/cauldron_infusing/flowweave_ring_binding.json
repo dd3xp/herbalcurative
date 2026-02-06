@@ -1,0 +1,15 @@
+{
+  "type": "herbalcurative:cauldron_infusing",
+  "flowweave_ring_binding": true,
+  "inputs": [
+    {
+      "count": 1,
+      "id": "herbalcurative:flowweave_ring"
+    }
+  ],
+  "min_duration": 8,
+  "output": {
+    "count": 1,
+    "id": "herbalcurative:flowweave_ring"
+  }
+}

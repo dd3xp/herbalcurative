@@ -1,0 +1,16 @@
+{
+  "type": "herbalcurative:cauldron_infusing",
+  "inputs": [
+    {
+      "count": 1,
+      "id": "minecraft:apple"
+    }
+  ],
+  "min_duration": 480,
+  "min_level": 2,
+  "output": {
+    "count": 1,
+    "id": "minecraft:enchanted_golden_apple"
+  },
+  "potion": "minecraft:regeneration"
+}

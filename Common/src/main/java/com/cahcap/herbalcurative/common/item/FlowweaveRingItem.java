@@ -1,6 +1,8 @@
 package com.cahcap.herbalcurative.common.item;
 
+import com.cahcap.herbalcurative.common.block.CauldronBlock;
 import com.cahcap.herbalcurative.common.block.WorkbenchBlock;
+import com.cahcap.herbalcurative.common.blockentity.CauldronBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockCauldron;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockHerbCabinet;
@@ -62,8 +64,8 @@ public class FlowweaveRingItem extends Item {
     private static final String TAG_LEVEL = "Level";
     private static final String TAG_HERB_COST = "HerbCost";
     
-    // Minimum duration for binding (8 minutes)
-    public static final int MIN_BIND_DURATION = 8;
+    // Minimum duration for binding (8 minutes = 480 seconds)
+    public static final int MIN_BIND_DURATION = 480;
     
     public FlowweaveRingItem(Properties properties) {
         super(properties);
@@ -106,6 +108,14 @@ public class FlowweaveRingItem extends Item {
     }
     
     /**
+     * Unbind the potion from this Flowweave Ring (clear all binding data)
+     */
+    public static void unbindPotion(ItemStack stack) {
+        // Remove custom data component to clear binding
+        stack.remove(DataComponents.CUSTOM_DATA);
+    }
+    
+    /**
      * Get bound potion type
      */
     public static String getBoundPotionType(ItemStack stack) {
@@ -124,7 +134,7 @@ public class FlowweaveRingItem extends Item {
     }
     
     /**
-     * Get bound potion duration (minutes)
+     * Get bound potion duration (seconds)
      */
     public static int getBoundDuration(ItemStack stack) {
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
@@ -219,7 +229,7 @@ public class FlowweaveRingItem extends Item {
         
         // Apply effect
         String potionType = getBoundPotionType(stack);
-        int duration = getBoundDuration(stack) * 60 * 20; // Convert minutes to ticks
+        int duration = getBoundDuration(stack) * 20; // Convert seconds to ticks
         int amplifier = getBoundLevel(stack) - 1; // 0-based amplifier
         
         Holder<MobEffect> effect = getEffectForType(potionType);
@@ -236,7 +246,7 @@ public class FlowweaveRingItem extends Item {
     
     private boolean hasRequiredHerbs(Player player, Map<Item, Integer> herbCost) {
         for (Map.Entry<Item, Integer> entry : herbCost.entrySet()) {
-            int count = countItemInInventory(player, entry.getKey());
+            int count = countItemTotal(player, entry.getKey());
             if (count < entry.getValue()) {
                 return false;
             }
@@ -244,8 +254,16 @@ public class FlowweaveRingItem extends Item {
         return true;
     }
     
-    private int countItemInInventory(Player player, Item item) {
+    /**
+     * Count total available herbs from HerbBox items + player inventory
+     */
+    private int countItemTotal(Player player, Item item) {
         int count = 0;
+        
+        // First count from HerbBox items in inventory
+        count += countItemInHerbBoxes(player, item);
+        
+        // Then count from player inventory (loose herbs)
         for (ItemStack stack : player.getInventory().items) {
             if (stack.is(item)) {
                 count += stack.getCount();
@@ -254,32 +272,98 @@ public class FlowweaveRingItem extends Item {
         return count;
     }
     
+    /**
+     * Get the herbKey for an Item, used by HerbBoxItem storage
+     */
+    private String getHerbKeyForItem(Item item) {
+        if (item == ModRegistries.SCALEPLATE.get()) return "scaleplate";
+        if (item == ModRegistries.DEWPETAL_SHARD.get()) return "dewpetal_shard";
+        if (item == ModRegistries.GOLDEN_LILYBELL.get()) return "golden_lilybell";
+        if (item == ModRegistries.CRYST_SPINE.get()) return "cryst_spine";
+        if (item == ModRegistries.BURNT_NODE.get()) return "burnt_node";
+        if (item == ModRegistries.HEART_OF_STARDREAM.get()) return "heart_of_stardream";
+        return null;
+    }
+    
+    /**
+     * Count herbs available in HerbBox items in player inventory
+     */
+    private int countItemInHerbBoxes(Player player, Item item) {
+        String herbKey = getHerbKeyForItem(item);
+        if (herbKey == null) return 0;
+        
+        int count = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof HerbBoxItem) {
+                count += HerbBoxItem.getHerbAmount(stack, herbKey);
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Consume herbs: first from HerbBox items, then from player inventory
+     */
     private void consumeHerbs(Player player, Map<Item, Integer> herbCost) {
         for (Map.Entry<Item, Integer> entry : herbCost.entrySet()) {
             int remaining = entry.getValue();
-            for (ItemStack stack : player.getInventory().items) {
-                if (stack.is(entry.getKey())) {
-                    int toRemove = Math.min(remaining, stack.getCount());
-                    stack.shrink(toRemove);
-                    remaining -= toRemove;
-                    if (remaining <= 0) break;
+            
+            // First try to consume from HerbBox items
+            remaining = consumeFromHerbBoxes(player, entry.getKey(), remaining);
+            
+            // If still need more, consume from player inventory (loose herbs)
+            if (remaining > 0) {
+                for (ItemStack stack : player.getInventory().items) {
+                    if (stack.is(entry.getKey())) {
+                        int toRemove = Math.min(remaining, stack.getCount());
+                        stack.shrink(toRemove);
+                        remaining -= toRemove;
+                        if (remaining <= 0) break;
+                    }
                 }
             }
         }
     }
     
+    /**
+     * Consume herbs from HerbBox items in player inventory
+     * @return remaining amount that couldn't be consumed
+     */
+    private int consumeFromHerbBoxes(Player player, Item item, int amount) {
+        String herbKey = getHerbKeyForItem(item);
+        if (herbKey == null) return amount;
+        
+        int remaining = amount;
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof HerbBoxItem && remaining > 0) {
+                int available = HerbBoxItem.getHerbAmount(stack, herbKey);
+                if (available > 0) {
+                    int toRemove = Math.min(remaining, available);
+                    HerbBoxItem.removeHerb(stack, herbKey, toRemove);
+                    remaining -= toRemove;
+                }
+            }
+        }
+        return remaining;
+    }
+    
     private Holder<MobEffect> getEffectForType(String type) {
+        // type is a full registry ID like "minecraft:instant_health"
         return switch (type) {
-            case "healing" -> MobEffects.HEAL;
-            case "regeneration" -> MobEffects.REGENERATION;
-            case "strength" -> MobEffects.DAMAGE_BOOST;
-            case "speed" -> MobEffects.MOVEMENT_SPEED;
-            case "fire_resistance" -> MobEffects.FIRE_RESISTANCE;
-            case "night_vision" -> MobEffects.NIGHT_VISION;
-            case "invisibility" -> MobEffects.INVISIBILITY;
-            case "water_breathing" -> MobEffects.WATER_BREATHING;
-            case "jump_boost" -> MobEffects.JUMP;
-            case "slow_falling" -> MobEffects.SLOW_FALLING;
+            case "minecraft:instant_health" -> MobEffects.HEAL;
+            case "minecraft:regeneration" -> MobEffects.REGENERATION;
+            case "minecraft:strength" -> MobEffects.DAMAGE_BOOST;
+            case "minecraft:speed" -> MobEffects.MOVEMENT_SPEED;
+            case "minecraft:fire_resistance" -> MobEffects.FIRE_RESISTANCE;
+            case "minecraft:night_vision" -> MobEffects.NIGHT_VISION;
+            case "minecraft:invisibility" -> MobEffects.INVISIBILITY;
+            case "minecraft:water_breathing" -> MobEffects.WATER_BREATHING;
+            case "minecraft:jump_boost" -> MobEffects.JUMP;
+            case "minecraft:slow_falling" -> MobEffects.SLOW_FALLING;
+            case "minecraft:poison" -> MobEffects.POISON;
+            case "minecraft:instant_damage" -> MobEffects.HARM;
+            case "minecraft:weakness" -> MobEffects.WEAKNESS;
+            case "minecraft:slowness" -> MobEffects.MOVEMENT_SLOWDOWN;
             default -> null;
         };
     }
@@ -291,18 +375,23 @@ public class FlowweaveRingItem extends Item {
             int duration = getBoundDuration(stack);
             int level = getBoundLevel(stack);
             
+            // type is a full registry ID like "minecraft:instant_health"
             String typeName = switch (type) {
-                case "healing" -> "Healing";
-                case "regeneration" -> "Regeneration";
-                case "strength" -> "Strength";
-                case "speed" -> "Speed";
-                case "fire_resistance" -> "Fire Resistance";
-                case "night_vision" -> "Night Vision";
-                case "invisibility" -> "Invisibility";
-                case "water_breathing" -> "Water Breathing";
-                case "jump_boost" -> "Jump Boost";
-                case "slow_falling" -> "Slow Falling";
-                default -> "Unknown";
+                case "minecraft:instant_health" -> "Healing";
+                case "minecraft:regeneration" -> "Regeneration";
+                case "minecraft:strength" -> "Strength";
+                case "minecraft:speed" -> "Speed";
+                case "minecraft:fire_resistance" -> "Fire Resistance";
+                case "minecraft:night_vision" -> "Night Vision";
+                case "minecraft:invisibility" -> "Invisibility";
+                case "minecraft:water_breathing" -> "Water Breathing";
+                case "minecraft:jump_boost" -> "Jump Boost";
+                case "minecraft:slow_falling" -> "Slow Falling";
+                case "minecraft:poison" -> "Poison";
+                case "minecraft:instant_damage" -> "Harming";
+                case "minecraft:weakness" -> "Weakness";
+                case "minecraft:slowness" -> "Slowness";
+                default -> type.contains(":") ? type.substring(type.indexOf(":") + 1) : type;
             };
             
             tooltip.add(Component.literal("Bound: " + typeName)
@@ -313,7 +402,11 @@ public class FlowweaveRingItem extends Item {
                         .withStyle(ChatFormatting.BLUE));
             }
             
-            tooltip.add(Component.literal("Duration: " + duration + " min")
+            // Duration is stored in seconds, display as "mm:ss"
+            int minutes = duration / 60;
+            int seconds = duration % 60;
+            String durationText = String.format("%02d:%02d", minutes, seconds);
+            tooltip.add(Component.literal("Duration: " + durationText)
                     .withStyle(ChatFormatting.GRAY));
             
             // Show herb cost
@@ -373,6 +466,22 @@ public class FlowweaveRingItem extends Item {
             }
         }
         
+        // Handle formed Cauldron - start/finish brewing or force clear
+        if (clickedState.is(ModRegistries.CAULDRON.get()) && clickedState.getValue(CauldronBlock.FORMED)) {
+            if (level.getBlockEntity(context.getClickedPos()) instanceof CauldronBlockEntity be) {
+                CauldronBlockEntity master = be.getMaster();
+                if (master != null) {
+                    if (player != null && player.isShiftKeyDown()) {
+                        master.onFlowweaveRingShiftUse(player);
+                        level.playSound(null, context.getClickedPos(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 1.0F);
+                    } else {
+                        master.onFlowweaveRingUse(player);
+                    }
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
+        
         // Try to trigger Herbal Blending Rack crafting (requires shift + right click)
         if (player != null && player.isShiftKeyDown() 
                 && MultiblockHerbalBlending.INSTANCE.isBlockTrigger(clickedState)) {
@@ -421,6 +530,10 @@ public class FlowweaveRingItem extends Item {
             return true;
         }
         if (MultiblockCauldron.INSTANCE.isBlockTrigger(clickedState)) {
+            return true;
+        }
+        // Check formed Cauldron
+        if (clickedState.is(ModRegistries.CAULDRON.get()) && clickedState.getValue(CauldronBlock.FORMED)) {
             return true;
         }
         if (player != null && player.isShiftKeyDown() 

@@ -1,0 +1,15 @@
+{
+  "type": "herbalcurative:cauldron_infusing",
+  "flowweave_ring_unbinding": true,
+  "fluid": "minecraft:water",
+  "inputs": [
+    {
+      "count": 1,
+      "id": "herbalcurative:flowweave_ring"
+    }
+  ],
+  "output": {
+    "count": 1,
+    "id": "herbalcurative:flowweave_ring"
+  }
+}
