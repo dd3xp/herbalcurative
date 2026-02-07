@@ -9,6 +9,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.effect.MobEffect;
@@ -65,16 +67,20 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     
     // Brewing state
     private boolean isBrewing = false;
+    private boolean isStartingBrew = false;  // Waiting to enter brewing phase
+    private boolean isCompletingBrew = false; // Waiting to complete brewing
+    private int startingBrewTicks = 0;
+    private int completingBrewTicks = 0;
+    
+    // Minimum wait times (1 tick placeholder - adjust later)
+    public static final int MIN_STARTING_BREW_TICKS = 1;  // Time to start brewing
+    public static final int MIN_COMPLETING_BREW_TICKS = 1; // Time to complete brewing
     
     // Materials storage (can be added/removed when not brewing)
     private final List<ItemStack> materials = new ArrayList<>();
     
     // Herbs storage (can only be added during brewing)
     private final Map<Item, Integer> herbs = new HashMap<>();
-    
-    // Brewing progress
-    private int brewingTicks = 0;
-    private static final int BREWING_TIME = 200; // 10 seconds
     
     // Heat source detection
     private boolean hasHeatSource = false;
@@ -260,9 +266,12 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         master.fluid.clear();
         master.isBrewing = false;
+        master.isStartingBrew = false;
+        master.isCompletingBrew = false;
+        master.startingBrewTicks = 0;
+        master.completingBrewTicks = 0;
         master.materials.clear();
         master.herbs.clear();
-        master.brewingTicks = 0;
         master.isInfusing = false;
         master.infusingInput = ItemStack.EMPTY;
         master.infusingOutput = ItemStack.EMPTY;
@@ -316,6 +325,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                     stack.shrink(canAdd);
                     setChanged();
                     syncToClient();
+                    playItemSplashSound();
                     return true;
                 }
             }
@@ -330,6 +340,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             stack.shrink(toAdd.getCount());
             setChanged();
             syncToClient();
+            playItemSplashSound();
             return true;
         }
         
@@ -352,6 +363,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         stack.shrink(toAdd);
         setChanged();
         syncToClient();
+        playItemSplashSound();
         return true;
     }
     
@@ -390,6 +402,15 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         if (last.isEmpty()) {
             master.materials.remove(master.materials.size() - 1);
+        }
+        
+        // If extracting material during infusing, cancel the infusing process
+        if (master.isInfusing) {
+            master.isInfusing = false;
+            master.infusingProgress = 0;
+            master.infusingTime = 0;
+            master.infusingOutput = ItemStack.EMPTY;
+            master.infusingInput = ItemStack.EMPTY;
         }
         
         master.setChanged();
@@ -569,6 +590,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         CauldronBlockEntity master = getMaster();
         if (master == null) return;
         
+        // Already in a waiting state - don't trigger again
+        if (master.isStartingBrew || master.isCompletingBrew) {
+            return;
+        }
+        
         // Must have water and materials to start brewing
         if (!master.isBrewing && master.fluid.isWater() && !master.materials.isEmpty()) {
             boolean hasHeat = master.checkHeatSource();
@@ -578,8 +604,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                 CauldronBrewingRecipe recipe = master.findBrewingRecipe();
                 
                 if (recipe != null) {
-                    master.isBrewing = true;
-                    master.brewingTicks = 0;
+                    // Start the "starting brew" phase
+                    master.isStartingBrew = true;
+                    master.startingBrewTicks = 0;
                     // Convert water to boiling potion - effect type is now determined
                     // Keep water color during boiling (color changes on completion)
                     MobEffect effect = recipe.getEffect();
@@ -594,9 +621,16 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return;
         }
         
-        // Complete brewing on second click
+        // Complete brewing on second click (requires heat source)
         if (master.isBrewing) {
-            master.completeBrewing();
+            boolean hasHeat = master.checkHeatSource();
+            if (hasHeat) {
+                // Start the "completing brew" phase
+                master.isCompletingBrew = true;
+                master.completingBrewTicks = 0;
+                master.setChanged();
+                master.syncToClient();
+            }
         }
     }
     
@@ -679,7 +713,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // Clear brewing state
         isBrewing = false;
-        brewingTicks = 0;
+        isStartingBrew = false;
+        isCompletingBrew = false;
+        startingBrewTicks = 0;
+        completingBrewTicks = 0;
         materials.clear();
         herbs.clear();
         
@@ -729,23 +766,34 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         CauldronBlockEntity master = getMaster();
         if (master == null) return false;
         
+        boolean previousState = master.hasHeatSource;
+        boolean foundHeat = false;
+        
         BlockPos masterPos = master.getBlockPos();
         
         // Check the 3x3 area below the cauldron (y-1 from master)
+        outer:
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 BlockPos checkPos = masterPos.offset(x, -1, z);
                 BlockState state = level.getBlockState(checkPos);
                 
                 if (isHeatSource(state)) {
-                    master.hasHeatSource = true;
-                    return true;
+                    foundHeat = true;
+                    break outer;
                 }
             }
         }
         
-        master.hasHeatSource = false;
-        return false;
+        master.hasHeatSource = foundHeat;
+        
+        // Sync to client if state changed
+        if (previousState != foundHeat) {
+            master.setChanged();
+            master.syncToClient();
+        }
+        
+        return foundHeat;
     }
     
     private boolean isHeatSource(BlockState state) {
@@ -783,17 +831,32 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         // Collect items thrown into the cauldron
         be.collectItemsFromAbove(level);
         
-        // Brewing progress
-        if (be.isBrewing && be.hasHeatSource) {
-            be.brewingTicks++;
-            if (be.brewingTicks % 20 == 0) {
+        // Starting brew countdown (requires heat source)
+        if (be.isStartingBrew && be.hasHeatSource) {
+            be.startingBrewTicks++;
+            if (be.startingBrewTicks >= MIN_STARTING_BREW_TICKS) {
+                // Enter brewing phase - can now add herbs
+                be.isStartingBrew = false;
+                be.isBrewing = true;
+                be.startingBrewTicks = 0;
                 be.setChanged();
                 be.syncToClient();
             }
         }
         
-        // Infusing progress
-        if (be.isInfusing && be.hasHeatSource) {
+        // Completing brew countdown (requires heat source)
+        if (be.isCompletingBrew && be.hasHeatSource) {
+            be.completingBrewTicks++;
+            if (be.completingBrewTicks >= MIN_COMPLETING_BREW_TICKS) {
+                // Complete brewing - get product
+                be.isCompletingBrew = false;
+                be.completingBrewTicks = 0;
+                be.completeBrewing();
+            }
+        }
+        
+        // Infusing progress (does NOT require heat source)
+        if (be.isInfusing) {
             be.infusingProgress++;
             if (be.infusingProgress >= be.infusingTime) {
                 // Infusing complete
@@ -871,6 +934,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                     stack.shrink(canAdd);
                     setChanged();
                     syncToClient();
+                    playItemSplashSound();
                     return true;
                 }
             }
@@ -885,6 +949,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             stack.shrink(toAdd.getCount());
             setChanged();
             syncToClient();
+            playItemSplashSound();
             return true;
         }
         
@@ -906,7 +971,17 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         stack.shrink(toAdd);
         setChanged();
         syncToClient();
+        playItemSplashSound();
         return true;
+    }
+    
+    /**
+     * Play splash sound when item enters the cauldron
+     */
+    private void playItemSplashSound() {
+        if (level != null && !level.isClientSide) {
+            level.playSound(null, worldPosition, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.3F, 1.2F);
+        }
     }
     
     // ==================== Getters ====================
@@ -935,12 +1010,6 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         CauldronBlockEntity master = getMaster();
         if (master == null || !master.fluid.isPotion()) return null;
         return master.fluid.getEffect();
-    }
-    
-    public int getBrewingProgress() {
-        CauldronBlockEntity master = getMaster();
-        if (master == null) return 0;
-        return (master.brewingTicks * 100) / BREWING_TIME;
     }
     
     public int getInfusingProgress() {
@@ -1111,8 +1180,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             
             // Save brewing state
             tag.putBoolean("IsBrewing", isBrewing);
+            tag.putBoolean("IsStartingBrew", isStartingBrew);
+            tag.putBoolean("IsCompletingBrew", isCompletingBrew);
+            tag.putInt("StartingBrewTicks", startingBrewTicks);
+            tag.putInt("CompletingBrewTicks", completingBrewTicks);
             tag.putBoolean("HasHeatSource", hasHeatSource);
-            tag.putInt("BrewingTicks", brewingTicks);
             
             // Save materials
             ListTag materialsTag = new ListTag();
@@ -1166,8 +1238,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             
             // Load brewing state
             isBrewing = tag.getBoolean("IsBrewing");
+            isStartingBrew = tag.getBoolean("IsStartingBrew");
+            isCompletingBrew = tag.getBoolean("IsCompletingBrew");
+            startingBrewTicks = tag.getInt("StartingBrewTicks");
+            completingBrewTicks = tag.getInt("CompletingBrewTicks");
             hasHeatSource = tag.getBoolean("HasHeatSource");
-            brewingTicks = tag.getInt("BrewingTicks");
             
             // Load materials
             materials.clear();

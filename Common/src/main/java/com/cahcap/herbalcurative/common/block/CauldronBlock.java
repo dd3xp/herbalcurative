@@ -419,18 +419,29 @@ public class CauldronBlock extends BaseEntityBlock {
             return;
         }
         
-        // Brewing - add bubbles and steam (vigorous boiling effect)
-        if (be.isBrewing() && be.hasHeatSource()) {
-            // Many bubbles rising from the liquid - boiling effect
-            for (int i = 0; i < 8; i++) {
-                double x = pos.getX() - 1 + random.nextDouble() * 3;
-                double y = pos.getY() + 0.85;
-                double z = pos.getZ() - 1 + random.nextDouble() * 3;
-                level.addParticle(ParticleTypes.BUBBLE_POP, x, y, z, 0, 0.08 + random.nextDouble() * 0.05, 0);
-            }
-            
-            // Steam/smoke rising - more frequent
+        // Heat source with fluid (not brewing) - smoke effect to indicate heat
+        if (be.hasHeatSource() && be.hasFluid() && !be.isBrewing() && !be.isInfusing()) {
+            // Multiple smoke particles rising from the liquid surface
             for (int i = 0; i < 3; i++) {
+                if (random.nextInt(2) == 0) {
+                    double x = pos.getX() - 0.8 + random.nextDouble() * 2.6;
+                    double y = pos.getY() + 0.9;
+                    double z = pos.getZ() - 0.8 + random.nextDouble() * 2.6;
+                    level.addParticle(ParticleTypes.SMOKE, x, y, z, 
+                            (random.nextDouble() - 0.5) * 0.01, 0.03, (random.nextDouble() - 0.5) * 0.01);
+                }
+            }
+            // Furnace fire crackle sound
+            if (random.nextInt(2) == 0) {
+                level.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                        SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+            }
+        }
+        
+        // Brewing - campfire smoke effect (boiling)
+        if (be.isBrewing() && be.hasHeatSource()) {
+            // Campfire smoke rising - boiling effect
+            for (int i = 0; i < 2; i++) {
                 if (random.nextInt(2) == 0) {
                     double x = pos.getX() - 0.5 + random.nextDouble() * 2;
                     double y = pos.getY() + 1.0;
@@ -439,33 +450,15 @@ public class CauldronBlock extends BaseEntityBlock {
                             (random.nextDouble() - 0.5) * 0.02, 0.05, (random.nextDouble() - 0.5) * 0.02);
                 }
             }
-            
-            // Splash particles to show boiling
-            for (int i = 0; i < 4; i++) {
-                if (random.nextInt(3) == 0) {
-                    double x = pos.getX() - 0.5 + random.nextDouble() * 2;
-                    double y = pos.getY() + 0.9;
-                    double z = pos.getZ() - 0.5 + random.nextDouble() * 2;
-                    level.addParticle(ParticleTypes.SPLASH, x, y, z, 0, 0.1, 0);
-                }
-            }
-            
-            // Enchanting glint particles (magical brewing) - more frequent
-            for (int i = 0; i < 2; i++) {
-                if (random.nextInt(3) == 0) {
-                    double x = pos.getX() - 1 + random.nextDouble() * 3;
-                    double y = pos.getY() + 0.5 + random.nextDouble() * 0.8;
-                    double z = pos.getZ() - 1 + random.nextDouble() * 3;
-                    level.addParticle(ParticleTypes.ENCHANT, x, y, z, 
-                            (random.nextDouble() - 0.5) * 0.5, 
-                            random.nextDouble() * 0.3, 
-                            (random.nextDouble() - 0.5) * 0.5);
-                }
+            // Bubble whirlpool sound (intense boiling)
+            if (random.nextInt(2) == 0) {
+                level.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                        SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_AMBIENT, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }
         }
         
-        // Infusing - gentle glow effect
-        if (be.isInfusing() && be.hasHeatSource()) {
+        // Infusing - gentle glow effect (does NOT require heat source)
+        if (be.isInfusing()) {
             if (random.nextInt(10) == 0) {
                 double x = pos.getX() + 0.3 + random.nextDouble() * 0.4;
                 double y = pos.getY() + 0.9;

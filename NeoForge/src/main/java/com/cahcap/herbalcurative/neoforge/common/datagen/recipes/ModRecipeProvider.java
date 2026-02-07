@@ -332,7 +332,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         // Use flowweaveRingBinding() instead of regular input/output
         CauldronInfusingRecipeBuilder.builder()
                 .flowweaveRingBinding()  // Special: dynamic output based on potion
-                .requirePotion("", 8, 1)  // Any potion with 8+ min, any level
+                .requirePotion("", 480, 1)  // Any potion with 480+ seconds (8 min), any level
                 .build(output, "flowweave_ring_binding");
         
         // ==================== Flowweave Ring Unbinding ====================

@@ -94,7 +94,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.FLOWWEAVE_RING.get());
                         output.accept(ModItems.HERB_BOX.get());
                         output.accept(ModItems.POT.get());
-                        output.accept(ModItems.CAULDRON.get());
+                        // Note: CAULDRON and HERB_CABINET are technical items for display only (multiblock structures)
                         output.accept(ModItems.HERB_BASKET.get());
                         output.accept(ModItems.RED_CHERRY_SHELF.get());
                         output.accept(ModItems.WORKBENCH.get());

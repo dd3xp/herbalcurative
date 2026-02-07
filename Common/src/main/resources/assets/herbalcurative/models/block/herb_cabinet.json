@@ -1,4 +1,5 @@
 {
+	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"ambientocclusion": false,
 	"texture_size": [256, 256],
@@ -231,13 +232,13 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"rotation": [45, 0, 0],
-			"translation": [0, -1, -1],
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"thirdperson_lefthand": {
-			"rotation": [45, 0, 0],
-			"translation": [0, -1, -1],
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
 			"scale": [0.2, 0.2, 0.2]
 		},
 		"firstperson_righthand": {
@@ -260,6 +261,55 @@
 		"fixed": {
 			"translation": [0, -4, 0],
 			"scale": [0.4, 0.4, 0.4]
+		},
+		"on_shelf": {
+			"translation": [0, -4, 0],
+			"scale": [0.4, 0.4, 0.4]
 		}
-	}
+	},
+	"groups": [
+		{
+			"name": "Cabinet",
+			"origin": [8, 0, 8],
+			"color": 0,
+			"children": [
+				{
+					"name": "frontside",
+					"origin": [-34, 2, 2],
+					"color": 0,
+					"children": [0, 1, 2, 3, 4, 5, 6, 7]
+				},
+				{
+					"name": "leftside",
+					"origin": [31, 2, 3],
+					"color": 0,
+					"children": [8, 9, 10]
+				},
+				{
+					"name": "rightside",
+					"origin": [8, 2, 15],
+					"color": 0,
+					"children": [11, 12, 13]
+				},
+				{
+					"name": "backside",
+					"origin": [8, 2, 15],
+					"color": 0,
+					"children": [14]
+				},
+				{
+					"name": "top",
+					"origin": [27, 0, 8],
+					"color": 0,
+					"children": [15]
+				},
+				{
+					"name": "bottom",
+					"origin": [27, 0, 8],
+					"color": 0,
+					"children": [16]
+				}
+			]
+		}
+	]
 }
