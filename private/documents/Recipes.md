@@ -4,6 +4,10 @@
 
 ### 无序合成
 
+| 产物 | 产物个数 | 材料 |
+|----|----|----|
+| **皮甲** | 1 | 任意树叶 |
+
 ### 有序合成
 
 - **红樱木剪刀**：
@@ -11,6 +15,84 @@
   <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
   <tr><td>红樱木棍</td><td>无</td><td>无</td></tr>
   <tr><td>无</td><td>无</td><td>无</td></tr>
+  </table>
+
+- **织叶兜帽**：
+  <table border="1">
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>无</td><td>无</td><td>无</td></tr>
+  </table>
+
+- **织叶大衣**：
+  <table border="1">
+  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
+  </table>
+
+- **织叶短袍**：
+  <table border="1">
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
+  </table>
+
+
+- **织叶靴子**：
+  <table border="1">
+  <tr><td>无</td><td>无</td><td>无</td></tr>
+  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
+  </table>
+
+- **微光石剑**：
+  <table border="1">
+  <tr><td>无</td><td>微光石</td><td>无</td></tr>
+  <tr><td>无</td><td>微光石</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  </table>
+
+- **微光石镐**：
+  <table border="1">
+  <tr><td>微光石</td><td>微光石</td><td>微光石</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  </table>
+
+- **微光石斧**：
+  <table border="1">
+  <tr><td>微光石</td><td>微光石</td><td>无</td></tr>
+  <tr><td>微光石</td><td>红樱木棍</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  </table>
+
+- **微光石铲**：
+  <table border="1">
+  <tr><td>无</td><td>微光石</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  </table>
+
+- **微光石锄**：
+  <table border="1">
+  <tr><td>微光石</td><td>微光石</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
+  </table>
+
+- **红樱木弩**：
+  <table border="1">
+  <tr><td>红樱木棍</td><td>铁锭</td><td>红樱木棍</td></tr>
+  <tr><td>线</td><td>拌线钩</td><td>线</td></tr>
+  <tr><td>无</td><td>微光石</td><td>无</td></tr>
+  </table>
+
+- **红樱木弩匣**：
+  <table border="1">
+  <tr><td>红樱木棍</td><td>微光石</td><td>红樱木棍</td></tr>
+  <tr><td>微光石</td><td>铁块</td><td>微光石</td></tr>
+  <tr><td>红樱木棍</td><td>微光石</td><td>红樱木棍</td></tr>
   </table>
 
 ## 熔炉
@@ -25,9 +107,8 @@
 | **符文石砖** | 微光石砖 | 萤石粉*4 | 切割刀 |
 | **魔法合金粉末** | 微光石 | 金锭\*1，铜锭\*1，铁锭\*1 | 锻造锤 |
 | **璀璨宝石粉末** | 魔法合金锭 | 钻石\*1，绿宝石\*1 | 锻造锤 |
-| **皮甲** | 皮革 | 任意树叶*2 | 纺织绳 |
-| **绒甲** | 羽毛 | 任意花朵*2 | 纺织绳 |
-| **丝甲** | 羊毛 | 任意藤蔓*2 | 纺织绳 |
+| **绒甲** | 羽毛 | 治愈花*1 | 纺织绳 |
+| **丝甲** | 羊毛 | 坚韧藤蔓*1 | 纺织绳 |
 
 ### 附魔书
 
@@ -50,83 +131,6 @@
   <tr><td>鳞甲: 64</td><td>末影珍珠</td><td>下界之星</td><td>末影珍珠</td><td>晶刺: 64</td></tr>
   <tr><td>雨露花瓣: 64</td><td>鸡蛋</td><td>附魔金苹果</td><td>鸡蛋</td><td>燃烧节点: 64</td></tr>
   <tr><td>金铃花: 64</td><td>小麦</td><td>牛奶桶</td><td>小麦</td><td>星忆花心: 64</td></tr>
-  </table>
-
-- **织叶兜帽**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>皮甲</td><td>皮甲</td><td>皮甲</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>皮甲</td><td>微光石</td><td>皮甲</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>无</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **织叶大衣**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>皮甲</td><td>微光石</td><td>皮甲</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>皮甲</td><td>皮甲</td><td>皮甲</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>皮甲</td><td>皮甲</td><td>皮甲</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **织叶短袍**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>皮甲</td><td>皮甲</td><td>皮甲</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>皮甲</td><td>微光石</td><td>皮甲</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>皮甲</td><td>无</td><td>皮甲</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **织叶靴子**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>无</td><td>无</td><td>无</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>皮甲</td><td>微光石</td><td>皮甲</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>皮甲</td><td>无</td><td>皮甲</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **微光石剑**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>无</td><td>微光石</td><td>无</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>无</td><td>微光石</td><td>无</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **微光石镐**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>微光石</td><td>微光石</td><td>微光石</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **微光石斧**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>微光石</td><td>微光石</td><td>无</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>微光石</td><td>红樱木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **微光石铲**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>无</td><td>微光石</td><td>无</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **微光石锄**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>微光石</td><td>微光石</td><td>无</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **红樱木弩**：
-  <table border="1">
-  <tr><td>鳞甲: 4</td><td>红樱木棍</td><td>微光石</td><td>红樱木棍</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>线</td><td>拌线钩</td><td>线</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>无</td><td>红樱木棍</td><td>无</td><td>星忆花心: 0</td></tr>
-  </table>
-
-- **红樱木弩匣**：
-  <table border="1">
-  <tr><td>鳞甲: 32</td><td>红樱木棍</td><td>微光石</td><td>红樱木棍</td><td>晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>微光石</td><td>铁块</td><td>微光石</td><td>燃烧节点: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>红樱木棍</td><td>微光石</td><td>红樱木棍</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **花韵兜帽**：
@@ -159,49 +163,49 @@
 
 - **魔法合金剑**：
   <table border="1">
-  <tr><td>鳞甲: 24</td><td>无</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>无</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>无</td><td>魔法合金锭</td><td>无</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法合金镐**：
   <table border="1">
-  <tr><td>鳞甲: 24</td><td>魔法合金锭</td><td>魔法合金锭</td><td>魔法合金锭</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>魔法合金锭</td><td>魔法合金锭</td><td>魔法合金锭</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法合金斧**：
   <table border="1">
-  <tr><td>鳞甲: 24</td><td>魔法合金锭</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>魔法合金锭</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>魔法合金锭</td><td>魔法木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法合金铲**：
   <table border="1">
-  <tr><td>鳞甲: 24</td><td>无</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>无</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法合金锄**：
   <table border="1">
-  <tr><td>鳞甲: 24</td><td>魔法合金锭</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>魔法合金锭</td><td>魔法合金锭</td><td>无</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法木弩**：
   <table border="1">
-  <tr><td>鳞甲: 24</td><td>魔法木棍</td><td>魔法合金锭</td><td>魔法木棍</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>魔法木棍</td><td>魔法合金锭</td><td>魔法木棍</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>线</td><td>拌线钩</td><td>线</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>魔法木棍</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法木弩匣**：
   <table border="1">
-  <tr><td>鳞甲: 32</td><td>魔法木棍</td><td>魔法合金锭</td><td>魔法木棍</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>魔法木棍</td><td>魔法合金锭</td><td>魔法木棍</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>魔法合金锭</td><td>蘑菇煲</td><td>魔法合金锭</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>魔法木棍</td><td>魔法合金锭</td><td>魔法木棍</td><td>星忆花心: 0</td></tr>
   </table>
@@ -278,7 +282,7 @@
 
 - **繁花木弩匣**：
   <table border="1">
-  <tr><td>鳞甲: 128</td><td>繁花木棍</td><td>璀璨宝石</td><td>繁花木棍</td><td>晶刺: 0</td></tr>
+  <tr><td>鳞甲: 64</td><td>繁花木棍</td><td>璀璨宝石</td><td>繁花木棍</td><td>晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>璀璨宝石</td><td>烟花</td><td>璀璨宝石</td><td>燃烧节点: 0</td></tr>
   <tr><td>金铃花: 0</td><td>繁花木棍</td><td>璀璨宝石</td><td>繁花木棍</td><td>星忆花心: 0</td></tr>
   </table>
@@ -289,7 +293,8 @@
 
 | 药水 | 基础流体 | 材料 | 颜色 | 等级上限 |
 |----|----|----|----|----|
-| **再生** | 水 | 地狱疣\*4，恶魂之泪\*8 | 再生药水的颜色 | 2 |
+| **再生** | 水 | 恶魂之泪\*8 | 再生药水的颜色 | 2 |
+| **治疗** | 水 | 闪烁的西瓜*8 | 治疗药水的颜色 | 2 |
 
 ### 浸泡
 

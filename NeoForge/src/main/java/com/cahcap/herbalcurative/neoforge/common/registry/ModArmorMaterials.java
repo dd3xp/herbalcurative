@@ -34,7 +34,7 @@ public class ModArmorMaterials {
                     SoundEvents.ARMOR_EQUIP_LEATHER,
                     () -> Ingredient.of(ModItems.SCALEPLATE.get()),
                     List.of(new ArmorMaterial.Layer(ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "leafweave"))),
-                    0.5F, // toughness
+                    0.0F, // toughness
                     0.0F  // knockback resistance
             ));
     

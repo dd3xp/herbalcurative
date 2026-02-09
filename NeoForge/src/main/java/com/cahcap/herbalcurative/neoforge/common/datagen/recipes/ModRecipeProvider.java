@@ -299,11 +299,10 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         // ==================== Brewing Recipes ====================
         
         // Regeneration Potion
-        // Materials: 4 Nether Wart + 8 Ghast Tear
+        // Materials: 8 Ghast Tear
         // Effect: regeneration
         // Color: 0xCD5CAB (regeneration potion pink)
         CauldronBrewingRecipeBuilder.builder()
-                .material(Items.NETHER_WART, 4)
                 .material(Items.GHAST_TEAR, 8)
                 .effect("minecraft:regeneration")
                 .color(0xCD5CAB)
