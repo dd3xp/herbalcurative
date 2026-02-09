@@ -253,7 +253,8 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .tool(ModItems.FEATHER_QUILL.get())
                 .tool(ModItems.FORGE_HAMMER.get())
                 .input(Items.BOOK)
-                .material(Items.AMETHYST_SHARD, 8)
+                .material(Items.QUARTZ, 16)
+                .material(Items.LAPIS_LAZULI, 1)
                 .result(efficiencyBook)
                 .build(output, "efficiency_5_enchanted_book");
         
@@ -274,6 +275,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .input(Items.BOOK)
                 .material(Items.ROTTEN_FLESH, 16)
                 .material(Items.BONE, 16)
+                .material(Items.LAPIS_LAZULI, 1)
                 .result(smiteBook)
                 .build(output, "smite_5_enchanted_book");
         
@@ -299,11 +301,11 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         // ==================== Brewing Recipes ====================
         
         // Regeneration Potion
-        // Materials: 8 Ghast Tear
+        // Materials: 1 Golden Apple
         // Effect: regeneration
         // Color: 0xCD5CAB (regeneration potion pink)
         CauldronBrewingRecipeBuilder.builder()
-                .material(Items.GHAST_TEAR, 8)
+                .material(Items.GOLDEN_APPLE, 1)
                 .effect("minecraft:regeneration")
                 .color(0xCD5CAB)
                 .build(output, "regeneration_potion");

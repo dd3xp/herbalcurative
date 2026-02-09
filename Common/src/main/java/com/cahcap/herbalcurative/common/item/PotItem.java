@@ -55,7 +55,7 @@ public class PotItem extends Item {
     private static final String TAG_USES = "Uses";
     
     // Max uses per pot
-    public static final int MAX_USES = 16;
+    public static final int MAX_USES = 32;
     
     public PotItem(Properties properties) {
         super(properties.stacksTo(1));

@@ -11,6 +11,9 @@
     {
       "count": 16,
       "item": "minecraft:bone"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
     }
   ],
   "result": {

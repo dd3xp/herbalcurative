@@ -5,8 +5,11 @@
   },
   "materials": [
     {
-      "count": 8,
-      "item": "minecraft:amethyst_shard"
+      "count": 16,
+      "item": "minecraft:quartz"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
     }
   ],
   "result": {

@@ -4,40 +4,7 @@
   "effect": "minecraft:regeneration",
   "materials": [
     {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:nether_wart"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
-    },
-    {
-      "item": "minecraft:ghast_tear"
+      "item": "minecraft:golden_apple"
     }
   ]
 }
