@@ -102,7 +102,7 @@ public class ModCreativeTabs {
                         // Workbench Tools
                         output.accept(ModItems.CUTTING_KNIFE.get());
                         output.accept(ModItems.FEATHER_QUILL.get());
-                        output.accept(ModItems.ROPE.get());
+                        output.accept(ModItems.WOVEN_ROPE.get());
                         output.accept(ModItems.FORGE_HAMMER.get());
                     })
                     .build());

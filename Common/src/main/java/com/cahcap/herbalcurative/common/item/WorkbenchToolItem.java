@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * These are simple tools with durability that are used on the workbench.
  * - Cutting Knife - repaired with Iron Ingot
  * - Feather Quill - repaired with Ink Sac
- * - Rope - repaired with String
+ * - Woven Rope - repaired with String
  * - Forge Hammer - repaired with Iron Ingot
  */
 public class WorkbenchToolItem extends Item {

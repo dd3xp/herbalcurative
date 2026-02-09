@@ -89,7 +89,7 @@ public class ModRegistries {
     
     public static Supplier<Item> CUTTING_KNIFE;
     public static Supplier<Item> FEATHER_QUILL;
-    public static Supplier<Item> ROPE;
+    public static Supplier<Item> WOVEN_ROPE;
     public static Supplier<Item> FORGE_HAMMER;
     public static Supplier<Item> POT;
     public static Supplier<Item> CAULDRON_ITEM;

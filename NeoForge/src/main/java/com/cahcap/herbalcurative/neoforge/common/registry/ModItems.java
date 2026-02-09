@@ -160,7 +160,7 @@ public class ModItems {
     public static final DeferredItem<Item> CAULDRON = ITEMS.registerSimpleItem("cauldron");
     
     // ==================== Workbench Tools ====================
-    // Repair materials: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Rope = String
+    // Repair materials: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Woven Rope = String
     
     public static final DeferredItem<WorkbenchToolItem> CUTTING_KNIFE = ITEMS.register("cutting_knife",
             () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.IRON_INGOT));
@@ -168,7 +168,7 @@ public class ModItems {
     public static final DeferredItem<WorkbenchToolItem> FEATHER_QUILL = ITEMS.register("feather_quill",
             () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.INK_SAC));
     
-    public static final DeferredItem<WorkbenchToolItem> ROPE = ITEMS.register("rope",
+    public static final DeferredItem<WorkbenchToolItem> WOVEN_ROPE = ITEMS.register("woven_rope",
             () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.STRING));
     
     public static final DeferredItem<WorkbenchToolItem> FORGE_HAMMER = ITEMS.register("forge_hammer",

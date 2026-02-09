@@ -78,7 +78,7 @@ public class RegistryInit {
         
         ModRegistries.CUTTING_KNIFE = () -> ModItems.CUTTING_KNIFE.get();
         ModRegistries.FEATHER_QUILL = () -> ModItems.FEATHER_QUILL.get();
-        ModRegistries.ROPE = () -> ModItems.ROPE.get();
+        ModRegistries.WOVEN_ROPE = () -> ModItems.WOVEN_ROPE.get();
         ModRegistries.FORGE_HAMMER = () -> ModItems.FORGE_HAMMER.get();
         ModRegistries.POT = () -> ModItems.POT.get();
         ModRegistries.CAULDRON_ITEM = () -> ModItems.CAULDRON.get();
