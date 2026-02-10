@@ -233,6 +233,18 @@ public class CauldronBlock extends BaseEntityBlock {
                 return ItemInteractionResult.SUCCESS;
             }
             
+            // Extract from output slot: only when NOT shift clicking (shift + empty hand = extract materials)
+            if (master.hasOutputSlotItems() && !player.isShiftKeyDown()) {
+                ItemStack output = master.extractFromOutputSlot();
+                if (!output.isEmpty()) {
+                    if (!player.getInventory().add(output)) {
+                        player.drop(output, false);
+                    }
+                    level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+            
             // Handle water bucket - add water
             if (stack.is(Items.WATER_BUCKET)) {
                 if (master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000)) {
@@ -244,9 +256,19 @@ public class CauldronBlock extends BaseEntityBlock {
                 }
             }
             
-            // Handle empty bucket - extract fluid and return materials
+            // Handle empty bucket - extract fluid and return materials + output slot
             if (stack.is(Items.BUCKET) && master.hasFluid() && !master.isBrewing() && !master.isInfusing()) {
-                // Return materials to player first
+                // Return output slot to player first
+                if (master.hasOutputSlotItems()) {
+                    ItemStack output = master.extractFromOutputSlot();
+                    if (!output.isEmpty()) {
+                        if (!player.getInventory().add(output)) {
+                            player.drop(output, false);
+                        }
+                    }
+                }
+                
+                // Return materials to player
                 for (ItemStack material : master.getMaterials()) {
                     if (!material.isEmpty()) {
                         if (!player.getInventory().add(material.copy())) {

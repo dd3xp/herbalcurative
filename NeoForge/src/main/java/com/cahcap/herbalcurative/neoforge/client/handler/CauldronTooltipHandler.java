@@ -61,7 +61,7 @@ public class CauldronTooltipHandler {
             return;
         }
 
-        // Get items to display
+        // Get materials/herbs to display
         List<ItemCountPair> items = new ArrayList<>();
         
         if (master.isBrewing()) {
@@ -90,9 +90,13 @@ public class CauldronTooltipHandler {
                 }
             }
         }
+        
+        // Get output slot contents
+        ItemStack outputSlot = master.getOutputSlot();
+        boolean hasOutput = !outputSlot.isEmpty();
 
         // Don't render if nothing to show
-        if (items.isEmpty()) {
+        if (items.isEmpty() && !hasOutput) {
             return;
         }
 
@@ -100,34 +104,69 @@ public class CauldronTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
+        // Calculate widths for each row
+        int totalItems = items.size();
+        int materialsWidth = totalItems * 20;
+        int outputWidth = hasOutput ? 20 : 0;
+        
         // Position below crosshair
-        int startX = screenWidth / 2 - (items.size() * 20) / 2;
-        int y = screenHeight / 2 + 12;
-
-        // Render each item (items first, then text on top)
-        for (int i = 0; i < items.size(); i++) {
-            ItemCountPair pair = items.get(i);
-            ItemStack stack = new ItemStack(pair.item);
-            int x = startX + i * 20;
+        int materialsY = screenHeight / 2 + 12;
+        int outputY = materialsY + 20; // Output on second row
+        
+        // Render materials/herbs first row
+        if (totalItems > 0) {
+            int materialsStartX = screenWidth / 2 - materialsWidth / 2;
+            int currentX = materialsStartX;
             
-            // Render the item icon
-            guiGraphics.renderItem(stack, x, y);
+            for (int i = 0; i < items.size(); i++) {
+                ItemCountPair pair = items.get(i);
+                ItemStack stack = new ItemStack(pair.item);
+                
+                // Render the item icon
+                guiGraphics.renderItem(stack, currentX, materialsY);
+                currentX += 20;
+            }
+            
+            // Render text on top of materials (higher z-layer)
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+            
+            currentX = materialsStartX;
+            for (int i = 0; i < items.size(); i++) {
+                ItemCountPair pair = items.get(i);
+                
+                // Render the amount as overlay
+                String countText = String.valueOf(pair.count);
+                int textX = currentX + 17 - mc.font.width(countText);
+                int textY = materialsY + 9;
+                guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
+                currentX += 20;
+            }
+            
+            guiGraphics.pose().popPose();
         }
         
-        // Render text on top of all items (higher z-layer)
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 200);  // Move text to higher z-layer
-        for (int i = 0; i < items.size(); i++) {
-            ItemCountPair pair = items.get(i);
-            int x = startX + i * 20;
+        // Render output on second row (centered)
+        if (hasOutput) {
+            int outputStartX = screenWidth / 2 - outputWidth / 2;
             
-            // Render the amount as overlay
-            String countText = String.valueOf(pair.count);
-            int textX = x + 17 - mc.font.width(countText);
-            int textY = y + 9;
-            guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
+            // If no materials, render output on first row instead
+            int outputRenderY = totalItems > 0 ? outputY : materialsY;
+            
+            // Render output item
+            guiGraphics.renderItem(outputSlot, outputStartX, outputRenderY);
+            
+            // Render output count with yellow color
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+            
+            String countText = String.valueOf(outputSlot.getCount());
+            int textX = outputStartX + 17 - mc.font.width(countText);
+            int textY = outputRenderY + 9;
+            guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFF00, true); // Yellow for output
+            
+            guiGraphics.pose().popPose();
         }
-        guiGraphics.pose().popPose();
     }
 
     private static class ItemCountPair {

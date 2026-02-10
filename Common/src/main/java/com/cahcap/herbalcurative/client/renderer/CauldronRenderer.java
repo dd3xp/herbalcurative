@@ -93,9 +93,8 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
             renderHerbs(blockEntity, poseStack, bufferSource, light, partialTick);
         }
         
-        // Note: Infusing output is now added to materials list after infusing completes,
-        // so it's rendered by renderMaterials() along with other materials.
-        // No separate renderInfusingOutput() call needed.
+        // Render output slot in the center of the material ring
+        renderOutputSlot(blockEntity, poseStack, bufferSource, light, partialTick);
     }
     
     private void renderLiquidSurface(PoseStack poseStack, MultiBufferSource bufferSource, 
@@ -229,6 +228,41 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
             
             poseStack.popPose();
         }
+    }
+    
+    /**
+     * Render output slot contents in the center of the material ring
+     */
+    private void renderOutputSlot(CauldronBlockEntity blockEntity, PoseStack poseStack,
+                                   MultiBufferSource bufferSource, int light, float partialTick) {
+        ItemStack outputSlot = blockEntity.getOutputSlot();
+        if (outputSlot.isEmpty()) {
+            return;
+        }
+        
+        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+        
+        // Calculate animation offset for bobbing effect
+        long gameTime = blockEntity.getLevel().getGameTime();
+        float bobOffset = (float) Math.sin((gameTime + partialTick) * 0.1) * 0.02f;
+        
+        poseStack.pushPose();
+        
+        // Position in the center of the cauldron, on the liquid surface
+        poseStack.translate(0.5f, LIQUID_FULL_Y + 0.05f + bobOffset, 0.5f);
+        
+        // Lay flat and rotate slowly
+        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        poseStack.mulPose(Axis.ZP.rotationDegrees((gameTime + partialTick) * 1.5f));
+        
+        // Same size as materials
+        poseStack.scale(ITEM_SCALE, ITEM_SCALE, ITEM_SCALE);
+        
+        itemRenderer.renderStatic(outputSlot, ItemDisplayContext.FIXED, light,
+                OverlayTexture.NO_OVERLAY, poseStack, bufferSource,
+                blockEntity.getLevel(), 0);
+        
+        poseStack.popPose();
     }
     
     /**

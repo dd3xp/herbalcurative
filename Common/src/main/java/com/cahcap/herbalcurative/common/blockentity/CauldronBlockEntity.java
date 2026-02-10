@@ -94,6 +94,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     private int infusingProgress = 0;
     private int infusingTime = 0;
     private boolean isInfusing = false;
+    private CauldronInfusingRecipe currentInfusingRecipe = null; // Current recipe being processed
+    
+    // Output slot for infusing results (rendered in center of material ring)
+    private ItemStack outputSlot = ItemStack.EMPTY;
     
     // Store the herbs used in last brewing (for Flowweave Ring binding)
     private final Map<Item, Integer> lastBrewedHerbs = new HashMap<>();
@@ -264,6 +268,13 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             }
         }
         
+        // Always return output slot contents (even during brewing)
+        if (player != null && !master.outputSlot.isEmpty()) {
+            if (!player.getInventory().add(master.outputSlot.copy())) {
+                player.drop(master.outputSlot.copy(), false);
+            }
+        }
+        
         master.fluid.clear();
         master.isBrewing = false;
         master.isStartingBrew = false;
@@ -276,6 +287,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         master.infusingInput = ItemStack.EMPTY;
         master.infusingOutput = ItemStack.EMPTY;
         master.infusingProgress = 0;
+        master.currentInfusingRecipe = null;
+        master.outputSlot = ItemStack.EMPTY;
         master.lastBrewedHerbs.clear();
         master.setChanged();
         master.syncToClient();
@@ -286,7 +299,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     /**
      * Add an item to the cauldron.
      * - If brewing: only herbs can be added
-     * - If has fluid but not brewing/infusing: add as material, then check for infusing
+     * - If infusing: materials can be added (may cause infusing to stop if recipe no longer matches)
+     * - If has fluid: add as material, then check for infusing
      */
     public boolean addItem(ItemStack stack, Player player) {
         CauldronBlockEntity master = getMaster();
@@ -297,16 +311,13 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return master.addHerb(stack, player);
         }
         
-        // If already infusing, don't accept more items
-        if (master.isInfusing) {
-            return false;
-        }
-        
-        // Add as material first (works for any fluid: water or potion)
+        // Add as material (works for any fluid: water or potion)
+        // During infusing, adding items may cause the recipe to no longer match
+        // which will be detected in the tick and cancel infusing
         boolean added = master.addMaterial(stack, player);
         
-        if (added) {
-            // After adding material, check if materials now match an infusing recipe
+        if (added && !master.isInfusing) {
+            // Only check for new infusing if not already infusing
             master.checkAndStartInfusing(player);
         }
         
@@ -406,15 +417,17 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // If extracting material during infusing, cancel the infusing process
         if (master.isInfusing) {
-            master.isInfusing = false;
-            master.infusingProgress = 0;
-            master.infusingTime = 0;
-            master.infusingOutput = ItemStack.EMPTY;
-            master.infusingInput = ItemStack.EMPTY;
+            master.cancelInfusing();
         }
         
         master.setChanged();
         master.syncToClient();
+        
+        // Check if we can start infusing with remaining materials
+        if (!master.materials.isEmpty()) {
+            master.checkAndStartInfusing(player);
+        }
+        
         return extracted;
     }
     
@@ -473,8 +486,13 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         // Already infusing or brewing
         if (isInfusing || isBrewing) return;
         
-        // Find a recipe that exactly matches current materials
-        CauldronInfusingRecipe recipe = findExactInfusingRecipe();
+        // Find a recipe that matches current materials (relaxed matching)
+        CauldronInfusingRecipe recipe = findMatchingInfusingRecipe();
+        
+        // Check if output slot can accept the result
+        if (recipe != null && !canOutputSlotAccept(recipe)) {
+            return; // Output slot is full or incompatible
+        }
         
         if (recipe != null) {
             // Determine output based on recipe type
@@ -495,6 +513,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             infusingTime = CauldronInfusingRecipe.INFUSING_TIME_TICKS;  // 5 seconds
             infusingProgress = 0;
             isInfusing = true;
+            currentInfusingRecipe = recipe; // Save current recipe for validation and completion
             
             setChanged();
             syncToClient();
@@ -548,7 +567,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      * Find an infusing recipe that EXACTLY matches current materials and fluid.
      * This includes both normal infusing recipes and Flowweave Ring binding recipes.
      */
-    private CauldronInfusingRecipe findExactInfusingRecipe() {
+    /**
+     * Find a matching infusing recipe.
+     * Uses relaxed matching - materials just need to contain the required item types.
+     */
+    private CauldronInfusingRecipe findMatchingInfusingRecipe() {
         if (level == null) return null;
         
         var recipes = level.getRecipeManager().getAllRecipesFor(ModRegistries.CAULDRON_INFUSING_RECIPE_TYPE.get());
@@ -562,8 +585,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                 if (!matchesFlowweaveRingBindingConditions()) continue;
             }
             
-            // Check materials exact match
-            if (recipe.matchesMaterialsExactly(materials)) {
+            // Check materials contain required types (relaxed matching)
+            if (recipe.matchesMaterialsContains(materials)) {
                 return recipe;
             }
         }
@@ -836,21 +859,31 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     
     /**
      * Complete the infusing process:
-     * - Clear the consumed materials
-     * - Add output to materials (floats on water surface)
+     * - Consume recipe-required amount of materials
+     * - Add output to output slot
      * - Convert any fluid to water
+     * - Check if can continue infusing with remaining materials
      */
     private void completeInfusing() {
-        if (!isInfusing || infusingOutput.isEmpty()) {
+        if (!isInfusing || infusingOutput.isEmpty() || currentInfusingRecipe == null) {
             isInfusing = false;
+            currentInfusingRecipe = null;
             return;
         }
         
-        // Clear the materials that were consumed
-        materials.clear();
+        // Consume only the recipe-required amount of materials
+        consumeRecipeMaterials(currentInfusingRecipe);
         
-        // Add the output to materials (so it floats on the water surface)
-        materials.add(infusingOutput.copy());
+        // Add the output to output slot (rendered in center)
+        ItemStack result = infusingOutput.copy();
+        if (outputSlot.isEmpty()) {
+            outputSlot = result;
+        } else if (ItemStack.isSameItemSameComponents(outputSlot, result)) {
+            // Stack with existing output
+            int space = outputSlot.getMaxStackSize() - outputSlot.getCount();
+            int toAdd = Math.min(result.getCount(), space);
+            outputSlot.grow(toAdd);
+        }
         
         // Convert any fluid (water, potion, lava, etc.) to water
         fluid.convertToWater();
@@ -860,9 +893,66 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         infusingProgress = 0;
         infusingTime = 0;
         infusingOutput = ItemStack.EMPTY;
+        currentInfusingRecipe = null;
         
         setChanged();
         syncToClient();
+        
+        // Check if we can continue infusing with remaining materials
+        checkAndStartInfusing(null);
+    }
+    
+    /**
+     * Cancel the current infusing process without consuming materials.
+     * Called when materials no longer match the recipe.
+     */
+    private void cancelInfusing() {
+        isInfusing = false;
+        infusingProgress = 0;
+        infusingTime = 0;
+        infusingOutput = ItemStack.EMPTY;
+        currentInfusingRecipe = null;
+        
+        setChanged();
+        syncToClient();
+    }
+    
+    /**
+     * Consume recipe-required materials from the cauldron.
+     * Consumes up to the recipe amount, or all available if less.
+     */
+    private void consumeRecipeMaterials(CauldronInfusingRecipe recipe) {
+        List<ItemStack> requiredInputs = recipe.getInputs();
+        
+        // Build a map of required items -> count
+        Map<Item, Integer> toConsume = new HashMap<>();
+        for (ItemStack input : requiredInputs) {
+            toConsume.merge(input.getItem(), input.getCount(), Integer::sum);
+        }
+        
+        // Consume from materials
+        java.util.Iterator<ItemStack> iterator = materials.iterator();
+        while (iterator.hasNext()) {
+            ItemStack stack = iterator.next();
+            Item item = stack.getItem();
+            
+            if (toConsume.containsKey(item)) {
+                int needed = toConsume.get(item);
+                int available = stack.getCount();
+                int consume = Math.min(needed, available);
+                
+                stack.shrink(consume);
+                toConsume.put(item, needed - consume);
+                
+                if (stack.isEmpty()) {
+                    iterator.remove();
+                }
+                
+                if (toConsume.get(item) <= 0) {
+                    toConsume.remove(item);
+                }
+            }
+        }
     }
     
     // ==================== Heat Source Detection ====================
@@ -967,13 +1057,29 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // Infusing progress (does NOT require heat source)
         if (be.isInfusing) {
-            be.infusingProgress++;
-            if (be.infusingProgress >= be.infusingTime) {
-                // Infusing complete
-                be.completeInfusing();
-            } else if (be.infusingProgress % 20 == 0) {
-                be.setChanged();
-                be.syncToClient();
+            // If recipe was lost (e.g., after reload), try to recover it
+            if (be.currentInfusingRecipe == null) {
+                be.currentInfusingRecipe = be.findMatchingInfusingRecipe();
+                if (be.currentInfusingRecipe == null) {
+                    // Cannot recover recipe - cancel infusing
+                    be.cancelInfusing();
+                    return;
+                }
+            }
+            
+            // Check if materials still match the recipe (in case items were added during infusing)
+            if (!be.currentInfusingRecipe.matchesMaterialsContains(be.materials)) {
+                // Materials no longer match - stop infusing
+                be.cancelInfusing();
+            } else {
+                be.infusingProgress++;
+                if (be.infusingProgress >= be.infusingTime) {
+                    // Infusing complete
+                    be.completeInfusing();
+                } else if (be.infusingProgress % 20 == 0) {
+                    be.setChanged();
+                    be.syncToClient();
+                }
             }
         }
     }
@@ -1012,12 +1118,13 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                 if (isHerb(stack.getItem())) {
                     added = addHerbFromEntity(stack);
                 }
-            } else if (!isInfusing) {
+            } else {
                 // Add as material (works for any fluid: water or potion)
+                // During infusing, adding items may cause the recipe to no longer match
                 added = addMaterialFromEntity(stack);
                 
-                if (added) {
-                    // After adding material, check if materials now match an infusing recipe
+                if (added && !isInfusing) {
+                    // Only check for new infusing if not already infusing
                     checkAndStartInfusing(null);
                 }
             }
@@ -1149,6 +1256,65 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
     
     /**
+     * Get the output slot contents (infusing results)
+     */
+    public ItemStack getOutputSlot() {
+        CauldronBlockEntity master = getMaster();
+        return master != null ? master.outputSlot.copy() : ItemStack.EMPTY;
+    }
+    
+    /**
+     * Check if output slot has items
+     */
+    public boolean hasOutputSlotItems() {
+        CauldronBlockEntity master = getMaster();
+        return master != null && !master.outputSlot.isEmpty();
+    }
+    
+    /**
+     * Extract items from output slot
+     * @return The extracted items
+     */
+    public ItemStack extractFromOutputSlot() {
+        CauldronBlockEntity master = getMaster();
+        if (master == null || master.outputSlot.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        
+        ItemStack extracted = master.outputSlot.copy();
+        master.outputSlot = ItemStack.EMPTY;
+        master.setChanged();
+        master.syncToClient();
+        return extracted;
+    }
+    
+    /**
+     * Check if the output slot can accept a recipe's result
+     */
+    private boolean canOutputSlotAccept(CauldronInfusingRecipe recipe) {
+        ItemStack result;
+        if (recipe.isFlowweaveRingBinding()) {
+            result = createBoundFlowweaveRing();
+        } else if (recipe.isFlowweaveRingUnbinding()) {
+            result = createUnboundFlowweaveRing();
+        } else {
+            result = recipe.getOutput();
+        }
+        
+        if (result.isEmpty()) return false;
+        
+        // Empty slot can accept anything
+        if (outputSlot.isEmpty()) return true;
+        
+        // Check if can stack with existing
+        if (!ItemStack.isSameItemSameComponents(outputSlot, result)) return false;
+        
+        // Check if there's space
+        int space = outputSlot.getMaxStackSize() - outputSlot.getCount();
+        return space >= result.getCount();
+    }
+    
+    /**
      * Get the herbs used in last brewing (for Flowweave Ring binding)
      */
     public Map<Item, Integer> getLastBrewedHerbs() {
@@ -1189,6 +1355,19 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             }
         }
         // Note: herbs are also consumed during brewing, so no need to drop them
+        
+        // Drop output slot contents
+        if (!master.outputSlot.isEmpty()) {
+            ItemEntity entityItem = new ItemEntity(
+                    level,
+                    masterPos.getX() + 0.5,
+                    masterPos.getY() + 0.5,
+                    masterPos.getZ() + 0.5,
+                    master.outputSlot.copy()
+            );
+            level.addFreshEntity(entityItem);
+            master.outputSlot = ItemStack.EMPTY;
+        }
         
         // Get all block positions in the structure
         List<BlockPos> structurePositions = getStructurePositions(masterPos);
@@ -1331,6 +1510,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             if (!infusingOutput.isEmpty()) {
                 tag.put("InfusingOutput", infusingOutput.save(registries));
             }
+            
+            // Save output slot
+            if (!outputSlot.isEmpty()) {
+                tag.put("OutputSlot", outputSlot.save(registries));
+            }
         }
     }
     
@@ -1392,6 +1576,13 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             }
             if (tag.contains("InfusingOutput")) {
                 infusingOutput = ItemStack.parse(registries, tag.getCompound("InfusingOutput")).orElse(ItemStack.EMPTY);
+            }
+            
+            // Load output slot
+            if (tag.contains("OutputSlot")) {
+                outputSlot = ItemStack.parse(registries, tag.getCompound("OutputSlot")).orElse(ItemStack.EMPTY);
+            } else {
+                outputSlot = ItemStack.EMPTY;
             }
         }
     }

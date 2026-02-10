@@ -114,9 +114,10 @@ public class PotItem extends Item {
         fillPot(stack, effectIds, master.getFluidColor(), 
                 master.getPotionDuration(), master.getPotionLevel());
         
-        // Return any floating materials (infusion products) to player
+        // Return any floating materials and output slot to player
         Player player = context.getPlayer();
         if (player != null) {
+            // Return materials
             for (ItemStack material : master.getMaterials()) {
                 if (!material.isEmpty()) {
                     if (!player.getInventory().add(material.copy())) {
@@ -124,9 +125,18 @@ public class PotItem extends Item {
                     }
                 }
             }
+            // Return output slot
+            if (master.hasOutputSlotItems()) {
+                ItemStack output = master.extractFromOutputSlot();
+                if (!output.isEmpty()) {
+                    if (!player.getInventory().add(output)) {
+                        player.drop(output, false);
+                    }
+                }
+            }
         }
         
-        // Clear the cauldron fluid (this also clears materials)
+        // Clear the cauldron fluid (this also clears materials and output slot)
         master.clearFluid();
         
         level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);

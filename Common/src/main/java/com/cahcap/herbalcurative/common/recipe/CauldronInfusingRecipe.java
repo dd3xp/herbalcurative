@@ -136,6 +136,37 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
         return required.equals(actual);
     }
     
+    /**
+     * Check if the given materials CONTAIN this recipe's required item types.
+     * Does not require exact counts - just checks if the required item types are present.
+     * Used for relaxed matching where any quantity is acceptable.
+     */
+    public boolean matchesMaterialsContains(List<ItemStack> materials) {
+        if (inputs.isEmpty()) {
+            return materials.isEmpty();
+        }
+        if (materials.isEmpty()) {
+            return false;
+        }
+        
+        // Build a set of required item types
+        java.util.Set<Item> required = new java.util.HashSet<>();
+        for (ItemStack input : inputs) {
+            required.add(input.getItem());
+        }
+        
+        // Build a set of actual material types
+        java.util.Set<Item> actual = new java.util.HashSet<>();
+        for (ItemStack stack : materials) {
+            if (!stack.isEmpty()) {
+                actual.add(stack.getItem());
+            }
+        }
+        
+        // Actual must contain all required types AND no extra types
+        return actual.equals(required);
+    }
+    
     @Override
     public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
         return output.copy();
