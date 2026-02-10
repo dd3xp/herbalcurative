@@ -307,7 +307,13 @@ public class FlowweaveProjectile extends ThrowableProjectile {
             }
         }
         
-        // Color is automatically set based on the effects added
+        // Set custom particle color using ColorParticleOption
+        int cloudColor = getColor();
+        float r = ((cloudColor >> 16) & 0xFF) / 255.0F;
+        float g = ((cloudColor >> 8) & 0xFF) / 255.0F;
+        float b = (cloudColor & 0xFF) / 255.0F;
+        cloud.setParticle(net.minecraft.core.particles.ColorParticleOption.create(
+                net.minecraft.core.particles.ParticleTypes.ENTITY_EFFECT, r, g, b));
         
         level.addFreshEntity(cloud);
     }

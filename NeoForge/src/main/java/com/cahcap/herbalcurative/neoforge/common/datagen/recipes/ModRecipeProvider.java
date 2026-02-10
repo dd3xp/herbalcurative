@@ -369,7 +369,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         // Chaos Potion (weaving + wind_charged + oozing + infested)
         CauldronBrewingRecipeBuilder.builder()
                 .material(Items.COBWEB, 8)
-                .material(Items.WIND_CHARGE, 8)
+                .material(Items.BREEZE_ROD, 8)
                 .material(Items.SLIME_BALL, 8)
                 .material(Items.STONE, 8)
                 .effects("minecraft:weaving", "minecraft:wind_charged", "minecraft:oozing", "minecraft:infested")

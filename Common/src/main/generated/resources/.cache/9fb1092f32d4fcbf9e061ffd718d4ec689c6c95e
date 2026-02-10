@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-10T11:30:33.0850995	Recipes
+// 1.21.1	2026-02-10T11:42:45.232524	Recipes
 26bef6d7606d006967e73b540786020759ff24b3 data/herbalcurative/advancement/recipes/building_blocks/lumistone.json
 078f474aab4adcf44c51e63dcd6cce54dee4d920 data/herbalcurative/advancement/recipes/building_blocks/lumistone_bricks.json
 8bb38edf43e778856ffad99f2e30f06d3ab63b7b data/herbalcurative/advancement/recipes/building_blocks/lumistone_brick_slab.json
@@ -18,7 +18,7 @@ e5ee491d2067d169cc3dcfa08923a8e19c2a5346 data/herbalcurative/advancement/recipes
 df0b3a3dcbe299213833ca3e0a70a56b97062ea5 data/herbalcurative/advancement/recipes/misc/rosynia_seed.json
 63ed937076de9fe2824cfa759e75c71b25976113 data/herbalcurative/advancement/recipes/misc/verdscale_fern_seed.json
 dfe64e19d44a22a2144f223e7f91bacc3d9b7924 data/herbalcurative/advancement/recipes/misc/zephyr_lily_seed.json
-5647c0b0d61494248fae2fea267a0a6d13ffcdb4 data/herbalcurative/recipe/cauldron_brewing/chaos_potion.json
+abca25adec6f443e60106a0a1b66490701c0320c data/herbalcurative/recipe/cauldron_brewing/chaos_potion.json
 22cc189f5698af34223e987b95836ea4e29c549a data/herbalcurative/recipe/cauldron_brewing/instant_damage_potion.json
 0401aa132d2f721ae3c6804809e8fe28370c30f2 data/herbalcurative/recipe/cauldron_brewing/instant_health_potion.json
 871b0698808760c0e9bd9fcd0e1693a90bb2d6e7 data/herbalcurative/recipe/cauldron_brewing/regeneration_potion.json
