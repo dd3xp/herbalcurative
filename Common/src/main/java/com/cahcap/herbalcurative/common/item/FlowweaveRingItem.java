@@ -39,6 +39,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +93,8 @@ public class FlowweaveRingItem extends Item {
     
     // NBT keys for bound potion
     private static final String TAG_BOUND = "BoundPotion";
-    private static final String TAG_POTION_TYPE = "PotionType";
+    private static final String TAG_POTION_TYPES = "PotionTypes";  // List of effect IDs
+    private static final String TAG_POTION_TYPE = "PotionType";    // Legacy single effect
     private static final String TAG_POTION_COLOR = "PotionColor";
     private static final String TAG_DURATION = "Duration";
     private static final String TAG_LEVEL = "Level";
@@ -125,15 +128,28 @@ public class FlowweaveRingItem extends Item {
     /**
      * Bind a potion to this Flowweave Ring
      * Preserves the existing casting mode if set
+     * Supports multiple effects
      */
-    public static void bindPotion(ItemStack stack, String potionType, int color, 
+    public static void bindPotion(ItemStack stack, List<String> potionTypes, int color, 
                                    int duration, int level, Map<Item, Integer> herbCost) {
         // Get existing tag to preserve casting mode
         CustomData existingData = stack.get(DataComponents.CUSTOM_DATA);
         CompoundTag tag = existingData != null ? existingData.copyTag() : new CompoundTag();
         
         tag.putBoolean(TAG_BOUND, true);
-        tag.putString(TAG_POTION_TYPE, potionType);
+        
+        // Store effects as a list
+        net.minecraft.nbt.ListTag effectsList = new net.minecraft.nbt.ListTag();
+        for (String effectId : potionTypes) {
+            effectsList.add(net.minecraft.nbt.StringTag.valueOf(effectId));
+        }
+        tag.put(TAG_POTION_TYPES, effectsList);
+        
+        // Also store first effect for backwards compatibility
+        if (!potionTypes.isEmpty()) {
+            tag.putString(TAG_POTION_TYPE, potionTypes.get(0));
+        }
+        
         tag.putInt(TAG_POTION_COLOR, color);
         tag.putInt(TAG_DURATION, duration);
         tag.putInt(TAG_LEVEL, level);
@@ -150,6 +166,14 @@ public class FlowweaveRingItem extends Item {
     }
     
     /**
+     * Bind a single potion effect (backwards compatible)
+     */
+    public static void bindPotion(ItemStack stack, String potionType, int color, 
+                                   int duration, int level, Map<Item, Integer> herbCost) {
+        bindPotion(stack, List.of(potionType), color, duration, level, herbCost);
+    }
+    
+    /**
      * Unbind the potion from this Flowweave Ring (clear all binding data)
      */
     public static void unbindPotion(ItemStack stack) {
@@ -158,12 +182,40 @@ public class FlowweaveRingItem extends Item {
     }
     
     /**
-     * Get bound potion type
+     * Get all bound potion effect IDs
+     */
+    public static List<String> getBoundPotionTypes(ItemStack stack) {
+        List<String> effectIds = new java.util.ArrayList<>();
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) {
+            return effectIds;
+        }
+        
+        CompoundTag tag = customData.copyTag();
+        
+        // Try new list format first
+        if (tag.contains(TAG_POTION_TYPES)) {
+            net.minecraft.nbt.ListTag effectsList = tag.getList(TAG_POTION_TYPES, net.minecraft.nbt.Tag.TAG_STRING);
+            for (int i = 0; i < effectsList.size(); i++) {
+                effectIds.add(effectsList.getString(i));
+            }
+        } else if (tag.contains(TAG_POTION_TYPE)) {
+            // Fallback to legacy single effect
+            String legacyType = tag.getString(TAG_POTION_TYPE);
+            if (!legacyType.isEmpty()) {
+                effectIds.add(legacyType);
+            }
+        }
+        
+        return effectIds;
+    }
+    
+    /**
+     * Get first bound potion type (for backwards compatibility)
      */
     public static String getBoundPotionType(ItemStack stack) {
-        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
-        if (customData == null) return "";
-        return customData.copyTag().getString(TAG_POTION_TYPE);
+        List<String> types = getBoundPotionTypes(stack);
+        return types.isEmpty() ? "" : types.get(0);
     }
     
     /**
@@ -329,30 +381,46 @@ public class FlowweaveRingItem extends Item {
             consumeHerbs(player, adjustedCost);
         }
         
-        // Get potion data
-        String potionType = getBoundPotionType(stack);
+        // Get potion data - now supports multiple effects
+        List<String> potionTypes = getBoundPotionTypes(stack);
         int amplifier = getBoundLevel(stack) - 1; // 0-based amplifier
         int color = getBoundPotionColor(stack);
         
-        Holder<MobEffect> effect = getEffectForType(potionType);
-        if (effect == null) {
+        // Convert to effect holders
+        List<Holder<MobEffect>> effects = new java.util.ArrayList<>();
+        for (String potionType : potionTypes) {
+            Holder<MobEffect> effect = getEffectForType(potionType);
+            if (effect != null) {
+                effects.add(effect);
+            }
+        }
+        
+        if (effects.isEmpty()) {
             return false;
         }
         
-        // Check if this is an instant effect
-        boolean isInstantEffect = potionType.contains("instant_health") || potionType.contains("instant_damage");
+        // Check if any effect is instant
+        boolean isInstant = false;
+        for (Holder<MobEffect> effect : effects) {
+            if (isInstantEffect(effect)) {
+                isInstant = true;
+                break;
+            }
+        }
         
         // For instant effects, use duration of 1 tick; for others, convert seconds to ticks
-        int duration = isInstantEffect ? 1 : getBoundDuration(stack) * 20;
+        int duration = isInstant ? 1 : getBoundDuration(stack) * 20;
         
         switch (mode) {
             case INFUSION:
-                // Apply effect to self
-                if (isInstantEffect) {
-                    // For instant effects, apply immediately using the effect's value
-                    applyInstantEffect(player, effect, amplifier);
-                } else {
-                    player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                // Apply all effects to self
+                for (Holder<MobEffect> effect : effects) {
+                    if (isInstantEffect(effect)) {
+                        // For instant effects, apply immediately
+                        applyInstantEffect(player, effect, amplifier);
+                    } else {
+                        player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                    }
                 }
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 1.0F, 1.2F);
@@ -360,12 +428,12 @@ public class FlowweaveRingItem extends Item {
                 
             case BURST:
                 // Shoot projectile that applies AOE buff on impact
-                shootProjectile(level, player, effect, duration, amplifier, color, false, isInstantEffect);
+                shootProjectile(level, player, effects, duration, amplifier, color, false, isInstant);
                 break;
                 
             case LINGERING:
                 // Shoot projectile that creates lingering cloud on impact
-                shootProjectile(level, player, effect, duration, amplifier, color, true, isInstantEffect);
+                shootProjectile(level, player, effects, duration, amplifier, color, true, isInstant);
                 break;
         }
         
@@ -384,12 +452,13 @@ public class FlowweaveRingItem extends Item {
     
     /**
      * Shoot a projectile for BURST or LINGERING mode
+     * Supports multiple effects
      */
-    private void shootProjectile(Level level, Player player, Holder<MobEffect> effect, 
+    private void shootProjectile(Level level, Player player, List<Holder<MobEffect>> effects, 
                                   int duration, int amplifier, int color, boolean lingering, boolean isInstant) {
         // Create and spawn the projectile entity
         FlowweaveProjectile projectile = new FlowweaveProjectile(level, player);
-        projectile.setEffect(effect, duration, amplifier);
+        projectile.setEffects(effects, duration, amplifier);
         projectile.setColor(color);
         projectile.setLingering(lingering);
         projectile.setInstant(isInstant);
@@ -512,65 +581,60 @@ public class FlowweaveRingItem extends Item {
         return remaining;
     }
     
+    /**
+     * Get effect holder from registry ID string.
+     * Uses dynamic registry lookup instead of hardcoded switch.
+     */
     private Holder<MobEffect> getEffectForType(String type) {
         // type is a full registry ID like "minecraft:instant_health"
-        return switch (type) {
-            case "minecraft:instant_health" -> MobEffects.HEAL;
-            case "minecraft:regeneration" -> MobEffects.REGENERATION;
-            case "minecraft:strength" -> MobEffects.DAMAGE_BOOST;
-            case "minecraft:speed" -> MobEffects.MOVEMENT_SPEED;
-            case "minecraft:fire_resistance" -> MobEffects.FIRE_RESISTANCE;
-            case "minecraft:night_vision" -> MobEffects.NIGHT_VISION;
-            case "minecraft:invisibility" -> MobEffects.INVISIBILITY;
-            case "minecraft:water_breathing" -> MobEffects.WATER_BREATHING;
-            case "minecraft:jump_boost" -> MobEffects.JUMP;
-            case "minecraft:slow_falling" -> MobEffects.SLOW_FALLING;
-            case "minecraft:poison" -> MobEffects.POISON;
-            case "minecraft:instant_damage" -> MobEffects.HARM;
-            case "minecraft:weakness" -> MobEffects.WEAKNESS;
-            case "minecraft:slowness" -> MobEffects.MOVEMENT_SLOWDOWN;
-            default -> null;
-        };
+        ResourceLocation id = ResourceLocation.tryParse(type);
+        if (id == null) return null;
+        
+        MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+        if (effect == null) return null;
+        
+        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
+    }
+    
+    /**
+     * Check if an effect is instantaneous (like heal/harm) using vanilla API.
+     */
+    private boolean isInstantEffect(Holder<MobEffect> effect) {
+        return effect != null && effect.value().isInstantenous();
     }
     
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (hasBoundPotion(stack)) {
-            String type = getBoundPotionType(stack);
+            List<String> types = getBoundPotionTypes(stack);
             int duration = getBoundDuration(stack);
             int level = getBoundLevel(stack);
             
-            // type is a full registry ID like "minecraft:instant_health"
-            String typeName = switch (type) {
-                case "minecraft:instant_health" -> "Healing";
-                case "minecraft:regeneration" -> "Regeneration";
-                case "minecraft:strength" -> "Strength";
-                case "minecraft:speed" -> "Speed";
-                case "minecraft:fire_resistance" -> "Fire Resistance";
-                case "minecraft:night_vision" -> "Night Vision";
-                case "minecraft:invisibility" -> "Invisibility";
-                case "minecraft:water_breathing" -> "Water Breathing";
-                case "minecraft:jump_boost" -> "Jump Boost";
-                case "minecraft:slow_falling" -> "Slow Falling";
-                case "minecraft:poison" -> "Poison";
-                case "minecraft:instant_damage" -> "Harming";
-                case "minecraft:weakness" -> "Weakness";
-                case "minecraft:slowness" -> "Slowness";
-                default -> type.contains(":") ? type.substring(type.indexOf(":") + 1) : type;
-            };
-            
-            tooltip.add(Component.literal("Bound: " + typeName)
+            // Display bound effects
+            tooltip.add(Component.literal("Bound:")
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
+            for (String type : types) {
+                String typeName = getEffectDisplayName(type);
+                tooltip.add(Component.literal("  " + typeName)
+                        .withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
             
             if (level > 1) {
                 tooltip.add(Component.literal("Level " + level)
                         .withStyle(ChatFormatting.BLUE));
             }
             
-            // Check if this is an instant effect (don't show duration for instant effects)
-            boolean isInstantEffect = type.contains("instant_health") || type.contains("instant_damage");
+            // Check if any effect is instant (don't show duration for instant effects)
+            boolean isInstant = false;
+            for (String type : types) {
+                Holder<MobEffect> effect = getEffectForType(type);
+                if (isInstantEffect(effect)) {
+                    isInstant = true;
+                    break;
+                }
+            }
             
-            if (!isInstantEffect) {
+            if (!isInstant) {
                 // Duration is stored in seconds, display as "mm:ss"
                 int minutes = duration / 60;
                 int seconds = duration % 60;
@@ -610,6 +674,21 @@ public class FlowweaveRingItem extends Item {
             tooltip.add(Component.translatable("item.herbalcurative.flowweave_ring.mode_hint")
                     .withStyle(ChatFormatting.DARK_GRAY));
         }
+    }
+    
+    /**
+     * Get effect display name from registry
+     */
+    private String getEffectDisplayName(String type) {
+        ResourceLocation id = ResourceLocation.tryParse(type);
+        if (id != null) {
+            MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+            if (effect != null) {
+                return effect.getDisplayName().getString();
+            }
+        }
+        // Fallback: extract name from registry ID
+        return type.contains(":") ? type.substring(type.indexOf(":") + 1) : type;
     }
     
     /**

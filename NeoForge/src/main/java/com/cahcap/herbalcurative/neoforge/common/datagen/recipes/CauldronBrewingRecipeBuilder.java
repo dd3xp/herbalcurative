@@ -20,15 +20,21 @@ import java.util.List;
  * 3. Use Flowweave Ring to start brewing
  * 4. Add herbs to increase duration/amplifier
  * 5. Use Flowweave Ring to finish brewing
- * 6. Result: Potion with specified effect
+ * 6. Result: Potion with specified effect(s)
+ * 
+ * Supports multiple effects per recipe (e.g., Speed + Jump Boost for "Travel Potion")
  */
 public class CauldronBrewingRecipeBuilder {
     
     private final List<Ingredient> materials = new ArrayList<>();
-    private String effectId = "";
+    private final List<String> effectIds = new ArrayList<>();
     private int baseColor = 0x3F76E4;
-    private int maxDuration = 480;    // Default: 8 minutes (for binding requirement)
-    private int maxAmplifier = 3;     // Default: level 4 (for binding requirement)
+    private int defaultDuration = 120;  // Default: 2 minutes
+    private int defaultAmplifier = 0;   // Default: level 1
+    private int maxDuration = 480;      // Default: 8 minutes (for binding requirement)
+    private int maxAmplifier = 1;       // Default: level 2 (for binding requirement)
+    private int durationPerHerb = 30;   // Default: 30 seconds per overworld herb
+    private int herbsPerLevel = 12;     // Default: 12 nether/end herbs per level
     
     private CauldronBrewingRecipeBuilder() {
     }
@@ -71,11 +77,23 @@ public class CauldronBrewingRecipeBuilder {
     }
     
     /**
-     * Set the potion effect ID.
+     * Add a potion effect ID.
+     * Can be called multiple times to add multiple effects.
      * @param effectId The effect registry ID (e.g., "minecraft:instant_health")
      */
     public CauldronBrewingRecipeBuilder effect(String effectId) {
-        this.effectId = effectId;
+        this.effectIds.add(effectId);
+        return this;
+    }
+    
+    /**
+     * Add multiple potion effect IDs at once.
+     * @param effectIds The effect registry IDs
+     */
+    public CauldronBrewingRecipeBuilder effects(String... effectIds) {
+        for (String effectId : effectIds) {
+            this.effectIds.add(effectId);
+        }
         return this;
     }
     
@@ -85,6 +103,25 @@ public class CauldronBrewingRecipeBuilder {
      */
     public CauldronBrewingRecipeBuilder color(int color) {
         this.baseColor = color;
+        return this;
+    }
+    
+    /**
+     * Set the default duration when first brewed (in seconds).
+     * @param defaultDuration Default duration in seconds
+     */
+    public CauldronBrewingRecipeBuilder defaultDuration(int defaultDuration) {
+        this.defaultDuration = defaultDuration;
+        return this;
+    }
+    
+    /**
+     * Set the default amplifier when first brewed.
+     * 0 = level 1, 1 = level 2, etc.
+     * @param defaultAmplifier Default amplifier (0-based)
+     */
+    public CauldronBrewingRecipeBuilder defaultAmplifier(int defaultAmplifier) {
+        this.defaultAmplifier = defaultAmplifier;
         return this;
     }
     
@@ -111,6 +148,24 @@ public class CauldronBrewingRecipeBuilder {
     }
     
     /**
+     * Set seconds added per overworld herb.
+     * @param durationPerHerb Seconds per herb (default: 30)
+     */
+    public CauldronBrewingRecipeBuilder durationPerHerb(int durationPerHerb) {
+        this.durationPerHerb = durationPerHerb;
+        return this;
+    }
+    
+    /**
+     * Set number of nether/end herbs needed for +1 level.
+     * @param herbsPerLevel Herbs per level (default: 12)
+     */
+    public CauldronBrewingRecipeBuilder herbsPerLevel(int herbsPerLevel) {
+        this.herbsPerLevel = herbsPerLevel;
+        return this;
+    }
+    
+    /**
      * Build and save the recipe.
      * @param recipeOutput The recipe output
      * @param name The recipe name (without namespace)
@@ -128,16 +183,20 @@ public class CauldronBrewingRecipeBuilder {
         if (materials.isEmpty()) {
             throw new IllegalStateException("Recipe " + id + " has no materials!");
         }
-        if (effectId.isEmpty()) {
-            throw new IllegalStateException("Recipe " + id + " has no effect!");
+        if (effectIds.isEmpty()) {
+            throw new IllegalStateException("Recipe " + id + " has no effects!");
         }
         
         CauldronBrewingRecipe recipe = new CauldronBrewingRecipe(
                 new ArrayList<>(materials),
-                effectId,
+                new ArrayList<>(effectIds),
                 baseColor,
+                defaultDuration,
+                defaultAmplifier,
                 maxDuration,
-                maxAmplifier
+                maxAmplifier,
+                durationPerHerb,
+                herbsPerLevel
         );
         
         recipeOutput.accept(id, recipe, null);

@@ -1,7 +1,9 @@
 {
   "type": "herbalcurative:cauldron_brewing",
   "color": 9643043,
-  "effect": "minecraft:strength",
+  "effects": [
+    "minecraft:strength"
+  ],
   "materials": [
     {
       "item": "minecraft:blaze_rod"
@@ -27,6 +29,5 @@
     {
       "item": "minecraft:blaze_rod"
     }
-  ],
-  "max_amplifier": 1
+  ]
 }

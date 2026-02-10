@@ -510,14 +510,19 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         ItemStack ringStack = materials.get(0);
         ItemStack boundRing = ringStack.copy();
         
-        MobEffect effect = fluid.getEffect();
-        String effectId = effect != null ? 
-                BuiltInRegistries.MOB_EFFECT.getKey(effect).toString() : "";
+        // Convert effects to effect IDs
+        List<String> effectIds = new ArrayList<>();
+        for (MobEffect effect : fluid.getEffects()) {
+            net.minecraft.resources.ResourceLocation effectResLoc = BuiltInRegistries.MOB_EFFECT.getKey(effect);
+            if (effectResLoc != null) {
+                effectIds.add(effectResLoc.toString());
+            }
+        }
         
         Map<Item, Integer> herbCost = new HashMap<>(lastBrewedHerbs);
         
         FlowweaveRingItem.bindPotion(boundRing,
-                effectId,
+                effectIds,
                 fluid.getColor(),
                 fluid.getDuration(),
                 fluid.getAmplifier() + 1,
@@ -581,25 +586,25 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         // Check if potion has reached maximum duration and level
         if (!fluid.isPotion()) return false;
         
-        MobEffect effect = fluid.getEffect();
-        if (effect == null) return false;
+        List<MobEffect> effects = fluid.getEffects();
+        if (effects.isEmpty()) return false;
         
-        // Get the effect ID to find the brewing recipe
-        net.minecraft.resources.ResourceLocation effectResLoc = BuiltInRegistries.MOB_EFFECT.getKey(effect);
-        if (effectResLoc == null) return false;
-        
-        String effectId = effectResLoc.toString();
-        
-        // Find the brewing recipe for this effect to get max values
-        CauldronBrewingRecipe brewingRecipe = findBrewingRecipeByEffect(effectId);
+        // Find the brewing recipe for these effects to get max values
+        CauldronBrewingRecipe brewingRecipe = findBrewingRecipeByEffects(effects);
         if (brewingRecipe == null) {
-            // No recipe found for this effect - use default values
-            // Default: 480 seconds, level 4 (amplifier 3)
+            // No recipe found for these effects - use default values
+            // Default: 480 seconds, level 2 (amplifier 1)
             int defaultMaxDuration = 480;
-            int defaultMaxAmplifier = 3;
+            int defaultMaxAmplifier = 1;
             
-            boolean isInstant = effectResLoc.getPath().equals("instant_health") || 
-                               effectResLoc.getPath().equals("instant_damage");
+            // Check if any effect is instant
+            boolean isInstant = false;
+            for (MobEffect effect : effects) {
+                if (effect.isInstantenous()) {
+                    isInstant = true;
+                    break;
+                }
+            }
             
             if (!isInstant && fluid.getDuration() < defaultMaxDuration) return false;
             if (fluid.getAmplifier() < defaultMaxAmplifier) return false;
@@ -651,11 +656,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                     // Start the "starting brew" phase
                     master.isStartingBrew = true;
                     master.startingBrewTicks = 0;
-                    // Convert water to boiling potion - effect type is now determined
+                    // Convert water to boiling potion - effect types are now determined
                     // Keep water color during boiling (color changes on completion)
-                    MobEffect effect = recipe.getEffect();
+                    List<MobEffect> effects = recipe.getEffects();
                     int boilingColor = 0x3F76E4; // Water color during boiling
-                    master.fluid.convertToBoilingPotion(effect, boilingColor);
+                    master.fluid.convertToBoilingPotion(effects, boilingColor);
                     // Consume materials immediately - they are now part of the brewing process
                     master.materials.clear();
                     master.setChanged();
@@ -702,7 +707,33 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
     
     /**
-     * Find a brewing recipe by effect ID
+     * Find a brewing recipe by effect IDs (matches if recipe has all the same effects)
+     */
+    private CauldronBrewingRecipe findBrewingRecipeByEffects(List<MobEffect> effects) {
+        if (level == null || effects.isEmpty()) return null;
+        
+        // Build a set of effect IDs for comparison
+        java.util.Set<String> targetEffectIds = new java.util.HashSet<>();
+        for (MobEffect effect : effects) {
+            net.minecraft.resources.ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(effect);
+            if (effectId != null) {
+                targetEffectIds.add(effectId.toString());
+            }
+        }
+        
+        var recipes = level.getRecipeManager().getAllRecipesFor(ModRegistries.CAULDRON_BREWING_RECIPE_TYPE.get());
+        for (var recipeHolder : recipes) {
+            CauldronBrewingRecipe recipe = recipeHolder.value();
+            java.util.Set<String> recipeEffectIds = new java.util.HashSet<>(recipe.getEffectIds());
+            if (recipeEffectIds.equals(targetEffectIds)) {
+                return recipe;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Find a brewing recipe by single effect ID (for backwards compatibility)
      */
     private CauldronBrewingRecipe findBrewingRecipeByEffect(String effectId) {
         if (level == null) return null;
@@ -710,7 +741,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         var recipes = level.getRecipeManager().getAllRecipesFor(ModRegistries.CAULDRON_BREWING_RECIPE_TYPE.get());
         for (var recipeHolder : recipes) {
             CauldronBrewingRecipe recipe = recipeHolder.value();
-            if (recipe.getEffectId().equals(effectId)) {
+            if (recipe.getEffectIds().contains(effectId)) {
                 return recipe;
             }
         }
@@ -731,30 +762,34 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         lastBrewedHerbs.clear();
         lastBrewedHerbs.putAll(herbs);
         
-        // Get the effect from boiling potion
-        MobEffect effect = fluid.getEffect();
+        // Get the effects from boiling potion
+        List<MobEffect> effects = fluid.getEffects();
         
-        // Check if this is an instant effect
+        // Check if any effect is instant
         boolean isInstantEffect = false;
-        if (effect != null) {
-            net.minecraft.resources.ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(effect);
-            if (effectId != null) {
-                String path = effectId.getPath();
-                isInstantEffect = path.equals("instant_health") || path.equals("instant_damage");
+        for (MobEffect effect : effects) {
+            if (effect != null && effect.isInstantenous()) {
+                isInstantEffect = true;
+                break;
             }
         }
         
-        // Find brewing recipe to get max values
-        net.minecraft.resources.ResourceLocation effectResLoc = effect != null ? 
-            BuiltInRegistries.MOB_EFFECT.getKey(effect) : null;
-        String effectIdStr = effectResLoc != null ? effectResLoc.toString() : "";
-        CauldronBrewingRecipe brewingRecipe = findBrewingRecipeByEffect(effectIdStr);
+        // Find brewing recipe to get default and max values
+        CauldronBrewingRecipe brewingRecipe = findBrewingRecipeByEffects(effects);
         
-        // Get max values from recipe, or use defaults
+        // Get values from recipe, or use defaults
+        int defaultDurationSeconds = brewingRecipe != null ? brewingRecipe.getDefaultDuration() : BASE_DURATION_SECONDS;
+        int defaultAmplifier = brewingRecipe != null ? brewingRecipe.getDefaultAmplifier() : 0;
         int maxDurationSeconds = brewingRecipe != null ? brewingRecipe.getMaxDuration() : MAX_HERB_DURATION_SECONDS;
         int maxAmplifier = brewingRecipe != null ? brewingRecipe.getMaxAmplifier() : 3;
+        int recipeColor = brewingRecipe != null ? brewingRecipe.getBaseColor() : 
+                (effects.isEmpty() ? 0x3F76E4 : effects.get(0).getColor());
         
-        // Calculate duration from overworld herbs (30 seconds per herb)
+        // Get herb conversion rates from recipe, or use defaults
+        int durationPerHerb = brewingRecipe != null ? brewingRecipe.getDurationPerHerb() : 30;
+        int herbsPerLevel = brewingRecipe != null ? brewingRecipe.getHerbsPerLevel() : 12;
+        
+        // Calculate duration from overworld herbs
         // For instant effects (maxDuration = 0), duration is always 1 (ignored by Minecraft)
         int duration;
         if (isInstantEffect || maxDurationSeconds == 0) {
@@ -763,26 +798,28 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             int extraSeconds = 0;
             for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
                 if (isOverworldHerb(entry.getKey())) {
-                    extraSeconds += entry.getValue() * 30;  // 30 seconds per overworld herb
+                    extraSeconds += entry.getValue() * durationPerHerb;
                 }
             }
-            duration = Math.min(BASE_DURATION_SECONDS + extraSeconds, maxDurationSeconds);
+            // Start from default duration, add extra from herbs
+            duration = Math.min(defaultDurationSeconds + extraSeconds, maxDurationSeconds);
         }
         
-        // Calculate level from nether/end herbs (every 12 herbs = +1 level)
+        // Calculate level from nether/end herbs
         int netherEndCount = 0;
         for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
             if (isNetherOrEndHerb(entry.getKey())) {
                 netherEndCount += entry.getValue();
             }
         }
-        int amplifier = netherEndCount / 12;  // Every 12 nether/end herbs = +1 level
+        // Start from default amplifier, add extra from herbs (herbsPerLevel herbs = +1 level)
+        int amplifier = defaultAmplifier + (herbsPerLevel > 0 ? netherEndCount / herbsPerLevel : 0);
         
         // Limit amplifier to max defined by recipe
         amplifier = Math.min(amplifier, maxAmplifier);
         
-        // Convert boiling potion to finished potion (effect and color already set)
-        fluid.convertToPotion(duration, amplifier);
+        // Convert boiling potion to finished potion with recipe color
+        fluid.convertToPotion(duration, amplifier, recipeColor);
         
         // Clear brewing state
         isBrewing = false;
@@ -1390,8 +1427,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         // For FLUID type
         private Fluid fluid = null;
         
-        // For POTION type
-        private MobEffect effect = null;
+        // For POTION type - now supports multiple effects
+        private List<MobEffect> effects = new ArrayList<>();
         private int duration = 0;      // In seconds
         private int amplifier = 0;     // Potion level (0 = level 1)
         private int color = 0x3F76E4;  // Default water color
@@ -1417,10 +1454,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return ofFluid(Fluids.WATER, amount);
         }
         
-        public static CauldronFluid ofPotion(MobEffect effect, int duration, int amplifier, int color, int amount) {
+        public static CauldronFluid ofPotion(List<MobEffect> effects, int duration, int amplifier, int color, int amount) {
             CauldronFluid cf = new CauldronFluid();
             cf.type = FluidType.POTION;
-            cf.effect = effect;
+            cf.effects = new ArrayList<>(effects);
             cf.duration = duration;
             cf.amplifier = amplifier;
             cf.color = color;
@@ -1428,15 +1465,25 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return cf;
         }
         
-        public static CauldronFluid ofBoilingPotion(MobEffect effect, int color, int amount) {
+        // Single effect version for backwards compatibility
+        public static CauldronFluid ofPotion(MobEffect effect, int duration, int amplifier, int color, int amount) {
+            return ofPotion(List.of(effect), duration, amplifier, color, amount);
+        }
+        
+        public static CauldronFluid ofBoilingPotion(List<MobEffect> effects, int color, int amount) {
             CauldronFluid cf = new CauldronFluid();
             cf.type = FluidType.BOILING_POTION;
-            cf.effect = effect;
+            cf.effects = new ArrayList<>(effects);
             cf.duration = 0;   // To be determined by herbs
             cf.amplifier = 0;  // To be determined by herbs
             cf.color = color;
             cf.amount = amount;
             return cf;
+        }
+        
+        // Single effect version for backwards compatibility
+        public static CauldronFluid ofBoilingPotion(MobEffect effect, int color, int amount) {
+            return ofBoilingPotion(List.of(effect), color, amount);
         }
         
         // ==================== Getters ====================
@@ -1473,8 +1520,18 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return fluid;
         }
         
+        /**
+         * Get the first effect (for backwards compatibility)
+         */
         public MobEffect getEffect() {
-            return effect;
+            return effects.isEmpty() ? null : effects.get(0);
+        }
+        
+        /**
+         * Get all effects
+         */
+        public List<MobEffect> getEffects() {
+            return effects;
         }
         
         public int getDuration() {
@@ -1516,7 +1573,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             this.type = FluidType.EMPTY;
             this.amount = 0;
             this.fluid = null;
-            this.effect = null;
+            this.effects.clear();
             this.duration = 0;
             this.amplifier = 0;
             this.color = 0x3F76E4;
@@ -1528,7 +1585,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         public void convertToWater() {
             this.type = FluidType.FLUID;
             this.fluid = Fluids.WATER;
-            this.effect = null;
+            this.effects.clear();
             this.duration = 0;
             this.amplifier = 0;
             this.color = 0x3F76E4;
@@ -1537,16 +1594,21 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         /**
          * Convert water to boiling potion (used when brewing starts)
-         * Effect type is determined, but duration/amplifier are pending (based on herbs added later)
+         * Effect types are determined, but duration/amplifier are pending (based on herbs added later)
          */
-        public void convertToBoilingPotion(MobEffect effect, int color) {
+        public void convertToBoilingPotion(List<MobEffect> effects, int color) {
             this.type = FluidType.BOILING_POTION;
             this.fluid = null;
-            this.effect = effect;
+            this.effects = new ArrayList<>(effects);
             this.duration = 0;   // To be determined
             this.amplifier = 0;  // To be determined
             this.color = color;
             // Keep the same amount
+        }
+        
+        // Single effect version for backwards compatibility
+        public void convertToBoilingPotion(MobEffect effect, int color) {
+            convertToBoilingPotion(List.of(effect), color);
         }
         
         /**
@@ -1557,10 +1619,21 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             this.type = FluidType.POTION;
             this.duration = duration;
             this.amplifier = amplifier;
-            // Set color from effect (boiling used water color)
-            if (this.effect != null) {
-                this.color = this.effect.getColor();
+            // Set color from first effect (boiling used water color)
+            if (!this.effects.isEmpty()) {
+                this.color = this.effects.get(0).getColor();
             }
+        }
+        
+        /**
+         * Convert boiling potion to finished potion with custom color
+         */
+        public void convertToPotion(int duration, int amplifier, int color) {
+            if (this.type != FluidType.BOILING_POTION) return;
+            this.type = FluidType.POTION;
+            this.duration = duration;
+            this.amplifier = amplifier;
+            this.color = color;
         }
         
         /**
@@ -1569,7 +1642,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         public void convertToPotion(MobEffect effect, int duration, int amplifier, int color) {
             this.type = FluidType.POTION;
             this.fluid = null;
-            this.effect = effect;
+            this.effects = new ArrayList<>(List.of(effect));
             this.duration = duration;
             this.amplifier = amplifier;
             this.color = color;
@@ -1585,8 +1658,17 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             
             if (type == FluidType.FLUID && fluid != null) {
                 tag.putString("Fluid", net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(fluid).toString());
-            } else if ((type == FluidType.POTION || type == FluidType.BOILING_POTION) && effect != null) {
-                tag.putString("Effect", net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect).toString());
+            } else if ((type == FluidType.POTION || type == FluidType.BOILING_POTION) && !effects.isEmpty()) {
+                // Save effects as a list
+                net.minecraft.nbt.ListTag effectsList = new net.minecraft.nbt.ListTag();
+                for (MobEffect effect : effects) {
+                    net.minecraft.resources.ResourceLocation effectId = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect);
+                    if (effectId != null) {
+                        net.minecraft.nbt.StringTag effectTag = net.minecraft.nbt.StringTag.valueOf(effectId.toString());
+                        effectsList.add(effectTag);
+                    }
+                }
+                tag.put("Effects", effectsList);
                 tag.putInt("Duration", duration);
                 tag.putInt("Amplifier", amplifier);
                 tag.putInt("Color", color);
@@ -1607,10 +1689,28 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                 if (fluidId != null) {
                     cf.fluid = net.minecraft.core.registries.BuiltInRegistries.FLUID.get(fluidId);
                 }
-            } else if ((cf.type == FluidType.POTION || cf.type == FluidType.BOILING_POTION) && tag.contains("Effect")) {
-                net.minecraft.resources.ResourceLocation effectId = net.minecraft.resources.ResourceLocation.tryParse(tag.getString("Effect"));
-                if (effectId != null) {
-                    cf.effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.get(effectId);
+            } else if ((cf.type == FluidType.POTION || cf.type == FluidType.BOILING_POTION)) {
+                // Load effects - support both old single effect and new list format
+                if (tag.contains("Effects")) {
+                    net.minecraft.nbt.ListTag effectsList = tag.getList("Effects", net.minecraft.nbt.Tag.TAG_STRING);
+                    for (int i = 0; i < effectsList.size(); i++) {
+                        net.minecraft.resources.ResourceLocation effectId = net.minecraft.resources.ResourceLocation.tryParse(effectsList.getString(i));
+                        if (effectId != null) {
+                            MobEffect effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.get(effectId);
+                            if (effect != null) {
+                                cf.effects.add(effect);
+                            }
+                        }
+                    }
+                } else if (tag.contains("Effect")) {
+                    // Legacy single effect format
+                    net.minecraft.resources.ResourceLocation effectId = net.minecraft.resources.ResourceLocation.tryParse(tag.getString("Effect"));
+                    if (effectId != null) {
+                        MobEffect effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.get(effectId);
+                        if (effect != null) {
+                            cf.effects.add(effect);
+                        }
+                    }
                 }
                 cf.duration = tag.getInt("Duration");
                 cf.amplifier = tag.getInt("Amplifier");
@@ -1634,8 +1734,19 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
          */
         public boolean matchesPotion(MobEffect requiredEffect, int minDuration, int minAmplifier) {
             if (type != FluidType.POTION) return false;
-            if (requiredEffect != null && this.effect != requiredEffect) return false;
+            if (requiredEffect != null && !this.effects.contains(requiredEffect)) return false;
             return this.duration >= minDuration && this.amplifier >= minAmplifier;
+        }
+        
+        /**
+         * Check if this potion has any of the given effects
+         */
+        public boolean hasAnyEffect(List<MobEffect> requiredEffects) {
+            if (type != FluidType.POTION && type != FluidType.BOILING_POTION) return false;
+            for (MobEffect effect : requiredEffects) {
+                if (this.effects.contains(effect)) return true;
+            }
+            return false;
         }
         
         /**
@@ -1652,7 +1763,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             cf.type = this.type;
             cf.amount = this.amount;
             cf.fluid = this.fluid;
-            cf.effect = this.effect;
+            cf.effects = new ArrayList<>(this.effects);
             cf.duration = this.duration;
             cf.amplifier = this.amplifier;
             cf.color = this.color;

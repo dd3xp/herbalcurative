@@ -25,27 +25,51 @@ import java.util.List;
  * Materials (items added to water) determine what potion type is produced.
  * Herbs added during brewing determine duration and amplifier.
  * 
+ * Supports multiple effects per recipe (e.g., Speed + Jump Boost for "Travel Potion")
+ * 
  * Example: Glistering Melon Slice -> Healing Potion
  */
 public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
     
     private final List<Ingredient> materials;
-    private final String effectId;    // MobEffect registry name (e.g., "minecraft:instant_health")
-    private final int baseColor;      // Potion color
-    private final int maxDuration;    // Maximum duration in seconds (0 for instant effects)
-    private final int maxAmplifier;   // Maximum amplifier (0 = level 1, 1 = level 2, etc.)
+    private final List<String> effectIds;  // List of MobEffect registry names (e.g., ["minecraft:speed", "minecraft:jump_boost"])
+    private final int baseColor;           // Potion color
+    private final int defaultDuration;     // Default duration in seconds when first brewed
+    private final int defaultAmplifier;    // Default amplifier when first brewed (0 = level 1)
+    private final int maxDuration;         // Maximum duration in seconds (0 for instant effects)
+    private final int maxAmplifier;        // Maximum amplifier (0 = level 1, 1 = level 2, etc.)
+    private final int durationPerHerb;     // Seconds added per overworld herb (default: 30)
+    private final int herbsPerLevel;       // Number of nether/end herbs needed for +1 level (default: 12)
     
-    public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor, int maxDuration, int maxAmplifier) {
+    public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor, 
+                                  int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier,
+                                  int durationPerHerb, int herbsPerLevel) {
         this.materials = materials;
-        this.effectId = effectId;
+        this.effectIds = effectIds;
         this.baseColor = baseColor;
+        this.defaultDuration = defaultDuration;
+        this.defaultAmplifier = defaultAmplifier;
         this.maxDuration = maxDuration;
         this.maxAmplifier = maxAmplifier;
+        this.durationPerHerb = durationPerHerb;
+        this.herbsPerLevel = herbsPerLevel;
     }
     
-    // Compatibility constructor with default values
-    public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor) {
-        this(materials, effectId, baseColor, 480, 3);  // Default: 8 min, level 4
+    // Compatibility constructor without herb parameters (uses defaults)
+    public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor, 
+                                  int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier) {
+        this(materials, effectIds, baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, 30, 12);
+    }
+    
+    // Compatibility constructor for single effect (backwards compatible)
+    public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor, 
+                                  int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier) {
+        this(materials, List.of(effectId), baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, 30, 12);
+    }
+    
+    // Simple constructor with defaults
+    public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor) {
+        this(materials, effectIds, baseColor, 120, 0, 480, 1, 30, 12);  // Default: 2 min start, 8 min max, level 2 max
     }
     
     @Override
@@ -208,18 +232,59 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
     
     // Getters
     public List<Ingredient> getMaterials() { return materials; }
-    public String getEffectId() { return effectId; }
+    public List<String> getEffectIds() { return effectIds; }
     public int getBaseColor() { return baseColor; }
+    public int getDefaultDuration() { return defaultDuration; }
+    public int getDefaultAmplifier() { return defaultAmplifier; }
     public int getMaxDuration() { return maxDuration; }
     public int getMaxAmplifier() { return maxAmplifier; }
+    public int getDurationPerHerb() { return durationPerHerb; }
+    public int getHerbsPerLevel() { return herbsPerLevel; }
     
     /**
-     * Get the MobEffect from the effect ID
+     * Get the first effect ID (for backwards compatibility)
+     */
+    public String getEffectId() { 
+        return effectIds.isEmpty() ? "" : effectIds.get(0); 
+    }
+    
+    /**
+     * Get the first MobEffect from the effect IDs (for backwards compatibility)
      */
     public MobEffect getEffect() {
-        ResourceLocation id = ResourceLocation.tryParse(effectId);
+        if (effectIds.isEmpty()) return null;
+        ResourceLocation id = ResourceLocation.tryParse(effectIds.get(0));
         if (id == null) return null;
         return BuiltInRegistries.MOB_EFFECT.get(id);
+    }
+    
+    /**
+     * Get all MobEffects from the effect IDs
+     */
+    public List<MobEffect> getEffects() {
+        List<MobEffect> effects = new ArrayList<>();
+        for (String effectId : effectIds) {
+            ResourceLocation id = ResourceLocation.tryParse(effectId);
+            if (id != null) {
+                MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+                if (effect != null) {
+                    effects.add(effect);
+                }
+            }
+        }
+        return effects;
+    }
+    
+    /**
+     * Check if this is an instant effect potion (any effect is instant)
+     */
+    public boolean isInstantEffect() {
+        for (MobEffect effect : getEffects()) {
+            if (effect.isInstantenous()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     // Recipe Type
@@ -236,21 +301,46 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
         private static final MapCodec<CauldronBrewingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                 Ingredient.CODEC_NONEMPTY.listOf().fieldOf("materials").forGetter(CauldronBrewingRecipe::getMaterials),
-                Codec.STRING.fieldOf("effect").forGetter(CauldronBrewingRecipe::getEffectId),
+                Codec.STRING.listOf().fieldOf("effects").forGetter(CauldronBrewingRecipe::getEffectIds),
                 Codec.INT.optionalFieldOf("color", 0x3F76E4).forGetter(CauldronBrewingRecipe::getBaseColor),
+                Codec.INT.optionalFieldOf("default_duration", 120).forGetter(CauldronBrewingRecipe::getDefaultDuration),
+                Codec.INT.optionalFieldOf("default_amplifier", 0).forGetter(CauldronBrewingRecipe::getDefaultAmplifier),
                 Codec.INT.optionalFieldOf("max_duration", 480).forGetter(CauldronBrewingRecipe::getMaxDuration),
-                Codec.INT.optionalFieldOf("max_amplifier", 3).forGetter(CauldronBrewingRecipe::getMaxAmplifier)
+                Codec.INT.optionalFieldOf("max_amplifier", 1).forGetter(CauldronBrewingRecipe::getMaxAmplifier),
+                Codec.INT.optionalFieldOf("duration_per_herb", 30).forGetter(CauldronBrewingRecipe::getDurationPerHerb),
+                Codec.INT.optionalFieldOf("herbs_per_level", 12).forGetter(CauldronBrewingRecipe::getHerbsPerLevel)
             ).apply(instance, CauldronBrewingRecipe::new)
         );
         
-        private static final StreamCodec<RegistryFriendlyByteBuf, CauldronBrewingRecipe> STREAM_CODEC = StreamCodec.composite(
-            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), CauldronBrewingRecipe::getMaterials,
-            ByteBufCodecs.STRING_UTF8, CauldronBrewingRecipe::getEffectId,
-            ByteBufCodecs.VAR_INT, CauldronBrewingRecipe::getBaseColor,
-            ByteBufCodecs.VAR_INT, CauldronBrewingRecipe::getMaxDuration,
-            ByteBufCodecs.VAR_INT, CauldronBrewingRecipe::getMaxAmplifier,
-            CauldronBrewingRecipe::new
-        );
+        // Custom StreamCodec since composite only supports up to 6 fields
+        private static final StreamCodec<RegistryFriendlyByteBuf, CauldronBrewingRecipe> STREAM_CODEC = new StreamCodec<>() {
+            @Override
+            public CauldronBrewingRecipe decode(RegistryFriendlyByteBuf buf) {
+                List<Ingredient> materials = Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buf);
+                List<String> effectIds = ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).decode(buf);
+                int color = ByteBufCodecs.VAR_INT.decode(buf);
+                int defaultDuration = ByteBufCodecs.VAR_INT.decode(buf);
+                int defaultAmplifier = ByteBufCodecs.VAR_INT.decode(buf);
+                int maxDuration = ByteBufCodecs.VAR_INT.decode(buf);
+                int maxAmplifier = ByteBufCodecs.VAR_INT.decode(buf);
+                int durationPerHerb = ByteBufCodecs.VAR_INT.decode(buf);
+                int herbsPerLevel = ByteBufCodecs.VAR_INT.decode(buf);
+                return new CauldronBrewingRecipe(materials, effectIds, color, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, durationPerHerb, herbsPerLevel);
+            }
+            
+            @Override
+            public void encode(RegistryFriendlyByteBuf buf, CauldronBrewingRecipe recipe) {
+                Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buf, recipe.getMaterials());
+                ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).encode(buf, recipe.getEffectIds());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getBaseColor());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getDefaultDuration());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getDefaultAmplifier());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getMaxDuration());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getMaxAmplifier());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getDurationPerHerb());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getHerbsPerLevel());
+            }
+        };
         
         @Override
         public MapCodec<CauldronBrewingRecipe> codec() {

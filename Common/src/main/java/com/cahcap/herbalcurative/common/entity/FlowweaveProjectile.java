@@ -27,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.joml.Vector3f;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +36,8 @@ import java.util.List;
  * When it hits something:
  * - BURST mode: Create explosion effect (visual only), apply buff to all entities in TNT explosion range
  * - LINGERING mode: Create explosion effect (visual only), spawn lingering effect cloud
+ * 
+ * Supports multiple effects (e.g., Speed + Jump Boost)
  */
 public class FlowweaveProjectile extends ThrowableProjectile {
     
@@ -42,15 +45,16 @@ public class FlowweaveProjectile extends ThrowableProjectile {
     private static final EntityDataAccessor<Integer> DATA_COLOR = 
             SynchedEntityData.defineId(FlowweaveProjectile.class, EntityDataSerializers.INT);
     
-    // Effect data (server-side only)
-    private Holder<MobEffect> effect;
+    // Effect data (server-side only) - now supports multiple effects
+    private List<Holder<MobEffect>> effects = new ArrayList<>();
     private int duration = 600;  // 30 seconds default
     private int amplifier = 0;
     private boolean lingering = false;
     private boolean instant = false;  // For instant effects like heal/harm
     
     // NBT tags
-    private static final String TAG_EFFECT = "Effect";
+    private static final String TAG_EFFECTS = "Effects";  // List of effect IDs
+    private static final String TAG_EFFECT = "Effect";    // Legacy single effect
     private static final String TAG_DURATION = "Duration";
     private static final String TAG_AMPLIFIER = "Amplifier";
     private static final String TAG_INSTANT = "Instant";
@@ -87,8 +91,21 @@ public class FlowweaveProjectile extends ThrowableProjectile {
     
     // ==================== Setters ====================
     
+    /**
+     * Set multiple effects for this projectile
+     */
+    public void setEffects(List<Holder<MobEffect>> effects, int duration, int amplifier) {
+        this.effects = new ArrayList<>(effects);
+        this.duration = duration;
+        this.amplifier = amplifier;
+    }
+    
+    /**
+     * Set single effect (backwards compatible)
+     */
     public void setEffect(Holder<MobEffect> effect, int duration, int amplifier) {
-        this.effect = effect;
+        this.effects.clear();
+        this.effects.add(effect);
         this.duration = duration;
         this.amplifier = amplifier;
     }
@@ -233,10 +250,10 @@ public class FlowweaveProjectile extends ThrowableProjectile {
     }
     
     /**
-     * Apply effect to all living entities in explosion range (BURST mode)
+     * Apply all effects to all living entities in explosion range (BURST mode)
      */
     private void applyEffectToEntitiesInRange(Vec3 pos) {
-        if (effect == null) return;
+        if (effects.isEmpty()) return;
         
         Level level = level();
         AABB box = new AABB(
@@ -249,30 +266,26 @@ public class FlowweaveProjectile extends ThrowableProjectile {
             // Check if entity is within sphere (not just box)
             double distSq = entity.position().distanceToSqr(pos);
             if (distSq <= EXPLOSION_RADIUS * EXPLOSION_RADIUS) {
-                if (instant) {
-                    // Apply instant effect directly
-                    applyInstantEffect(entity);
-                } else {
-                    entity.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                // Apply all effects to this entity
+                for (Holder<MobEffect> effect : effects) {
+                    boolean isEffectInstant = effect.value().isInstantenous();
+                    if (isEffectInstant) {
+                        // Apply instant effect directly
+                        entity.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+                    } else {
+                        entity.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                    }
                 }
             }
         }
     }
     
     /**
-     * Apply instant effect (heal or harm) directly to target using vanilla logic
-     */
-    private void applyInstantEffect(LivingEntity target) {
-        // For instant effects, adding a MobEffectInstance with duration 1 triggers immediate application
-        // Minecraft handles instant effects specially in MobEffectInstance.tick()
-        target.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
-    }
-    
-    /**
      * Spawn lingering effect cloud (LINGERING mode)
+     * Adds all effects to the cloud
      */
     private void spawnLingeringCloud(Vec3 pos) {
-        if (effect == null) return;
+        if (effects.isEmpty()) return;
         
         Level level = level();
         
@@ -282,9 +295,19 @@ public class FlowweaveProjectile extends ThrowableProjectile {
         cloud.setWaitTime(10);
         cloud.setDuration(600);  // 30 seconds
         cloud.setRadiusPerTick(-cloud.getRadius() / (float) cloud.getDuration());
-        cloud.addEffect(new MobEffectInstance(effect, duration / 4, amplifier));  // 1/4 duration like vanilla
         
-        // Color is automatically set based on the effect added
+        // Add all effects to the cloud
+        for (Holder<MobEffect> effect : effects) {
+            boolean isEffectInstant = effect.value().isInstantenous();
+            if (isEffectInstant) {
+                // Instant effects in lingering clouds use 1 tick duration
+                cloud.addEffect(new MobEffectInstance(effect, 1, amplifier));
+            } else {
+                cloud.addEffect(new MobEffectInstance(effect, duration / 4, amplifier));  // 1/4 duration like vanilla
+            }
+        }
+        
+        // Color is automatically set based on the effects added
         
         level.addFreshEntity(cloud);
     }
@@ -295,11 +318,16 @@ public class FlowweaveProjectile extends ThrowableProjectile {
     protected void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         
-        if (effect != null) {
-            ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(effect.value());
-            if (effectId != null) {
-                tag.putString(TAG_EFFECT, effectId.toString());
+        // Save effects as a list
+        if (!effects.isEmpty()) {
+            net.minecraft.nbt.ListTag effectsList = new net.minecraft.nbt.ListTag();
+            for (Holder<MobEffect> effect : effects) {
+                ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(effect.value());
+                if (effectId != null) {
+                    effectsList.add(net.minecraft.nbt.StringTag.valueOf(effectId.toString()));
+                }
             }
+            tag.put(TAG_EFFECTS, effectsList);
         }
         tag.putInt(TAG_DURATION, duration);
         tag.putInt(TAG_AMPLIFIER, amplifier);
@@ -312,15 +340,31 @@ public class FlowweaveProjectile extends ThrowableProjectile {
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         
-        if (tag.contains(TAG_EFFECT)) {
+        this.effects.clear();
+        
+        // Load effects - support both new list format and legacy single effect
+        if (tag.contains(TAG_EFFECTS)) {
+            net.minecraft.nbt.ListTag effectsList = tag.getList(TAG_EFFECTS, net.minecraft.nbt.Tag.TAG_STRING);
+            for (int i = 0; i < effectsList.size(); i++) {
+                ResourceLocation effectId = ResourceLocation.tryParse(effectsList.getString(i));
+                if (effectId != null) {
+                    MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(effectId);
+                    if (mobEffect != null) {
+                        this.effects.add(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(mobEffect));
+                    }
+                }
+            }
+        } else if (tag.contains(TAG_EFFECT)) {
+            // Legacy single effect format
             ResourceLocation effectId = ResourceLocation.tryParse(tag.getString(TAG_EFFECT));
             if (effectId != null) {
                 MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(effectId);
                 if (mobEffect != null) {
-                    this.effect = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(mobEffect);
+                    this.effects.add(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(mobEffect));
                 }
             }
         }
+        
         this.duration = tag.getInt(TAG_DURATION);
         this.amplifier = tag.getInt(TAG_AMPLIFIER);
         this.lingering = tag.getBoolean(TAG_LINGERING);

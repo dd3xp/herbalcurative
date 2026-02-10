@@ -47,7 +47,8 @@ import java.util.List;
 public class PotItem extends Item {
     
     // NBT keys for potion data stored in CustomData component
-    private static final String TAG_POTION_TYPE = "PotionType";
+    private static final String TAG_POTION_TYPES = "PotionTypes";  // List of effect IDs
+    private static final String TAG_POTION_TYPE = "PotionType";    // Legacy single effect
     private static final String TAG_POTION_COLOR = "PotionColor";
     private static final String TAG_DURATION = "Duration";
     private static final String TAG_LEVEL = "Level";
@@ -100,13 +101,17 @@ public class PotItem extends Item {
             return InteractionResult.PASS;
         }
         
-        // Get effect ID for pot
-        net.minecraft.world.effect.MobEffect effect = master.getPotionEffect();
-        String effectId = effect != null ? 
-                net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect).toString() : "";
+        // Get effect IDs for pot
+        java.util.List<String> effectIds = new java.util.ArrayList<>();
+        for (net.minecraft.world.effect.MobEffect effect : master.getFluid().getEffects()) {
+            net.minecraft.resources.ResourceLocation effectResLoc = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect);
+            if (effectResLoc != null) {
+                effectIds.add(effectResLoc.toString());
+            }
+        }
         
         // Fill the pot with potion
-        fillPot(stack, effectId, master.getFluidColor(), 
+        fillPot(stack, effectIds, master.getFluidColor(), 
                 master.getPotionDuration(), master.getPotionLevel());
         
         // Return any floating materials (infusion products) to player
@@ -186,15 +191,37 @@ public class PotItem extends Item {
         return customData.copyTag().getBoolean(TAG_FILLED);
     }
     
-    public static void fillPot(ItemStack stack, String potionType, int color, int duration, int level) {
+    /**
+     * Fill pot with multiple effects
+     */
+    public static void fillPot(ItemStack stack, java.util.List<String> potionTypes, int color, int duration, int level) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(TAG_FILLED, true);
-        tag.putString(TAG_POTION_TYPE, potionType);
+        
+        // Store effects as a list
+        net.minecraft.nbt.ListTag effectsList = new net.minecraft.nbt.ListTag();
+        for (String effectId : potionTypes) {
+            effectsList.add(net.minecraft.nbt.StringTag.valueOf(effectId));
+        }
+        tag.put(TAG_POTION_TYPES, effectsList);
+        
+        // Also store first effect for backwards compatibility
+        if (!potionTypes.isEmpty()) {
+            tag.putString(TAG_POTION_TYPE, potionTypes.get(0));
+        }
+        
         tag.putInt(TAG_POTION_COLOR, color);
         tag.putInt(TAG_DURATION, duration);
         tag.putInt(TAG_LEVEL, level);
         tag.putInt(TAG_USES, MAX_USES);
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+    
+    /**
+     * Fill pot with single effect (backwards compatible)
+     */
+    public static void fillPot(ItemStack stack, String potionType, int color, int duration, int level) {
+        fillPot(stack, java.util.List.of(potionType), color, duration, level);
     }
     
     public static void emptyPot(ItemStack stack) {
@@ -221,12 +248,41 @@ public class PotItem extends Item {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
     
-    public static String getPotionType(ItemStack stack) {
+    /**
+     * Get all effect IDs from the pot
+     */
+    public static java.util.List<String> getPotionTypes(ItemStack stack) {
+        java.util.List<String> effectIds = new java.util.ArrayList<>();
         CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
         if (customData == null) {
-            return "";
+            return effectIds;
         }
-        return customData.copyTag().getString(TAG_POTION_TYPE);
+        
+        CompoundTag tag = customData.copyTag();
+        
+        // Try new list format first
+        if (tag.contains(TAG_POTION_TYPES)) {
+            net.minecraft.nbt.ListTag effectsList = tag.getList(TAG_POTION_TYPES, net.minecraft.nbt.Tag.TAG_STRING);
+            for (int i = 0; i < effectsList.size(); i++) {
+                effectIds.add(effectsList.getString(i));
+            }
+        } else if (tag.contains(TAG_POTION_TYPE)) {
+            // Fallback to legacy single effect
+            String legacyType = tag.getString(TAG_POTION_TYPE);
+            if (!legacyType.isEmpty()) {
+                effectIds.add(legacyType);
+            }
+        }
+        
+        return effectIds;
+    }
+    
+    /**
+     * Get first effect ID (for backwards compatibility)
+     */
+    public static String getPotionType(ItemStack stack) {
+        java.util.List<String> types = getPotionTypes(stack);
+        return types.isEmpty() ? "" : types.get(0);
     }
     
     public static int getPotionColor(ItemStack stack) {
@@ -254,52 +310,52 @@ public class PotItem extends Item {
     }
     
     private void applyPotionEffect(ItemStack stack, Player player) {
-        String potionType = getPotionType(stack);
+        java.util.List<String> potionTypes = getPotionTypes(stack);
         int amplifier = getLevel(stack) - 1; // MobEffectInstance uses 0-based amplifier
+        int durationTicks = getDuration(stack) * 20; // Convert seconds to ticks
         
-        Holder<MobEffect> effect = getEffectForType(potionType);
-        if (effect != null) {
-            // Check if this is an instant effect
-            boolean isInstantEffect = potionType.contains("instant_health") || potionType.contains("instant_damage");
-            
-            if (isInstantEffect) {
-                // For instant effects, use duration of 1 tick - Minecraft handles them specially
-                player.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
-            } else {
-                int duration = getDuration(stack) * 20; // Convert seconds to ticks
-                player.addEffect(new MobEffectInstance(effect, duration, amplifier));
-            }
-        }
-    }
-    
-    private Holder<MobEffect> getEffectForType(String type) {
-        // Try to parse as ResourceLocation first
-        ResourceLocation id = ResourceLocation.tryParse(type);
-        if (id != null) {
-            MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+        for (String potionType : potionTypes) {
+            Holder<MobEffect> effect = getEffectForType(potionType);
             if (effect != null) {
-                return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
+                // Check if this is an instant effect using vanilla API
+                boolean isInstant = isInstantEffect(effect);
+                
+                if (isInstant) {
+                    // For instant effects, use duration of 1 tick - Minecraft handles them specially
+                    player.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+                } else {
+                    player.addEffect(new MobEffectInstance(effect, durationTicks, amplifier));
+                }
             }
         }
-        
-        // Fallback to old string matching
-        return switch (type) {
-            case "healing" -> MobEffects.HEAL;
-            case "regeneration" -> MobEffects.REGENERATION;
-            case "strength" -> MobEffects.DAMAGE_BOOST;
-            case "speed" -> MobEffects.MOVEMENT_SPEED;
-            case "fire_resistance" -> MobEffects.FIRE_RESISTANCE;
-            case "night_vision" -> MobEffects.NIGHT_VISION;
-            case "invisibility" -> MobEffects.INVISIBILITY;
-            case "water_breathing" -> MobEffects.WATER_BREATHING;
-            case "jump_boost" -> MobEffects.JUMP;
-            case "slow_falling" -> MobEffects.SLOW_FALLING;
-            default -> null;
-        };
     }
     
+    /**
+     * Get effect holder from registry ID string.
+     * Uses dynamic registry lookup instead of hardcoded switch.
+     */
+    private Holder<MobEffect> getEffectForType(String type) {
+        // Try to parse as ResourceLocation
+        ResourceLocation id = ResourceLocation.tryParse(type);
+        if (id == null) return null;
+        
+        MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+        if (effect == null) return null;
+        
+        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
+    }
+    
+    /**
+     * Check if an effect is instantaneous (like heal/harm) using vanilla API.
+     */
+    private boolean isInstantEffect(Holder<MobEffect> effect) {
+        return effect != null && effect.value().isInstantenous();
+    }
+    
+    /**
+     * Get effect display name from registry.
+     */
     private String getEffectDisplayName(String type) {
-        // Try to get display name from registry
         ResourceLocation id = ResourceLocation.tryParse(type);
         if (id != null) {
             MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
@@ -307,36 +363,25 @@ public class PotItem extends Item {
                 return effect.getDisplayName().getString();
             }
         }
-        
-        // Fallback to old string matching
-        return switch (type) {
-            case "healing" -> "Healing";
-            case "regeneration" -> "Regeneration";
-            case "strength" -> "Strength";
-            case "speed" -> "Speed";
-            case "fire_resistance" -> "Fire Resistance";
-            case "night_vision" -> "Night Vision";
-            case "invisibility" -> "Invisibility";
-            case "water_breathing" -> "Water Breathing";
-            case "jump_boost" -> "Jump Boost";
-            case "slow_falling" -> "Slow Falling";
-            default -> "Unknown";
-        };
+        return "Unknown";
     }
     
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (isFilled(stack)) {
-            String type = getPotionType(stack);
+            java.util.List<String> types = getPotionTypes(stack);
             int duration = getDuration(stack);
             int level = getLevel(stack);
             int uses = getUses(stack);
             
-            // Potion type - try to get display name from registry
-            String typeName = getEffectDisplayName(type);
-            
-            tooltip.add(Component.literal("Potion of " + typeName)
+            // Potion effects - each effect on its own line
+            tooltip.add(Component.literal("Potion of")
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
+            for (String type : types) {
+                String typeName = getEffectDisplayName(type);
+                tooltip.add(Component.literal("  " + typeName)
+                        .withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
             
             // Level
             if (level > 1) {
@@ -344,10 +389,17 @@ public class PotItem extends Item {
                         .withStyle(ChatFormatting.BLUE));
             }
             
-            // Check if this is an instant effect (don't show duration for instant effects)
-            boolean isInstantEffect = type.contains("instant_health") || type.contains("instant_damage");
+            // Check if any effect is instant (don't show duration if any effect is instant)
+            boolean isInstant = false;
+            for (String type : types) {
+                Holder<MobEffect> effect = getEffectForType(type);
+                if (isInstantEffect(effect)) {
+                    isInstant = true;
+                    break;
+                }
+            }
             
-            if (!isInstantEffect) {
+            if (!isInstant) {
                 // Duration is stored in seconds, display as "mm:ss"
                 int minutes = duration / 60;
                 int seconds = duration % 60;

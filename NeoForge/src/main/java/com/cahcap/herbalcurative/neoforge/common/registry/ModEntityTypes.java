@@ -17,8 +17,8 @@ public class ModEntityTypes {
             ENTITY_TYPES.register("flowweave_projectile", () -> 
                     EntityType.Builder.<FlowweaveProjectile>of(FlowweaveProjectile::new, MobCategory.MISC)
                             .sized(0.25F, 0.25F)
-                            .clientTrackingRange(4)
-                            .updateInterval(10)
+                            .clientTrackingRange(10)  // 10 chunks = 160 blocks
+                            .updateInterval(2)        // Fast update for smooth projectile
                             .build("flowweave_projectile")
             );
 }
