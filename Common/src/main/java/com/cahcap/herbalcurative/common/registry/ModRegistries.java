@@ -1,10 +1,12 @@
 package com.cahcap.herbalcurative.common.registry;
 
+import com.cahcap.herbalcurative.common.entity.FlowweaveProjectile;
 import com.cahcap.herbalcurative.common.recipe.CauldronBrewingRecipe;
 import com.cahcap.herbalcurative.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.herbalcurative.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.herbalcurative.common.recipe.WorkbenchRecipe;
 import net.minecraft.core.Holder;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -110,5 +112,8 @@ public class ModRegistries {
     public static Supplier<RecipeSerializer<WorkbenchRecipe>> WORKBENCH_RECIPE_SERIALIZER;
     public static Supplier<RecipeType<CauldronInfusingRecipe>> CAULDRON_INFUSING_RECIPE_TYPE;
     public static Supplier<RecipeType<CauldronBrewingRecipe>> CAULDRON_BREWING_RECIPE_TYPE;
+    
+    // ==================== Entity Types ====================
+    public static Supplier<EntityType<FlowweaveProjectile>> FLOWWEAVE_PROJECTILE_TYPE;
 }
 

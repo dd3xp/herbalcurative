@@ -27,6 +27,8 @@ public class CauldronBrewingRecipeBuilder {
     private final List<Ingredient> materials = new ArrayList<>();
     private String effectId = "";
     private int baseColor = 0x3F76E4;
+    private int maxDuration = 480;    // Default: 8 minutes (for binding requirement)
+    private int maxAmplifier = 3;     // Default: level 4 (for binding requirement)
     
     private CauldronBrewingRecipeBuilder() {
     }
@@ -87,6 +89,28 @@ public class CauldronBrewingRecipeBuilder {
     }
     
     /**
+     * Set the maximum duration for this potion (in seconds).
+     * Used for Flowweave Ring binding requirement.
+     * Set to 0 for instant effects.
+     * @param maxDuration Maximum duration in seconds
+     */
+    public CauldronBrewingRecipeBuilder maxDuration(int maxDuration) {
+        this.maxDuration = maxDuration;
+        return this;
+    }
+    
+    /**
+     * Set the maximum amplifier for this potion.
+     * Used for Flowweave Ring binding requirement.
+     * 0 = level 1, 1 = level 2, etc.
+     * @param maxAmplifier Maximum amplifier (0-based)
+     */
+    public CauldronBrewingRecipeBuilder maxAmplifier(int maxAmplifier) {
+        this.maxAmplifier = maxAmplifier;
+        return this;
+    }
+    
+    /**
      * Build and save the recipe.
      * @param recipeOutput The recipe output
      * @param name The recipe name (without namespace)
@@ -111,7 +135,9 @@ public class CauldronBrewingRecipeBuilder {
         CauldronBrewingRecipe recipe = new CauldronBrewingRecipe(
                 new ArrayList<>(materials),
                 effectId,
-                baseColor
+                baseColor,
+                maxDuration,
+                maxAmplifier
         );
         
         recipeOutput.accept(id, recipe, null);

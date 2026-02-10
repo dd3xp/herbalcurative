@@ -301,14 +301,56 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         // ==================== Brewing Recipes ====================
         
         // Regeneration Potion
-        // Materials: 1 Golden Apple
+        // Materials: 8 Enchanted Golden Apple
         // Effect: regeneration
         // Color: 0xCD5CAB (regeneration potion pink)
+        // Max: 2 min duration, level 2 (amplifier 1)
         CauldronBrewingRecipeBuilder.builder()
-                .material(Items.GOLDEN_APPLE, 1)
+                .material(Items.ENCHANTED_GOLDEN_APPLE, 8)
                 .effect("minecraft:regeneration")
                 .color(0xCD5CAB)
+                .maxDuration(120)   // 2 minutes
+                .maxAmplifier(1)    // Level 2
                 .build(output, "regeneration_potion");
+        
+        // Instant Health Potion
+        // Materials: 8 Glistering Melon Slice
+        // Effect: instant_health
+        // Color: 0xF82423 (healing potion red)
+        // Max: instant, level 2 (amplifier 1)
+        CauldronBrewingRecipeBuilder.builder()
+                .material(Items.GLISTERING_MELON_SLICE, 8)
+                .effect("minecraft:instant_health")
+                .color(0xF82423)
+                .maxDuration(0)     // Instant effect
+                .maxAmplifier(1)    // Level 2
+                .build(output, "instant_health_potion");
+        
+        // Instant Damage Potion
+        // Materials: 8 Fermented Spider Eye
+        // Effect: instant_damage
+        // Color: 0x430A09 (harming potion dark red)
+        // Max: instant, level 2 (amplifier 1)
+        CauldronBrewingRecipeBuilder.builder()
+                .material(Items.FERMENTED_SPIDER_EYE, 8)
+                .effect("minecraft:instant_damage")
+                .color(0x430A09)
+                .maxDuration(0)     // Instant effect
+                .maxAmplifier(1)    // Level 2
+                .build(output, "instant_damage_potion");
+        
+        // Strength Potion
+        // Materials: 8 Blaze Rod
+        // Effect: strength
+        // Color: 0x932423 (strength potion dark red)
+        // Max: 8 min duration, level 2 (amplifier 1)
+        CauldronBrewingRecipeBuilder.builder()
+                .material(Items.BLAZE_ROD, 8)
+                .effect("minecraft:strength")
+                .color(0x932423)
+                .maxDuration(480)   // 8 minutes
+                .maxAmplifier(1)    // Level 2
+                .build(output, "strength_potion");
         
         // ==================== Infusing Recipes ====================
         // Note: All infusing takes 5 seconds. Materials must EXACTLY match.
@@ -328,12 +370,13 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .build(output, "enchanted_golden_apple");
         
         // ==================== Flowweave Ring Binding ====================
-        // Binding a Flowweave Ring to a potion (any effect, 8+ min duration)
+        // Binding a Flowweave Ring to a potion
+        // Requires: potion at MAX duration (8 min) AND MAX level (2 for instant/regen, 4 for others)
         // Output is DYNAMIC - the ring stores the bound potion's properties
         // Use flowweaveRingBinding() instead of regular input/output
         CauldronInfusingRecipeBuilder.builder()
                 .flowweaveRingBinding()  // Special: dynamic output based on potion
-                .requirePotion("", 480, 1)  // Any potion with 480+ seconds (8 min), any level
+                .requirePotion("")  // Any potion type (actual checks done in matchesFlowweaveRingBindingConditions)
                 .build(output, "flowweave_ring_binding");
         
         // ==================== Flowweave Ring Unbinding ====================

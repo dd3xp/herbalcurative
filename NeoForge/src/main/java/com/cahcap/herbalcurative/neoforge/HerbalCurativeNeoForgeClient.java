@@ -7,9 +7,11 @@ import com.cahcap.herbalcurative.neoforge.client.renderer.CauldronRenderer;
 import com.cahcap.herbalcurative.client.renderer.RedCherryShelfRenderer;
 import com.cahcap.herbalcurative.client.renderer.WorkbenchRenderer;
 import com.cahcap.herbalcurative.neoforge.client.layer.HerbBoxPlayerLayer;
+import com.cahcap.herbalcurative.neoforge.client.renderer.FlowweaveProjectileRenderer;
 import com.cahcap.herbalcurative.neoforge.client.renderer.HerbCabinetRenderer;
 import com.cahcap.herbalcurative.neoforge.common.registry.ModBlockEntities;
 import com.cahcap.herbalcurative.neoforge.common.registry.ModBlocks;
+import com.cahcap.herbalcurative.neoforge.common.registry.ModEntityTypes;
 import com.cahcap.herbalcurative.neoforge.common.registry.ModItems;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
@@ -144,10 +146,14 @@ public class HerbalCurativeNeoForgeClient {
         
         @SubscribeEvent
         public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+            // Block entity renderers
             event.registerBlockEntityRenderer(ModBlockEntities.HERB_CABINET.get(), HerbCabinetRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.RED_CHERRY_SHELF.get(), RedCherryShelfRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.WORKBENCH.get(), WorkbenchRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.CAULDRON.get(), CauldronRenderer::new);
+            
+            // Entity renderers
+            event.registerEntityRenderer(ModEntityTypes.FLOWWEAVE_PROJECTILE.get(), FlowweaveProjectileRenderer::new);
         }
         
         @SubscribeEvent

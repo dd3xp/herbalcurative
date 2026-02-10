@@ -4,6 +4,7 @@ import com.cahcap.herbalcurative.common.block.CauldronBlock;
 import com.cahcap.herbalcurative.common.block.WorkbenchBlock;
 import com.cahcap.herbalcurative.common.blockentity.CauldronBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.WorkbenchBlockEntity;
+import com.cahcap.herbalcurative.common.entity.FlowweaveProjectile;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockCauldron;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockHerbCabinet;
 import com.cahcap.herbalcurative.common.multiblock.MultiblockHerbalBlending;
@@ -25,6 +26,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -36,6 +38,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +56,38 @@ import java.util.Optional;
  * - Trigger Workbench crafting
  * - Bind to potion when placed in 8+ min potion in cauldron
  * - Apply bound potion effect when right-clicked in casting mode (consumes herbs)
+ * 
+ * Three casting modes:
+ * - INFUSION: Apply effect to self
+ * - BURST: Shoot projectile, create explosion effect at impact, apply buff to all entities in range
+ * - LINGERING: Shoot projectile, create explosion effect at impact, spawn lingering cloud
  */
 public class FlowweaveRingItem extends Item {
+    
+    /**
+     * Casting modes for the Flowweave Ring
+     */
+    public enum CastingMode {
+        INFUSION(1.0f, "Infusion"),      // Apply to self, 1x herb cost
+        BURST(1.5f, "Burst"),            // Shoot projectile, AOE buff, 1.5x herb cost (rounded down)
+        LINGERING(2.0f, "Lingering");    // Shoot projectile, lingering cloud, 2x herb cost
+        
+        private final float herbMultiplier;
+        private final String displayName;
+        
+        CastingMode(float herbMultiplier, String displayName) {
+            this.herbMultiplier = herbMultiplier;
+            this.displayName = displayName;
+        }
+        
+        public float getHerbMultiplier() { return herbMultiplier; }
+        public String getDisplayName() { return displayName; }
+        
+        public CastingMode next() {
+            CastingMode[] values = values();
+            return values[(this.ordinal() + 1) % values.length];
+        }
+    }
     
     // NBT keys for bound potion
     private static final String TAG_BOUND = "BoundPotion";
@@ -63,9 +96,14 @@ public class FlowweaveRingItem extends Item {
     private static final String TAG_DURATION = "Duration";
     private static final String TAG_LEVEL = "Level";
     private static final String TAG_HERB_COST = "HerbCost";
+    private static final String TAG_CASTING_MODE = "CastingMode";
     
     // Minimum duration for binding (8 minutes = 480 seconds)
     public static final int MIN_BIND_DURATION = 480;
+    
+    // Projectile settings
+    public static final float PROJECTILE_SPEED = 3.0f;  // 3 blocks per tick = fast wave
+    public static final int MAX_PROJECTILE_DISTANCE = 64;
     
     public FlowweaveRingItem(Properties properties) {
         super(properties);
@@ -86,10 +124,14 @@ public class FlowweaveRingItem extends Item {
     
     /**
      * Bind a potion to this Flowweave Ring
+     * Preserves the existing casting mode if set
      */
     public static void bindPotion(ItemStack stack, String potionType, int color, 
                                    int duration, int level, Map<Item, Integer> herbCost) {
-        CompoundTag tag = new CompoundTag();
+        // Get existing tag to preserve casting mode
+        CustomData existingData = stack.get(DataComponents.CUSTOM_DATA);
+        CompoundTag tag = existingData != null ? existingData.copyTag() : new CompoundTag();
+        
         tag.putBoolean(TAG_BOUND, true);
         tag.putString(TAG_POTION_TYPE, potionType);
         tag.putInt(TAG_POTION_COLOR, color);
@@ -172,6 +214,44 @@ public class FlowweaveRingItem extends Item {
         return costs;
     }
     
+    /**
+     * Get the current casting mode
+     */
+    public static CastingMode getCastingMode(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) return CastingMode.INFUSION;
+        
+        CompoundTag tag = customData.copyTag();
+        if (!tag.contains(TAG_CASTING_MODE)) return CastingMode.INFUSION;
+        
+        int ordinal = tag.getInt(TAG_CASTING_MODE);
+        CastingMode[] modes = CastingMode.values();
+        if (ordinal >= 0 && ordinal < modes.length) {
+            return modes[ordinal];
+        }
+        return CastingMode.INFUSION;
+    }
+    
+    /**
+     * Set the casting mode
+     */
+    public static void setCastingMode(ItemStack stack, CastingMode mode) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        CompoundTag tag = customData != null ? customData.copyTag() : new CompoundTag();
+        tag.putInt(TAG_CASTING_MODE, mode.ordinal());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+    
+    /**
+     * Cycle to the next casting mode
+     */
+    public static CastingMode cycleMode(ItemStack stack) {
+        CastingMode current = getCastingMode(stack);
+        CastingMode next = current.next();
+        setCastingMode(stack, next);
+        return next;
+    }
+    
     private static Item getHerbFromKey(String key) {
         if (key.contains("scaleplate")) return ModRegistries.SCALEPLATE.get();
         if (key.contains("dewpetal_shard")) return ModRegistries.DEWPETAL_SHARD.get();
@@ -183,11 +263,28 @@ public class FlowweaveRingItem extends Item {
     }
     
     /**
-     * Right-click in air - cast if bound potion exists
+     * Right-click in air:
+     * - Shift+right-click: cycle casting mode
+     * - Normal right-click: cast if bound potion exists
      */
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        
+        // Shift+right-click in air: cycle casting mode
+        if (player.isShiftKeyDown() && hasBoundPotion(stack)) {
+            if (!level.isClientSide) {
+                CastingMode newMode = cycleMode(stack);
+                // Send message to player about mode change
+                player.displayClientMessage(
+                    Component.translatable("item.herbalcurative.flowweave_ring.mode_changed", newMode.getDisplayName())
+                        .withStyle(ChatFormatting.AQUA), 
+                    true);  // action bar
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.5F, 1.2F);
+            }
+            return InteractionResultHolder.success(stack);
+        }
         
         if (!hasBoundPotion(stack)) {
             return InteractionResultHolder.pass(stack);
@@ -197,7 +294,7 @@ public class FlowweaveRingItem extends Item {
             return InteractionResultHolder.success(stack);
         }
         
-        // Try to cast
+        // Try to cast based on current mode
         if (tryCastPotion(level, player, stack)) {
             return InteractionResultHolder.success(stack);
         }
@@ -206,16 +303,21 @@ public class FlowweaveRingItem extends Item {
     }
     
     /**
-     * Try to cast the bound potion effect
+     * Try to cast the bound potion effect based on current mode
      */
     private boolean tryCastPotion(Level level, Player player, ItemStack stack) {
         if (!hasBoundPotion(stack)) {
             return false;
         }
         
+        CastingMode mode = getCastingMode(stack);
+        
+        // Calculate adjusted herb cost based on mode
+        Map<Item, Integer> baseHerbCost = getHerbCost(stack);
+        Map<Item, Integer> adjustedCost = calculateAdjustedHerbCost(baseHerbCost, mode);
+        
         // Check if player has the required herbs
-        Map<Item, Integer> herbCost = getHerbCost(stack);
-        if (!hasRequiredHerbs(player, herbCost)) {
+        if (!hasRequiredHerbs(player, adjustedCost)) {
             // Play failure sound
             level.playSound(null, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.VILLAGER_NO, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -224,24 +326,87 @@ public class FlowweaveRingItem extends Item {
         
         // Consume herbs
         if (!player.isCreative()) {
-            consumeHerbs(player, herbCost);
+            consumeHerbs(player, adjustedCost);
         }
         
-        // Apply effect
+        // Get potion data
         String potionType = getBoundPotionType(stack);
-        int duration = getBoundDuration(stack) * 20; // Convert seconds to ticks
         int amplifier = getBoundLevel(stack) - 1; // 0-based amplifier
+        int color = getBoundPotionColor(stack);
         
         Holder<MobEffect> effect = getEffectForType(potionType);
-        if (effect != null) {
-            player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+        if (effect == null) {
+            return false;
         }
         
-        // Play success sound
-        level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 1.0F, 1.2F);
+        // Check if this is an instant effect
+        boolean isInstantEffect = potionType.contains("instant_health") || potionType.contains("instant_damage");
+        
+        // For instant effects, use duration of 1 tick; for others, convert seconds to ticks
+        int duration = isInstantEffect ? 1 : getBoundDuration(stack) * 20;
+        
+        switch (mode) {
+            case INFUSION:
+                // Apply effect to self
+                if (isInstantEffect) {
+                    // For instant effects, apply immediately using the effect's value
+                    applyInstantEffect(player, effect, amplifier);
+                } else {
+                    player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                }
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.PLAYERS, 1.0F, 1.2F);
+                break;
+                
+            case BURST:
+                // Shoot projectile that applies AOE buff on impact
+                shootProjectile(level, player, effect, duration, amplifier, color, false, isInstantEffect);
+                break;
+                
+            case LINGERING:
+                // Shoot projectile that creates lingering cloud on impact
+                shootProjectile(level, player, effect, duration, amplifier, color, true, isInstantEffect);
+                break;
+        }
         
         return true;
+    }
+    
+    
+    /**
+     * Apply an instant effect (heal or harm) directly to a target using vanilla logic
+     */
+    private void applyInstantEffect(LivingEntity target, Holder<MobEffect> effect, int amplifier) {
+        // For instant effects, adding a MobEffectInstance with duration 1 triggers immediate application
+        // Minecraft handles instant effects specially in MobEffectInstance.tick()
+        target.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+    }
+    
+    /**
+     * Shoot a projectile for BURST or LINGERING mode
+     */
+    private void shootProjectile(Level level, Player player, Holder<MobEffect> effect, 
+                                  int duration, int amplifier, int color, boolean lingering, boolean isInstant) {
+        // Create and spawn the projectile entity
+        FlowweaveProjectile projectile = new FlowweaveProjectile(level, player);
+        projectile.setEffect(effect, duration, amplifier);
+        projectile.setColor(color);
+        projectile.setLingering(lingering);
+        projectile.setInstant(isInstant);
+        
+        // Calculate direction from player's look direction (NOT affected by player movement)
+        Vec3 lookVec = player.getLookAngle();
+        projectile.setDeltaMovement(lookVec.scale(PROJECTILE_SPEED));
+        
+        // Set rotation to match look direction
+        projectile.setYRot((float)(Math.atan2(lookVec.x, lookVec.z) * (180.0 / Math.PI)));
+        projectile.setXRot((float)(Math.atan2(lookVec.y, Math.sqrt(lookVec.x * lookVec.x + lookVec.z * lookVec.z)) * (-180.0 / Math.PI)));
+        
+        level.addFreshEntity(projectile);
+        
+        // Play shoot sound
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.ENDER_PEARL_THROW, SoundSource.PLAYERS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
     }
     
     private boolean hasRequiredHerbs(Player player, Map<Item, Integer> herbCost) {
@@ -402,25 +567,65 @@ public class FlowweaveRingItem extends Item {
                         .withStyle(ChatFormatting.BLUE));
             }
             
-            // Duration is stored in seconds, display as "mm:ss"
-            int minutes = duration / 60;
-            int seconds = duration % 60;
-            String durationText = String.format("%02d:%02d", minutes, seconds);
-            tooltip.add(Component.literal("Duration: " + durationText)
-                    .withStyle(ChatFormatting.GRAY));
+            // Check if this is an instant effect (don't show duration for instant effects)
+            boolean isInstantEffect = type.contains("instant_health") || type.contains("instant_damage");
             
-            // Show herb cost
-            Map<Item, Integer> herbCost = getHerbCost(stack);
-            if (!herbCost.isEmpty()) {
-                tooltip.add(Component.literal("Herb Cost:")
+            if (!isInstantEffect) {
+                // Duration is stored in seconds, display as "mm:ss"
+                int minutes = duration / 60;
+                int seconds = duration % 60;
+                String durationText = String.format("%02d:%02d", minutes, seconds);
+                tooltip.add(Component.literal("Duration: " + durationText)
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            
+            // Show current casting mode
+            CastingMode mode = getCastingMode(stack);
+            String modeKey = switch (mode) {
+                case INFUSION -> "item.herbalcurative.flowweave_ring.mode.infusion";
+                case BURST -> "item.herbalcurative.flowweave_ring.mode.burst";
+                case LINGERING -> "item.herbalcurative.flowweave_ring.mode.lingering";
+            };
+            tooltip.add(Component.translatable("item.herbalcurative.flowweave_ring.mode", 
+                    Component.translatable(modeKey))
+                    .withStyle(ChatFormatting.AQUA));
+            
+            // Show herb cost (adjusted for current mode)
+            Map<Item, Integer> baseHerbCost = getHerbCost(stack);
+            Map<Item, Integer> adjustedCost = calculateAdjustedHerbCost(baseHerbCost, mode);
+            if (!adjustedCost.isEmpty()) {
+                String costLabel = mode.getHerbMultiplier() > 1.0f 
+                    ? String.format("Herb Cost (x%.1f):", mode.getHerbMultiplier())
+                    : "Herb Cost:";
+                tooltip.add(Component.literal(costLabel)
                         .withStyle(ChatFormatting.YELLOW));
-                for (Map.Entry<Item, Integer> entry : herbCost.entrySet()) {
+                for (Map.Entry<Item, Integer> entry : adjustedCost.entrySet()) {
                     tooltip.add(Component.literal("  " + entry.getValue() + "x " + 
                             entry.getKey().getDescription().getString())
                             .withStyle(ChatFormatting.GRAY));
                 }
             }
+            
+            // Hint for mode switching
+            tooltip.add(Component.translatable("item.herbalcurative.flowweave_ring.mode_hint")
+                    .withStyle(ChatFormatting.DARK_GRAY));
         }
+    }
+    
+    /**
+     * Static version of calculateAdjustedHerbCost for use in tooltip
+     */
+    private static Map<Item, Integer> calculateAdjustedHerbCost(Map<Item, Integer> baseCost, CastingMode mode) {
+        if (mode.getHerbMultiplier() == 1.0f) {
+            return baseCost;
+        }
+        
+        Map<Item, Integer> adjusted = new HashMap<>();
+        for (Map.Entry<Item, Integer> entry : baseCost.entrySet()) {
+            int adjustedCount = (int) (entry.getValue() * mode.getHerbMultiplier());
+            adjusted.put(entry.getKey(), Math.max(1, adjustedCount));
+        }
+        return adjusted;
     }
     
     @Override
@@ -508,8 +713,21 @@ public class FlowweaveRingItem extends Item {
             }
         }
         
-        // If no other action triggered and ring has bound potion, try to cast
+        // If no other action triggered and ring has bound potion
         if (player != null && hasBoundPotion(stack)) {
+            // Shift+right-click on non-trigger block: cycle mode
+            if (player.isShiftKeyDown()) {
+                CastingMode newMode = cycleMode(stack);
+                player.displayClientMessage(
+                    Component.translatable("item.herbalcurative.flowweave_ring.mode_changed", newMode.getDisplayName())
+                        .withStyle(ChatFormatting.AQUA), 
+                    true);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.5F, 1.2F);
+                return InteractionResult.SUCCESS;
+            }
+            
+            // Normal right-click: try to cast
             if (tryCastPotion(level, player, stack)) {
                 return InteractionResult.SUCCESS;
             }

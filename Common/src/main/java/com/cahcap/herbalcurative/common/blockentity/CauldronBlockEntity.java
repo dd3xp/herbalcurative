@@ -567,7 +567,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     
     /**
      * Check additional conditions for Flowweave Ring binding.
-     * Returns true if the ring in materials is a Flowweave Ring (bound or unbound).
+     * Returns true if:
+     * - The material is a single Flowweave Ring
+     * - The potion in cauldron has reached its maximum duration and level (defined by recipe)
      */
     private boolean matchesFlowweaveRingBindingConditions() {
         if (materials.size() != 1) return false;
@@ -576,7 +578,49 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         if (!ringStack.is(ModRegistries.FLOWWEAVE_RING.get())) return false;
         if (ringStack.getCount() != 1) return false;
         
-        // Ring can be bound or unbound - will be rebound to new potion
+        // Check if potion has reached maximum duration and level
+        if (!fluid.isPotion()) return false;
+        
+        MobEffect effect = fluid.getEffect();
+        if (effect == null) return false;
+        
+        // Get the effect ID to find the brewing recipe
+        net.minecraft.resources.ResourceLocation effectResLoc = BuiltInRegistries.MOB_EFFECT.getKey(effect);
+        if (effectResLoc == null) return false;
+        
+        String effectId = effectResLoc.toString();
+        
+        // Find the brewing recipe for this effect to get max values
+        CauldronBrewingRecipe brewingRecipe = findBrewingRecipeByEffect(effectId);
+        if (brewingRecipe == null) {
+            // No recipe found for this effect - use default values
+            // Default: 480 seconds, level 4 (amplifier 3)
+            int defaultMaxDuration = 480;
+            int defaultMaxAmplifier = 3;
+            
+            boolean isInstant = effectResLoc.getPath().equals("instant_health") || 
+                               effectResLoc.getPath().equals("instant_damage");
+            
+            if (!isInstant && fluid.getDuration() < defaultMaxDuration) return false;
+            if (fluid.getAmplifier() < defaultMaxAmplifier) return false;
+            return true;
+        }
+        
+        int maxDuration = brewingRecipe.getMaxDuration();
+        int maxAmplifier = brewingRecipe.getMaxAmplifier();
+        
+        // Check duration requirement (skip for instant effects where maxDuration is 0)
+        if (maxDuration > 0) {
+            if (fluid.getDuration() < maxDuration) {
+                return false;  // Duration not at maximum
+            }
+        }
+        
+        // Check level requirement
+        if (fluid.getAmplifier() < maxAmplifier) {
+            return false;  // Level not at maximum
+        }
+        
         return true;
     }
     
@@ -658,6 +702,22 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
     
     /**
+     * Find a brewing recipe by effect ID
+     */
+    private CauldronBrewingRecipe findBrewingRecipeByEffect(String effectId) {
+        if (level == null) return null;
+        
+        var recipes = level.getRecipeManager().getAllRecipesFor(ModRegistries.CAULDRON_BREWING_RECIPE_TYPE.get());
+        for (var recipeHolder : recipes) {
+            CauldronBrewingRecipe recipe = recipeHolder.value();
+            if (recipe.getEffectId().equals(effectId)) {
+                return recipe;
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Complete the brewing process - convert boiling potion to finished potion
      */
     private void completeBrewing() {
@@ -671,14 +731,43 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         lastBrewedHerbs.clear();
         lastBrewedHerbs.putAll(herbs);
         
-        // Calculate duration from overworld herbs (30 seconds per herb)
-        int extraSeconds = 0;
-        for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
-            if (isOverworldHerb(entry.getKey())) {
-                extraSeconds += entry.getValue() * 30;  // 30 seconds per overworld herb
+        // Get the effect from boiling potion
+        MobEffect effect = fluid.getEffect();
+        
+        // Check if this is an instant effect
+        boolean isInstantEffect = false;
+        if (effect != null) {
+            net.minecraft.resources.ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(effect);
+            if (effectId != null) {
+                String path = effectId.getPath();
+                isInstantEffect = path.equals("instant_health") || path.equals("instant_damage");
             }
         }
-        int duration = Math.min(BASE_DURATION_SECONDS + extraSeconds, MAX_HERB_DURATION_SECONDS);
+        
+        // Find brewing recipe to get max values
+        net.minecraft.resources.ResourceLocation effectResLoc = effect != null ? 
+            BuiltInRegistries.MOB_EFFECT.getKey(effect) : null;
+        String effectIdStr = effectResLoc != null ? effectResLoc.toString() : "";
+        CauldronBrewingRecipe brewingRecipe = findBrewingRecipeByEffect(effectIdStr);
+        
+        // Get max values from recipe, or use defaults
+        int maxDurationSeconds = brewingRecipe != null ? brewingRecipe.getMaxDuration() : MAX_HERB_DURATION_SECONDS;
+        int maxAmplifier = brewingRecipe != null ? brewingRecipe.getMaxAmplifier() : 3;
+        
+        // Calculate duration from overworld herbs (30 seconds per herb)
+        // For instant effects (maxDuration = 0), duration is always 1 (ignored by Minecraft)
+        int duration;
+        if (isInstantEffect || maxDurationSeconds == 0) {
+            duration = 1;  // Instant effects don't use duration
+        } else {
+            int extraSeconds = 0;
+            for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
+                if (isOverworldHerb(entry.getKey())) {
+                    extraSeconds += entry.getValue() * 30;  // 30 seconds per overworld herb
+                }
+            }
+            duration = Math.min(BASE_DURATION_SECONDS + extraSeconds, maxDurationSeconds);
+        }
         
         // Calculate level from nether/end herbs (every 12 herbs = +1 level)
         int netherEndCount = 0;
@@ -689,23 +778,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         int amplifier = netherEndCount / 12;  // Every 12 nether/end herbs = +1 level
         
-        // Get the effect from boiling potion
-        MobEffect effect = fluid.getEffect();
-        
-        // Limit amplifier based on effect type
-        // Healing, harming, and regeneration max at level 2 (amplifier 1)
-        // Most other effects max at level 4 (amplifier 3)
-        int maxAmplifier = 3;  // Default max: level 4
-        if (effect != null) {
-            net.minecraft.resources.ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(effect);
-            if (effectId != null) {
-                String path = effectId.getPath();
-                // Instant effects and regeneration have lower max level
-                if (path.equals("instant_health") || path.equals("instant_damage") || path.equals("regeneration")) {
-                    maxAmplifier = 1;  // Max level 2
-                }
-            }
-        }
+        // Limit amplifier to max defined by recipe
         amplifier = Math.min(amplifier, maxAmplifier);
         
         // Convert boiling potion to finished potion (effect and color already set)

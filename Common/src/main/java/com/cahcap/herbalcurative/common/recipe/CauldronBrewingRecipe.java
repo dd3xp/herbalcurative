@@ -32,11 +32,20 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
     private final List<Ingredient> materials;
     private final String effectId;    // MobEffect registry name (e.g., "minecraft:instant_health")
     private final int baseColor;      // Potion color
+    private final int maxDuration;    // Maximum duration in seconds (0 for instant effects)
+    private final int maxAmplifier;   // Maximum amplifier (0 = level 1, 1 = level 2, etc.)
     
-    public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor) {
+    public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor, int maxDuration, int maxAmplifier) {
         this.materials = materials;
         this.effectId = effectId;
         this.baseColor = baseColor;
+        this.maxDuration = maxDuration;
+        this.maxAmplifier = maxAmplifier;
+    }
+    
+    // Compatibility constructor with default values
+    public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor) {
+        this(materials, effectId, baseColor, 480, 3);  // Default: 8 min, level 4
     }
     
     @Override
@@ -201,6 +210,8 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
     public List<Ingredient> getMaterials() { return materials; }
     public String getEffectId() { return effectId; }
     public int getBaseColor() { return baseColor; }
+    public int getMaxDuration() { return maxDuration; }
+    public int getMaxAmplifier() { return maxAmplifier; }
     
     /**
      * Get the MobEffect from the effect ID
@@ -226,7 +237,9 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
             instance.group(
                 Ingredient.CODEC_NONEMPTY.listOf().fieldOf("materials").forGetter(CauldronBrewingRecipe::getMaterials),
                 Codec.STRING.fieldOf("effect").forGetter(CauldronBrewingRecipe::getEffectId),
-                Codec.INT.optionalFieldOf("color", 0x3F76E4).forGetter(CauldronBrewingRecipe::getBaseColor)
+                Codec.INT.optionalFieldOf("color", 0x3F76E4).forGetter(CauldronBrewingRecipe::getBaseColor),
+                Codec.INT.optionalFieldOf("max_duration", 480).forGetter(CauldronBrewingRecipe::getMaxDuration),
+                Codec.INT.optionalFieldOf("max_amplifier", 3).forGetter(CauldronBrewingRecipe::getMaxAmplifier)
             ).apply(instance, CauldronBrewingRecipe::new)
         );
         
@@ -234,6 +247,8 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
             Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), CauldronBrewingRecipe::getMaterials,
             ByteBufCodecs.STRING_UTF8, CauldronBrewingRecipe::getEffectId,
             ByteBufCodecs.VAR_INT, CauldronBrewingRecipe::getBaseColor,
+            ByteBufCodecs.VAR_INT, CauldronBrewingRecipe::getMaxDuration,
+            ByteBufCodecs.VAR_INT, CauldronBrewingRecipe::getMaxAmplifier,
             CauldronBrewingRecipe::new
         );
         

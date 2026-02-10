@@ -93,6 +93,9 @@ public class RegistryInit {
         ModRegistries.WORKBENCH_BE = () -> ModBlockEntities.WORKBENCH.get();
         ModRegistries.CAULDRON_BE = () -> ModBlockEntities.CAULDRON.get();
         
+        // Entity Types
+        ModRegistries.FLOWWEAVE_PROJECTILE_TYPE = () -> ModEntityTypes.FLOWWEAVE_PROJECTILE.get();
+        
         // Recipe Types and Serializers
         ModRecipeTypes.initCommonReferences();
         ModRecipeSerializers.initCommonReferences();

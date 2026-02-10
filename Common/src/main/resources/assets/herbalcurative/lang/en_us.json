@@ -63,6 +63,12 @@
   "item.herbalcurative.red_cherry_bolt_magazine": "Red Cherry Bolt Magazine",
   
   "item.herbalcurative.flowweave_ring": "Flowweave Ring",
+  "item.herbalcurative.flowweave_ring.mode": "Mode: %s",
+  "item.herbalcurative.flowweave_ring.mode.infusion": "Infusion",
+  "item.herbalcurative.flowweave_ring.mode.burst": "Burst",
+  "item.herbalcurative.flowweave_ring.mode.lingering": "Lingering",
+  "item.herbalcurative.flowweave_ring.mode_changed": "Mode: %s",
+  "item.herbalcurative.flowweave_ring.mode_hint": "[Shift+Right-click to change mode]",
   "item.herbalcurative.herb_box": "Herb Box",
   
   "block.herbalcurative.herb_cabinet": "Herb Cabinet",

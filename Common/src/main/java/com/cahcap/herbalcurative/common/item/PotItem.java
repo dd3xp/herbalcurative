@@ -255,12 +255,20 @@ public class PotItem extends Item {
     
     private void applyPotionEffect(ItemStack stack, Player player) {
         String potionType = getPotionType(stack);
-        int duration = getDuration(stack) * 20; // Convert seconds to ticks
-        int level = getLevel(stack) - 1; // MobEffectInstance uses 0-based amplifier
+        int amplifier = getLevel(stack) - 1; // MobEffectInstance uses 0-based amplifier
         
         Holder<MobEffect> effect = getEffectForType(potionType);
         if (effect != null) {
-            player.addEffect(new MobEffectInstance(effect, duration, level));
+            // Check if this is an instant effect
+            boolean isInstantEffect = potionType.contains("instant_health") || potionType.contains("instant_damage");
+            
+            if (isInstantEffect) {
+                // For instant effects, use duration of 1 tick - Minecraft handles them specially
+                player.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+            } else {
+                int duration = getDuration(stack) * 20; // Convert seconds to ticks
+                player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+            }
         }
     }
     
@@ -336,12 +344,17 @@ public class PotItem extends Item {
                         .withStyle(ChatFormatting.BLUE));
             }
             
-            // Duration is stored in seconds, display as "mm:ss"
-            int minutes = duration / 60;
-            int seconds = duration % 60;
-            String durationText = String.format("%02d:%02d", minutes, seconds);
-            tooltip.add(Component.literal("Duration: " + durationText)
-                    .withStyle(ChatFormatting.GRAY));
+            // Check if this is an instant effect (don't show duration for instant effects)
+            boolean isInstantEffect = type.contains("instant_health") || type.contains("instant_damage");
+            
+            if (!isInstantEffect) {
+                // Duration is stored in seconds, display as "mm:ss"
+                int minutes = duration / 60;
+                int seconds = duration % 60;
+                String durationText = String.format("%02d:%02d", minutes, seconds);
+                tooltip.add(Component.literal("Duration: " + durationText)
+                        .withStyle(ChatFormatting.GRAY));
+            }
             
             // Uses remaining
             tooltip.add(Component.literal("Uses: " + uses + "/" + MAX_USES)
