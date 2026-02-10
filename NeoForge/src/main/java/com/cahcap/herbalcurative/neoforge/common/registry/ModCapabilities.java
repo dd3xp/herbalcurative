@@ -1,14 +1,17 @@
 package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
+import com.cahcap.herbalcurative.common.block.WorkbenchBlock;
 import com.cahcap.herbalcurative.common.blockentity.CauldronBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.herbalcurative.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.herbalcurative.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.herbalcurative.neoforge.common.handler.CauldronItemHandler;
 import com.cahcap.herbalcurative.neoforge.common.handler.HerbBasketItemHandler;
 import com.cahcap.herbalcurative.neoforge.common.handler.HerbCabinetItemHandler;
 import com.cahcap.herbalcurative.neoforge.common.handler.RedCherryShelfItemHandler;
+import com.cahcap.herbalcurative.neoforge.common.handler.WorkbenchItemHandler;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -74,6 +77,24 @@ public class ModCapabilities {
                 }
                 return null;
             }
+        );
+        
+        // Register IItemHandler capability for WorkbenchBlockEntity
+        // Note: Workbench has 3 parts (LEFT, CENTER, RIGHT), but only CENTER has BlockEntity
+        // We register on the block level to handle all parts
+        event.registerBlock(
+            Capabilities.ItemHandler.BLOCK,
+            (level, pos, state, blockEntity, context) -> {
+                if (state.getBlock() instanceof WorkbenchBlock) {
+                    WorkbenchBlock.WorkbenchPart part = state.getValue(WorkbenchBlock.PART);
+                    WorkbenchBlockEntity workbench = WorkbenchItemHandler.getWorkbenchBlockEntity(level, pos, state);
+                    if (workbench != null) {
+                        return new WorkbenchItemHandler(workbench, part);
+                    }
+                }
+                return null;
+            },
+            ModBlocks.WORKBENCH.get()
         );
     }
 }

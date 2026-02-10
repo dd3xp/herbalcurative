@@ -12,6 +12,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -88,6 +89,23 @@ public class ModBlockLootProvider extends LootTableProvider {
             
             // Cauldron - drops handled by block's getDrops method (position-based original blocks)
             this.add(ModBlocks.CAULDRON.get(), noDrop());
+            
+            // ==================== Potted plants (drop flower pot + plant) ====================
+            
+            this.add(ModBlocks.POTTED_VERDSCALE_FERN.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.VERDSCALE_FERN.get()));
+            this.add(ModBlocks.POTTED_DEWPETAL.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.DEWPETAL.get()));
+            this.add(ModBlocks.POTTED_ZEPHYR_LILY.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.ZEPHYR_LILY.get()));
+            this.add(ModBlocks.POTTED_CRYSTBUD.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.CRYSTBUD.get()));
+            this.add(ModBlocks.POTTED_PYRISAGE.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.PYRISAGE.get()));
+            this.add(ModBlocks.POTTED_ROSYNIA.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.ROSYNIA.get()));
+            this.add(ModBlocks.POTTED_RED_CHERRY_SAPLING.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.RED_CHERRY_SAPLING.get()));
             
             // ==================== Crop blocks (drop seeds and products when mature at age 9) ====================
             

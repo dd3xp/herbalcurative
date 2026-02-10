@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/flower_pot_cross",
+  "textures": {
+    "plant": "herbalcurative:block/pyrisage"
+  },
+  "render_type": "cutout"
+}

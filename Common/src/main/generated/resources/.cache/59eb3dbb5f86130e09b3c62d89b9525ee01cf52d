@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-08T21:43:24.9942247	Loot Tables
+// 1.21.1	2026-02-10T21:10:15.272016	Loot Tables
 71e0577e55b32015b1d31c792c2c57b3952ba9c1 data/herbalcurative/loot_table/blocks/cauldron.json
 3ac9d531ee8d933d461225618401a225ecd060d1 data/herbalcurative/loot_table/blocks/crystbud.json
 1b63e0a2c844163d496aa1937eba198523009877 data/herbalcurative/loot_table/blocks/crystbud_crop.json
@@ -10,6 +10,13 @@
 67e951efd5be080b0ca7cab2573003444d56e4f7 data/herbalcurative/loot_table/blocks/lumistone_bricks.json
 7fb93eccf91917969f301d878196a9ab71ce4847 data/herbalcurative/loot_table/blocks/lumistone_brick_slab.json
 169f4efbec7ba7b111442326a8fbdb9a8f7c9ad5 data/herbalcurative/loot_table/blocks/lumistone_brick_stairs.json
+83118853ca5cd29ebe01b9486fbec02534cb6f1a data/herbalcurative/loot_table/blocks/potted_crystbud.json
+2f21afa3673c671b4e3a3db591a0733d6497bdcb data/herbalcurative/loot_table/blocks/potted_dewpetal.json
+f29f812047814333760981e410bedfd93d5f3354 data/herbalcurative/loot_table/blocks/potted_pyrisage.json
+ad7ff4b85534c50520a0db5f401277295a6feb29 data/herbalcurative/loot_table/blocks/potted_red_cherry_sapling.json
+bbd51dcb39a1c1bc6e3518409ff44f99eb1b3094 data/herbalcurative/loot_table/blocks/potted_rosynia.json
+d9cbb468a2de216f4b9707fc2207472225045f97 data/herbalcurative/loot_table/blocks/potted_verdscale_fern.json
+f3948d016dece8cb338f79958fd0989805e9f6d9 data/herbalcurative/loot_table/blocks/potted_zephyr_lily.json
 195c3384e78120cf384987c0447f0f6da87f50e7 data/herbalcurative/loot_table/blocks/pyrisage.json
 02eed08d47458d80cef9988865352c72b6fb10a3 data/herbalcurative/loot_table/blocks/pyrisage_crop.json
 0e0cfdbb0754e10901c05638d4147bcb1327d4e5 data/herbalcurative/loot_table/blocks/red_cherry_bush.json

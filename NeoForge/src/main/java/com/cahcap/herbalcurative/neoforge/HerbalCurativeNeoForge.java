@@ -52,6 +52,9 @@ public class HerbalCurativeNeoForge {
         event.enqueueWork(() -> {
             // Initialize stripping handler (Red Cherry log -> Stripped Red Cherry log, etc.)
             StrippingHandler.init();
+            
+            // Register flower pot contents (must be done in enqueueWork for thread safety)
+            ModBlocks.registerFlowerPots();
         });
         
         HerbalCurativeCommon.commonSetup();

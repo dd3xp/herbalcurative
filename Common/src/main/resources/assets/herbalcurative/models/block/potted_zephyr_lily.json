@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/flower_pot_cross",
+  "textures": {
+    "plant": "herbalcurative:block/zephyr_lily"
+  },
+  "render_type": "cutout"
+}

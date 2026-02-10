@@ -10,6 +10,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -134,6 +136,16 @@ public class ModBlocks {
                     .instabreak()
                     .sound(SoundType.SWEET_BERRY_BUSH)
                     .pushReaction(PushReaction.DESTROY)));
+
+    // ==================== Potted Plants ====================
+    
+    public static final DeferredBlock<FlowerPotBlock> POTTED_VERDSCALE_FERN = registerPottedPlant("potted_verdscale_fern", VERDSCALE_FERN);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_DEWPETAL = registerPottedPlant("potted_dewpetal", DEWPETAL);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_ZEPHYR_LILY = registerPottedPlant("potted_zephyr_lily", ZEPHYR_LILY);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_CRYSTBUD = registerPottedPlant("potted_crystbud", CRYSTBUD);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_PYRISAGE = registerPottedPlant("potted_pyrisage", PYRISAGE);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_ROSYNIA = registerPottedPlant("potted_rosynia", ROSYNIA);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_RED_CHERRY_SAPLING = registerPottedPlant("potted_red_cherry_sapling", RED_CHERRY_SAPLING);
 
     // ==================== Lumistone Blocks ====================
     // Light levels: Lumistone series = 7 (weak glow), Rune Stone Bricks = 15 (glowstone level)
@@ -305,6 +317,31 @@ public class ModBlocks {
         DeferredBlock<T> block = BLOCKS.register(name, blockSupplier);
         ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
+    }
+    
+    private static DeferredBlock<FlowerPotBlock> registerPottedPlant(String name, Supplier<? extends Block> plant) {
+        return BLOCKS.register(name, () -> new FlowerPotBlock(
+                () -> (FlowerPotBlock) Blocks.FLOWER_POT,
+                plant,
+                BlockBehaviour.Properties.of()
+                        .instabreak()
+                        .noOcclusion()
+                        .pushReaction(PushReaction.DESTROY)
+        ));
+    }
+    
+    /**
+     * Register all potted plants to the FlowerPotBlock content map.
+     * Must be called during mod setup (FMLCommonSetupEvent).
+     */
+    public static void registerFlowerPots() {
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(VERDSCALE_FERN.getId(), POTTED_VERDSCALE_FERN);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(DEWPETAL.getId(), POTTED_DEWPETAL);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ZEPHYR_LILY.getId(), POTTED_ZEPHYR_LILY);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(CRYSTBUD.getId(), POTTED_CRYSTBUD);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(PYRISAGE.getId(), POTTED_PYRISAGE);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ROSYNIA.getId(), POTTED_ROSYNIA);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(RED_CHERRY_SAPLING.getId(), POTTED_RED_CHERRY_SAPLING);
     }
 }
 
