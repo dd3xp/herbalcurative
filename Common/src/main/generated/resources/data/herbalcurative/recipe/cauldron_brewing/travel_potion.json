@@ -1,10 +1,12 @@
 {
   "type": "herbalcurative:cauldron_brewing",
   "color": 5232521,
+  "duration_per_herb": 30,
   "effects": [
     "minecraft:speed",
     "minecraft:jump_boost"
   ],
+  "herbs_per_duration": 6,
   "materials": [
     {
       "item": "minecraft:sugar"

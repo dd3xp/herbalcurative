@@ -1,12 +1,14 @@
 {
   "type": "herbalcurative:cauldron_brewing",
   "color": 1706528,
+  "duration_per_herb": 30,
   "effects": [
     "minecraft:weaving",
     "minecraft:wind_charged",
     "minecraft:oozing",
     "minecraft:infested"
   ],
+  "herbs_per_duration": 6,
   "materials": [
     {
       "item": "minecraft:cobweb"

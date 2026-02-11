@@ -33,8 +33,7 @@ public class CauldronBrewingRecipeBuilder {
     private int defaultAmplifier = 0;   // Default: level 1
     private int maxDuration = 480;      // Default: 8 minutes (for binding requirement)
     private int maxAmplifier = 1;       // Default: level 2 (for binding requirement)
-    private int durationPerHerb = 5;    // Default: 5 seconds (duration unit)
-    private int herbsPerDuration = 1;   // Default: 1 herb per duration unit
+    private int durationPerHerb = 30;   // Default: 30 seconds per overworld herb
     private int herbsPerLevel = 12;     // Default: 12 nether/end herbs per level
     
     private CauldronBrewingRecipeBuilder() {
@@ -149,20 +148,11 @@ public class CauldronBrewingRecipeBuilder {
     }
     
     /**
-     * Set the duration unit (seconds added per herbsPerDuration herbs).
-     * @param durationPerHerb Duration unit in seconds (default: 5)
+     * Set seconds added per overworld herb.
+     * @param durationPerHerb Seconds per herb (default: 30)
      */
     public CauldronBrewingRecipeBuilder durationPerHerb(int durationPerHerb) {
         this.durationPerHerb = durationPerHerb;
-        return this;
-    }
-    
-    /**
-     * Set number of overworld herbs needed for +durationPerHerb seconds.
-     * @param herbsPerDuration Herbs per duration unit (default: 1)
-     */
-    public CauldronBrewingRecipeBuilder herbsPerDuration(int herbsPerDuration) {
-        this.herbsPerDuration = herbsPerDuration;
         return this;
     }
     
@@ -206,7 +196,6 @@ public class CauldronBrewingRecipeBuilder {
                 maxDuration,
                 maxAmplifier,
                 durationPerHerb,
-                herbsPerDuration,
                 herbsPerLevel
         );
         

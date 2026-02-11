@@ -1,9 +1,11 @@
 {
   "type": "herbalcurative:cauldron_brewing",
   "color": 9643043,
+  "duration_per_herb": 30,
   "effects": [
     "minecraft:strength"
   ],
+  "herbs_per_duration": 6,
   "materials": [
     {
       "item": "minecraft:blaze_rod"

@@ -809,8 +809,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                 (effects.isEmpty() ? 0x3F76E4 : effects.get(0).getColor());
         
         // Get herb conversion rates from recipe, or use defaults
-        int durationPerHerb = brewingRecipe != null ? brewingRecipe.getDurationPerHerb() : 5;
-        int herbsPerDuration = brewingRecipe != null ? brewingRecipe.getHerbsPerDuration() : 1;
+        int durationPerHerb = brewingRecipe != null ? brewingRecipe.getDurationPerHerb() : 30;
         int herbsPerLevel = brewingRecipe != null ? brewingRecipe.getHerbsPerLevel() : 12;
         
         // Calculate duration from overworld herbs
@@ -819,14 +818,12 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         if (isInstantEffect || maxDurationSeconds == 0) {
             duration = 1;  // Instant effects don't use duration
         } else {
-            int overworldHerbCount = 0;
+            int extraSeconds = 0;
             for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
                 if (isOverworldHerb(entry.getKey())) {
-                    overworldHerbCount += entry.getValue();
+                    extraSeconds += entry.getValue() * durationPerHerb;
                 }
             }
-            // Calculate extra seconds: every herbsPerDuration herbs = +durationPerHerb seconds
-            int extraSeconds = herbsPerDuration > 0 ? (overworldHerbCount / herbsPerDuration) * durationPerHerb : 0;
             // Start from default duration, add extra from herbs
             duration = Math.min(defaultDurationSeconds + extraSeconds, maxDurationSeconds);
         }

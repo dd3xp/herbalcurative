@@ -310,7 +310,6 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .maxDuration(90)
                 .maxAmplifier(1)
                 .durationPerHerb(5)
-                .herbsPerDuration(6)
                 .herbsPerLevel(12)
                 .build(output, "regeneration_potion");
         
@@ -350,7 +349,6 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .maxDuration(480)
                 .maxAmplifier(1)
                 .durationPerHerb(30)
-                .herbsPerDuration(6)
                 .herbsPerLevel(12)
                 .build(output, "strength_potion");
         
@@ -365,7 +363,6 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .maxDuration(480)
                 .maxAmplifier(1)
                 .durationPerHerb(30)
-                .herbsPerDuration(6)
                 .herbsPerLevel(12)
                 .build(output, "travel_potion");
         
@@ -382,7 +379,6 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .maxDuration(480)
                 .maxAmplifier(0)
                 .durationPerHerb(30)
-                .herbsPerDuration(6)
                 .herbsPerLevel(12)
                 .build(output, "chaos_potion");
         
