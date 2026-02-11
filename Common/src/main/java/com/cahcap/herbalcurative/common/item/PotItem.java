@@ -331,8 +331,9 @@ public class PotItem extends Item {
                 boolean isInstant = isInstantEffect(effect);
                 
                 if (isInstant) {
-                    // For instant effects, use duration of 1 tick - Minecraft handles them specially
-                    player.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+                    // Use vanilla's applyInstantenousEffect for immediate application
+                    // Parameters: source entity, owner entity, target, amplifier, proximity (1.0 = full effect)
+                    effect.value().applyInstantenousEffect(null, player, player, amplifier, 1.0);
                 } else {
                     player.addEffect(new MobEffectInstance(effect, durationTicks, amplifier));
                 }

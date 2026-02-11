@@ -62,7 +62,7 @@ import java.util.Optional;
  * Three casting modes:
  * - INFUSION: Apply effect to self
  * - BURST: Shoot projectile, create explosion effect at impact, apply buff to all entities in range
- * - LINGERING: Shoot projectile, create explosion effect at impact, spawn lingering cloud
+ * - ECHO: Shoot projectile, create explosion effect at impact, spawn lingering cloud
  */
 public class FlowweaveRingItem extends Item {
     
@@ -72,7 +72,7 @@ public class FlowweaveRingItem extends Item {
     public enum CastingMode {
         INFUSION(1.0f, "Infusion"),      // Apply to self, 1x herb cost
         BURST(1.5f, "Burst"),            // Shoot projectile, AOE buff, 1.5x herb cost (rounded down)
-        LINGERING(2.0f, "Lingering");    // Shoot projectile, lingering cloud, 2x herb cost
+        ECHO(2.0f, "Echo");              // Shoot projectile, lingering cloud, 2x herb cost
         
         private final float herbMultiplier;
         private final String displayName;
@@ -431,7 +431,7 @@ public class FlowweaveRingItem extends Item {
                 shootProjectile(level, player, effects, duration, amplifier, color, false, isInstant);
                 break;
                 
-            case LINGERING:
+            case ECHO:
                 // Shoot projectile that creates lingering cloud on impact
                 shootProjectile(level, player, effects, duration, amplifier, color, true, isInstant);
                 break;
@@ -442,12 +442,13 @@ public class FlowweaveRingItem extends Item {
     
     
     /**
-     * Apply an instant effect (heal or harm) directly to a target using vanilla logic
+     * Apply an instant effect (heal or harm) directly to a target using vanilla logic.
+     * Calls MobEffect.applyInstantenousEffect() directly for immediate effect application.
      */
     private void applyInstantEffect(LivingEntity target, Holder<MobEffect> effect, int amplifier) {
-        // For instant effects, adding a MobEffectInstance with duration 1 triggers immediate application
-        // Minecraft handles instant effects specially in MobEffectInstance.tick()
-        target.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+        // Use vanilla's applyInstantenousEffect for immediate application
+        // Parameters: source entity, owner entity, target, amplifier, proximity (1.0 = full effect)
+        effect.value().applyInstantenousEffect(null, target, target, amplifier, 1.0);
     }
     
     /**
@@ -648,7 +649,7 @@ public class FlowweaveRingItem extends Item {
             String modeKey = switch (mode) {
                 case INFUSION -> "item.herbalcurative.flowweave_ring.mode.infusion";
                 case BURST -> "item.herbalcurative.flowweave_ring.mode.burst";
-                case LINGERING -> "item.herbalcurative.flowweave_ring.mode.lingering";
+                case ECHO -> "item.herbalcurative.flowweave_ring.mode.echo";
             };
             tooltip.add(Component.translatable("item.herbalcurative.flowweave_ring.mode", 
                     Component.translatable(modeKey))

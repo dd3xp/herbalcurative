@@ -266,12 +266,18 @@ public class FlowweaveProjectile extends ThrowableProjectile {
             // Check if entity is within sphere (not just box)
             double distSq = entity.position().distanceToSqr(pos);
             if (distSq <= EXPLOSION_RADIUS * EXPLOSION_RADIUS) {
+                // Calculate proximity for distance-based effect scaling (like vanilla splash potions)
+                double distance = Math.sqrt(distSq);
+                double proximity = 1.0 - (distance / EXPLOSION_RADIUS);
+                proximity = Math.max(0.0, Math.min(1.0, proximity));  // Clamp to [0, 1]
+                
                 // Apply all effects to this entity
                 for (Holder<MobEffect> effect : effects) {
                     boolean isEffectInstant = effect.value().isInstantenous();
                     if (isEffectInstant) {
-                        // Apply instant effect directly
-                        entity.addEffect(new MobEffectInstance(effect, 1, amplifier, false, true));
+                        // Use vanilla's applyInstantenousEffect for immediate application with distance scaling
+                        // Parameters: source entity, owner entity, target, amplifier, proximity
+                        effect.value().applyInstantenousEffect(this, this.getOwner(), entity, amplifier, proximity);
                     } else {
                         entity.addEffect(new MobEffectInstance(effect, duration, amplifier));
                     }
