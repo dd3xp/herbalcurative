@@ -38,12 +38,13 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
     private final int defaultAmplifier;    // Default amplifier when first brewed (0 = level 1)
     private final int maxDuration;         // Maximum duration in seconds (0 for instant effects)
     private final int maxAmplifier;        // Maximum amplifier (0 = level 1, 1 = level 2, etc.)
-    private final int durationPerHerb;     // Seconds added per overworld herb (default: 30)
+    private final int durationPerHerb;     // Seconds added per herbsPerDuration overworld herbs (default: 5)
+    private final int herbsPerDuration;    // Number of overworld herbs needed for +durationPerHerb seconds (default: 1)
     private final int herbsPerLevel;       // Number of nether/end herbs needed for +1 level (default: 12)
     
     public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor, 
                                   int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier,
-                                  int durationPerHerb, int herbsPerLevel) {
+                                  int durationPerHerb, int herbsPerDuration, int herbsPerLevel) {
         this.materials = materials;
         this.effectIds = effectIds;
         this.baseColor = baseColor;
@@ -52,24 +53,32 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
         this.maxDuration = maxDuration;
         this.maxAmplifier = maxAmplifier;
         this.durationPerHerb = durationPerHerb;
+        this.herbsPerDuration = herbsPerDuration;
         this.herbsPerLevel = herbsPerLevel;
+    }
+    
+    // Compatibility constructor without herbsPerDuration (uses default = 1)
+    public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor, 
+                                  int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier,
+                                  int durationPerHerb, int herbsPerLevel) {
+        this(materials, effectIds, baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, durationPerHerb, 1, herbsPerLevel);
     }
     
     // Compatibility constructor without herb parameters (uses defaults)
     public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor, 
                                   int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier) {
-        this(materials, effectIds, baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, 30, 12);
+        this(materials, effectIds, baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, 5, 1, 12);
     }
     
     // Compatibility constructor for single effect (backwards compatible)
     public CauldronBrewingRecipe(List<Ingredient> materials, String effectId, int baseColor, 
                                   int defaultDuration, int defaultAmplifier, int maxDuration, int maxAmplifier) {
-        this(materials, List.of(effectId), baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, 30, 12);
+        this(materials, List.of(effectId), baseColor, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, 5, 1, 12);
     }
     
     // Simple constructor with defaults
     public CauldronBrewingRecipe(List<Ingredient> materials, List<String> effectIds, int baseColor) {
-        this(materials, effectIds, baseColor, 120, 0, 480, 1, 30, 12);  // Default: 2 min start, 8 min max, level 2 max
+        this(materials, effectIds, baseColor, 120, 0, 480, 1, 5, 1, 12);  // Default: 2 min start, 8 min max, level 2 max
     }
     
     @Override
@@ -239,6 +248,7 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
     public int getMaxDuration() { return maxDuration; }
     public int getMaxAmplifier() { return maxAmplifier; }
     public int getDurationPerHerb() { return durationPerHerb; }
+    public int getHerbsPerDuration() { return herbsPerDuration; }
     public int getHerbsPerLevel() { return herbsPerLevel; }
     
     /**
@@ -307,7 +317,8 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
                 Codec.INT.optionalFieldOf("default_amplifier", 0).forGetter(CauldronBrewingRecipe::getDefaultAmplifier),
                 Codec.INT.optionalFieldOf("max_duration", 480).forGetter(CauldronBrewingRecipe::getMaxDuration),
                 Codec.INT.optionalFieldOf("max_amplifier", 1).forGetter(CauldronBrewingRecipe::getMaxAmplifier),
-                Codec.INT.optionalFieldOf("duration_per_herb", 30).forGetter(CauldronBrewingRecipe::getDurationPerHerb),
+                Codec.INT.optionalFieldOf("duration_per_herb", 5).forGetter(CauldronBrewingRecipe::getDurationPerHerb),
+                Codec.INT.optionalFieldOf("herbs_per_duration", 1).forGetter(CauldronBrewingRecipe::getHerbsPerDuration),
                 Codec.INT.optionalFieldOf("herbs_per_level", 12).forGetter(CauldronBrewingRecipe::getHerbsPerLevel)
             ).apply(instance, CauldronBrewingRecipe::new)
         );
@@ -324,8 +335,9 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
                 int maxDuration = ByteBufCodecs.VAR_INT.decode(buf);
                 int maxAmplifier = ByteBufCodecs.VAR_INT.decode(buf);
                 int durationPerHerb = ByteBufCodecs.VAR_INT.decode(buf);
+                int herbsPerDuration = ByteBufCodecs.VAR_INT.decode(buf);
                 int herbsPerLevel = ByteBufCodecs.VAR_INT.decode(buf);
-                return new CauldronBrewingRecipe(materials, effectIds, color, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, durationPerHerb, herbsPerLevel);
+                return new CauldronBrewingRecipe(materials, effectIds, color, defaultDuration, defaultAmplifier, maxDuration, maxAmplifier, durationPerHerb, herbsPerDuration, herbsPerLevel);
             }
             
             @Override
@@ -338,6 +350,7 @@ public class CauldronBrewingRecipe implements Recipe<RecipeInput> {
                 ByteBufCodecs.VAR_INT.encode(buf, recipe.getMaxDuration());
                 ByteBufCodecs.VAR_INT.encode(buf, recipe.getMaxAmplifier());
                 ByteBufCodecs.VAR_INT.encode(buf, recipe.getDurationPerHerb());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getHerbsPerDuration());
                 ByteBufCodecs.VAR_INT.encode(buf, recipe.getHerbsPerLevel());
             }
         };
