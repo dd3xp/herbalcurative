@@ -1,6 +1,7 @@
 package com.cahcap.herbalcurative.common.block;
 
 import com.cahcap.herbalcurative.common.blockentity.CauldronBlockEntity;
+import com.cahcap.herbalcurative.common.item.PotItem;
 import com.cahcap.herbalcurative.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -233,6 +234,11 @@ public class CauldronBlock extends BaseEntityBlock {
                 return ItemInteractionResult.SUCCESS;
             }
             
+            // Empty pot on potion cauldron: pass to item so PotItem.useOn fills pot (right-click only; shift+right-click = extract materials)
+            if (stack.getItem() instanceof PotItem && !PotItem.isFilled(stack) && master.getFluid().isPotion() && !player.isShiftKeyDown()) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
+            
             // Extract from output slot: only when NOT shift clicking (shift + empty hand = extract materials)
             if (master.hasOutputSlotItems() && !player.isShiftKeyDown()) {
                 ItemStack output = master.extractFromOutputSlot();
@@ -299,15 +305,6 @@ public class CauldronBlock extends BaseEntityBlock {
                     master.onFlowweaveRingUse(player);
                 }
                 return ItemInteractionResult.SUCCESS;
-            }
-            
-            // Handle material/herb/infusing input
-            if (!stack.isEmpty()) {
-                // Try to add item (will handle brewing materials, herbs, or start infusing)
-                if (master.addItem(stack, player)) {
-                    level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.0F);
-                    return ItemInteractionResult.SUCCESS;
-                }
             }
             
             // Shift + empty hand - try to extract
