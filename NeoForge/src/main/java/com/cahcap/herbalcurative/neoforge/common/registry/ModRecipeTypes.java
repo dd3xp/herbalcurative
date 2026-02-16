@@ -10,9 +10,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-
-import java.util.function.Supplier;
 
 /**
  * NeoForge registration for recipe types.
@@ -22,7 +21,7 @@ public class ModRecipeTypes {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = 
             DeferredRegister.create(Registries.RECIPE_TYPE, HerbalCurativeCommon.MOD_ID);
     
-    public static final Supplier<RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING = 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING = 
             RECIPE_TYPES.register("herbal_blending", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
@@ -30,7 +29,7 @@ public class ModRecipeTypes {
                 }
             });
     
-    public static final Supplier<RecipeType<WorkbenchRecipe>> WORKBENCH = 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<WorkbenchRecipe>> WORKBENCH = 
             RECIPE_TYPES.register("workbench", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
@@ -38,7 +37,7 @@ public class ModRecipeTypes {
                 }
             });
     
-    public static final Supplier<RecipeType<CauldronInfusingRecipe>> CAULDRON_INFUSING = 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<CauldronInfusingRecipe>> CAULDRON_INFUSING = 
             RECIPE_TYPES.register("cauldron_infusing", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
@@ -46,7 +45,7 @@ public class ModRecipeTypes {
                 }
             });
     
-    public static final Supplier<RecipeType<CauldronBrewingRecipe>> CAULDRON_BREWING = 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<CauldronBrewingRecipe>> CAULDRON_BREWING = 
             RECIPE_TYPES.register("cauldron_brewing", () -> new RecipeType<>() {
                 @Override
                 public String toString() {

@@ -2,7 +2,6 @@ package com.cahcap.herbalcurative.neoforge.common.registry;
 
 import com.cahcap.herbalcurative.HerbalCurativeCommon;
 import com.cahcap.herbalcurative.common.item.*;
-import com.cahcap.herbalcurative.common.item.WorkbenchToolItem;
 import com.cahcap.herbalcurative.neoforge.common.item.LeafweaveArmorItem;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -143,10 +142,12 @@ public class ModItems {
             () -> new PotItem(new Item.Properties().stacksTo(1)));
 
     // ==================== Multiblock Structures ====================
+    // Display/placeable items for multiblock structures (Herb Cabinet, Herb Basket, Red Cherry Shelf, Workbench, Cauldron)
     
     // Herb Cabinet display item (for JADE/WTHIT, not placeable - multiblock structure)
     public static final DeferredItem<Item> HERB_CABINET = ITEMS.registerSimpleItem("herb_cabinet");
     
+    // Use lambda so block is resolved at registration time (avoids null due to ModBlocks/ModItems init order)
     public static final DeferredItem<BlockItem> HERB_BASKET = ITEMS.register("herb_basket",
             () -> new BlockItem(ModBlocks.HERB_BASKET.get(), new Item.Properties()));
     
@@ -158,6 +159,55 @@ public class ModItems {
     
     // Cauldron display item (for JADE/WTHIT, not placeable)
     public static final DeferredItem<Item> CAULDRON = ITEMS.registerSimpleItem("cauldron");
+    
+    // ==================== Block Items ====================
+    // Placeable blocks (herb flowers, Red Cherry wood, Lumistone)
+    
+    // Herb flowers
+    public static final DeferredItem<BlockItem> VERDSCALE_FERN = ITEMS.register("verdscale_fern",
+            () -> new BlockItem(ModBlocks.VERDSCALE_FERN.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> DEWPETAL = ITEMS.register("dewpetal",
+            () -> new BlockItem(ModBlocks.DEWPETAL.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> ZEPHYR_LILY = ITEMS.register("zephyr_lily",
+            () -> new BlockItem(ModBlocks.ZEPHYR_LILY.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> CRYSTBUD = ITEMS.register("crystbud",
+            () -> new BlockItem(ModBlocks.CRYSTBUD.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> PYRISAGE = ITEMS.register("pyrisage",
+            () -> new BlockItem(ModBlocks.PYRISAGE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> ROSYNIA = ITEMS.register("rosynia",
+            () -> new BlockItem(ModBlocks.ROSYNIA.get(), new Item.Properties()));
+    
+    // Red Cherry blocks (placeable)
+    public static final DeferredItem<BlockItem> RED_CHERRY_LOG = ITEMS.register("red_cherry_log",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_LOG.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> STRIPPED_RED_CHERRY_LOG = ITEMS.register("stripped_red_cherry_log",
+            () -> new BlockItem(ModBlocks.STRIPPED_RED_CHERRY_LOG.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_WOOD = ITEMS.register("red_cherry_wood",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_WOOD.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> STRIPPED_RED_CHERRY_WOOD = ITEMS.register("stripped_red_cherry_wood",
+            () -> new BlockItem(ModBlocks.STRIPPED_RED_CHERRY_WOOD.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_PLANKS = ITEMS.register("red_cherry_planks",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_PLANKS.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_STAIRS = ITEMS.register("red_cherry_stairs",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_STAIRS.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_SLAB = ITEMS.register("red_cherry_slab",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_SLAB.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_LEAVES = ITEMS.register("red_cherry_leaves",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_LEAVES.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_SAPLING = ITEMS.register("red_cherry_sapling",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_SAPLING.get(), new Item.Properties()));
+    
+    // Lumistone blocks (placeable)
+    public static final DeferredItem<BlockItem> LUMISTONE = ITEMS.register("lumistone",
+            () -> new BlockItem(ModBlocks.LUMISTONE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_BRICKS = ITEMS.register("lumistone_bricks",
+            () -> new BlockItem(ModBlocks.LUMISTONE_BRICKS.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RUNE_STONE_BRICKS = ITEMS.register("rune_stone_bricks",
+            () -> new BlockItem(ModBlocks.RUNE_STONE_BRICKS.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_BRICK_SLAB = ITEMS.register("lumistone_brick_slab",
+            () -> new BlockItem(ModBlocks.LUMISTONE_BRICK_SLAB.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_BRICK_STAIRS = ITEMS.register("lumistone_brick_stairs",
+            () -> new BlockItem(ModBlocks.LUMISTONE_BRICK_STAIRS.get(), new Item.Properties()));
     
     // ==================== Workbench Tools ====================
     // Repair materials: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Woven Rope = String

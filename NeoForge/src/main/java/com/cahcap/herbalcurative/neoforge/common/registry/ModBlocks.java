@@ -7,7 +7,6 @@ import com.cahcap.herbalcurative.common.block.HerbBasketBlock;
 import com.cahcap.herbalcurative.common.block.RedCherryShelfBlock;
 import com.cahcap.herbalcurative.common.block.WorkbenchBlock;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,10 +30,10 @@ public class ModBlocks {
 
     // ==================== Herb Flowers ====================
     
-    // Overworld herbs
-    public static final DeferredBlock<Block> VERDSCALE_FERN = registerFlower("verdscale_fern", 10);
-    public static final DeferredBlock<Block> DEWPETAL = registerFlower("dewpetal", 10);
-    public static final DeferredBlock<Block> ZEPHYR_LILY = registerFlower("zephyr_lily", 10);
+    // Overworld herbs (no light emission)
+    public static final DeferredBlock<Block> VERDSCALE_FERN = registerFlower("verdscale_fern");
+    public static final DeferredBlock<Block> DEWPETAL = registerFlower("dewpetal");
+    public static final DeferredBlock<Block> ZEPHYR_LILY = registerFlower("zephyr_lily");
     
     // Nether herbs - only grow on specific Nether blocks
     public static final DeferredBlock<Block> CRYSTBUD = registerCrystbudFlower("crystbud", 10);
@@ -61,52 +60,52 @@ public class ModBlocks {
     // ==================== Red Cherry Blocks ====================
     
     // Logs
-    public static final DeferredBlock<RotatedPillarBlock> RED_CHERRY_LOG = registerBlockWithItem("red_cherry_log",
+    public static final DeferredBlock<RotatedPillarBlock> RED_CHERRY_LOG = registerBlock("red_cherry_log",
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)));
     
-    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_RED_CHERRY_LOG = registerBlockWithItem("stripped_red_cherry_log",
+    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_RED_CHERRY_LOG = registerBlock("stripped_red_cherry_log",
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)));
     
     // Wood (6-sided bark/stripped texture)
-    public static final DeferredBlock<RotatedPillarBlock> RED_CHERRY_WOOD = registerBlockWithItem("red_cherry_wood",
+    public static final DeferredBlock<RotatedPillarBlock> RED_CHERRY_WOOD = registerBlock("red_cherry_wood",
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)));
     
-    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_RED_CHERRY_WOOD = registerBlockWithItem("stripped_red_cherry_wood",
+    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_RED_CHERRY_WOOD = registerBlock("stripped_red_cherry_wood",
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)));
     
     // Planks
-    public static final DeferredBlock<Block> RED_CHERRY_PLANKS = registerBlockWithItem("red_cherry_planks",
+    public static final DeferredBlock<Block> RED_CHERRY_PLANKS = registerBlock("red_cherry_planks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)));
     
     // Stairs and Slabs
-    public static final DeferredBlock<StairBlock> RED_CHERRY_STAIRS = registerBlockWithItem("red_cherry_stairs",
+    public static final DeferredBlock<StairBlock> RED_CHERRY_STAIRS = registerBlock("red_cherry_stairs",
             () -> new StairBlock(RED_CHERRY_PLANKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)));
     
-    public static final DeferredBlock<SlabBlock> RED_CHERRY_SLAB = registerBlockWithItem("red_cherry_slab",
+    public static final DeferredBlock<SlabBlock> RED_CHERRY_SLAB = registerBlock("red_cherry_slab",
             () -> new SlabBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)));
     
-    public static final DeferredBlock<RedCherryLeavesBlock> RED_CHERRY_LEAVES = registerBlockWithItem("red_cherry_leaves",
+    public static final DeferredBlock<RedCherryLeavesBlock> RED_CHERRY_LEAVES = registerBlock("red_cherry_leaves",
             () -> new RedCherryLeavesBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)
                     .strength(0.2F)
@@ -119,7 +118,7 @@ public class ModBlocks {
                     .ignitedByLava()
                     .pushReaction(PushReaction.DESTROY)));
     
-    public static final DeferredBlock<RedCherrySaplingBlock> RED_CHERRY_SAPLING = registerBlockWithItem("red_cherry_sapling",
+    public static final DeferredBlock<RedCherrySaplingBlock> RED_CHERRY_SAPLING = registerBlock("red_cherry_sapling",
             () -> new RedCherrySaplingBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.PLANT)
                     .noCollission()
@@ -150,7 +149,7 @@ public class ModBlocks {
     // ==================== Lumistone Blocks ====================
     // Light levels: Lumistone series = 7 (weak glow), Rune Stone Bricks = 15 (glowstone level)
     
-    public static final DeferredBlock<Block> LUMISTONE = registerBlockWithItem("lumistone",
+    public static final DeferredBlock<Block> LUMISTONE = registerBlock("lumistone",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
@@ -158,7 +157,7 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 7)));
     
-    public static final DeferredBlock<Block> LUMISTONE_BRICKS = registerBlockWithItem("lumistone_bricks",
+    public static final DeferredBlock<Block> LUMISTONE_BRICKS = registerBlock("lumistone_bricks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
@@ -166,7 +165,7 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 7)));
     
-    public static final DeferredBlock<Block> RUNE_STONE_BRICKS = registerBlockWithItem("rune_stone_bricks",
+    public static final DeferredBlock<Block> RUNE_STONE_BRICKS = registerBlock("rune_stone_bricks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
@@ -174,7 +173,7 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 15)));
     
-    public static final DeferredBlock<SlabBlock> LUMISTONE_BRICK_SLAB = registerBlockWithItem("lumistone_brick_slab",
+    public static final DeferredBlock<SlabBlock> LUMISTONE_BRICK_SLAB = registerBlock("lumistone_brick_slab",
             () -> new SlabBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
@@ -182,7 +181,7 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 7)));
     
-    public static final DeferredBlock<StairBlock> LUMISTONE_BRICK_STAIRS = registerBlockWithItem("lumistone_brick_stairs",
+    public static final DeferredBlock<StairBlock> LUMISTONE_BRICK_STAIRS = registerBlock("lumistone_brick_stairs",
             () -> new StairBlock(LUMISTONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .requiresCorrectToolForDrops()
@@ -229,11 +228,11 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
-                    .lightLevel(state -> state.getValue(com.cahcap.herbalcurative.common.block.CauldronBlock.FORMED) ? 7 : 0)));
+                    .lightLevel(state -> state.getValue(CauldronBlock.FORMED) ? 7 : 0)));
 
     // ==================== Helper Methods ====================
     
-    private static DeferredBlock<Block> registerFlower(String name, int lightLevel) {
+    private static DeferredBlock<Block> registerFlower(String name) {
         DeferredBlock<Block> block = BLOCKS.register(name, () -> new HerbFlowerBlock(
                 MobEffects.REGENERATION,
                 5.0F,
@@ -244,8 +243,6 @@ public class ModBlocks {
                         .sound(SoundType.GRASS)
                         .pushReaction(PushReaction.DESTROY)
         ));
-        // Register BlockItem
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
     }
     
@@ -261,8 +258,6 @@ public class ModBlocks {
                         .lightLevel(state -> lightLevel)
                         .pushReaction(PushReaction.DESTROY)
         ));
-        // Register BlockItem
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
     }
     
@@ -278,8 +273,6 @@ public class ModBlocks {
                         .lightLevel(state -> lightLevel)
                         .pushReaction(PushReaction.DESTROY)
         ));
-        // Register BlockItem
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
     }
     
@@ -295,8 +288,6 @@ public class ModBlocks {
                         .lightLevel(state -> lightLevel)
                         .pushReaction(PushReaction.DESTROY)
         ));
-        // Register BlockItem
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
     }
     
@@ -313,10 +304,8 @@ public class ModBlocks {
         ));
     }
     
-    private static <T extends Block> DeferredBlock<T> registerBlockWithItem(String name, Supplier<T> blockSupplier) {
-        DeferredBlock<T> block = BLOCKS.register(name, blockSupplier);
-        ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
-        return block;
+    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> blockSupplier) {
+        return BLOCKS.register(name, blockSupplier);
     }
     
     private static DeferredBlock<FlowerPotBlock> registerPottedPlant(String name, Supplier<? extends Block> plant) {

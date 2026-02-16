@@ -2,10 +2,10 @@
   "type": "herbalcurative:cauldron_brewing",
   "color": 13458603,
   "default_duration": 30,
+  "duration_per_herb": 5,
   "effects": [
     "minecraft:regeneration"
   ],
-  "herbs_per_duration": 6,
   "materials": [
     {
       "item": "minecraft:enchanted_golden_apple"
