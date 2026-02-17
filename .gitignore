@@ -29,7 +29,7 @@ src/main/generated/
 # private
 private/othermods/
 private/modpacks
-private/assets
+private/assets/minecraft
 
 # repo
 repo
