@@ -6,9 +6,10 @@
   "materials": [
     {
       "count": 16,
-      "item": "minecraft:quartz"
+      "item": "minecraft:flint"
     },
     {
+      "count": 5,
       "item": "minecraft:lapis_lazuli"
     }
   ],
@@ -28,7 +29,7 @@
       "item": "herbalcurative:feather_quill"
     },
     {
-      "item": "herbalcurative:forge_hammer"
+      "item": "herbalcurative:cutting_knife"
     }
   ]
 }

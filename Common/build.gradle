@@ -1,0 +1,12 @@
+architectury {
+    common rootProject.enabled_platforms.split(',')
+}
+
+sourceSets.main.resources.srcDir('src/main/generated/resources')
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+
+    // Jade API for optional Jade support
+    modCompileOnly "maven.modrinth:jade:15.9.3+neoforge"
+}

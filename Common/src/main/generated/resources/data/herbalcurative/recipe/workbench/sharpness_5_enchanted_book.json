@@ -1,0 +1,35 @@
+{
+  "type": "herbalcurative:workbench",
+  "input": {
+    "item": "minecraft:book"
+  },
+  "materials": [
+    {
+      "count": 16,
+      "item": "minecraft:quartz"
+    },
+    {
+      "count": 5,
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "result": {
+    "components": {
+      "minecraft:stored_enchantments": {
+        "levels": {
+          "minecraft:sharpness": 5
+        }
+      }
+    },
+    "count": 1,
+    "id": "minecraft:enchanted_book"
+  },
+  "tools": [
+    {
+      "item": "herbalcurative:feather_quill"
+    },
+    {
+      "item": "herbalcurative:cutting_knife"
+    }
+  ]
+}

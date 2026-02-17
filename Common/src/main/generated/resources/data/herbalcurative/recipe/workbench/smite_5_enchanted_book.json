@@ -13,6 +13,7 @@
       "item": "minecraft:bone"
     },
     {
+      "count": 5,
       "item": "minecraft:lapis_lazuli"
     }
   ],
@@ -32,7 +33,7 @@
       "item": "herbalcurative:feather_quill"
     },
     {
-      "item": "herbalcurative:cutting_knife"
+      "item": "herbalcurative:forge_hammer"
     }
   ]
 }

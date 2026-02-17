@@ -1,0 +1,35 @@
+{
+  "type": "herbalcurative:workbench",
+  "input": {
+    "item": "minecraft:book"
+  },
+  "materials": [
+    {
+      "count": 8,
+      "item": "minecraft:obsidian"
+    },
+    {
+      "count": 3,
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "result": {
+    "components": {
+      "minecraft:stored_enchantments": {
+        "levels": {
+          "minecraft:unbreaking": 3
+        }
+      }
+    },
+    "count": 1,
+    "id": "minecraft:enchanted_book"
+  },
+  "tools": [
+    {
+      "item": "herbalcurative:feather_quill"
+    },
+    {
+      "item": "herbalcurative:forge_hammer"
+    }
+  ]
+}
