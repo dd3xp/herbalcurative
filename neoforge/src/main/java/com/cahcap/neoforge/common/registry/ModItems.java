@@ -210,18 +210,28 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.LUMISTONE_BRICK_STAIRS.get(), new Item.Properties()));
     
     // ==================== Workbench Tools ====================
-    // Repair materials: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Woven Rope = String
+    // Repair: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Woven Rope = String
     
-    public static final DeferredItem<WorkbenchToolItem> CUTTING_KNIFE = ITEMS.register("cutting_knife",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.IRON_INGOT));
+    public static final DeferredItem<Item> CUTTING_KNIFE = ITEMS.register("cutting_knife",
+            () -> workbenchTool(Items.IRON_INGOT));
+    public static final DeferredItem<Item> FEATHER_QUILL = ITEMS.register("feather_quill",
+            () -> workbenchTool(Items.INK_SAC));
+    public static final DeferredItem<Item> WOVEN_ROPE = ITEMS.register("woven_rope",
+            () -> workbenchTool(Items.STRING));
+    public static final DeferredItem<Item> FORGE_HAMMER = ITEMS.register("forge_hammer",
+            () -> workbenchTool(Items.IRON_INGOT));
     
-    public static final DeferredItem<WorkbenchToolItem> FEATHER_QUILL = ITEMS.register("feather_quill",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.INK_SAC));
-    
-    public static final DeferredItem<WorkbenchToolItem> WOVEN_ROPE = ITEMS.register("woven_rope",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.STRING));
-    
-    public static final DeferredItem<WorkbenchToolItem> FORGE_HAMMER = ITEMS.register("forge_hammer",
-            () -> new WorkbenchToolItem(new Item.Properties().durability(256).stacksTo(1), () -> Items.IRON_INGOT));
+    private static Item workbenchTool(Item repairMaterial) {
+        return new Item(new Item.Properties().durability(256).stacksTo(1)) {
+            @Override
+            public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+                return repair.is(repairMaterial);
+            }
+            @Override
+            public boolean isEnchantable(ItemStack stack) { return true; }
+            @Override
+            public int getEnchantmentValue() { return 5; }
+        };
+    }
 }
 

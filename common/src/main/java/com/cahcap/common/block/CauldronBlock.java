@@ -239,6 +239,11 @@ public class CauldronBlock extends BaseEntityBlock {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             
+            // Flowweave Ring on formed cauldron: pass to item so FlowweaveRingItem.useOn handles brewing/clearing
+            if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
+            
             // Extract from output slot: only when NOT shift clicking (shift + empty hand = extract materials)
             if (master.hasOutputSlotItems() && !player.isShiftKeyDown()) {
                 ItemStack output = master.extractFromOutputSlot();
@@ -295,16 +300,6 @@ public class CauldronBlock extends BaseEntityBlock {
                     level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                     return ItemInteractionResult.SUCCESS;
                 }
-            }
-            
-            // Handle Flowweave Ring - start/finish brewing or force clear
-            if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
-                if (player.isShiftKeyDown()) {
-                    master.onFlowweaveRingShiftUse(player);
-                } else {
-                    master.onFlowweaveRingUse(player);
-                }
-                return ItemInteractionResult.SUCCESS;
             }
             
             // Shift + empty hand - try to extract

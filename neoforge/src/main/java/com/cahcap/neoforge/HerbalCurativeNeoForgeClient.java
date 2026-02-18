@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,6 +32,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.jetbrains.annotations.NotNull;
@@ -144,6 +146,17 @@ public class HerbalCurativeNeoForgeClient {
             event.registerLayerDefinition(HerbBoxModel.LAYER_LOCATION, HerbBoxModel::createBodyLayer);
         }
         
+        @SubscribeEvent
+        public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+            // Register workbench tool block models so they get baked and can be used in BER.
+            // Side-loaded models must use the "standalone" variant per NeoForge.
+            var mod = HerbalCurativeCommon.MOD_ID;
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_cutting_knife"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_feather_quill"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_forge_hammer"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_woven_rope"), "standalone"));
+        }
+
         @SubscribeEvent
         public static void registerBlockEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
             // Block entity renderers

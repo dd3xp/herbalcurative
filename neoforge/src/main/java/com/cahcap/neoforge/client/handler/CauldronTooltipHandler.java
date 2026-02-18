@@ -71,22 +71,12 @@ public class CauldronTooltipHandler {
                 items.add(new ItemCountPair(entry.getKey(), entry.getValue()));
             }
         } else {
-            // Show materials when not brewing
+            // Show materials when not brewing - one icon per slot (no merging)
+            // Items with low stack limit (e.g. flowweave ring max 2) may occupy multiple slots
             List<ItemStack> materials = master.getMaterials();
             for (ItemStack stack : materials) {
                 if (!stack.isEmpty()) {
-                    // Merge same items
-                    boolean found = false;
-                    for (ItemCountPair pair : items) {
-                        if (pair.item == stack.getItem()) {
-                            pair.count += stack.getCount();
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        items.add(new ItemCountPair(stack.getItem(), stack.getCount()));
-                    }
+                    items.add(new ItemCountPair(stack.getItem(), stack.getCount()));
                 }
             }
         }

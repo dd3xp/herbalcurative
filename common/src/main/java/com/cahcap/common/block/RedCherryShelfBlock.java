@@ -117,6 +117,11 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
         
         ItemStack heldItem = player.getItemInHand(hand);
         
+        // Flowweave Ring + shift on shelf: pass to item so FlowweaveRingItem.useOn can trigger Herbal Blending crafting
+        if (heldItem.is(ModRegistries.FLOWWEAVE_RING.get()) && player.isShiftKeyDown()) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        
         if (shelf.hasItem()) {
             // Shelf has item - take it out
             ItemStack storedItem = shelf.removeItem();

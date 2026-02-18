@@ -3,6 +3,7 @@ package com.cahcap.common.item;
 import com.cahcap.common.block.CauldronBlock;
 import com.cahcap.common.block.WorkbenchBlock;
 import com.cahcap.common.blockentity.CauldronBlockEntity;
+import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.common.entity.FlowweaveProjectile;
 import com.cahcap.common.multiblock.MultiblockCauldron;
@@ -14,6 +15,7 @@ import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -35,6 +37,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -793,6 +796,59 @@ public class FlowweaveRingItem extends Item {
             }
         }
         
+        // Handle Herb Basket - clear binding and eject all herbs (shift+right-click only)
+        if (player != null && player.isShiftKeyDown()) {
+            if (clickedState.is(ModRegistries.HERB_BASKET.get()) && level.getBlockEntity(context.getClickedPos()) instanceof HerbBasketBlockEntity basket) {
+                Item boundHerbToClear = basket.getBoundHerb();
+                if (boundHerbToClear != null) {
+                    int count = basket.getHerbCount();
+                    
+                    // Eject all herbs
+                    if (count > 0) {
+                        BlockPos pos = context.getClickedPos();
+                        while (count > 0) {
+                            int stackSize = Math.min(count, 64);
+                            ItemStack herbStack = new ItemStack(boundHerbToClear, stackSize);
+                            ItemEntity entityItem = new ItemEntity(
+                                    level,
+                                    pos.getX() + 0.5,
+                                    pos.getY() + 0.5,
+                                    pos.getZ() + 0.5,
+                                    herbStack
+                            );
+                            entityItem.setDeltaMovement(
+                                    (level.random.nextDouble() - 0.5) * 0.2,
+                                    level.random.nextDouble() * 0.2 + 0.1,
+                                    (level.random.nextDouble() - 0.5) * 0.2
+                            );
+                            level.addFreshEntity(entityItem);
+                            count -= stackSize;
+                        }
+                    }
+                    
+                    // Clear binding
+                    basket.unbindHerb();
+                    
+                    // Play leaf break particles
+                    if (level instanceof ServerLevel serverLevel) {
+                        BlockPos pos = context.getClickedPos();
+                        serverLevel.sendParticles(
+                                ParticleTypes.COMPOSTER,
+                                pos.getX() + 0.5,
+                                pos.getY() + 0.5,
+                                pos.getZ() + 0.5,
+                                15,
+                                0.3, 0.3, 0.3,
+                                0.05
+                        );
+                    }
+                    
+                    level.playSound(null, context.getClickedPos(), SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
+        
         // If no other action triggered and ring has bound potion
         if (player != null && hasBoundPotion(stack)) {
             // Shift+right-click on non-trigger block: cycle mode
@@ -841,6 +897,13 @@ public class FlowweaveRingItem extends Item {
         if (clickedState.is(ModRegistries.WORKBENCH.get()) 
                 && clickedState.getValue(WorkbenchBlock.PART) == WorkbenchBlock.WorkbenchPart.CENTER) {
             return true;
+        }
+        // Check Herb Basket (with bound herb, shift+right-click)
+        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_BASKET.get())) {
+            if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof HerbBasketBlockEntity basket 
+                    && basket.getBoundHerb() != null) {
+                return true;
+            }
         }
         
         // Check if casting would trigger (has bound potion)

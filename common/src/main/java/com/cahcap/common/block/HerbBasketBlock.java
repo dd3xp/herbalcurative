@@ -160,55 +160,8 @@ public class HerbBasketBlock extends BaseEntityBlock {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         
-        // Flowweave Ring: clear binding and eject all herbs
-        if (!stack.isEmpty() && stack.getItem() == ModRegistries.FLOWWEAVE_RING.get()) {
-            Item boundHerbToClear = basket.getBoundHerb();
-            if (boundHerbToClear != null) {
-                int count = basket.getHerbCount();
-                
-                // Eject all herbs
-                if (count > 0) {
-                    while (count > 0) {
-                        int stackSize = Math.min(count, 64);
-                        ItemStack herbStack = new ItemStack(boundHerbToClear, stackSize);
-                        ItemEntity entityItem = new ItemEntity(
-                                level,
-                                pos.getX() + 0.5,
-                                pos.getY() + 0.5,
-                                pos.getZ() + 0.5,
-                                herbStack
-                        );
-                        entityItem.setDeltaMovement(
-                                (level.random.nextDouble() - 0.5) * 0.2,
-                                level.random.nextDouble() * 0.2 + 0.1,
-                                (level.random.nextDouble() - 0.5) * 0.2
-                        );
-                        level.addFreshEntity(entityItem);
-                        count -= stackSize;
-                    }
-                }
-                
-                // Clear binding
-                basket.unbindHerb();
-                
-                // Play leaf break particles
-                if (level instanceof ServerLevel serverLevel) {
-                    serverLevel.sendParticles(
-                            ParticleTypes.COMPOSTER,
-                            pos.getX() + 0.5,
-                            pos.getY() + 0.5,
-                            pos.getZ() + 0.5,
-                            15,  // particle count
-                            0.3, 0.3, 0.3,  // spread
-                            0.05  // speed
-                    );
-                }
-                
-                // Play sound
-                level.playSound(null, pos, SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
-                
-                return ItemInteractionResult.SUCCESS;
-            }
+        // Flowweave Ring on herb basket: pass to item so FlowweaveRingItem.useOn handles clear binding and eject
+        if (!stack.isEmpty() && stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         
