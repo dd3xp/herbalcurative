@@ -4,6 +4,7 @@ import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.client.model.HerbBoxModel;
 import com.cahcap.client.model.LeafweaveArmorModel;
 import com.cahcap.neoforge.client.renderer.CauldronRenderer;
+import com.cahcap.neoforge.client.renderer.HerbBoxItemRenderer;
 import com.cahcap.client.renderer.RedCherryShelfRenderer;
 import com.cahcap.client.renderer.WorkbenchRenderer;
 import com.cahcap.neoforge.client.layer.HerbBoxPlayerLayer;
@@ -15,7 +16,6 @@ import com.cahcap.neoforge.common.registry.ModEntityTypes;
 import com.cahcap.neoforge.common.registry.ModItems;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -204,6 +204,20 @@ public class HerbalCurativeNeoForgeClient {
                     ModItems.LEAFWEAVE_CHESTPLATE.get(),
                     ModItems.LEAFWEAVE_LEGGINGS.get(),
                     ModItems.LEAFWEAVE_BOOTS.get());
+
+            // Herb Box — render item using the same Java entity model as the player back layer
+            IClientItemExtensions herbBoxExtensions = new IClientItemExtensions() {
+                private HerbBoxItemRenderer renderer;
+
+                @Override
+                public @NotNull net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                    if (renderer == null) {
+                        renderer = new HerbBoxItemRenderer();
+                    }
+                    return renderer;
+                }
+            };
+            event.registerItem(herbBoxExtensions, ModItems.HERB_BOX.get());
         }
     }
 }

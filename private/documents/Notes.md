@@ -18,6 +18,11 @@
   - 把枢轴点放到想要拿的地方
   - 在 `poseStack.translate` 里面设置补偿值
 - 如果需要做普通jvav版方块，需要在显示调整里面把所有显示的地方的显示形式换成默认方块
+- 碰撞箱：
+  In order to use the VoxelShape exporter, you first need to create a new Group, called "VoxelShapes". All cubes that you create within this group, will be added to the voxelShape trough the OR BooleanFunction. Additionally you can add sub groups with the name equaling a "$" and a BooleanFunction as shown in the image below (Ex: $and). The first cube in such a group represents the red cube, all other ones will be combined with an OR BooleanFunction first.  
+  There is an advanced settings menu for the VoxelShape exporter that allows you to disable the requirement of the "VoxelShapes" group. This option is only designed to be used for rapid prototyping and should not be used in production. For the best performance, you should be creating a representation of your VoxelShape in a separate model and use the BooleanFunctions to create the proper shape rather than ORing all of the cubes in your model together. If not using BooleanFunctions, use the "VoxelShapes" group to make sure that only the cubes you need are being used for the VoxelShape. The less cubes, the better.  
+  ![VoxelShape1](./images/VoxelShape1.png)  
+  ![VoxelShape2](./images/VoxelShape2.png)  
 
 ## md语句相关
 
