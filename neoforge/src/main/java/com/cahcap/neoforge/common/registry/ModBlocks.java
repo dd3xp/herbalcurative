@@ -2,6 +2,7 @@ package com.cahcap.neoforge.common.registry;
 
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.block.*;
+import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.neoforge.common.block.HerbCabinetBlock;
 import com.cahcap.common.block.HerbBasketBlock;
 import com.cahcap.common.block.RedCherryShelfBlock;
@@ -192,11 +193,11 @@ public class ModBlocks {
     // ==================== Multiblock Structures ====================
     
     public static final DeferredBlock<HerbCabinetBlock> HERB_CABINET = BLOCKS.register("herb_cabinet",
-            () -> new HerbCabinetBlock(BlockBehaviour.Properties.of()
+            () -> new HerbCabinetBlock(Multiblock.addInteriorSpaceProperties(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion()));
+                    .noOcclusion())));
     
     public static final DeferredBlock<HerbBasketBlock> HERB_BASKET = BLOCKS.register("herb_basket",
             () -> new HerbBasketBlock(BlockBehaviour.Properties.of()
@@ -222,15 +223,12 @@ public class ModBlocks {
                     .noOcclusion()));
     
     public static final DeferredBlock<com.cahcap.neoforge.common.block.CauldronBlock> CAULDRON = BLOCKS.register("cauldron",
-            () -> new com.cahcap.neoforge.common.block.CauldronBlock(BlockBehaviour.Properties.of()
+            () -> new com.cahcap.neoforge.common.block.CauldronBlock(Multiblock.addInteriorSpaceProperties(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(2.0F, 6.0F)
                     .sound(SoundType.STONE)
                     .requiresCorrectToolForDrops()
-                    .noOcclusion()
-                    .dynamicShape()
-                    .isSuffocating((state, getter, pos) -> false)
-                    .isViewBlocking((state, getter, pos) -> false)
+                    .noOcclusion())
                     .lightLevel(state -> state.getValue(CauldronBlock.FORMED) ? 7 : 0)));
 
     // ==================== Helper Methods ====================

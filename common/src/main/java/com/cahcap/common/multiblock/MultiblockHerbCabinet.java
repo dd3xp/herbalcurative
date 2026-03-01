@@ -11,6 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Herb Cabinet Multiblock Structure (3x2)
  * Layout (wall-mounted view):
@@ -57,45 +60,41 @@ public class MultiblockHerbCabinet {
         
         // Structure is valid - transform it
         BlockPos masterPos = clickedPos;
-        
+
+        // Build transform list: 3x2, master at (0,0) center-bottom = (1,0) in grid
+        List<Multiblock.BlockTransform> transforms = new ArrayList<>();
         for (int h = 0; h < 2; h++) {
             for (int w = 0; w < 3; w++) {
-                BlockPos targetPos = bottomLeft.relative(Direction.UP, h).relative(right, w);
-                
-                // Master block is center-bottom (h=0, w=1)
-                // Note: h=0 is bottom row (bottomLeft), h=1 is top row (bottomLeft + UP)
-                // offset = (0, 0, 0) for master block
-                int offsetRight = w - 1;   // -1 (left), 0 (center), 1 (right)
-                int offsetUp = h;          // 0 (bottom/h=0), 1 (top/h=1)
-                int offsetForward = 0;
-                
-                // Convert to world coordinates
-                int offsetX = right.getStepX() * offsetRight + facing.getStepX() * offsetForward;
-                int offsetY = offsetUp;
-                int offsetZ = right.getStepZ() * offsetRight + facing.getStepZ() * offsetForward;
-                
-                // Master block at h=0, w=1 (center-bottom)
-                boolean isMaster = (h == 0 && w == 1);
-                
-                BlockState newState = ModRegistries.HERB_CABINET.get().defaultBlockState()
-                        .setValue(HerbCabinetBlock.FACING, facing)
-                        .setValue(HerbCabinetBlock.FORMED, true)
-                        .setValue(HerbCabinetBlock.IS_MASTER, isMaster);
-                
-                level.setBlock(targetPos, newState, 3);
-                
-                if (level.getBlockEntity(targetPos) instanceof HerbCabinetBlockEntity cabinet) {
-                    cabinet.facing = facing;
-                    cabinet.formed = true;
-                    cabinet.posInMultiblock = h * 3 + w;
-                    cabinet.offset = new int[]{offsetX, offsetY, offsetZ};
-                    cabinet.renderAABB = null; // Clear cached render box when forming
-                    cabinet.setChanged();
-                    level.sendBlockUpdated(targetPos, newState, newState, 3);
-                }
+                int offsetRight = w - 1;
+                int offsetUp = h;
+                int offsetX = right.getStepX() * offsetRight + facing.getStepX() * 0;
+                int offsetZ = right.getStepZ() * offsetRight + facing.getStepZ() * 0;
+                transforms.add(new Multiblock.BlockTransform(
+                        new BlockPos(offsetX, offsetUp, offsetZ),
+                        h == 0 && w == 1,
+                        h * 3 + w));
             }
         }
-        
+
+        Multiblock.assemble(level, masterPos, facing, transforms,
+                (pos, t) -> ModRegistries.HERB_CABINET.get().defaultBlockState()
+                        .setValue(HerbCabinetBlock.FACING, facing)
+                        .setValue(HerbCabinetBlock.FORMED, true)
+                        .setValue(HerbCabinetBlock.IS_MASTER, t.isMaster()),
+                (be, t) -> {
+                    if (be instanceof HerbCabinetBlockEntity cabinet) {
+                        BlockPos pos = t.worldPos(masterPos);
+                        int offsetX = pos.getX() - masterPos.getX();
+                        int offsetY = pos.getY() - masterPos.getY();
+                        int offsetZ = pos.getZ() - masterPos.getZ();
+                        cabinet.facing = facing;
+                        cabinet.formed = true;
+                        cabinet.posInMultiblock = t.posInMultiblock();
+                        cabinet.offset = new int[]{offsetX, offsetY, offsetZ};
+                        cabinet.renderAABB = null;
+                    }
+                });
+
         level.playSound(null, masterPos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
         
         return true;

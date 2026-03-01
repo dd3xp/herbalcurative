@@ -96,27 +96,21 @@ public class HerbCabinetBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        
-        // Each block has its own selection shape based on original block type
         if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
             return getOriginalShape(be.posInMultiblock);
         }
-        
-        return Shapes.block();
+        return Shapes.empty();
     }
-    
+
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        
-        // Each block has its own collision shape based on original block type
         if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
             return getOriginalShape(be.posInMultiblock);
         }
-        
-        return Shapes.block();
+        return Shapes.empty();
     }
     
     /**

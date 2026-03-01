@@ -13,6 +13,9 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Cauldron Multiblock Structure (3x3x2)
  * 
@@ -71,12 +74,43 @@ public class MultiblockCauldron {
         
         // Get facing direction from player
         Direction facing = player.getDirection().getOpposite();
-        
-        // Structure is valid - transform it
-        transformStructure(level, masterPos, facing);
-        
+
+        // Build transform list: Layer 1 (9) + Layer 2 (9)
+        List<Multiblock.BlockTransform> transforms = new ArrayList<>();
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                transforms.add(new Multiblock.BlockTransform(
+                        new BlockPos(x, 0, z), x == 0 && z == 0, transforms.size()));
+            }
+        }
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                transforms.add(new Multiblock.BlockTransform(
+                        new BlockPos(x, 1, z), false, transforms.size()));
+            }
+        }
+
+        Multiblock.assemble(level, masterPos, facing, transforms,
+                (pos, t) -> ModRegistries.CAULDRON.get().defaultBlockState()
+                        .setValue(CauldronBlock.FACING, facing)
+                        .setValue(CauldronBlock.FORMED, true)
+                        .setValue(CauldronBlock.IS_MASTER, t.isMaster()),
+                (be, t) -> {
+                    if (be instanceof CauldronBlockEntity cauldron) {
+                        BlockPos pos = t.worldPos(masterPos);
+                        int offsetX = pos.getX() - masterPos.getX();
+                        int offsetY = pos.getY() - masterPos.getY();
+                        int offsetZ = pos.getZ() - masterPos.getZ();
+                        cauldron.facing = facing;
+                        cauldron.formed = true;
+                        cauldron.posInMultiblock = t.posInMultiblock();
+                        cauldron.offset = new int[]{offsetX, offsetY, offsetZ};
+                        cauldron.renderAABB = null;
+                    }
+                });
+
         level.playSound(null, masterPos, SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0F, 0.8F);
-        
+
         return true;
     }
     
@@ -175,59 +209,5 @@ public class MultiblockCauldron {
         }
         
         return true;
-    }
-    
-    /**
-     * Transform all structure blocks into cauldron blocks.
-     * Layer 1 (master layer): All 9 positions (4 corner bricks + 5 top slabs, center is master)
-     * Layer 2: All 9 positions (8 edge bricks + 1 center air)
-     */
-    private void transformStructure(Level level, BlockPos masterPos, Direction facing) {
-        int posIndex = 0;
-        
-        // Layer 1 (y=0): All 9 positions - master is at center
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                BlockPos pos = masterPos.offset(x, 0, z);
-                boolean isMaster = (x == 0 && z == 0);
-                transformBlock(level, pos, masterPos, facing, isMaster, posIndex++);
-            }
-        }
-        
-        // Layer 2 (y+1): All 9 positions (8 bricks + 1 center air)
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                BlockPos pos = masterPos.offset(x, 1, z);
-                transformBlock(level, pos, masterPos, facing, false, posIndex++);
-            }
-        }
-    }
-    
-    /**
-     * Transform a single block into a cauldron block.
-     */
-    private void transformBlock(Level level, BlockPos pos, BlockPos masterPos, 
-                                  Direction facing, boolean isMaster, int posInMultiblock) {
-        // Calculate offset from master
-        int offsetX = pos.getX() - masterPos.getX();
-        int offsetY = pos.getY() - masterPos.getY();
-        int offsetZ = pos.getZ() - masterPos.getZ();
-        
-        BlockState newState = ModRegistries.CAULDRON.get().defaultBlockState()
-                .setValue(CauldronBlock.FACING, facing)
-                .setValue(CauldronBlock.FORMED, true)
-                .setValue(CauldronBlock.IS_MASTER, isMaster);
-        
-        level.setBlock(pos, newState, 3);
-        
-        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity cauldron) {
-            cauldron.facing = facing;
-            cauldron.formed = true;
-            cauldron.posInMultiblock = posInMultiblock;
-            cauldron.offset = new int[]{offsetX, offsetY, offsetZ};
-            cauldron.renderAABB = null;
-            cauldron.setChanged();
-            level.sendBlockUpdated(pos, newState, newState, 3);
-        }
     }
 }

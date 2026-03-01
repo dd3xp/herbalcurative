@@ -128,30 +128,22 @@ public class CauldronBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        
         if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be) {
             BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) {
-                return getOriginalCollisionShape(pos, masterPos);
-            }
+            if (masterPos != null) return getOriginalCollisionShape(pos, masterPos);
         }
-        
         return Shapes.empty();
     }
-    
+
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        
         if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be) {
             BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) {
-                return getOriginalCollisionShape(pos, masterPos);
-            }
+            if (masterPos != null) return getOriginalCollisionShape(pos, masterPos);
         }
-        
         return Shapes.empty();
     }
     
