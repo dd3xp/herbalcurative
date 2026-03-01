@@ -23,6 +23,8 @@
   There is an advanced settings menu for the VoxelShape exporter that allows you to disable the requirement of the "VoxelShapes" group. This option is only designed to be used for rapid prototyping and should not be used in production. For the best performance, you should be creating a representation of your VoxelShape in a separate model and use the BooleanFunctions to create the proper shape rather than ORing all of the cubes in your model together. If not using BooleanFunctions, use the "VoxelShapes" group to make sure that only the cubes you need are being used for the VoxelShape. The less cubes, the better.  
   ![VoxelShape1](./images/VoxelShape1.png)  
   ![VoxelShape2](./images/VoxelShape2.png)  
+  碰撞箱使用voxel.py生成
+- 釜碰撞箱问题：釜内往墙壁走会被弹回、按住 shift 出现黑色窒息遮挡。根因是客户端加载区块时 BlockState 先于 BlockEntity 到达，在 BE 未就绪时 `getCollisionShape` 回退到 `Shapes.block()`，18 个方块瞬间变成完整方块碰撞。修复：formed 状态下 BE 不可用时回退改为 `Shapes.empty()`；方块注册添加 `dynamicShape()`、`isSuffocating(false)`、`isViewBlocking(false)`。
 
 ## md语句相关
 

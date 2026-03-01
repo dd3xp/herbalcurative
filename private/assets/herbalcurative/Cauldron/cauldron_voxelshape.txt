@@ -1,0 +1,34 @@
+    // dx=-1 dy=0 dz=-1
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4), Block.box(0, 12, 4, 4, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4)),
+    // dx=-1 dy=0 dz=0
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 4, 16, 16)),
+    // dx=-1 dy=0 dz=1
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16), Block.box(0, 12, 0, 4, 16, 12), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16)),
+    // dx=0 dy=0 dz=-1
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4)),
+    // dx=0 dy=0 dz=0
+    Block.box(0, 8, 0, 16, 12, 16),
+    // dx=0 dy=0 dz=1
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16)),
+    // dx=1 dy=0 dz=-1
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4), Block.box(12, 12, 4, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4)),
+    // dx=1 dy=0 dz=0
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(12, 12, 0, 16, 16, 16)),
+    // dx=1 dy=0 dz=1
+    Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16), Block.box(12, 12, 0, 16, 16, 12), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16)),
+    // dx=-1 dy=1 dz=-1
+    Shapes.or(Block.box(0, 0, 0, 16, 16, 4), Block.box(0, 0, 4, 4, 16, 16)),
+    // dx=-1 dy=1 dz=0
+    Block.box(0, 0, 0, 4, 16, 16),
+    // dx=-1 dy=1 dz=1
+    Shapes.or(Block.box(0, 0, 12, 16, 16, 16), Block.box(0, 0, 0, 4, 16, 12)),
+    // dx=0 dy=1 dz=-1
+    Block.box(0, 0, 0, 16, 16, 4),
+    // dx=0 dy=1 dz=1
+    Block.box(0, 0, 12, 16, 16, 16),
+    // dx=1 dy=1 dz=-1
+    Shapes.or(Block.box(0, 0, 0, 16, 16, 4), Block.box(12, 0, 4, 16, 16, 16)),
+    // dx=1 dy=1 dz=0
+    Block.box(12, 0, 0, 16, 16, 16),
+    // dx=1 dy=1 dz=1
+    Shapes.or(Block.box(0, 0, 12, 16, 16, 16), Block.box(12, 0, 0, 16, 16, 12)),

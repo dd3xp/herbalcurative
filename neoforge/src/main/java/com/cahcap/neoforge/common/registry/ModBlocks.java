@@ -228,6 +228,9 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
+                    .dynamicShape()
+                    .isSuffocating((state, getter, pos) -> false)
+                    .isViewBlocking((state, getter, pos) -> false)
                     .lightLevel(state -> state.getValue(CauldronBlock.FORMED) ? 7 : 0)));
 
     // ==================== Helper Methods ====================

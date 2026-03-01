@@ -67,10 +67,25 @@ public class CauldronBlock extends BaseEntityBlock {
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
     
-    // Collision/selection shapes for original block types
-    private static final VoxelShape FULL_BLOCK = Shapes.block();           // Full block (Lumistone Bricks)
-    private static final VoxelShape TOP_SLAB = Block.box(0, 8, 0, 16, 16, 16);  // Top slab (Lumistone Brick Slab)
-    private static final VoxelShape EMPTY = Shapes.empty();                 // Air (Layer 2 center)
+    // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
+    private static final VoxelShape SHAPE_N1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4), Block.box(0, 12, 4, 4, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));
+    private static final VoxelShape SHAPE_N1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 4, 16, 16));
+    private static final VoxelShape SHAPE_N1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16), Block.box(0, 12, 0, 4, 16, 12), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16));
+    private static final VoxelShape SHAPE_0_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4));
+    private static final VoxelShape SHAPE_0_0_0 = Block.box(0, 8, 0, 16, 12, 16);
+    private static final VoxelShape SHAPE_0_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16));
+    private static final VoxelShape SHAPE_1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4), Block.box(12, 12, 4, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4));
+    private static final VoxelShape SHAPE_1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(12, 12, 0, 16, 16, 16));
+    private static final VoxelShape SHAPE_1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16), Block.box(12, 12, 0, 16, 16, 12), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16));
+    private static final VoxelShape SHAPE_N1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 4), Block.box(0, 0, 4, 4, 16, 16));
+    private static final VoxelShape SHAPE_N1_1_0 = Block.box(0, 0, 0, 4, 16, 16);
+    private static final VoxelShape SHAPE_N1_1_1 = Shapes.or(Block.box(0, 0, 12, 16, 16, 16), Block.box(0, 0, 0, 4, 16, 12));
+    private static final VoxelShape SHAPE_0_1_N1 = Block.box(0, 0, 0, 16, 16, 4);
+    private static final VoxelShape SHAPE_0_1_0 = Shapes.empty();  // Center: pot opening
+    private static final VoxelShape SHAPE_0_1_1 = Block.box(0, 0, 12, 16, 16, 16);
+    private static final VoxelShape SHAPE_1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 4), Block.box(12, 0, 4, 16, 16, 16));
+    private static final VoxelShape SHAPE_1_1_0 = Block.box(12, 0, 0, 16, 16, 16);
+    private static final VoxelShape SHAPE_1_1_1 = Shapes.or(Block.box(0, 0, 12, 16, 16, 16), Block.box(12, 0, 0, 16, 16, 12));
     
     public CauldronBlock(Properties properties) {
         super(properties);
@@ -111,11 +126,9 @@ public class CauldronBlock extends BaseEntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) {
-            // Unformed: return full block shape (lumistone)
             return Shapes.block();
         }
         
-        // Formed: each block has its own selection shape based on original block type
         if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be) {
             BlockPos masterPos = be.getMasterPos();
             if (masterPos != null) {
@@ -123,17 +136,15 @@ public class CauldronBlock extends BaseEntityBlock {
             }
         }
         
-        return Shapes.block();
+        return Shapes.empty();
     }
     
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) {
-            // Unformed: return full block shape
             return Shapes.block();
         }
         
-        // Use original block's collision shape based on position in multiblock
         if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be) {
             BlockPos masterPos = be.getMasterPos();
             if (masterPos != null) {
@@ -141,39 +152,62 @@ public class CauldronBlock extends BaseEntityBlock {
             }
         }
         
-        return Shapes.block();
+        return Shapes.empty();
     }
     
     /**
-     * Get the collision shape for a position based on original block type.
-     * Layer 1 (y=0): corners = full block, edges+center = top slab
-     * Layer 2 (y=1): outer 8 = full block, center = empty (air)
+     * Get the collision/selection shape for a position from Blockbench model (voxel.py --per-block).
      */
     private VoxelShape getOriginalCollisionShape(BlockPos targetPos, BlockPos masterPos) {
-        int dy = targetPos.getY() - masterPos.getY();
         int dx = targetPos.getX() - masterPos.getX();
+        int dy = targetPos.getY() - masterPos.getY();
         int dz = targetPos.getZ() - masterPos.getZ();
-        
-        if (dy == 0) {
-            // Layer 1 (master layer)
-            // Corners: full block (Lumistone Bricks)
-            if ((dx == -1 || dx == 1) && (dz == -1 || dz == 1)) {
-                return FULL_BLOCK;
-            }
-            // Edge middles + center: top slab (Lumistone Brick Slab)
-            return TOP_SLAB;
-        } else if (dy == 1) {
-            // Layer 2
-            if (dx == 0 && dz == 0) {
-                // Center: empty (was air)
-                return EMPTY;
-            } else {
-                // Outer 8: full block (Lumistone Bricks)
-                return FULL_BLOCK;
-            }
-        }
-        
-        return FULL_BLOCK;
+
+        return switch (dy) {
+            case 0 -> switch (dx) {
+                case -1 -> switch (dz) {
+                    case -1 -> SHAPE_N1_0_N1;
+                    case 0 -> SHAPE_N1_0_0;
+                    case 1 -> SHAPE_N1_0_1;
+                    default -> Shapes.block();
+                };
+                case 0 -> switch (dz) {
+                    case -1 -> SHAPE_0_0_N1;
+                    case 0 -> SHAPE_0_0_0;
+                    case 1 -> SHAPE_0_0_1;
+                    default -> Shapes.block();
+                };
+                case 1 -> switch (dz) {
+                    case -1 -> SHAPE_1_0_N1;
+                    case 0 -> SHAPE_1_0_0;
+                    case 1 -> SHAPE_1_0_1;
+                    default -> Shapes.block();
+                };
+                default -> Shapes.block();
+            };
+            case 1 -> switch (dx) {
+                case -1 -> switch (dz) {
+                    case -1 -> SHAPE_N1_1_N1;
+                    case 0 -> SHAPE_N1_1_0;
+                    case 1 -> SHAPE_N1_1_1;
+                    default -> Shapes.block();
+                };
+                case 0 -> switch (dz) {
+                    case -1 -> SHAPE_0_1_N1;
+                    case 0 -> SHAPE_0_1_0;
+                    case 1 -> SHAPE_0_1_1;
+                    default -> Shapes.block();
+                };
+                case 1 -> switch (dz) {
+                    case -1 -> SHAPE_1_1_N1;
+                    case 0 -> SHAPE_1_1_0;
+                    case 1 -> SHAPE_1_1_1;
+                    default -> Shapes.block();
+                };
+                default -> Shapes.block();
+            };
+            default -> Shapes.block();
+        };
     }
     
     @Override
