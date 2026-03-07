@@ -10,14 +10,14 @@ import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -135,14 +135,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             
             // ==================== Special blocks ====================
             
-            // Red Cherry Leaves (drops saplings and sticks)
+            // Red Cherry Leaves (drops saplings and red cherry sticks)
             this.add(ModBlocks.RED_CHERRY_LEAVES.get(), block ->
-                createLeavesDrops(block, ModBlocks.RED_CHERRY_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES)
-                    .withPool(LootPool.lootPool()
-                        .setRolls(UniformGenerator.between(1.0F, 2.0F))
-                        .add(applyExplosionDecay(block, LootItem.lootTableItem(Items.STICK)
-                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))))
-                        .when(HAS_SHEARS.invert()))
+                createRedCherryLeavesDrops(block, ModBlocks.RED_CHERRY_SAPLING.get(), ModItems.RED_CHERRY_STICK.get())
             );
             
             // Red Cherry Bush - drops berries at all stages
@@ -170,6 +165,34 @@ public class ModBlockLootProvider extends LootTableProvider {
                         .add(LootItem.lootTableItem(ModItems.RED_CHERRY.get())))
                 )
             );
+        }
+        
+        /**
+         * Create Red Cherry leaves drops (saplings and red cherry sticks).
+         * Fully custom implementation to use red cherry sticks instead of vanilla sticks.
+         * 
+         * Drop logic:
+         * - Shears or Silk Touch: drops leaves block
+         * - Normal break: chance to drop sapling (5% base) and red cherry sticks (2% base)
+         */
+        protected LootTable.Builder createRedCherryLeavesDrops(Block leavesBlock, Block saplingBlock, Item stickItem) {
+            // Vanilla stick drop chances: 2%, 2.22%, 2.5%, 3.33%, 10% (Fortune 0-4)
+            float[] stickChances = new float[]{0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F};
+            
+            var fortuneEnchantment = this.registries.lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT)
+                    .getOrThrow(Enchantments.FORTUNE);
+            
+            return this.createSilkTouchOrShearsDispatchTable(leavesBlock,
+                    // When NOT using shears/silk touch, drop sapling with chance
+                    applyExplosionCondition(leavesBlock, LootItem.lootTableItem(saplingBlock))
+                        .when(BonusLevelTableCondition.bonusLevelFlatChance(fortuneEnchantment, NORMAL_LEAVES_SAPLING_CHANCES)))
+                // Red cherry sticks pool (only when not using shears)
+                .withPool(LootPool.lootPool()
+                    .setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1.0F))
+                    .when(HAS_SHEARS.invert())
+                    .add(applyExplosionCondition(leavesBlock, LootItem.lootTableItem(stickItem)
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
+                        .when(BonusLevelTableCondition.bonusLevelFlatChance(fortuneEnchantment, stickChances))));
         }
         
         /**

@@ -1225,9 +1225,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // Spawn splash particles in the 3x3 cauldron area
         java.util.Random random = new java.util.Random();
-        for (int i = 0; i < 15; i++) {
-            double offsetX = (random.nextDouble() - 0.5) * 2.2;
-            double offsetZ = (random.nextDouble() - 0.5) * 2.2;
+        for (int i = 0; i < 25; i++) {
+            double offsetX = (random.nextDouble() - 0.5) * 2.4;
+            double offsetZ = (random.nextDouble() - 0.5) * 2.4;
             
             serverLevel.sendParticles(
                     ParticleTypes.SPLASH,
@@ -1236,7 +1236,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                     centerZ + offsetZ,
                     1,
                     0.0, 0.0, 0.0,
-                    0.15
+                    0.18
             );
         }
     }
