@@ -30,6 +30,8 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1193,11 +1195,49 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
     
     /**
-     * Play splash sound when item enters the cauldron
+     * Play splash sound and spawn splash particles when item enters the cauldron
      */
     private void playItemSplashSound() {
         if (level != null && !level.isClientSide) {
             level.playSound(null, worldPosition, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.3F, 1.2F);
+            spawnSplashParticles();
+        }
+    }
+    
+    /**
+     * Spawn water splash particles on the liquid surface
+     */
+    private void spawnSplashParticles() {
+        if (level == null || level.isClientSide) return;
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        
+        CauldronBlockEntity master = isMaster() ? this : getMaster();
+        if (master == null) return;
+        
+        BlockPos masterPos = master.getBlockPos();
+        
+        // Liquid surface Y: master block Y + 27/16 (from CauldronRenderer LIQUID_FULL_Y)
+        double liquidY = masterPos.getY() + (27.0 / 16.0);
+        
+        // Center of the cauldron
+        double centerX = masterPos.getX() + 0.5;
+        double centerZ = masterPos.getZ() + 0.5;
+        
+        // Spawn splash particles in the 3x3 cauldron area
+        java.util.Random random = new java.util.Random();
+        for (int i = 0; i < 15; i++) {
+            double offsetX = (random.nextDouble() - 0.5) * 2.2;
+            double offsetZ = (random.nextDouble() - 0.5) * 2.2;
+            
+            serverLevel.sendParticles(
+                    ParticleTypes.SPLASH,
+                    centerX + offsetX,
+                    liquidY,
+                    centerZ + offsetZ,
+                    1,
+                    0.0, 0.0, 0.0,
+                    0.15
+            );
         }
     }
     
