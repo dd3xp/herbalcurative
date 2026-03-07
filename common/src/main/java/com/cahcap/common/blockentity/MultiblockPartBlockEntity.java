@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,6 +65,20 @@ public abstract class MultiblockPartBlockEntity extends BlockEntity {
     public abstract void disassemble();
     
     public abstract ItemStack getOriginalBlock();
+    
+    /**
+     * Get the original block state for this position in the multiblock.
+     * Used for destroy particle effects.
+     * Default implementation returns the default state of getOriginalBlock().
+     * Override in subclasses if different positions have different original blocks.
+     */
+    public BlockState getOriginalBlockState() {
+        ItemStack originalBlock = getOriginalBlock();
+        if (originalBlock.isEmpty()) {
+            return null;
+        }
+        return Block.byItem(originalBlock.getItem()).defaultBlockState();
+    }
     
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {

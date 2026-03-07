@@ -41,13 +41,49 @@ import java.util.List;
 
 public class HerbCabinetBlock extends BaseEntityBlock {
     
-    // Collision/selection shapes for original block types
-    // Currently all positions use full block (Red Cherry Log), but this allows
-    // easy modification if the multiblock structure changes in the future
-    private static final VoxelShape FULL_BLOCK = Shapes.block();
-    private static final VoxelShape TOP_SLAB = Block.box(0, 8, 0, 16, 16, 16);
-    private static final VoxelShape BOTTOM_SLAB = Block.box(0, 0, 0, 16, 8, 16);
-    private static final VoxelShape EMPTY = Shapes.empty();
+    // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
+    // Herb Cabinet is 3x2x1 (WxHxD), facing NORTH by default
+    // posInMultiblock layout: [3][4][5] top, [0][1][2] bottom, [1] is master
+    
+    // NORTH-facing shapes (model default orientation)
+    private static final VoxelShape SHAPE_N_0 = Shapes.or(Block.box(2, 2, 1, 4, 16, 2), Block.box(4, 2, 1, 16, 4, 2), Block.box(4, 15, 1, 16, 16, 2), Block.box(2, 2, 2, 16, 16, 3), Block.box(1, 2, 2, 2, 16, 14), Block.box(0, 2, 0, 2, 16, 2), Block.box(0, 2, 14, 2, 16, 16), Block.box(2, 2, 14, 16, 16, 15), Block.box(0, 0, 0, 16, 2, 16));
+    private static final VoxelShape SHAPE_N_1 = Shapes.or(Block.box(0, 2, 1, 16, 4, 2), Block.box(0, 15, 1, 16, 16, 2), Block.box(14, 4, 1, 16, 16, 2), Block.box(0, 4, 1, 2, 16, 2), Block.box(0, 2, 2, 16, 16, 3), Block.box(0, 2, 14, 16, 16, 15), Block.box(0, 0, 0, 16, 2, 16));
+    private static final VoxelShape SHAPE_N_2 = Shapes.or(Block.box(12, 2, 1, 14, 16, 2), Block.box(0, 2, 1, 12, 4, 2), Block.box(0, 15, 1, 12, 16, 2), Block.box(0, 2, 2, 14, 16, 3), Block.box(14, 2, 0, 16, 16, 2), Block.box(14, 2, 2, 15, 16, 14), Block.box(14, 2, 14, 16, 16, 16), Block.box(0, 2, 14, 14, 16, 15), Block.box(0, 0, 0, 16, 2, 16));
+    private static final VoxelShape SHAPE_N_3 = Shapes.or(Block.box(2, 0, 1, 4, 14, 2), Block.box(4, 12, 1, 16, 14, 2), Block.box(4, 0, 1, 16, 1, 2), Block.box(2, 0, 2, 16, 14, 3), Block.box(1, 0, 2, 2, 14, 14), Block.box(0, 0, 0, 2, 14, 2), Block.box(0, 0, 14, 2, 14, 16), Block.box(2, 0, 14, 16, 14, 15), Block.box(0, 14, 0, 16, 16, 16));
+    private static final VoxelShape SHAPE_N_4 = Shapes.or(Block.box(0, 12, 1, 16, 14, 2), Block.box(0, 0, 1, 16, 1, 2), Block.box(14, 0, 1, 16, 12, 2), Block.box(0, 0, 1, 2, 12, 2), Block.box(0, 0, 2, 16, 14, 3), Block.box(0, 0, 14, 16, 14, 15), Block.box(0, 14, 0, 16, 16, 16));
+    private static final VoxelShape SHAPE_N_5 = Shapes.or(Block.box(12, 0, 1, 14, 14, 2), Block.box(0, 12, 1, 12, 14, 2), Block.box(0, 0, 1, 12, 1, 2), Block.box(0, 0, 2, 14, 14, 3), Block.box(14, 0, 0, 16, 14, 2), Block.box(14, 0, 2, 15, 14, 14), Block.box(14, 0, 14, 16, 14, 16), Block.box(0, 0, 14, 14, 14, 15), Block.box(0, 14, 0, 16, 16, 16));
+    
+    // Precomputed rotated shapes for all 4 directions
+    private static final VoxelShape[][] SHAPES_BY_FACING = new VoxelShape[4][6];
+    
+    static {
+        VoxelShape[] northShapes = {SHAPE_N_0, SHAPE_N_1, SHAPE_N_2, SHAPE_N_3, SHAPE_N_4, SHAPE_N_5};
+        for (int i = 0; i < 6; i++) {
+            SHAPES_BY_FACING[Direction.NORTH.get2DDataValue()][i] = northShapes[i];
+            SHAPES_BY_FACING[Direction.SOUTH.get2DDataValue()][i] = rotateShape(northShapes[i], Direction.SOUTH);
+            SHAPES_BY_FACING[Direction.WEST.get2DDataValue()][i] = rotateShape(northShapes[i], Direction.WEST);
+            SHAPES_BY_FACING[Direction.EAST.get2DDataValue()][i] = rotateShape(northShapes[i], Direction.EAST);
+        }
+    }
+    
+    private static VoxelShape rotateShape(VoxelShape shape, Direction to) {
+        VoxelShape[] buffer = new VoxelShape[]{Shapes.empty()};
+        shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            double x1 = minX * 16, y1 = minY * 16, z1 = minZ * 16;
+            double x2 = maxX * 16, y2 = maxY * 16, z2 = maxZ * 16;
+            double nx1, nz1, nx2, nz2;
+            switch (to) {
+                case SOUTH -> { nx1 = 16 - x2; nz1 = 16 - z2; nx2 = 16 - x1; nz2 = 16 - z1; }
+                case WEST -> { nx1 = z1; nz1 = 16 - x2; nx2 = z2; nz2 = 16 - x1; }
+                case EAST -> { nx1 = 16 - z2; nz1 = x1; nx2 = 16 - z1; nz2 = x2; }
+                default -> { nx1 = x1; nz1 = z1; nx2 = x2; nz2 = z2; }
+            }
+            buffer[0] = Shapes.or(buffer[0], Block.box(
+                    Math.min(nx1, nx2), y1, Math.min(nz1, nz2),
+                    Math.max(nx1, nx2), y2, Math.max(nz1, nz2)));
+        });
+        return buffer[0];
+    }
     
     public static final MapCodec<HerbCabinetBlock> CODEC = simpleCodec(HerbCabinetBlock::new);
     
@@ -96,9 +132,10 @@ public class HerbCabinetBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
-            return getOriginalShape(be.posInMultiblock);
+        if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be && be.formed) {
+            return getShapeForPosition(state.getValue(FACING), be.posInMultiblock);
         }
+        // BE not ready (chunk loading race): return empty to avoid suffocation/collision issues
         return Shapes.empty();
     }
 
@@ -107,29 +144,24 @@ public class HerbCabinetBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
-            return getOriginalShape(be.posInMultiblock);
+        if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be && be.formed) {
+            return getShapeForPosition(state.getValue(FACING), be.posInMultiblock);
         }
+        // BE not ready (chunk loading race): return empty to avoid suffocation/collision issues
         return Shapes.empty();
     }
     
     /**
-     * Get the collision/selection shape for a position based on original block type.
-     * Currently all positions use full block (Red Cherry Log).
-     * Modify this method if the multiblock structure changes to use different block types.
-     * 
-     * Layout (3x2, posInMultiblock = row * 3 + col):
-     * [0][1][2]  <- Top row (h=1)
-     * [3][4][5]  <- Bottom row (h=0), [4] is master
+     * Get the collision/selection shape for a position based on facing and posInMultiblock.
+     * Layout (3x2, posInMultiblock = h * 3 + w):
+     * [3][4][5]  <- Top row (h=1)
+     * [0][1][2]  <- Bottom row (h=0), [1] is master
      */
-    private VoxelShape getOriginalShape(int posInMultiblock) {
-        // Currently all positions are Red Cherry Log (full block)
-        // Example of how to modify for different block types:
-        // switch (posInMultiblock) {
-        //     case 4: return TOP_SLAB;  // Center-bottom is a slab
-        //     default: return FULL_BLOCK;
-        // }
-        return FULL_BLOCK;
+    private VoxelShape getShapeForPosition(Direction facing, int posInMultiblock) {
+        if (posInMultiblock < 0 || posInMultiblock >= 6) {
+            return Shapes.block();
+        }
+        return SHAPES_BY_FACING[facing.get2DDataValue()][posInMultiblock];
     }
     
     @Override

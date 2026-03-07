@@ -11,8 +11,8 @@ import sys
 from datetime import datetime
 
 # 导入图片处理模块
-from image_processing import resize_image, apply_color_mapping, apply_darken, get_resource_path
-from image_processing.config import (
+from src.image_processing import resize_image, apply_color_mapping, apply_darken, get_resource_path
+from src.image_processing.config import (
     IMAGE_OVERWRITE_ORIGINAL,
     IMAGE_RESIZE_WIDTH, IMAGE_RESIZE_HEIGHT, IMAGE_RESIZE_KEEP_ASPECT_RATIO, IMAGE_RESIZE_SAMPLING,
     COLOR_PALETTE, COLOR_MAPPING_MODE, BLACK_THRESHOLD, ALPHA_THRESHOLD,

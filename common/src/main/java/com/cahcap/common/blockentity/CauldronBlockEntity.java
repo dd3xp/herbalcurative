@@ -1497,6 +1497,15 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
     }
     
+    @Override
+    public BlockState getOriginalBlockState() {
+        BlockPos masterPos = getMasterPos();
+        if (masterPos == null) {
+            return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
+        }
+        return getOriginalBlockForPosition(getBlockPos(), masterPos);
+    }
+    
     // ==================== NBT Serialization ====================
     
     @Override
