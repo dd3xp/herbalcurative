@@ -197,7 +197,8 @@ public class ModBlocks {
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion())));
+                    .noOcclusion()
+                    .forceSolidOn())));
     
     public static final DeferredBlock<HerbBasketBlock> HERB_BASKET = BLOCKS.register("herb_basket",
             () -> new HerbBasketBlock(BlockBehaviour.Properties.of()
@@ -228,7 +229,8 @@ public class ModBlocks {
                     .strength(2.0F, 6.0F)
                     .sound(SoundType.STONE)
                     .requiresCorrectToolForDrops()
-                    .noOcclusion())
+                    .noOcclusion()
+                    .forceSolidOn())
                     .lightLevel(state -> state.getValue(CauldronBlock.FORMED) ? 7 : 0)));
 
     // ==================== Helper Methods ====================
