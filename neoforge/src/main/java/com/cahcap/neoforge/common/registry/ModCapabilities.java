@@ -6,10 +6,12 @@ import com.cahcap.common.blockentity.CauldronBlockEntity;
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.neoforge.common.handler.CauldronItemHandler;
 import com.cahcap.neoforge.common.handler.HerbBasketItemHandler;
 import com.cahcap.neoforge.common.handler.HerbCabinetItemHandler;
+import com.cahcap.neoforge.common.handler.HerbPotItemHandler;
 import com.cahcap.neoforge.common.handler.RedCherryShelfItemHandler;
 import com.cahcap.neoforge.common.handler.WorkbenchItemHandler;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -95,6 +97,18 @@ public class ModCapabilities {
                 return null;
             },
             ModBlocks.WORKBENCH.get()
+        );
+        
+        // Register IItemHandler capability for HerbPotBlockEntity
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.HERB_POT.get(),
+            (blockEntity, context) -> {
+                if (blockEntity instanceof HerbPotBlockEntity pot) {
+                    return new HerbPotItemHandler(pot);
+                }
+                return null;
+            }
         );
     }
 }
