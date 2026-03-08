@@ -23,6 +23,8 @@ configurations {
 }
 
 loom {
+    accessWidenerPath = project(':common').loom.accessWidenerPath
+    
     runs {
         datagen {
             data()

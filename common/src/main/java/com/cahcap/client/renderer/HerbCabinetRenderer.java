@@ -4,22 +4,28 @@ import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 /**
  * Renderer for Herb Cabinet - renders herb item icons on the cabinet front.
  * The cabinet structure itself uses JSON model rendering.
  */
 public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlockEntity> {
+    
+    // Light rotation matrices - adjust normal vectors so items appear brighter
+    private static final Matrix3f ITEM_LIGHT_ROTATION_3D = new Matrix3f().rotationYXZ(0.36f, -0.36f, -0.014f);
+    private static final Matrix3f ITEM_LIGHT_ROTATION_FLAT = new Matrix3f().rotationYXZ(0, -0.785398f, 0);
     
     public HerbCabinetRenderer(BlockEntityRendererProvider.Context context) {
         // No model initialization needed - using JSON model for cabinet structure
@@ -73,7 +79,7 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
                 
                 // Move to render position
                 float itemSize = 0.45F;
-                float offsetZ = 1.9f / 16.0f;  // Fine-tuned: 1.9f gives a slight outward offset to avoid z-fighting
+                float offsetZ = 1.9f / 16.0f;
                 
                 poseStack.translate(0, 1, 1 - offsetZ);
                 poseStack.scale(1 / 16f, -1 / 16f, 0.00001f);
@@ -89,27 +95,29 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
                     slotCenterX += 0.5f * itemSize;
                 }
                 
-                // Each slot is 12 pixels wide x 11 pixels tall
-                // Slots are offset from block centers due to frames and dividers
-                // Translate to slot center, then offset by half item size to center the item
                 poseStack.translate(slotCenterX - (8 * itemSize), slotCenterY - (8 * itemSize), 0);
                 poseStack.scale(itemSize, itemSize, 1);
-                
-                // renderStatic renders items centered at (0,0) with size 16x16 in the current space
-                // Offset by 8 to center the item (since it renders from -8 to +8)
                 poseStack.translate(8, 8, 0);
-                
-                // Scale up to make the item visible (fix Y-axis to prevent upside-down)
                 poseStack.scale(16, -16, 1);
                 
-                // Enhance environmental lighting to make icons brighter
-                int blockLight = LightTexture.block(packedLight);
-                int skyLight = LightTexture.sky(packedLight);
-                int enhancedLight = LightTexture.pack(Math.max(blockLight, 5), Math.max(skyLight, 8));
+                // Skip normal vector normalization for proper lighting
+                poseStack.last().trustedNormals = true;
                 
-                itemRenderer.renderStatic(stack, ItemDisplayContext.GUI, enhancedLight, 
-                        OverlayTexture.NO_OVERLAY, poseStack, bufferSource, 
-                        be.getLevel(), 0);
+                // Get the item model
+                BakedModel itemModel = itemRenderer.getModel(stack, be.getLevel(), null, 0);
+                
+                // Apply light rotation to normals for better lighting
+                if (itemModel.isGui3d()) {
+                    poseStack.last().normal().rotateYXZ(-getRotationYForSideRadians(facing), 0, 0).mul(ITEM_LIGHT_ROTATION_3D);
+                } else {
+                    poseStack.last().normal().mul(ITEM_LIGHT_ROTATION_FLAT);
+                }
+                
+                // Use GUI context for flat items, FIXED for custom renderers
+                ItemDisplayContext context = itemModel.isCustomRenderer() ? ItemDisplayContext.FIXED : ItemDisplayContext.GUI;
+                
+                itemRenderer.render(stack, context, false, poseStack, bufferSource, 
+                        packedLight, OverlayTexture.NO_OVERLAY, itemModel);
                 
                 poseStack.popPose();
             }
@@ -120,10 +128,14 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
         return switch (side) {
             case NORTH -> 180;
             case SOUTH -> 0;
-            case WEST -> 270;  // Flipped: was 90, now 270 to render on front face
-            case EAST -> 90;   // Flipped: was 270, now 90 to render on front face
+            case WEST -> 270;
+            case EAST -> 90;
             default -> 0;
         };
+    }
+    
+    private float getRotationYForSideRadians(Direction side) {
+        return getRotationYForSide(side) * (float) Math.PI / 180f;
     }
     
     @Override
