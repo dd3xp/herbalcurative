@@ -105,8 +105,7 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
                 // Enhance environmental lighting to make icons brighter
                 int blockLight = LightTexture.block(packedLight);
                 int skyLight = LightTexture.sky(packedLight);
-                // Boost both light values by 3 (capped at 15)
-                int enhancedLight = LightTexture.pack(Math.min(blockLight + 3, 15), Math.min(skyLight + 3, 15));
+                int enhancedLight = LightTexture.pack(Math.max(blockLight, 5), Math.max(skyLight, 8));
                 
                 itemRenderer.renderStatic(stack, ItemDisplayContext.GUI, enhancedLight, 
                         OverlayTexture.NO_OVERLAY, poseStack, bufferSource, 
