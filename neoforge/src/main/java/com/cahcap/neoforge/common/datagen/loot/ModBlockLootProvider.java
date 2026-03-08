@@ -83,6 +83,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             // Workbench (center part only drops itself, left/right parts drop nothing - handled by block)
             this.dropSelf(ModBlocks.WORKBENCH.get());
             
+            // Herb Pot - drops handled by block's getDrops method (contains items)
+            this.add(ModBlocks.HERB_POT.get(), noDrop());
+            
             // ==================== Lumistone blocks ====================
             
             this.dropSelf(ModBlocks.LUMISTONE.get());

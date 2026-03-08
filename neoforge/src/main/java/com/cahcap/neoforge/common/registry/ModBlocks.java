@@ -267,6 +267,13 @@ public class ModBlocks {
                     .noOcclusion()
                     .forceSolidOn())
                     .lightLevel(state -> state.getValue(CauldronBlock.FORMED) ? 7 : 0)));
+    
+    public static final DeferredBlock<com.cahcap.common.block.HerbPotBlock> HERB_POT = BLOCKS.register("herb_pot",
+            () -> new com.cahcap.common.block.HerbPotBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.TERRACOTTA_BROWN)
+                    .strength(2.0F, 3.0F)
+                    .sound(SoundType.STONE)
+                    .noOcclusion()));
 
     // ==================== Helper Methods ====================
     

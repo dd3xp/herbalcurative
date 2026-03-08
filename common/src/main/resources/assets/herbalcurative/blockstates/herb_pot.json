@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "herbalcurative:block/herb_pot" },
+    "facing=south": { "model": "herbalcurative:block/herb_pot", "y": 180 },
+    "facing=west": { "model": "herbalcurative:block/herb_pot", "y": 270 },
+    "facing=east": { "model": "herbalcurative:block/herb_pot", "y": 90 }
+  }
+}

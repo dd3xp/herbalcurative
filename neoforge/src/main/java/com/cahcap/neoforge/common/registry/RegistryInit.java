@@ -34,6 +34,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_SHELF = () -> ModBlocks.RED_CHERRY_SHELF.get();
         ModRegistries.WORKBENCH = () -> ModBlocks.WORKBENCH.get();
         ModRegistries.CAULDRON = () -> ModBlocks.CAULDRON.get();
+        ModRegistries.HERB_POT = () -> ModBlocks.HERB_POT.get();
         ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
         ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
         ModRegistries.LUMISTONE_BRICK_SLAB = () -> ModBlocks.LUMISTONE_BRICK_SLAB.get();
@@ -92,6 +93,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_SHELF_BE = () -> ModBlockEntities.RED_CHERRY_SHELF.get();
         ModRegistries.WORKBENCH_BE = () -> ModBlockEntities.WORKBENCH.get();
         ModRegistries.CAULDRON_BE = () -> ModBlockEntities.CAULDRON.get();
+        ModRegistries.HERB_POT_BE = () -> ModBlockEntities.HERB_POT.get();
         
         // Entity Types
         ModRegistries.FLOWWEAVE_PROJECTILE_TYPE = () -> ModEntityTypes.FLOWWEAVE_PROJECTILE.get();

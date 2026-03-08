@@ -4,6 +4,7 @@ import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.blockentity.CauldronBlockEntity;
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,6 +45,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("cauldron", () -> BlockEntityType.Builder.of(
                     CauldronBlockEntity::new,
                     ModBlocks.CAULDRON.get()
+            ).build(null));
+    
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HerbPotBlockEntity>> HERB_POT =
+            BLOCK_ENTITIES.register("herb_pot", () -> BlockEntityType.Builder.of(
+                    HerbPotBlockEntity::new,
+                    ModBlocks.HERB_POT.get()
             ).build(null));
 }
 

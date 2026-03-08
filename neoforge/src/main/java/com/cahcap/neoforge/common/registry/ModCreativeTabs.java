@@ -102,6 +102,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.HERB_BASKET.get());
                         output.accept(ModItems.RED_CHERRY_SHELF.get());
                         output.accept(ModItems.WORKBENCH.get());
+                        output.accept(ModItems.HERB_POT.get());
                         
                         // Workbench Tools
                         output.accept(ModItems.CUTTING_KNIFE.get());

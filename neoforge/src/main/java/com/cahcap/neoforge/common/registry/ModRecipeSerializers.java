@@ -4,6 +4,7 @@ import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.recipe.CauldronBrewingRecipe;
 import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
+import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
@@ -31,6 +32,9 @@ public class ModRecipeSerializers {
     
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CauldronBrewingRecipe>> CAULDRON_BREWING = 
             RECIPE_SERIALIZERS.register("cauldron_brewing", () -> CauldronBrewingRecipe.Serializer.INSTANCE);
+    
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<HerbPotGrowingRecipe>> HERB_POT_GROWING = 
+            RECIPE_SERIALIZERS.register("herb_pot_growing", () -> HerbPotGrowingRecipe.Serializer.INSTANCE);
     
     public static void register(IEventBus modEventBus) {
         RECIPE_SERIALIZERS.register(modEventBus);

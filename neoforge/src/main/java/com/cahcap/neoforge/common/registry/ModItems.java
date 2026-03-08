@@ -160,6 +160,10 @@ public class ModItems {
     // Cauldron display item (for JADE/WTHIT, not placeable)
     public static final DeferredItem<Item> CAULDRON = ITEMS.registerSimpleItem("cauldron");
     
+    // Herb Pot - placeable cultivation block
+    public static final DeferredItem<BlockItem> HERB_POT = ITEMS.register("herb_pot",
+            () -> new BlockItem(ModBlocks.HERB_POT.get(), new Item.Properties()));
+    
     // ==================== Block Items ====================
     // Placeable blocks (herb flowers, Red Cherry wood, Lumistone)
     

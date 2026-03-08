@@ -1,0 +1,17 @@
+{
+  "type": "herbalcurative:herb_pot_growing",
+  "growth_time": 200,
+  "herbs": [
+    {
+      "count": 1,
+      "herb": "herbalcurative:cryst_spine"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "herbalcurative:crystbud"
+  },
+  "seedling": {
+    "item": "herbalcurative:crystbud"
+  }
+}

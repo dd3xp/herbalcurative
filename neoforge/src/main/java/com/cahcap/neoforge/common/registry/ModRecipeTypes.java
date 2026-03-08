@@ -4,6 +4,7 @@ import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.recipe.CauldronBrewingRecipe;
 import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
+import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
@@ -53,6 +54,14 @@ public class ModRecipeTypes {
                 }
             });
     
+    public static final DeferredHolder<RecipeType<?>, RecipeType<HerbPotGrowingRecipe>> HERB_POT_GROWING = 
+            RECIPE_TYPES.register("herb_pot_growing", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "herb_pot_growing").toString();
+                }
+            });
+    
     public static void register(IEventBus modEventBus) {
         RECIPE_TYPES.register(modEventBus);
     }
@@ -66,5 +75,6 @@ public class ModRecipeTypes {
         ModRegistries.WORKBENCH_RECIPE_TYPE = WORKBENCH;
         ModRegistries.CAULDRON_INFUSING_RECIPE_TYPE = CAULDRON_INFUSING;
         ModRegistries.CAULDRON_BREWING_RECIPE_TYPE = CAULDRON_BREWING;
+        ModRegistries.HERB_POT_GROWING_RECIPE_TYPE = HERB_POT_GROWING;
     }
 }

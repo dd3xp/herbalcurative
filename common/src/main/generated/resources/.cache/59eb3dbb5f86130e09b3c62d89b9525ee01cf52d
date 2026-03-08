@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-08T11:24:57.9228469	Loot Tables
+// 1.21.1	2026-03-08T15:29:46.7351136	Loot Tables
 71e0577e55b32015b1d31c792c2c57b3952ba9c1 data/herbalcurative/loot_table/blocks/cauldron.json
 3ac9d531ee8d933d461225618401a225ecd060d1 data/herbalcurative/loot_table/blocks/crystbud.json
 1b63e0a2c844163d496aa1937eba198523009877 data/herbalcurative/loot_table/blocks/crystbud_crop.json
@@ -6,6 +6,7 @@
 708bf1fcb3f79ca85ce22520a3d83a21e644f0e0 data/herbalcurative/loot_table/blocks/dewpetal_crop.json
 0b1b506a5c724f3948bce7368013baa8c76ef5ac data/herbalcurative/loot_table/blocks/herb_basket.json
 1836cb3d604b8cbaaa20970edcda5ae55fdf4f87 data/herbalcurative/loot_table/blocks/herb_cabinet.json
+d26e793283299f7b2f2fa329c5eb6aa7ad3d85df data/herbalcurative/loot_table/blocks/herb_pot.json
 6df846fce5f54e9904c28e457a9a5f3b46770ab4 data/herbalcurative/loot_table/blocks/lumistone.json
 67e951efd5be080b0ca7cab2573003444d56e4f7 data/herbalcurative/loot_table/blocks/lumistone_bricks.json
 7fb93eccf91917969f301d878196a9ab71ce4847 data/herbalcurative/loot_table/blocks/lumistone_brick_slab.json

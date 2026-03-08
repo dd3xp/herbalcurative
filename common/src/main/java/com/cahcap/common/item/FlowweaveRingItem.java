@@ -4,6 +4,7 @@ import com.cahcap.common.block.CauldronBlock;
 import com.cahcap.common.block.WorkbenchBlock;
 import com.cahcap.common.blockentity.CauldronBlockEntity;
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
+import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.common.entity.FlowweaveProjectile;
 import com.cahcap.common.multiblock.MultiblockCauldron;
@@ -849,6 +850,24 @@ public class FlowweaveRingItem extends Item {
             }
         }
         
+        // Handle Herb Pot - shift+right-click to remove seedling/soil
+        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_POT.get())) {
+            if (level.getBlockEntity(context.getClickedPos()) instanceof HerbPotBlockEntity pot) {
+                ItemStack removed = pot.onFlowweaveRingShiftUse(player);
+                if (!removed.isEmpty()) {
+                    if (!player.getInventory().add(removed)) {
+                        BlockPos pos = context.getClickedPos();
+                        ItemEntity itemEntity = new ItemEntity(level,
+                                pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, removed);
+                        level.addFreshEntity(itemEntity);
+                    }
+                    level.playSound(null, context.getClickedPos(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0f, 1.0f);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+            return InteractionResult.PASS;
+        }
+        
         // If no other action triggered and ring has bound potion
         if (player != null && hasBoundPotion(stack)) {
             // Shift+right-click on non-trigger block: cycle mode
@@ -902,6 +921,13 @@ public class FlowweaveRingItem extends Item {
         if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_BASKET.get())) {
             if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof HerbBasketBlockEntity basket 
                     && basket.getBoundHerb() != null) {
+                return true;
+            }
+        }
+        // Check Herb Pot (shift+right-click to remove seedling/soil)
+        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_POT.get())) {
+            if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof HerbPotBlockEntity pot 
+                    && (pot.hasSeedling() || pot.hasSoil()) && !pot.isGrowing()) {
                 return true;
             }
         }

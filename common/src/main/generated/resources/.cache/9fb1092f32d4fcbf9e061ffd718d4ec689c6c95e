@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-08T11:24:57.9268767	Recipes
+// 1.21.1	2026-03-08T16:13:11.1960145	Recipes
 26bef6d7606d006967e73b540786020759ff24b3 data/herbalcurative/advancement/recipes/building_blocks/lumistone.json
 078f474aab4adcf44c51e63dcd6cce54dee4d920 data/herbalcurative/advancement/recipes/building_blocks/lumistone_bricks.json
 8bb38edf43e778856ffad99f2e30f06d3ab63b7b data/herbalcurative/advancement/recipes/building_blocks/lumistone_brick_slab.json
@@ -35,6 +35,12 @@ ebc3634b4089accd2969d88d3612ea128f1a9c4c data/herbalcurative/recipe/cauldron_inf
 e5b1a64245b7648bfd8fbcff1e4ad37ea5310a84 data/herbalcurative/recipe/crystbud_seed.json
 51a2f5c31cf202f1e05d5ba759de1e3c084cf9d8 data/herbalcurative/recipe/dewpetal_seed.json
 b980531ab2aeee9c96ae22a6ebd9986301deed4e data/herbalcurative/recipe/herbal_blending/red_cherry_sapling.json
+74027f00226a1e8d9aa3a0b43632230469dea4df data/herbalcurative/recipe/herb_pot_growing/crystbud.json
+c4fc685bd22759c805687f1087aa7799dbd6bd46 data/herbalcurative/recipe/herb_pot_growing/dewpetal.json
+c1599a5b8fb96e71a3d185696c7f8de9a175c038 data/herbalcurative/recipe/herb_pot_growing/pyrisage.json
+fd341a4c2b589d5e3e06451bb36e938669358cb8 data/herbalcurative/recipe/herb_pot_growing/rosynia.json
+53d3a1a2c5126729b325953c25ee999d6af10267 data/herbalcurative/recipe/herb_pot_growing/verdscale_fern.json
+870a7355e3117caa17fa864c35121c2e3b0b26d2 data/herbalcurative/recipe/herb_pot_growing/zephyr_lily.json
 4004b9ea729cfc8161b5df2b971ffa9f1cb0529d data/herbalcurative/recipe/lumistone.json
 8953f281621593925694376fbd496a9989fdaa22 data/herbalcurative/recipe/lumistone_bricks.json
 630de6e21cc49601218240a52be68ef23408d915 data/herbalcurative/recipe/lumistone_brick_slab.json

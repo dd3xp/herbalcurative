@@ -4,6 +4,7 @@ import com.cahcap.common.entity.FlowweaveProjectile;
 import com.cahcap.common.recipe.CauldronBrewingRecipe;
 import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
+import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
@@ -47,6 +48,7 @@ public class ModRegistries {
     public static Supplier<Block> RED_CHERRY_SHELF;
     public static Supplier<Block> WORKBENCH;
     public static Supplier<Block> CAULDRON;
+    public static Supplier<Block> HERB_POT;
     public static Supplier<Block> LUMISTONE;
     public static Supplier<Block> LUMISTONE_BRICKS;
     public static Supplier<Block> LUMISTONE_BRICK_SLAB;
@@ -105,6 +107,7 @@ public class ModRegistries {
     public static Supplier<BlockEntityType<?>> RED_CHERRY_SHELF_BE;
     public static Supplier<BlockEntityType<?>> WORKBENCH_BE;
     public static Supplier<BlockEntityType<?>> CAULDRON_BE;
+    public static Supplier<BlockEntityType<?>> HERB_POT_BE;
     
     // ==================== Recipe Types ====================
     public static Supplier<RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING_RECIPE_TYPE;
@@ -112,6 +115,7 @@ public class ModRegistries {
     public static Supplier<RecipeSerializer<WorkbenchRecipe>> WORKBENCH_RECIPE_SERIALIZER;
     public static Supplier<RecipeType<CauldronInfusingRecipe>> CAULDRON_INFUSING_RECIPE_TYPE;
     public static Supplier<RecipeType<CauldronBrewingRecipe>> CAULDRON_BREWING_RECIPE_TYPE;
+    public static Supplier<RecipeType<HerbPotGrowingRecipe>> HERB_POT_GROWING_RECIPE_TYPE;
     
     // ==================== Entity Types ====================
     public static Supplier<EntityType<FlowweaveProjectile>> FLOWWEAVE_PROJECTILE_TYPE;

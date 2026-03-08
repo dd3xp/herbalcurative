@@ -5,6 +5,7 @@ import com.cahcap.client.model.HerbBoxModel;
 import com.cahcap.client.model.LeafweaveArmorModel;
 import com.cahcap.neoforge.client.renderer.CauldronRenderer;
 import com.cahcap.neoforge.client.renderer.HerbBoxItemRenderer;
+import com.cahcap.client.renderer.HerbPotRenderer;
 import com.cahcap.client.renderer.RedCherryShelfRenderer;
 import com.cahcap.client.renderer.WorkbenchRenderer;
 import com.cahcap.neoforge.client.layer.HerbBoxPlayerLayer;
@@ -165,6 +166,7 @@ public class HerbalCurativeNeoForgeClient {
             event.registerBlockEntityRenderer(ModBlockEntities.RED_CHERRY_SHELF.get(), RedCherryShelfRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.WORKBENCH.get(), WorkbenchRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.CAULDRON.get(), CauldronRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.HERB_POT.get(), HerbPotRenderer::new);
             
             // Entity renderers
             event.registerEntityRenderer(ModEntityTypes.FLOWWEAVE_PROJECTILE.get(), FlowweaveProjectileRenderer::new);

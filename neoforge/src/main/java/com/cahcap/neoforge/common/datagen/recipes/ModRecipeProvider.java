@@ -48,6 +48,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         buildCraftingRecipes(output);
         buildHerbalBlendingRecipes(output);
         buildCauldronRecipes(output);
+        buildHerbPotGrowingRecipes(output);
         
         // Get registries for enchantments
         HolderLookup.Provider registries;
@@ -338,6 +339,73 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         enchantments.set(enchantment, level);
         book.set(DataComponents.STORED_ENCHANTMENTS, enchantments.toImmutable());
         return book;
+    }
+    
+    /**
+     * Herb Pot Growing recipes.
+     * Used to grow crystal plants and other special plants.
+     * 
+     * Requires: seedling (plant type), soil (optional), herbs (consumed during growth)
+     * Output: Drops when growth completes
+     */
+    private void buildHerbPotGrowingRecipes(RecipeOutput output) {
+        // ==================== Herb Plant Cultivation ====================
+        // Use herb flower as seedling + herb product -> grow more herb flowers
+        // Each herb product produces 1 herb flower
+        
+        // Verdscale Fern
+        // Seedling: Verdscale Fern, Herbs: 1 Scaleplate -> 1 Verdscale Fern
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModBlocks.VERDSCALE_FERN.get())
+                .herb(ModItems.SCALEPLATE.get(), 1)
+                .result(ModBlocks.VERDSCALE_FERN.get())
+                .growthTimeSeconds(10)
+                .build(output, "verdscale_fern");
+        
+        // Dewpetal
+        // Seedling: Dewpetal, Herbs: 1 Dewpetal Shard -> 1 Dewpetal
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModBlocks.DEWPETAL.get())
+                .herb(ModItems.DEWPETAL_SHARD.get(), 1)
+                .result(ModBlocks.DEWPETAL.get())
+                .growthTimeSeconds(10)
+                .build(output, "dewpetal");
+        
+        // Zephyr Lily
+        // Seedling: Zephyr Lily, Herbs: 1 Golden Lilybell -> 1 Zephyr Lily
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModBlocks.ZEPHYR_LILY.get())
+                .herb(ModItems.GOLDEN_LILYBELL.get(), 1)
+                .result(ModBlocks.ZEPHYR_LILY.get())
+                .growthTimeSeconds(10)
+                .build(output, "zephyr_lily");
+        
+        // Crystbud
+        // Seedling: Crystbud, Herbs: 1 Cryst Spine -> 1 Crystbud
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModBlocks.CRYSTBUD.get())
+                .herb(ModItems.CRYST_SPINE.get(), 1)
+                .result(ModBlocks.CRYSTBUD.get())
+                .growthTimeSeconds(10)
+                .build(output, "crystbud");
+        
+        // Pyrisage
+        // Seedling: Pyrisage, Herbs: 1 Burnt Node -> 1 Pyrisage
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModBlocks.PYRISAGE.get())
+                .herb(ModItems.BURNT_NODE.get(), 1)
+                .result(ModBlocks.PYRISAGE.get())
+                .growthTimeSeconds(10)
+                .build(output, "pyrisage");
+        
+        // Rosynia
+        // Seedling: Rosynia, Herbs: 1 Heart of Stardream -> 1 Rosynia
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModBlocks.ROSYNIA.get())
+                .herb(ModItems.HEART_OF_STARDREAM.get(), 1)
+                .result(ModBlocks.ROSYNIA.get())
+                .growthTimeSeconds(10)
+                .build(output, "rosynia");
     }
     
     /**
