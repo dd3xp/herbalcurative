@@ -157,6 +157,38 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
             .save(output);
         
+        // Red Cherry Fence: 4 planks + 2 sticks -> 3 fences (supports c:rods/wooden tag)
+        TagKey<Item> woodenRods = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "rods/wooden"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.RED_CHERRY_FENCE.get(), 3)
+            .define('#', ModBlocks.RED_CHERRY_PLANKS.get())
+            .define('S', woodenRods)
+            .pattern("#S#")
+            .pattern("#S#")
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
+            .save(output);
+        
+        // Red Cherry Fence Gate: 2 planks + 4 sticks -> 1 fence gate (supports c:rods/wooden tag)
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.RED_CHERRY_FENCE_GATE.get(), 1)
+            .define('#', ModBlocks.RED_CHERRY_PLANKS.get())
+            .define('S', woodenRods)
+            .pattern("S#S")
+            .pattern("S#S")
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
+            .save(output);
+        
+        // Red Cherry Button: 1 plank -> 1 button
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModBlocks.RED_CHERRY_BUTTON.get(), 1)
+            .requires(ModBlocks.RED_CHERRY_PLANKS.get())
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
+            .save(output);
+        
+        // Red Cherry Pressure Plate: 2 planks -> 1 pressure plate
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.RED_CHERRY_PRESSURE_PLATE.get(), 1)
+            .define('#', ModBlocks.RED_CHERRY_PLANKS.get())
+            .pattern("##")
+            .unlockedBy("has_red_cherry_planks", has(ModBlocks.RED_CHERRY_PLANKS.get()))
+            .save(output);
+        
         // Red Cherry Stick: 2 planks -> 4 sticks (shaped, vertical)
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Items.STICK, 4)
             .define('#', ModBlocks.RED_CHERRY_PLANKS.get())

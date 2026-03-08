@@ -72,6 +72,14 @@ public class RedCherryBushBlock extends BushBlock implements BonemealableBlock {
     }
     
     @Override
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+        if (ModRegistries.RED_CHERRY != null) {
+            return new ItemStack(ModRegistries.RED_CHERRY.get());
+        }
+        return ItemStack.EMPTY;
+    }
+    
+    @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         int age = state.getValue(AGE);
         

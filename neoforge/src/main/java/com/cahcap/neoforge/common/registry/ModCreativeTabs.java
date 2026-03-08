@@ -63,6 +63,10 @@ public class ModCreativeTabs {
                         output.accept(ModBlocks.RED_CHERRY_PLANKS.get());
                         output.accept(ModBlocks.RED_CHERRY_STAIRS.get());
                         output.accept(ModBlocks.RED_CHERRY_SLAB.get());
+                        output.accept(ModBlocks.RED_CHERRY_FENCE.get());
+                        output.accept(ModBlocks.RED_CHERRY_FENCE_GATE.get());
+                        output.accept(ModBlocks.RED_CHERRY_BUTTON.get());
+                        output.accept(ModBlocks.RED_CHERRY_PRESSURE_PLATE.get());
                         output.accept(ModBlocks.RED_CHERRY_LEAVES.get());
                         output.accept(ModBlocks.RED_CHERRY_SAPLING.get());
                         

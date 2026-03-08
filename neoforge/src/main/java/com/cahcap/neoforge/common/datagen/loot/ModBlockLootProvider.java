@@ -65,6 +65,10 @@ public class ModBlockLootProvider extends LootTableProvider {
             this.dropSelf(ModBlocks.RED_CHERRY_PLANKS.get());
             this.dropSelf(ModBlocks.RED_CHERRY_STAIRS.get());
             this.add(ModBlocks.RED_CHERRY_SLAB.get(), this::createSlabItemTable);
+            this.dropSelf(ModBlocks.RED_CHERRY_FENCE.get());
+            this.dropSelf(ModBlocks.RED_CHERRY_FENCE_GATE.get());
+            this.dropSelf(ModBlocks.RED_CHERRY_BUTTON.get());
+            this.dropSelf(ModBlocks.RED_CHERRY_PRESSURE_PLATE.get());
             this.dropSelf(ModBlocks.RED_CHERRY_SAPLING.get());
             
             // Herb Cabinet

@@ -192,6 +192,14 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.RED_CHERRY_STAIRS.get(), new Item.Properties()));
     public static final DeferredItem<BlockItem> RED_CHERRY_SLAB = ITEMS.register("red_cherry_slab",
             () -> new BlockItem(ModBlocks.RED_CHERRY_SLAB.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_FENCE = ITEMS.register("red_cherry_fence",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_FENCE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_FENCE_GATE = ITEMS.register("red_cherry_fence_gate",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_FENCE_GATE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_BUTTON = ITEMS.register("red_cherry_button",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_BUTTON.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RED_CHERRY_PRESSURE_PLATE = ITEMS.register("red_cherry_pressure_plate",
+            () -> new BlockItem(ModBlocks.RED_CHERRY_PRESSURE_PLATE.get(), new Item.Properties()));
     public static final DeferredItem<BlockItem> RED_CHERRY_LEAVES = ITEMS.register("red_cherry_leaves",
             () -> new BlockItem(ModBlocks.RED_CHERRY_LEAVES.get(), new Item.Properties()));
     public static final DeferredItem<BlockItem> RED_CHERRY_SAPLING = ITEMS.register("red_cherry_sapling",

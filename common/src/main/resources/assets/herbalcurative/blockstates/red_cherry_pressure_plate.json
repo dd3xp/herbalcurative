@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "herbalcurative:block/red_cherry_pressure_plate" },
+    "powered=true": { "model": "herbalcurative:block/red_cherry_pressure_plate_down" }
+  }
+}

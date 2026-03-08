@@ -11,11 +11,17 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -105,6 +111,35 @@ public class ModBlocks {
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)));
+    
+    // Fence and Fence Gate
+    public static final DeferredBlock<FenceBlock> RED_CHERRY_FENCE = registerBlock("red_cherry_fence",
+            () -> new FenceBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F, 3.0F)
+                    .sound(SoundType.WOOD)));
+    
+    public static final DeferredBlock<FenceGateBlock> RED_CHERRY_FENCE_GATE = registerBlock("red_cherry_fence_gate",
+            () -> new FenceGateBlock(WoodType.CHERRY, BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .strength(2.0F, 3.0F)
+                    .sound(SoundType.WOOD)));
+    
+    // Button and Pressure Plate
+    public static final DeferredBlock<ButtonBlock> RED_CHERRY_BUTTON = registerBlock("red_cherry_button",
+            () -> new ButtonBlock(BlockSetType.CHERRY, 30, BlockBehaviour.Properties.of()
+                    .noCollission()
+                    .strength(0.5F)
+                    .sound(SoundType.WOOD)
+                    .pushReaction(PushReaction.DESTROY)));
+    
+    public static final DeferredBlock<PressurePlateBlock> RED_CHERRY_PRESSURE_PLATE = registerBlock("red_cherry_pressure_plate",
+            () -> new PressurePlateBlock(BlockSetType.CHERRY, BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD)
+                    .noCollission()
+                    .strength(0.5F)
+                    .sound(SoundType.WOOD)
+                    .pushReaction(PushReaction.DESTROY)));
     
     public static final DeferredBlock<RedCherryLeavesBlock> RED_CHERRY_LEAVES = registerBlock("red_cherry_leaves",
             () -> new RedCherryLeavesBlock(BlockBehaviour.Properties.of()

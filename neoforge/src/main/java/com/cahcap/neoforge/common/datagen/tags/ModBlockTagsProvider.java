@@ -77,6 +77,10 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.RED_CHERRY_PLANKS.get(),
             ModBlocks.RED_CHERRY_STAIRS.get(),
             ModBlocks.RED_CHERRY_SLAB.get(),
+            ModBlocks.RED_CHERRY_FENCE.get(),
+            ModBlocks.RED_CHERRY_FENCE_GATE.get(),
+            ModBlocks.RED_CHERRY_BUTTON.get(),
+            ModBlocks.RED_CHERRY_PRESSURE_PLATE.get(),
             ModBlocks.RED_CHERRY_LEAVES.get(),
             ModBlocks.HERB_CABINET.get(),
             ModBlocks.HERB_BASKET.get(),
@@ -136,6 +140,41 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         // minecraft:wooden_stairs - Wooden stair blocks
         this.tag(BlockTags.WOODEN_STAIRS).add(
             ModBlocks.RED_CHERRY_STAIRS.get()
+        );
+        
+        // minecraft:fences - All fence blocks
+        this.tag(BlockTags.FENCES).add(
+            ModBlocks.RED_CHERRY_FENCE.get()
+        );
+        
+        // minecraft:wooden_fences - Wooden fence blocks
+        this.tag(BlockTags.WOODEN_FENCES).add(
+            ModBlocks.RED_CHERRY_FENCE.get()
+        );
+        
+        // minecraft:fence_gates - All fence gate blocks
+        this.tag(BlockTags.FENCE_GATES).add(
+            ModBlocks.RED_CHERRY_FENCE_GATE.get()
+        );
+        
+        // minecraft:buttons - All button blocks
+        this.tag(BlockTags.BUTTONS).add(
+            ModBlocks.RED_CHERRY_BUTTON.get()
+        );
+        
+        // minecraft:wooden_buttons - Wooden button blocks
+        this.tag(BlockTags.WOODEN_BUTTONS).add(
+            ModBlocks.RED_CHERRY_BUTTON.get()
+        );
+        
+        // minecraft:pressure_plates - All pressure plate blocks
+        this.tag(BlockTags.PRESSURE_PLATES).add(
+            ModBlocks.RED_CHERRY_PRESSURE_PLATE.get()
+        );
+        
+        // minecraft:wooden_pressure_plates - Wooden pressure plate blocks
+        this.tag(BlockTags.WOODEN_PRESSURE_PLATES).add(
+            ModBlocks.RED_CHERRY_PRESSURE_PLATE.get()
         );
         
         // ==================== Common tags (c: namespace) for cross-mod compatibility ====================
