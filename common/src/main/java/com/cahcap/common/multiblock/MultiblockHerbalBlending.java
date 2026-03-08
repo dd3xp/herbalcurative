@@ -5,13 +5,14 @@ import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe.IngredientWithCount;
 import com.cahcap.common.registry.ModRegistries;
-import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -135,9 +136,9 @@ public class MultiblockHerbalBlending {
                         return null;
                     }
                     if (level.getBlockEntity(checkPos) instanceof RedCherryShelfBlockEntity shelf) {
-                        // Calculate shelf index: row * 3 + (col - 1)
-                        // col is 1,2,3 for shelves, so subtract 1 to get 0,1,2
-                        int shelfIndex = row * 3 + (col - 1);
+                        // Calculate shelf index with mirrored columns for player perspective
+                        // col is 1,2,3 for shelves, mirror to 2,1,0 so player's left = recipe's left
+                        int shelfIndex = row * 3 + (3 - col);
                         shelfArray[shelfIndex] = shelf;
                     } else {
                         return null;
@@ -199,7 +200,7 @@ public class MultiblockHerbalBlending {
         
         HerbalBlendingRecipe recipe = recipeHolder.get().value();
         
-        // Consume inputs and place output
+        // Consume inputs and place output (remainder items stay on shelves)
         if (!consumeInputsAndPlaceOutput(structure, recipe, level)) {
             return false;
         }
@@ -212,6 +213,7 @@ public class MultiblockHerbalBlending {
     
     /**
      * Consume the required inputs from baskets and shelves, then place output on center shelf.
+     * Remainder items (like empty buckets) are left on their original shelves.
      */
     private boolean consumeInputsAndPlaceOutput(BlendingStructure structure, HerbalBlendingRecipe recipe, Level level) {
         // First, calculate which herbs we need and from which baskets
@@ -245,7 +247,7 @@ public class MultiblockHerbalBlending {
         }
         
         // Consume items from shelves (except center which will become output)
-        // and replace center shelf item with output
+        // Remainder items stay on their original shelves
         NonNullList<Ingredient> pattern = recipe.getShelfPattern();
         List<RedCherryShelfBlockEntity> shelves = structure.shelves();
         
@@ -254,13 +256,38 @@ public class MultiblockHerbalBlending {
             RedCherryShelfBlockEntity shelf = shelves.get(i);
             
             if (i == CENTER_SHELF_INDEX) {
-                // Center shelf: replace with output
+                // Center shelf: check for remainder, then replace with output
+                ItemStack currentItem = shelf.getItem();
+                if (!currentItem.isEmpty()) {
+                    Item remainderItem = currentItem.getItem().getCraftingRemainingItem();
+                    if (remainderItem != null) {
+                        // Drop remainder item (center shelf needs to hold the output)
+                        BlockPos shelfPos = shelf.getBlockPos();
+                        ItemEntity remainderEntity = new ItemEntity(level,
+                                shelfPos.getX() + 0.5, shelfPos.getY() + 0.5, shelfPos.getZ() + 0.5,
+                                new ItemStack(remainderItem));
+                        remainderEntity.setDeltaMovement(0, 0.1, 0);
+                        level.addFreshEntity(remainderEntity);
+                    }
+                }
+                // Replace with output
                 ItemStack output = recipe.getOutput();
                 shelf.setItem(output);
             } else {
                 // Other shelves: consume if ingredient is not empty
                 if (!required.isEmpty()) {
-                    shelf.removeItem();
+                    // Get crafting remainder and leave it on the shelf
+                    ItemStack currentItem = shelf.getItem();
+                    if (!currentItem.isEmpty()) {
+                        Item remainderItem = currentItem.getItem().getCraftingRemainingItem();
+                        if (remainderItem != null) {
+                            // Replace with remainder item (e.g., empty bucket)
+                            shelf.setItem(new ItemStack(remainderItem));
+                        } else {
+                            // No remainder, just remove
+                            shelf.removeItem();
+                        }
+                    }
                 }
             }
         }

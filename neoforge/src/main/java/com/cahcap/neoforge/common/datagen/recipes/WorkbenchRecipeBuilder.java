@@ -6,6 +6,7 @@ import com.cahcap.common.recipe.WorkbenchRecipe.MaterialRequirement;
 import com.cahcap.common.recipe.WorkbenchRecipe.ToolRequirement;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -20,6 +21,7 @@ import java.util.List;
  * 
  * Tools can be placed in any slot on the workbench.
  * Material stack: LIFO order (first added = bottom, last added = top)
+ * Supports Tag matching for tools, input, and materials.
  */
 public class WorkbenchRecipeBuilder {
     
@@ -37,12 +39,12 @@ public class WorkbenchRecipeBuilder {
     }
     
     /**
-     * Add a tool requirement.
+     * Add a tool requirement using an Item.
      * @param item The tool item
      * @param damage Durability consumed per craft (default 1)
      */
     public WorkbenchRecipeBuilder tool(ItemLike item, int damage) {
-        tools.add(new ToolRequirement(item.asItem(), damage));
+        tools.add(new ToolRequirement(Ingredient.of(item), damage));
         return this;
     }
     
@@ -55,11 +57,56 @@ public class WorkbenchRecipeBuilder {
     }
     
     /**
+     * Add a tool requirement using a Tag.
+     * @param tag The tool tag
+     * @param damage Durability consumed per craft
+     */
+    public WorkbenchRecipeBuilder tool(TagKey<Item> tag, int damage) {
+        tools.add(new ToolRequirement(Ingredient.of(tag), damage));
+        return this;
+    }
+    
+    /**
+     * Add a tool requirement using a Tag with default 1 damage.
+     * @param tag The tool tag
+     */
+    public WorkbenchRecipeBuilder tool(TagKey<Item> tag) {
+        return tool(tag, 1);
+    }
+    
+    /**
+     * Add a tool requirement using an Ingredient.
+     * @param ingredient The tool ingredient
+     * @param damage Durability consumed per craft
+     */
+    public WorkbenchRecipeBuilder tool(Ingredient ingredient, int damage) {
+        tools.add(new ToolRequirement(ingredient, damage));
+        return this;
+    }
+    
+    /**
+     * Add a tool requirement using an Ingredient with default 1 damage.
+     * @param ingredient The tool ingredient
+     */
+    public WorkbenchRecipeBuilder tool(Ingredient ingredient) {
+        return tool(ingredient, 1);
+    }
+    
+    /**
      * Set the input item (center slot).
      * @param item The input item
      */
     public WorkbenchRecipeBuilder input(ItemLike item) {
         this.input = Ingredient.of(item);
+        return this;
+    }
+    
+    /**
+     * Set the input using a Tag (center slot).
+     * @param tag The input tag
+     */
+    public WorkbenchRecipeBuilder input(TagKey<Item> tag) {
+        this.input = Ingredient.of(tag);
         return this;
     }
     
@@ -73,7 +120,7 @@ public class WorkbenchRecipeBuilder {
     }
     
     /**
-     * Add a material requirement (order matters, first = bottom of stack).
+     * Add a material requirement using an Item (order matters, first = bottom of stack).
      * @param item The material item
      * @param count Amount required per craft
      */
@@ -81,7 +128,7 @@ public class WorkbenchRecipeBuilder {
         if (materials.size() >= 9) {
             throw new IllegalStateException("Cannot add more than 9 materials!");
         }
-        materials.add(new MaterialRequirement(item.asItem(), count));
+        materials.add(new MaterialRequirement(Ingredient.of(item), count));
         return this;
     }
     
@@ -91,6 +138,48 @@ public class WorkbenchRecipeBuilder {
      */
     public WorkbenchRecipeBuilder material(ItemLike item) {
         return material(item, 1);
+    }
+    
+    /**
+     * Add a material requirement using a Tag.
+     * @param tag The material tag
+     * @param count Amount required per craft
+     */
+    public WorkbenchRecipeBuilder material(TagKey<Item> tag, int count) {
+        if (materials.size() >= 9) {
+            throw new IllegalStateException("Cannot add more than 9 materials!");
+        }
+        materials.add(new MaterialRequirement(Ingredient.of(tag), count));
+        return this;
+    }
+    
+    /**
+     * Add a material requirement using a Tag with count 1.
+     * @param tag The material tag
+     */
+    public WorkbenchRecipeBuilder material(TagKey<Item> tag) {
+        return material(tag, 1);
+    }
+    
+    /**
+     * Add a material requirement using an Ingredient.
+     * @param ingredient The material ingredient
+     * @param count Amount required per craft
+     */
+    public WorkbenchRecipeBuilder material(Ingredient ingredient, int count) {
+        if (materials.size() >= 9) {
+            throw new IllegalStateException("Cannot add more than 9 materials!");
+        }
+        materials.add(new MaterialRequirement(ingredient, count));
+        return this;
+    }
+    
+    /**
+     * Add a material requirement using an Ingredient with count 1.
+     * @param ingredient The material ingredient
+     */
+    public WorkbenchRecipeBuilder material(Ingredient ingredient) {
+        return material(ingredient, 1);
     }
     
     /**

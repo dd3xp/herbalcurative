@@ -146,7 +146,7 @@
   <table border="1">
   <tr><td>鳞甲: 64</td><td>末影珍珠</td><td>下界之星</td><td>末影珍珠</td><td>晶刺: 64</td></tr>
   <tr><td>雨露花瓣: 64</td><td>鸡蛋</td><td>附魔金苹果</td><td>鸡蛋</td><td>燃烧草段: 64</td></tr>
-  <tr><td>金铃花: 64</td><td>小麦</td><td>牛奶桶</td><td>小麦</td><td>星忆花心: 64</td></tr>
+  <tr><td>金铃花: 64</td><td>小麦</td><td>牛奶桶（返还桶）</td><td>小麦</td><td>星忆花心: 64</td></tr>
   </table>
 
 - **记忆之心**：

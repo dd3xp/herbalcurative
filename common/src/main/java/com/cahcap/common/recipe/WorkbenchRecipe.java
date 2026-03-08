@@ -25,8 +25,8 @@ import java.util.Optional;
  * Recipe for the Workbench.
  * 
  * Tool slots: 0=top-left, 1=top-right, 2=bot-left, 3=bot-right
- * Materials: Must match exactly (types only, not amounts)
- * Input: The item in the center slot
+ * Materials: Must match exactly (types only, not amounts) - Supports Tag matching
+ * Input: The item in the center slot - Supports Tag matching
  * Result: What the input transforms into
  */
 public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
@@ -63,7 +63,7 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
             boolean found = false;
             for (int i = 0; i < 4; i++) {
                 ItemStack toolStack = container.getTool(i);
-                if (!toolStack.isEmpty() && toolStack.is(tool.item())) {
+                if (!toolStack.isEmpty() && tool.ingredient().test(toolStack)) {
                     found = true;
                     break;
                 }
@@ -73,43 +73,49 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
             }
         }
         
-        // Merge container materials by item type
-        Map<Item, Integer> availableMaterials = mergeContainerMaterials(container.getMaterials());
+        // Check materials - all requirements must be satisfied
+        List<ItemStack> availableMaterials = new ArrayList<>();
+        for (ItemStack stack : container.getMaterials()) {
+            if (!stack.isEmpty()) {
+                availableMaterials.add(stack.copy());
+            }
+        }
         
-        // Check materials - types must match exactly (no more, no less)
-        // Build required materials map
-        Map<Item, Integer> requiredMaterials = new java.util.HashMap<>();
+        // Check each material requirement
         for (MaterialRequirement req : materials) {
-            requiredMaterials.merge(req.item(), req.count(), Integer::sum);
-        }
-        
-        // Check if types match exactly
-        if (!availableMaterials.keySet().equals(requiredMaterials.keySet())) {
-            return false;
-        }
-        
-        // Check if we have enough of each material
-        for (Map.Entry<Item, Integer> req : requiredMaterials.entrySet()) {
-            Integer available = availableMaterials.get(req.getKey());
-            if (available == null || available < req.getValue()) {
+            int remaining = req.count();
+            
+            for (ItemStack stack : availableMaterials) {
+                if (remaining <= 0) break;
+                if (req.ingredient().test(stack)) {
+                    int consume = Math.min(remaining, stack.getCount());
+                    remaining -= consume;
+                    stack.shrink(consume);
+                }
+            }
+            
+            if (remaining > 0) {
                 return false;
             }
         }
         
-        return true;
-    }
-    
-    /**
-     * Merge container materials by item type.
-     */
-    private Map<Item, Integer> mergeContainerMaterials(List<ItemStack> containerMaterials) {
-        Map<Item, Integer> merged = new java.util.HashMap<>();
-        for (ItemStack stack : containerMaterials) {
+        // Check no extra materials - all available materials should be matched by some requirement
+        for (ItemStack stack : availableMaterials) {
             if (!stack.isEmpty()) {
-                merged.merge(stack.getItem(), stack.getCount(), Integer::sum);
+                boolean matchesAnyReq = false;
+                for (MaterialRequirement req : materials) {
+                    if (req.ingredient().test(stack)) {
+                        matchesAnyReq = true;
+                        break;
+                    }
+                }
+                if (!matchesAnyReq) {
+                    return false;
+                }
             }
         }
-        return merged;
+        
+        return true;
     }
     
     /**
@@ -120,20 +126,25 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
             return 0;
         }
         
-        // Merge container materials by item type
-        Map<Item, Integer> availableMaterials = mergeContainerMaterials(container.getMaterials());
-        
-        // Build required materials map
-        Map<Item, Integer> requiredMaterials = new java.util.HashMap<>();
-        for (MaterialRequirement req : materials) {
-            requiredMaterials.merge(req.item(), req.count(), Integer::sum);
+        // Collect available materials
+        List<ItemStack> availableMaterials = new ArrayList<>();
+        for (ItemStack stack : container.getMaterials()) {
+            if (!stack.isEmpty()) {
+                availableMaterials.add(stack.copy());
+            }
         }
         
         int maxCount = Integer.MAX_VALUE;
         
-        for (Map.Entry<Item, Integer> req : requiredMaterials.entrySet()) {
-            int available = availableMaterials.getOrDefault(req.getKey(), 0);
-            int canMake = available / req.getValue();
+        // For each material requirement, calculate max craft count
+        for (MaterialRequirement req : materials) {
+            int totalAvailable = 0;
+            for (ItemStack stack : availableMaterials) {
+                if (req.ingredient().test(stack)) {
+                    totalAvailable += stack.getCount();
+                }
+            }
+            int canMake = totalAvailable / req.count();
             maxCount = Math.min(maxCount, canMake);
         }
         
@@ -190,31 +201,31 @@ public class WorkbenchRecipe implements Recipe<WorkbenchRecipe.WorkbenchInput> {
     
     // ==================== Nested Types ====================
     
-    public record ToolRequirement(Item item, int damage) {
+    public record ToolRequirement(Ingredient ingredient, int damage) {
         public static final Codec<ToolRequirement> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ToolRequirement::item),
+                Ingredient.CODEC.fieldOf("ingredient").forGetter(ToolRequirement::ingredient),
                 Codec.INT.optionalFieldOf("damage", 1).forGetter(ToolRequirement::damage)
             ).apply(instance, ToolRequirement::new)
         );
         
         public static final StreamCodec<RegistryFriendlyByteBuf, ToolRequirement> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()), ToolRequirement::item,
+            Ingredient.CONTENTS_STREAM_CODEC, ToolRequirement::ingredient,
             ByteBufCodecs.INT, ToolRequirement::damage,
             ToolRequirement::new
         );
     }
     
-    public record MaterialRequirement(Item item, int count) {
+    public record MaterialRequirement(Ingredient ingredient, int count) {
         public static final Codec<MaterialRequirement> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(MaterialRequirement::item),
+                Ingredient.CODEC.fieldOf("ingredient").forGetter(MaterialRequirement::ingredient),
                 Codec.INT.optionalFieldOf("count", 1).forGetter(MaterialRequirement::count)
             ).apply(instance, MaterialRequirement::new)
         );
         
         public static final StreamCodec<RegistryFriendlyByteBuf, MaterialRequirement> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()), MaterialRequirement::item,
+            Ingredient.CONTENTS_STREAM_CODEC, MaterialRequirement::ingredient,
             ByteBufCodecs.INT, MaterialRequirement::count,
             MaterialRequirement::new
         );

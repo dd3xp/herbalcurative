@@ -9,6 +9,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -156,6 +157,20 @@ public class WorkbenchBlockEntity extends BlockEntity {
     public boolean damageToolByItem(net.minecraft.world.item.Item item) {
         for (int i = 0; i < TOOL_SLOTS; i++) {
             if (!toolSlots[i].isEmpty() && toolSlots[i].is(item)) {
+                return damageTool(i);
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Damage a tool matching the given Ingredient (finds it in any slot).
+     * @param ingredient The ingredient to match
+     * @return true if a matching tool was damaged
+     */
+    public boolean damageToolByIngredient(net.minecraft.world.item.crafting.Ingredient ingredient) {
+        for (int i = 0; i < TOOL_SLOTS; i++) {
+            if (!toolSlots[i].isEmpty() && ingredient.test(toolSlots[i])) {
                 return damageTool(i);
             }
         }
@@ -408,6 +423,18 @@ public class WorkbenchBlockEntity extends BlockEntity {
      * @return true if successful
      */
     public boolean consumeMaterialByType(net.minecraft.world.item.Item item, int count) {
+        return consumeMaterialByTypeWithRemainder(item, count, null);
+    }
+    
+    /**
+     * Consume a specific item type from the material stack and collect remainder items.
+     * Will consume from multiple stacks if needed.
+     * @param item The item type to consume
+     * @param count The amount to consume
+     * @param remainderCollector If not null, crafting remainder items (like buckets) will be added to this list
+     * @return true if successful
+     */
+    public boolean consumeMaterialByTypeWithRemainder(net.minecraft.world.item.Item item, int count, List<ItemStack> remainderCollector) {
         // First verify we have enough
         int available = 0;
         for (ItemStack mat : materialStack) {
@@ -425,6 +452,63 @@ public class WorkbenchBlockEntity extends BlockEntity {
             ItemStack mat = materialStack.get(i);
             if (mat.is(item)) {
                 int consume = Math.min(toConsume, mat.getCount());
+                
+                // Collect crafting remainder items (like buckets from milk buckets)
+                if (remainderCollector != null) {
+                    Item remainderItem = mat.getItem().getCraftingRemainingItem();
+                    if (remainderItem != null) {
+                        remainderCollector.add(new ItemStack(remainderItem, consume));
+                    }
+                }
+                
+                mat.shrink(consume);
+                toConsume -= consume;
+                if (mat.isEmpty()) {
+                    materialStack.remove(i);
+                }
+            }
+        }
+        
+        setChanged();
+        syncToClient();
+        return true;
+    }
+    
+    /**
+     * Consume materials matching an Ingredient from the material stack and collect remainder items.
+     * Will consume from multiple stacks if needed.
+     * @param ingredient The ingredient to match
+     * @param count The amount to consume
+     * @param remainderCollector If not null, crafting remainder items (like buckets) will be added to this list
+     * @return true if successful
+     */
+    public boolean consumeMaterialByIngredientWithRemainder(net.minecraft.world.item.crafting.Ingredient ingredient, int count, List<ItemStack> remainderCollector) {
+        // First verify we have enough
+        int available = 0;
+        for (ItemStack mat : materialStack) {
+            if (ingredient.test(mat)) {
+                available += mat.getCount();
+            }
+        }
+        if (available < count) {
+            return false;
+        }
+        
+        // Actually consume (from top of stack first - LIFO)
+        int toConsume = count;
+        for (int i = materialStack.size() - 1; i >= 0 && toConsume > 0; i--) {
+            ItemStack mat = materialStack.get(i);
+            if (ingredient.test(mat)) {
+                int consume = Math.min(toConsume, mat.getCount());
+                
+                // Collect crafting remainder items (like buckets from milk buckets)
+                if (remainderCollector != null) {
+                    Item remainderItem = mat.getItem().getCraftingRemainingItem();
+                    if (remainderItem != null) {
+                        remainderCollector.add(new ItemStack(remainderItem, consume));
+                    }
+                }
+                
                 mat.shrink(consume);
                 toConsume -= consume;
                 if (mat.isEmpty()) {

@@ -2,8 +2,9 @@
   "type": "herbalcurative:cauldron_infusing",
   "inputs": [
     {
-      "count": 1,
-      "id": "minecraft:apple"
+      "ingredient": {
+        "item": "minecraft:apple"
+      }
     }
   ],
   "min_duration": 480,

@@ -2,10 +2,14 @@ package com.cahcap.neoforge.common.datagen.recipes;
 
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.recipe.CauldronInfusingRecipe;
+import com.cahcap.common.recipe.CauldronInfusingRecipe.IngredientWithCount;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,10 +28,11 @@ import java.util.List;
  * 4. Result: Output item floats in the cauldron (fluid converts to water)
  * 
  * STRICT MATCHING: Materials must EXACTLY match the recipe.
+ * Supports Tag matching for inputs.
  */
 public class CauldronInfusingRecipeBuilder {
     
-    private final List<ItemStack> inputs = new ArrayList<>();
+    private final List<IngredientWithCount> inputs = new ArrayList<>();
     private ItemStack output = ItemStack.EMPTY;
     private String fluidType = "";      // For fluid-based infusing (e.g., "minecraft:water")
     private String potionType = "";     // For potion-based infusing (e.g., "minecraft:instant_health")
@@ -48,7 +53,7 @@ public class CauldronInfusingRecipeBuilder {
      * @param item The input item
      */
     public CauldronInfusingRecipeBuilder input(ItemLike item) {
-        this.inputs.add(new ItemStack(item, 1));
+        this.inputs.add(new IngredientWithCount(Ingredient.of(item), 1));
         return this;
     }
     
@@ -58,16 +63,45 @@ public class CauldronInfusingRecipeBuilder {
      * @param count The required count
      */
     public CauldronInfusingRecipeBuilder input(ItemLike item, int count) {
-        this.inputs.add(new ItemStack(item, count));
+        this.inputs.add(new IngredientWithCount(Ingredient.of(item), count));
         return this;
     }
     
     /**
-     * Add a required input item stack.
-     * @param stack The input item stack
+     * Add a required input using a Tag (count = 1).
+     * @param tag The input tag
      */
-    public CauldronInfusingRecipeBuilder input(ItemStack stack) {
-        this.inputs.add(stack.copy());
+    public CauldronInfusingRecipeBuilder input(TagKey<Item> tag) {
+        this.inputs.add(new IngredientWithCount(Ingredient.of(tag), 1));
+        return this;
+    }
+    
+    /**
+     * Add a required input using a Tag with specific count.
+     * @param tag The input tag
+     * @param count The required count
+     */
+    public CauldronInfusingRecipeBuilder input(TagKey<Item> tag, int count) {
+        this.inputs.add(new IngredientWithCount(Ingredient.of(tag), count));
+        return this;
+    }
+    
+    /**
+     * Add a required input using an Ingredient (count = 1).
+     * @param ingredient The input ingredient
+     */
+    public CauldronInfusingRecipeBuilder input(Ingredient ingredient) {
+        this.inputs.add(new IngredientWithCount(ingredient, 1));
+        return this;
+    }
+    
+    /**
+     * Add a required input using an Ingredient with specific count.
+     * @param ingredient The input ingredient
+     * @param count The required count
+     */
+    public CauldronInfusingRecipeBuilder input(Ingredient ingredient, int count) {
+        this.inputs.add(new IngredientWithCount(ingredient, count));
         return this;
     }
     
@@ -157,7 +191,6 @@ public class CauldronInfusingRecipeBuilder {
      */
     public CauldronInfusingRecipeBuilder flowweaveRingBinding() {
         this.isFlowweaveRingBinding = true;
-        // Input is 1 Flowweave Ring (will be set in build)
         return this;
     }
     
@@ -168,7 +201,6 @@ public class CauldronInfusingRecipeBuilder {
      */
     public CauldronInfusingRecipeBuilder flowweaveRingUnbinding() {
         this.isFlowweaveRingUnbinding = true;
-        // Input is 1 Flowweave Ring (will be set in build)
         return this;
     }
     
@@ -187,14 +219,14 @@ public class CauldronInfusingRecipeBuilder {
      * @param id The full recipe resource location
      */
     public void build(RecipeOutput recipeOutput, ResourceLocation id) {
-        List<ItemStack> recipeInputs = inputs;
+        List<IngredientWithCount> recipeInputs = inputs;
         ItemStack recipeOutput2 = output;
         
         // Special handling for Flowweave Ring binding/unbinding
         if (isFlowweaveRingBinding || isFlowweaveRingUnbinding) {
             // Input is 1 Flowweave Ring
             recipeInputs = new ArrayList<>();
-            recipeInputs.add(new ItemStack(ModRegistries.FLOWWEAVE_RING.get(), 1));
+            recipeInputs.add(new IngredientWithCount(Ingredient.of(ModRegistries.FLOWWEAVE_RING.get()), 1));
             // Output is a placeholder (actual output is dynamic for binding, or unbound ring for unbinding)
             recipeOutput2 = new ItemStack(ModRegistries.FLOWWEAVE_RING.get(), 1);
         } else {

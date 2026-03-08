@@ -3,8 +3,9 @@
   "fluid": "minecraft:water",
   "inputs": [
     {
-      "count": 1,
-      "id": "minecraft:sponge"
+      "ingredient": {
+        "item": "minecraft:sponge"
+      }
     }
   ],
   "output": {

@@ -3,8 +3,9 @@
   "flowweave_ring_binding": true,
   "inputs": [
     {
-      "count": 1,
-      "id": "herbalcurative:flowweave_ring"
+      "ingredient": {
+        "item": "herbalcurative:flowweave_ring"
+      }
     }
   ],
   "output": {

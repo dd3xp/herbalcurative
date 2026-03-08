@@ -873,7 +873,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return;
         }
         
-        // Consume only the recipe-required amount of materials
+        // Consume materials, remainder items (like empty buckets) stay in cauldron
         consumeRecipeMaterials(currentInfusingRecipe);
         
         // Add the output to output slot (rendered in center)
@@ -922,36 +922,64 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     /**
      * Consume recipe-required materials from the cauldron.
      * Consumes up to the recipe amount, or all available if less.
+     * Remainder items (like empty buckets) stay in the cauldron.
      */
     private void consumeRecipeMaterials(CauldronInfusingRecipe recipe) {
-        List<ItemStack> requiredInputs = recipe.getInputs();
+        List<CauldronInfusingRecipe.IngredientWithCount> requiredInputs = recipe.getInputs();
         
-        // Build a map of required items -> count
-        Map<Item, Integer> toConsume = new HashMap<>();
-        for (ItemStack input : requiredInputs) {
-            toConsume.merge(input.getItem(), input.getCount(), Integer::sum);
+        // Collect remainder items to add back after iteration
+        List<ItemStack> remaindersToAdd = new ArrayList<>();
+        
+        // For each recipe requirement, consume matching items
+        for (CauldronInfusingRecipe.IngredientWithCount iwc : requiredInputs) {
+            int remaining = iwc.count();
+            
+            java.util.Iterator<ItemStack> iterator = materials.iterator();
+            while (iterator.hasNext() && remaining > 0) {
+                ItemStack stack = iterator.next();
+                
+                if (iwc.ingredient().test(stack)) {
+                    int available = stack.getCount();
+                    int consume = Math.min(remaining, available);
+                    
+                    // Get crafting remainder (like empty bucket from milk bucket)
+                    Item remainderItem = stack.getItem().getCraftingRemainingItem();
+                    if (remainderItem != null) {
+                        remaindersToAdd.add(new ItemStack(remainderItem, consume));
+                    }
+                    
+                    stack.shrink(consume);
+                    remaining -= consume;
+                    
+                    if (stack.isEmpty()) {
+                        iterator.remove();
+                    }
+                }
+            }
         }
         
-        // Consume from materials
-        java.util.Iterator<ItemStack> iterator = materials.iterator();
-        while (iterator.hasNext()) {
-            ItemStack stack = iterator.next();
-            Item item = stack.getItem();
-            
-            if (toConsume.containsKey(item)) {
-                int needed = toConsume.get(item);
-                int available = stack.getCount();
-                int consume = Math.min(needed, available);
-                
-                stack.shrink(consume);
-                toConsume.put(item, needed - consume);
-                
-                if (stack.isEmpty()) {
-                    iterator.remove();
+        // Add remainder items back to materials (stay in cauldron)
+        for (ItemStack remainder : remaindersToAdd) {
+            if (!remainder.isEmpty() && materials.size() < MAX_MATERIAL_TYPES) {
+                // Try to stack with existing
+                boolean stacked = false;
+                for (ItemStack existing : materials) {
+                    if (ItemStack.isSameItemSameComponents(existing, remainder)) {
+                        int canAdd = existing.getMaxStackSize() - existing.getCount();
+                        if (canAdd > 0) {
+                            int toAdd = Math.min(canAdd, remainder.getCount());
+                            existing.grow(toAdd);
+                            remainder.shrink(toAdd);
+                            if (remainder.isEmpty()) {
+                                stacked = true;
+                                break;
+                            }
+                        }
+                    }
                 }
-                
-                if (toConsume.get(item) <= 0) {
-                    toConsume.remove(item);
+                // If not stacked and still has items, add as new stack
+                if (!stacked && !remainder.isEmpty() && materials.size() < MAX_MATERIAL_TYPES) {
+                    materials.add(remainder);
                 }
             }
         }

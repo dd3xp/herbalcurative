@@ -965,26 +965,44 @@ public class FlowweaveRingItem extends Item {
             }
         }
         
+        // Collect crafting remainder items (like buckets)
+        List<ItemStack> remainderItems = new java.util.ArrayList<>();
+        
         // Perform crafting
         for (int i = 0; i < craftCount; i++) {
-            // Damage tools by item type (tools can be in any slot)
+            // Damage tools by ingredient (tools can be in any slot)
             for (WorkbenchRecipe.ToolRequirement tool : recipe.getTools()) {
                 for (int d = 0; d < tool.damage(); d++) {
-                    workbench.damageToolByItem(tool.item());
+                    workbench.damageToolByIngredient(tool.ingredient());
                 }
             }
             
-            // Consume materials by type
+            // Consume materials by ingredient and collect remainder items
             for (WorkbenchRecipe.MaterialRequirement req : recipe.getMaterials()) {
-                workbench.consumeMaterialByType(req.item(), req.count());
+                workbench.consumeMaterialByIngredientWithRemainder(req.ingredient(), req.count(), remainderItems);
             }
             
-            // Consume input
+            // Consume input and collect remainder
+            ItemStack inputStack = workbench.getInputItem();
+            Item inputRemainderItem = inputStack.getItem().getCraftingRemainingItem();
+            if (inputRemainderItem != null) {
+                remainderItems.add(new ItemStack(inputRemainderItem));
+            }
             workbench.consumeInput(1);
             
             // Consume experience
             if (expCost > 0 && player != null && !player.isCreative()) {
                 player.giveExperiencePoints(-expCost);
+            }
+        }
+        
+        // Drop remainder items (like empty buckets)
+        for (ItemStack remainder : remainderItems) {
+            if (!remainder.isEmpty()) {
+                ItemEntity remainderEntity = new ItemEntity(level,
+                        centerPos.getX() + 0.5, centerPos.getY() + 1.0, centerPos.getZ() + 0.5, remainder);
+                remainderEntity.setDeltaMovement(0, 0.15, 0);
+                level.addFreshEntity(remainderEntity);
             }
         }
         

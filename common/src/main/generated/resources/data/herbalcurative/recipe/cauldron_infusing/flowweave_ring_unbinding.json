@@ -4,8 +4,9 @@
   "fluid": "minecraft:water",
   "inputs": [
     {
-      "count": 1,
-      "id": "herbalcurative:flowweave_ring"
+      "ingredient": {
+        "item": "herbalcurative:flowweave_ring"
+      }
     }
   ],
   "output": {

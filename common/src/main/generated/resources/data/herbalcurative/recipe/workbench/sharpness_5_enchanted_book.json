@@ -6,11 +6,15 @@
   "materials": [
     {
       "count": 16,
-      "item": "minecraft:quartz"
+      "ingredient": {
+        "item": "minecraft:quartz"
+      }
     },
     {
       "count": 5,
-      "item": "minecraft:lapis_lazuli"
+      "ingredient": {
+        "item": "minecraft:lapis_lazuli"
+      }
     }
   ],
   "result": {
@@ -26,10 +30,14 @@
   },
   "tools": [
     {
-      "item": "herbalcurative:feather_quill"
+      "ingredient": {
+        "item": "herbalcurative:feather_quill"
+      }
     },
     {
-      "item": "herbalcurative:cutting_knife"
+      "ingredient": {
+        "item": "herbalcurative:cutting_knife"
+      }
     }
   ]
 }

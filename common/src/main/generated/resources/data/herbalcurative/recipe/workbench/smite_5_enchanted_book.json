@@ -6,15 +6,21 @@
   "materials": [
     {
       "count": 16,
-      "item": "minecraft:rotten_flesh"
+      "ingredient": {
+        "item": "minecraft:rotten_flesh"
+      }
     },
     {
       "count": 16,
-      "item": "minecraft:bone"
+      "ingredient": {
+        "item": "minecraft:bone"
+      }
     },
     {
       "count": 5,
-      "item": "minecraft:lapis_lazuli"
+      "ingredient": {
+        "item": "minecraft:lapis_lazuli"
+      }
     }
   ],
   "result": {
@@ -30,10 +36,14 @@
   },
   "tools": [
     {
-      "item": "herbalcurative:feather_quill"
+      "ingredient": {
+        "item": "herbalcurative:feather_quill"
+      }
     },
     {
-      "item": "herbalcurative:forge_hammer"
+      "ingredient": {
+        "item": "herbalcurative:forge_hammer"
+      }
     }
   ]
 }
