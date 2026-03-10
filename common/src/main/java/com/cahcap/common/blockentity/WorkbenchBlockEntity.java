@@ -31,6 +31,9 @@ public class WorkbenchBlockEntity extends BlockEntity {
     public static final int TOOL_SLOTS = 4;
     public static final int MATERIAL_SLOTS = 9;
     
+    // Cached render bounding box for multiblock rendering
+    public net.minecraft.world.phys.AABB renderAABB = null;
+    
     // Tool slots [0-3]: top-left, top-right, bottom-left, bottom-right
     private final ItemStack[] toolSlots = new ItemStack[TOOL_SLOTS];
     

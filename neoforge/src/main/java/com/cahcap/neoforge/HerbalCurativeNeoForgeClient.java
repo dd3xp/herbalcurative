@@ -7,7 +7,7 @@ import com.cahcap.neoforge.client.renderer.CauldronRenderer;
 import com.cahcap.neoforge.client.renderer.HerbBoxItemRenderer;
 import com.cahcap.client.renderer.HerbPotRenderer;
 import com.cahcap.client.renderer.RedCherryShelfRenderer;
-import com.cahcap.client.renderer.WorkbenchRenderer;
+import com.cahcap.neoforge.client.renderer.WorkbenchRenderer;
 import com.cahcap.neoforge.client.layer.HerbBoxPlayerLayer;
 import com.cahcap.neoforge.client.renderer.FlowweaveProjectileRenderer;
 import com.cahcap.neoforge.client.renderer.HerbCabinetRenderer;

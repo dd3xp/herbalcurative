@@ -14,6 +14,7 @@ import com.cahcap.neoforge.common.handler.HerbCabinetItemHandler;
 import com.cahcap.neoforge.common.handler.HerbPotItemHandler;
 import com.cahcap.neoforge.common.handler.RedCherryShelfItemHandler;
 import com.cahcap.neoforge.common.handler.WorkbenchItemHandler;
+import net.minecraft.core.Direction;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -100,11 +101,16 @@ public class ModCapabilities {
         );
         
         // Register IItemHandler capability for HerbPotBlockEntity
+        // Don't provide capability from below (DOWN) so hoppers can collect item entities
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
             ModBlockEntities.HERB_POT.get(),
             (blockEntity, context) -> {
                 if (blockEntity instanceof HerbPotBlockEntity pot) {
+                    // When accessed from below, return null so hopper collects item entities instead
+                    if (context == Direction.DOWN) {
+                        return null;
+                    }
                     return new HerbPotItemHandler(pot);
                 }
                 return null;

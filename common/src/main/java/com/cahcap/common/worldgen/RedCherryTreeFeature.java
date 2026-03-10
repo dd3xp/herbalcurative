@@ -60,7 +60,7 @@ public class RedCherryTreeFeature extends Feature<NoneFeatureConfiguration> {
             return false;
         }
 
-        int spacingRadius = 6;
+        int spacingRadius = 5;
         for (int x = -spacingRadius; x <= spacingRadius; x++) {
             for (int z = -spacingRadius; z <= spacingRadius; z++) {
                 if (x == 0 && z == 0) continue;

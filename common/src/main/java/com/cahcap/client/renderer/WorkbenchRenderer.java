@@ -261,4 +261,11 @@ public class WorkbenchRenderer implements BlockEntityRenderer<WorkbenchBlockEnti
     public int getViewDistance() {
         return 64;
     }
+    
+    @Override
+    public boolean shouldRenderOffScreen(WorkbenchBlockEntity blockEntity) {
+        // Workbench spans 3 blocks, tools render on left block which may be off-screen
+        // when center block is culled. Always render to prevent pop-in.
+        return true;
+    }
 }

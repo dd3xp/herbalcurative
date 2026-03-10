@@ -17,11 +17,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Client-side handler for rendering Herb Pot HUD tooltip.
- * Shows herb icons and counts below crosshair when looking at a herb pot.
+ * Shows herb icons horizontally below crosshair when looking at a herb pot.
+ * Style matches CauldronTooltipHandler with counts in bottom-right corner.
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class HerbPotTooltipHandler {
@@ -52,40 +55,74 @@ public class HerbPotTooltipHandler {
             return;
         }
 
+        Map<Item, Integer> herbs = pot.getHerbs();
+        
+        if (herbs.isEmpty() && !pot.isGrowing()) {
+            return;
+        }
+
         GuiGraphics guiGraphics = event.getGuiGraphics();
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int baseX = screenWidth / 2 - 8;
-        int baseY = screenHeight / 2 + 12;
-        int currentY = baseY;
+        int herbsY = screenHeight / 2 + 12;
+        int currentY = herbsY;
         
-        Map<Item, Integer> herbs = pot.getHerbs();
-        
-        if (herbs.isEmpty() && !pot.hasSoil() && !pot.hasSeedling()) {
-            return;
-        }
-        
+        // Show growth progress text first
         if (pot.isGrowing()) {
             int progress = (int) (pot.getGrowthProgress() * 100);
-            String growthText = "Growing: " + progress + "%";
+            String growthText = progress + "%";
             int textWidth = mc.font.width(growthText);
             guiGraphics.drawString(mc.font, growthText, screenWidth / 2 - textWidth / 2, currentY, 0x55FF55, true);
             currentY += 12;
         }
         
+        // Collect herb items for horizontal display
+        List<ItemCountPair> items = new ArrayList<>();
         for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
-            ItemStack stack = new ItemStack(entry.getKey());
-            int amount = entry.getValue();
-            
-            guiGraphics.renderItem(stack, baseX, currentY);
-            
-            String amountText = String.valueOf(amount);
-            int textX = baseX + 16 + 2;
-            int textY = currentY + 4;
-            guiGraphics.drawString(mc.font, amountText, textX, textY, 0xFFFFFF, true);
-            
-            currentY += 18;
+            items.add(new ItemCountPair(entry.getKey(), entry.getValue()));
+        }
+        
+        if (items.isEmpty()) {
+            return;
+        }
+        
+        // Calculate total width for centering (20 pixels per item)
+        int totalItems = items.size();
+        int totalWidth = totalItems * 20;
+        int startX = screenWidth / 2 - totalWidth / 2;
+        
+        // Render herb items horizontally
+        int currentX = startX;
+        for (ItemCountPair pair : items) {
+            ItemStack stack = new ItemStack(pair.item);
+            guiGraphics.renderItem(stack, currentX, currentY);
+            currentX += 20;
+        }
+        
+        // Render counts on top (higher z-layer) in bottom-right corner of each item
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
+        
+        currentX = startX;
+        for (ItemCountPair pair : items) {
+            String countText = String.valueOf(pair.count);
+            int textX = currentX + 17 - mc.font.width(countText);
+            int textY = currentY + 9;
+            guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
+            currentX += 20;
+        }
+        
+        guiGraphics.pose().popPose();
+    }
+    
+    private static class ItemCountPair {
+        Item item;
+        int count;
+        
+        ItemCountPair(Item item, int count) {
+            this.item = item;
+            this.count = count;
         }
     }
 }
