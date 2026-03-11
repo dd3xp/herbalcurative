@@ -234,26 +234,6 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .pattern("LLL")
             .unlockedBy("has_lumistone_bricks", has(ModBlocks.LUMISTONE_BRICKS.get()))
             .save(output);
-        
-        // ==================== Incense Burner Recipe ====================
-        // Incense Burner: 4 stone + 4 gold nuggets -> 1 incense burner
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.INCENSE_BURNER.get(), 1)
-            .define('S', Items.STONE)
-            .define('G', Items.GOLD_NUGGET)
-            .pattern("G G")
-            .pattern("SBS")
-            .pattern(" S ")
-            .define('B', Items.BLAZE_POWDER)
-            .unlockedBy("has_blaze_powder", has(Items.BLAZE_POWDER))
-            .save(output);
-        
-        // Wither Skeleton Powder: coal + bone meal + wither rose -> wither skeleton powder
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.WITHER_SKELETON_POWDER.get(), 1)
-            .requires(Items.COAL)
-            .requires(Items.BONE_MEAL)
-            .requires(Items.WITHER_ROSE)
-            .unlockedBy("has_wither_rose", has(Items.WITHER_ROSE))
-            .save(output);
     }
     
     /**
@@ -427,6 +407,20 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .result(ModBlocks.ROSYNIA.get())
                 .growthTimeSeconds(10)
                 .build(output, "rosynia");
+        
+        // ==================== Crystal Plant Cultivation ====================
+        // Use crystal plant seedlings + herbs -> grow ores
+        // Based on Recipes.md crystal pot recipes
+        
+        // Iron Crystal Plant
+        // Seedling: Iron Crystal Plant, Herbs: 4 Scaleplate + 4 Golden Lilybell -> 1 Iron Ingot
+        HerbPotGrowingRecipeBuilder.builder()
+                .seedling(ModItems.IRON_CRYST_PLANT.get())
+                .herb(ModItems.SCALEPLATE.get(), 4)
+                .herb(ModItems.GOLDEN_LILYBELL.get(), 4)
+                .result(Items.IRON_INGOT)
+                .growthTimeMinutes(2)
+                .build(output, "iron_cryst_plant");
     }
     
     /**
@@ -439,10 +433,14 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
     private void buildIncenseBurningRecipes(RecipeOutput output) {
         // Wither Skeleton summon
         // Powder: Wither Skeleton Powder
-        // Herbs: 4 Burnt Node, 2 Cryst Spine (based on Recipes.md)
+        // Herbs: All 6 herb products, 32 each (based on Recipes.md)
         IncenseBurningRecipeBuilder.create("minecraft:wither_skeleton")
-                .herb(ModItems.BURNT_NODE.get(), 4)
-                .herb(ModItems.CRYST_SPINE.get(), 2)
+                .herb(ModItems.SCALEPLATE.get(), 32)
+                .herb(ModItems.DEWPETAL_SHARD.get(), 32)
+                .herb(ModItems.GOLDEN_LILYBELL.get(), 32)
+                .herb(ModItems.CRYST_SPINE.get(), 32)
+                .herb(ModItems.BURNT_NODE.get(), 32)
+                .herb(ModItems.HEART_OF_STARDREAM.get(), 32)
                 .burnTime(160)  // 8 seconds
                 .save(output, "wither_skeleton");
     }

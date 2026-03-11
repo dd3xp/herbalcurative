@@ -82,8 +82,10 @@
   "block.herbalcurative.cauldron": "Cauldron",
   "block.herbalcurative.herb_pot": "Herb Pot",
   "block.herbalcurative.incense_burner": "Incense Burner",
+  "block.herbalcurative.iron_cryst_plant": "Iron Crystal Plant",
   
   "item.herbalcurative.wither_skeleton_powder": "Wither Skeleton Powder",
+  "item.herbalcurative.iron_cryst_plant": "Iron Crystal Plant",
   
   "item.herbalcurative.cutting_knife": "Cutting Knife",
   "item.herbalcurative.feather_quill": "Feather Quill",

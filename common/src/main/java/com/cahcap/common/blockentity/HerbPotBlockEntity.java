@@ -132,7 +132,8 @@ public class HerbPotBlockEntity extends BlockEntity {
             return path.equals("verdscale_fern") || path.equals("dewpetal") ||
                    path.equals("zephyr_lily") || path.equals("crystbud") ||
                    path.equals("pyrisage") || path.equals("rosynia") ||
-                   path.contains("crystal_plant") || path.contains("cryst_spine");
+                   path.contains("crystal_plant") || path.contains("cryst_plant") || 
+                   path.contains("cryst_spine");
         }
         
         return false;

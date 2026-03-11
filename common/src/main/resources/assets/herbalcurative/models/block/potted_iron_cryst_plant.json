@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/tinted_flower_pot_cross",
+  "textures": {
+    "plant": "herbalcurative:block/crystal_plant"
+  },
+  "render_type": "cutout"
+}

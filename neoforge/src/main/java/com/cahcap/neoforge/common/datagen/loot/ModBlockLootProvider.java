@@ -57,6 +57,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             this.dropSelf(ModBlocks.VERDSCALE_FERN.get());
             this.dropSelf(ModBlocks.ZEPHYR_LILY.get());
             
+            // Crystal plant blocks
+            this.dropSelf(ModBlocks.IRON_CRYST_PLANT.get());
+            
             // Red Cherry blocks
             this.dropSelf(ModBlocks.RED_CHERRY_LOG.get());
             this.dropSelf(ModBlocks.STRIPPED_RED_CHERRY_LOG.get());
@@ -116,6 +119,10 @@ public class ModBlockLootProvider extends LootTableProvider {
                 createPotFlowerItemTable(ModBlocks.ROSYNIA.get()));
             this.add(ModBlocks.POTTED_RED_CHERRY_SAPLING.get(), block -> 
                 createPotFlowerItemTable(ModBlocks.RED_CHERRY_SAPLING.get()));
+            
+            // Crystal plant potted versions
+            this.add(ModBlocks.POTTED_IRON_CRYST_PLANT.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.IRON_CRYST_PLANT.get()));
             
             // ==================== Crop blocks (drop seeds and products when mature at age 9) ====================
             

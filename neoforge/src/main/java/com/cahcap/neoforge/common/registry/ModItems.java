@@ -177,6 +177,14 @@ public class ModItems {
                     net.minecraft.resources.ResourceLocation.withDefaultNamespace("wither_skeleton"), 
                     0xFF4A4A4A));
     
+    // ==================== Crystal Plants ====================
+    // Crystal plant seedlings for growing ores in herb pots
+    // Uses grayscale texture (crystal_plant) tinted to ore color via BlockColor/ItemColor
+    
+    // Iron Plant: silver/gray color matching iron ingot
+    public static final DeferredItem<BlockItem> IRON_CRYST_PLANT = ITEMS.register("iron_cryst_plant",
+            () -> new BlockItem(ModBlocks.IRON_CRYST_PLANT.get(), new Item.Properties()));
+    
     // ==================== Block Items ====================
     // Placeable blocks (herb flowers, Red Cherry wood, Lumistone)
     

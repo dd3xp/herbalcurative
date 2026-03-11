@@ -54,6 +54,7 @@ public class ModRegistries {
     public static Supplier<Block> LUMISTONE;
     public static Supplier<Block> LUMISTONE_BRICKS;
     public static Supplier<Block> LUMISTONE_BRICK_SLAB;
+    public static Supplier<Block> RUNE_STONE_BRICKS;
     
     // ==================== Items ====================
     public static Supplier<Item> SCALEPLATE;

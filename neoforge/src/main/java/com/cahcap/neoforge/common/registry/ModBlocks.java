@@ -48,6 +48,13 @@ public class ModBlocks {
     
     // End herb - only grows on End Stone
     public static final DeferredBlock<Block> ROSYNIA = registerRosyniaFlower("rosynia", 10);
+    
+    // ==================== Crystal Plants ====================
+    // Crystal plant seedlings that can be placed on ground or in flower pots
+    // Uses grayscale texture tinted to ore color
+    
+    public static final DeferredBlock<CrystalPlantBlock> IRON_CRYST_PLANT = registerCrystalPlant(
+            "iron_cryst_plant", "iron", 0xFFD8D8D8);
 
     // ==================== Herb Crops ====================
     
@@ -181,6 +188,9 @@ public class ModBlocks {
     public static final DeferredBlock<FlowerPotBlock> POTTED_PYRISAGE = registerPottedPlant("potted_pyrisage", PYRISAGE);
     public static final DeferredBlock<FlowerPotBlock> POTTED_ROSYNIA = registerPottedPlant("potted_rosynia", ROSYNIA);
     public static final DeferredBlock<FlowerPotBlock> POTTED_RED_CHERRY_SAPLING = registerPottedPlant("potted_red_cherry_sapling", RED_CHERRY_SAPLING);
+    
+    // Crystal Plant potted versions
+    public static final DeferredBlock<FlowerPotBlock> POTTED_IRON_CRYST_PLANT = registerPottedPlant("potted_iron_cryst_plant", IRON_CRYST_PLANT);
 
     // ==================== Lumistone Blocks ====================
     // Light levels: Lumistone series = 7 (weak glow), Rune Stone Bricks = 15 (glowstone level)
@@ -356,6 +366,19 @@ public class ModBlocks {
         ));
     }
     
+    private static DeferredBlock<CrystalPlantBlock> registerCrystalPlant(String name, String oreType, int color) {
+        return BLOCKS.register(name, () -> new CrystalPlantBlock(
+                oreType,
+                color,
+                BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.PLANT)
+                        .noCollission()
+                        .instabreak()
+                        .sound(SoundType.GRASS)
+                        .pushReaction(PushReaction.DESTROY)
+        ));
+    }
+    
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> blockSupplier) {
         return BLOCKS.register(name, blockSupplier);
     }
@@ -383,6 +406,9 @@ public class ModBlocks {
         ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(PYRISAGE.getId(), POTTED_PYRISAGE);
         ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ROSYNIA.getId(), POTTED_ROSYNIA);
         ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(RED_CHERRY_SAPLING.getId(), POTTED_RED_CHERRY_SAPLING);
+        
+        // Crystal Plants
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(IRON_CRYST_PLANT.getId(), POTTED_IRON_CRYST_PLANT);
     }
 }
 

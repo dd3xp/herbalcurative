@@ -3,12 +3,28 @@
   "entity_type": "minecraft:wither_skeleton",
   "herbs": [
     {
-      "count": 4,
+      "count": 32,
+      "item": "herbalcurative:scaleplate"
+    },
+    {
+      "count": 32,
+      "item": "herbalcurative:dewpetal_shard"
+    },
+    {
+      "count": 32,
+      "item": "herbalcurative:golden_lilybell"
+    },
+    {
+      "count": 32,
+      "item": "herbalcurative:cryst_spine"
+    },
+    {
+      "count": 32,
       "item": "herbalcurative:burnt_node"
     },
     {
-      "count": 2,
-      "item": "herbalcurative:cryst_spine"
+      "count": 32,
+      "item": "herbalcurative:heart_of_stardream"
     }
   ]
 }

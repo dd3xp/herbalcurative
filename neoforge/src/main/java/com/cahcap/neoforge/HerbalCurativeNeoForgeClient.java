@@ -5,7 +5,7 @@ import com.cahcap.client.model.HerbBoxModel;
 import com.cahcap.client.model.LeafweaveArmorModel;
 import com.cahcap.neoforge.client.renderer.CauldronRenderer;
 import com.cahcap.neoforge.client.renderer.HerbBoxItemRenderer;
-import com.cahcap.client.renderer.HerbPotRenderer;
+import com.cahcap.neoforge.client.renderer.HerbPotRenderer;
 import com.cahcap.client.renderer.IncenseBurnerRenderer;
 import com.cahcap.client.renderer.RedCherryShelfRenderer;
 import com.cahcap.neoforge.client.renderer.WorkbenchRenderer;
@@ -82,6 +82,10 @@ public class HerbalCurativeNeoForgeClient {
                 
                 // Red Cherry Leaves
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.RED_CHERRY_LEAVES.get(), RenderType.cutout());
+                
+                // Crystal Plants
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.IRON_CRYST_PLANT.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.POTTED_IRON_CRYST_PLANT.get(), RenderType.cutout());
                 
                 // Register Red Cherry Crossbow item properties for animations
                 registerCrossbowItemProperties();

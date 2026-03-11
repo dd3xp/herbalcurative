@@ -953,7 +953,7 @@ public class FlowweaveRingItem extends Item {
         // Check Incense Burner (shift+right-click to remove powder)
         if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.INCENSE_BURNER.get())) {
             if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IncenseBurnerBlockEntity burner 
-                    && burner.hasPowder() && !burner.isBurning()) {
+                    && burner.hasPowder()) {
                 return true;
             }
         }

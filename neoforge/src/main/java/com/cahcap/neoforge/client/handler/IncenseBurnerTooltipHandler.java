@@ -1,8 +1,8 @@
 package com.cahcap.neoforge.client.handler;
 
 import com.cahcap.HerbalCurativeCommon;
-import com.cahcap.common.block.HerbPotBlock;
-import com.cahcap.common.blockentity.HerbPotBlockEntity;
+import com.cahcap.common.block.IncenseBurnerBlock;
+import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -22,12 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Client-side handler for rendering Herb Pot HUD tooltip.
- * Shows herb icons horizontally below crosshair when looking at a herb pot.
- * Style matches CauldronTooltipHandler with counts in bottom-right corner.
+ * Client-side handler for rendering Incense Burner HUD tooltip.
+ * Shows herb icons horizontally below crosshair when looking at an incense burner.
+ * Also shows burning progress when active.
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
-public class HerbPotTooltipHandler {
+public class IncenseBurnerTooltipHandler {
 
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
@@ -46,16 +46,16 @@ public class HerbPotTooltipHandler {
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState state = mc.level.getBlockState(pos);
         
-        if (!(state.getBlock() instanceof HerbPotBlock)) {
+        if (!(state.getBlock() instanceof IncenseBurnerBlock)) {
             return;
         }
         
         BlockEntity blockEntity = mc.level.getBlockEntity(pos);
-        if (!(blockEntity instanceof HerbPotBlockEntity pot)) {
+        if (!(blockEntity instanceof IncenseBurnerBlockEntity burner)) {
             return;
         }
 
-        Map<Item, Integer> herbs = pot.getHerbs();
+        Map<Item, Integer> herbs = burner.getHerbs();
         
         if (herbs.isEmpty()) {
             return;

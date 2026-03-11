@@ -4,6 +4,7 @@ import com.cahcap.common.block.IncenseBurnerBlock;
 import com.cahcap.common.item.IncensePowderItem;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -143,17 +144,29 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
     }
     
     public ItemStack removePowder() {
-        if (isBurning) return ItemStack.EMPTY;
-        
         if (!powderSlot.isEmpty()) {
             ItemStack removed = powderSlot.copy();
             powderSlot = ItemStack.EMPTY;
+            
+            // Stop burning if in progress
+            if (isBurning) {
+                stopBurning();
+            }
+            
             setChanged();
             syncToClient();
             return removed;
         }
         
         return ItemStack.EMPTY;
+    }
+    
+    private void stopBurning() {
+        isBurning = false;
+        burnTicks = 0;
+        totalBurnTicks = 0;
+        pendingEntityType = null;
+        currentRecipeId = null;
     }
     
     public ItemStack removeHerb() {
@@ -202,23 +215,13 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
         BlockPos belowPos = worldPosition.below();
         BlockState state = level.getBlockState(belowPos);
         
-        // Fire
-        if (state.is(Blocks.FIRE) || state.is(Blocks.SOUL_FIRE)) {
+        // Check heat sources tag (can be extended via datapacks)
+        if (state.is(ModTags.Blocks.HEAT_SOURCES)) {
             return true;
         }
         
-        // Lava
-        if (state.is(Blocks.LAVA)) {
-            return true;
-        }
-        
-        // Campfire (lit)
+        // Campfire (lit) - special case due to block state requirement
         if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT)) {
-            return true;
-        }
-        
-        // Magma block
-        if (state.is(Blocks.MAGMA_BLOCK)) {
             return true;
         }
         
@@ -293,13 +296,15 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
         
         blockEntity.burnTicks++;
         
-        // Spawn flame particles
-        if (level instanceof ServerLevel serverLevel && blockEntity.burnTicks % 5 == 0) {
+        // Spawn small flame particles (similar to Pyrisage)
+        if (level instanceof ServerLevel serverLevel && blockEntity.burnTicks % 10 == 0) {
             double x = pos.getX() + 0.5;
-            double y = pos.getY() + 0.3;
+            double y = pos.getY() + 0.25;
             double z = pos.getZ() + 0.5;
-            serverLevel.sendParticles(ParticleTypes.FLAME, x, y, z, 1, 0.1, 0.1, 0.1, 0.01);
-            serverLevel.sendParticles(ParticleTypes.SMOKE, x, y + 0.2, z, 2, 0.1, 0.2, 0.1, 0.01);
+            // Small flame with minimal spread and no velocity
+            serverLevel.sendParticles(ParticleTypes.SMALL_FLAME, x, y, z, 1, 0.05, 0.02, 0.05, 0);
+            // Small smoke rising slowly
+            serverLevel.sendParticles(ParticleTypes.SMOKE, x, y + 0.1, z, 1, 0.03, 0.05, 0.03, 0.002);
         }
         
         if (blockEntity.burnTicks >= blockEntity.totalBurnTicks) {

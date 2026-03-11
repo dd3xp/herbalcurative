@@ -108,6 +108,9 @@ public class ModCreativeTabs {
                         // Incense Powders
                         output.accept(ModItems.WITHER_SKELETON_POWDER.get());
                         
+                        // Crystal Plants
+                        output.accept(ModItems.IRON_CRYST_PLANT.get());
+                        
                         // Workbench Tools
                         output.accept(ModItems.CUTTING_KNIFE.get());
                         output.accept(ModItems.FEATHER_QUILL.get());

@@ -1,6 +1,7 @@
-// 1.21.1	2026-03-08T11:24:57.9288808	Tags for minecraft:block mod id herbalcurative
+// 1.21.1	2026-03-11T09:18:14.2402712	Tags for minecraft:block mod id herbalcurative
 938206c39a7e96b6d46b0eda6d1458df024a6218 data/c/tags/block/stones.json
 dc8f2520569e19559c350f0993a2d5b2f3e510e6 data/c/tags/block/stone_bricks.json
+96afa1b61cca9a3c4c94936a0489f6fb75012ace data/herbalcurative/tags/block/heat_sources.json
 7f458d542294fee7176e988aabee5c208ea8885b data/minecraft/tags/block/buttons.json
 841d229b369c542704bdcb73c8cba3a59531147b data/minecraft/tags/block/fences.json
 4b83bf96de4efdf84d3379b7a85cddf84dade00d data/minecraft/tags/block/fence_gates.json

@@ -4,6 +4,7 @@ import com.cahcap.common.item.FlowweaveRingItem;
 import com.cahcap.common.recipe.CauldronBrewingRecipe;
 import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -1027,23 +1028,13 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
     
     private boolean isHeatSource(BlockState state) {
-        // Fire
-        if (state.is(Blocks.FIRE) || state.is(Blocks.SOUL_FIRE)) {
+        // Check heat sources tag (can be extended via datapacks)
+        if (state.is(ModTags.Blocks.HEAT_SOURCES)) {
             return true;
         }
         
-        // Lava
-        if (state.is(Blocks.LAVA)) {
-            return true;
-        }
-        
-        // Campfire (lit)
+        // Campfire (lit) - special case due to block state requirement
         if (state.getBlock() instanceof CampfireBlock && state.getValue(CampfireBlock.LIT)) {
-            return true;
-        }
-        
-        // Magma block
-        if (state.is(Blocks.MAGMA_BLOCK)) {
             return true;
         }
         

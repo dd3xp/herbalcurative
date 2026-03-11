@@ -39,6 +39,7 @@ public class RegistryInit {
         ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
         ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
         ModRegistries.LUMISTONE_BRICK_SLAB = () -> ModBlocks.LUMISTONE_BRICK_SLAB.get();
+        ModRegistries.RUNE_STONE_BRICKS = () -> ModBlocks.RUNE_STONE_BRICKS.get();
         
         // Items
         ModRegistries.SCALEPLATE = () -> ModItems.SCALEPLATE.get();
