@@ -35,6 +35,7 @@ public class RegistryInit {
         ModRegistries.WORKBENCH = () -> ModBlocks.WORKBENCH.get();
         ModRegistries.CAULDRON = () -> ModBlocks.CAULDRON.get();
         ModRegistries.HERB_POT = () -> ModBlocks.HERB_POT.get();
+        ModRegistries.INCENSE_BURNER = () -> ModBlocks.INCENSE_BURNER.get();
         ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
         ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
         ModRegistries.LUMISTONE_BRICK_SLAB = () -> ModBlocks.LUMISTONE_BRICK_SLAB.get();
@@ -83,6 +84,8 @@ public class RegistryInit {
         ModRegistries.FORGE_HAMMER = () -> ModItems.FORGE_HAMMER.get();
         ModRegistries.POT = () -> ModItems.POT.get();
         ModRegistries.CAULDRON_ITEM = () -> ModItems.CAULDRON.get();
+        ModRegistries.INCENSE_BURNER_ITEM = () -> ModItems.INCENSE_BURNER.get();
+        ModRegistries.WITHER_SKELETON_POWDER = () -> ModItems.WITHER_SKELETON_POWDER.get();
         
         // Armor Materials
         ModRegistries.LEAFWEAVE_ARMOR_MATERIAL = () -> ModArmorMaterials.LEAFWEAVE;
@@ -94,6 +97,7 @@ public class RegistryInit {
         ModRegistries.WORKBENCH_BE = () -> ModBlockEntities.WORKBENCH.get();
         ModRegistries.CAULDRON_BE = () -> ModBlockEntities.CAULDRON.get();
         ModRegistries.HERB_POT_BE = () -> ModBlockEntities.HERB_POT.get();
+        ModRegistries.INCENSE_BURNER_BE = () -> ModBlockEntities.INCENSE_BURNER.get();
         
         // Entity Types
         ModRegistries.FLOWWEAVE_PROJECTILE_TYPE = () -> ModEntityTypes.FLOWWEAVE_PROJECTILE.get();

@@ -1,0 +1,14 @@
+{
+  "type": "herbalcurative:incense_burning",
+  "entity_type": "minecraft:wither_skeleton",
+  "herbs": [
+    {
+      "count": 4,
+      "item": "herbalcurative:burnt_node"
+    },
+    {
+      "count": 2,
+      "item": "herbalcurative:cryst_spine"
+    }
+  ]
+}

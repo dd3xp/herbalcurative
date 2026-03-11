@@ -274,6 +274,13 @@ public class ModBlocks {
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.STONE)
                     .noOcclusion()));
+    
+    public static final DeferredBlock<com.cahcap.common.block.IncenseBurnerBlock> INCENSE_BURNER = BLOCKS.register("incense_burner",
+            () -> new com.cahcap.common.block.IncenseBurnerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(2.0F, 3.0F)
+                    .sound(SoundType.STONE)
+                    .noOcclusion()));
 
     // ==================== Helper Methods ====================
     

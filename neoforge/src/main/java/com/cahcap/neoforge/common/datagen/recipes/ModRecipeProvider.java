@@ -49,6 +49,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         buildHerbalBlendingRecipes(output);
         buildCauldronRecipes(output);
         buildHerbPotGrowingRecipes(output);
+        buildIncenseBurningRecipes(output);
         
         // Get registries for enchantments
         HolderLookup.Provider registries;
@@ -233,6 +234,26 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .pattern("LLL")
             .unlockedBy("has_lumistone_bricks", has(ModBlocks.LUMISTONE_BRICKS.get()))
             .save(output);
+        
+        // ==================== Incense Burner Recipe ====================
+        // Incense Burner: 4 stone + 4 gold nuggets -> 1 incense burner
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.INCENSE_BURNER.get(), 1)
+            .define('S', Items.STONE)
+            .define('G', Items.GOLD_NUGGET)
+            .pattern("G G")
+            .pattern("SBS")
+            .pattern(" S ")
+            .define('B', Items.BLAZE_POWDER)
+            .unlockedBy("has_blaze_powder", has(Items.BLAZE_POWDER))
+            .save(output);
+        
+        // Wither Skeleton Powder: coal + bone meal + wither rose -> wither skeleton powder
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.WITHER_SKELETON_POWDER.get(), 1)
+            .requires(Items.COAL)
+            .requires(Items.BONE_MEAL)
+            .requires(Items.WITHER_ROSE)
+            .unlockedBy("has_wither_rose", has(Items.WITHER_ROSE))
+            .save(output);
     }
     
     /**
@@ -406,6 +427,24 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .result(ModBlocks.ROSYNIA.get())
                 .growthTimeSeconds(10)
                 .build(output, "rosynia");
+    }
+    
+    /**
+     * Incense Burning recipes.
+     * Used to summon mobs by burning specific herbs with incense powder.
+     * 
+     * Requires: Incense Powder (determines mob type), herbs (consumed during burning), heat source below
+     * Output: Mob spawns in front of the burner when burning completes
+     */
+    private void buildIncenseBurningRecipes(RecipeOutput output) {
+        // Wither Skeleton summon
+        // Powder: Wither Skeleton Powder
+        // Herbs: 4 Burnt Node, 2 Cryst Spine (based on Recipes.md)
+        IncenseBurningRecipeBuilder.create("minecraft:wither_skeleton")
+                .herb(ModItems.BURNT_NODE.get(), 4)
+                .herb(ModItems.CRYST_SPINE.get(), 2)
+                .burnTime(160)  // 8 seconds
+                .save(output, "wither_skeleton");
     }
     
     /**

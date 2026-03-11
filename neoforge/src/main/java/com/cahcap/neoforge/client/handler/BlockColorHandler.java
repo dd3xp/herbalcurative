@@ -1,7 +1,9 @@
 package com.cahcap.neoforge.client.handler;
 
 import com.cahcap.HerbalCurativeCommon;
+import com.cahcap.common.item.IncensePowderItem;
 import com.cahcap.neoforge.common.registry.ModBlocks;
+import com.cahcap.neoforge.common.registry.ModItems;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
@@ -46,6 +48,15 @@ public class BlockColorHandler {
         
         // Red Cherry Bush item - also green in inventory
         event.register(leavesItemColor, ModBlocks.RED_CHERRY_BUSH.get());
+        
+        // Incense Powder - colored based on mob type
+        ItemColor powderColor = (stack, tintIndex) -> {
+            if (tintIndex == 0 && stack.getItem() instanceof IncensePowderItem powder) {
+                return powder.getColor(stack);
+            }
+            return 0xFFFFFF;
+        };
+        event.register(powderColor, ModItems.WITHER_SKELETON_POWDER.get());
     }
 }
 

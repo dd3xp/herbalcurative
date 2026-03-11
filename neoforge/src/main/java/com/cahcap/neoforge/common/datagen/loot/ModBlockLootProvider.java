@@ -86,6 +86,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             // Herb Pot - drops handled by block's getDrops method (contains items)
             this.add(ModBlocks.HERB_POT.get(), noDrop());
             
+            // Incense Burner - drops handled by block's getDrops method (contains items)
+            this.add(ModBlocks.INCENSE_BURNER.get(), noDrop());
+            
             // ==================== Lumistone blocks ====================
             
             this.dropSelf(ModBlocks.LUMISTONE.get());

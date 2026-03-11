@@ -77,25 +77,22 @@ public class HerbPotTooltipHandler {
             currentY += 12;
         }
         
-        // Collect herb items for horizontal display
-        List<ItemCountPair> items = new ArrayList<>();
-        for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
-            items.add(new ItemCountPair(entry.getKey(), entry.getValue()));
-        }
-        
-        if (items.isEmpty()) {
+        if (herbs.isEmpty()) {
             return;
         }
         
+        // Convert to list for indexed access
+        List<Map.Entry<Item, Integer>> itemList = new ArrayList<>(herbs.entrySet());
+        
         // Calculate total width for centering (20 pixels per item)
-        int totalItems = items.size();
+        int totalItems = itemList.size();
         int totalWidth = totalItems * 20;
         int startX = screenWidth / 2 - totalWidth / 2;
         
         // Render herb items horizontally
         int currentX = startX;
-        for (ItemCountPair pair : items) {
-            ItemStack stack = new ItemStack(pair.item);
+        for (Map.Entry<Item, Integer> entry : itemList) {
+            ItemStack stack = new ItemStack(entry.getKey());
             guiGraphics.renderItem(stack, currentX, currentY);
             currentX += 20;
         }
@@ -105,8 +102,8 @@ public class HerbPotTooltipHandler {
         guiGraphics.pose().translate(0, 0, 200);
         
         currentX = startX;
-        for (ItemCountPair pair : items) {
-            String countText = String.valueOf(pair.count);
+        for (Map.Entry<Item, Integer> entry : itemList) {
+            String countText = String.valueOf(entry.getValue());
             int textX = currentX + 17 - mc.font.width(countText);
             int textY = currentY + 9;
             guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
@@ -114,15 +111,5 @@ public class HerbPotTooltipHandler {
         }
         
         guiGraphics.pose().popPose();
-    }
-    
-    private static class ItemCountPair {
-        Item item;
-        int count;
-        
-        ItemCountPair(Item item, int count) {
-            this.item = item;
-            this.count = count;
-        }
     }
 }

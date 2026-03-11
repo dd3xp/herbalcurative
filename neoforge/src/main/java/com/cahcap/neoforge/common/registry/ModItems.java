@@ -2,6 +2,7 @@ package com.cahcap.neoforge.common.registry;
 
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.item.*;
+import com.cahcap.common.item.IncensePowderItem;
 import com.cahcap.neoforge.common.item.LeafweaveArmorItem;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -163,6 +164,18 @@ public class ModItems {
     // Herb Pot - placeable cultivation block
     public static final DeferredItem<BlockItem> HERB_POT = ITEMS.register("herb_pot",
             () -> new BlockItem(ModBlocks.HERB_POT.get(), new Item.Properties()));
+    
+    // Incense Burner - mob summoning block
+    public static final DeferredItem<BlockItem> INCENSE_BURNER = ITEMS.register("incense_burner",
+            () -> new BlockItem(ModBlocks.INCENSE_BURNER.get(), new Item.Properties()));
+    
+    // ==================== Incense Powder ====================
+    // Wither Skeleton powder: color = dark gray (wither skeleton bones)
+    // Color format: ARGB (0xAARRGGBB), must include alpha channel (0xFF = fully opaque)
+    public static final DeferredItem<IncensePowderItem> WITHER_SKELETON_POWDER = ITEMS.register("wither_skeleton_powder",
+            () -> new IncensePowderItem(new Item.Properties(), 
+                    net.minecraft.resources.ResourceLocation.withDefaultNamespace("wither_skeleton"), 
+                    0xFF4A4A4A));
     
     // ==================== Block Items ====================
     // Placeable blocks (herb flowers, Red Cherry wood, Lumistone)

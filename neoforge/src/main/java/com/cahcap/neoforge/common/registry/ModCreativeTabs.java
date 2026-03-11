@@ -103,6 +103,10 @@ public class ModCreativeTabs {
                         output.accept(ModItems.RED_CHERRY_SHELF.get());
                         output.accept(ModItems.WORKBENCH.get());
                         output.accept(ModItems.HERB_POT.get());
+                        output.accept(ModItems.INCENSE_BURNER.get());
+                        
+                        // Incense Powders
+                        output.accept(ModItems.WITHER_SKELETON_POWDER.get());
                         
                         // Workbench Tools
                         output.accept(ModItems.CUTTING_KNIFE.get());
