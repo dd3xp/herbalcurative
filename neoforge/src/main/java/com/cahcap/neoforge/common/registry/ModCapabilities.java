@@ -7,8 +7,10 @@ import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.blockentity.HerbPotBlockEntity;
+import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.neoforge.common.handler.CauldronItemHandler;
+import com.cahcap.neoforge.common.handler.IncenseBurnerItemHandler;
 import com.cahcap.neoforge.common.handler.HerbBasketItemHandler;
 import com.cahcap.neoforge.common.handler.HerbCabinetItemHandler;
 import com.cahcap.neoforge.common.handler.HerbPotItemHandler;
@@ -112,6 +114,19 @@ public class ModCapabilities {
                         return null;
                     }
                     return new HerbPotItemHandler(pot);
+                }
+                return null;
+            }
+        );
+        
+        // Register IItemHandler capability for IncenseBurnerBlockEntity
+        // Input only (no output) - hoppers/pipes can insert powder and herbs
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.INCENSE_BURNER.get(),
+            (blockEntity, context) -> {
+                if (blockEntity instanceof IncenseBurnerBlockEntity burner) {
+                    return new IncenseBurnerItemHandler(burner);
                 }
                 return null;
             }
