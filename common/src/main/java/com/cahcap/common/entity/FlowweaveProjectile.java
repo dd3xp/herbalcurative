@@ -279,7 +279,7 @@ public class FlowweaveProjectile extends ThrowableProjectile {
                         // Parameters: source entity, owner entity, target, amplifier, proximity
                         effect.value().applyInstantenousEffect(this, this.getOwner(), entity, amplifier, proximity);
                     } else {
-                        entity.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                        entity.addEffect(new MobEffectInstance(effect, duration, amplifier), this.getOwner());
                     }
                 }
             }
@@ -296,6 +296,7 @@ public class FlowweaveProjectile extends ThrowableProjectile {
         Level level = level();
         
         AreaEffectCloud cloud = new AreaEffectCloud(level, pos.x, pos.y, pos.z);
+        if (this.getOwner() instanceof LivingEntity owner) cloud.setOwner(owner);
         cloud.setRadius((float) EXPLOSION_RADIUS);
         cloud.setRadiusOnUse(-0.5F);
         cloud.setWaitTime(10);

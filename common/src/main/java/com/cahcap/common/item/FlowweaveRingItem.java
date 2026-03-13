@@ -424,7 +424,7 @@ public class FlowweaveRingItem extends Item {
                         // For instant effects, apply immediately
                         applyInstantEffect(player, effect, amplifier);
                     } else {
-                        player.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                        player.addEffect(new MobEffectInstance(effect, duration, amplifier), player);
                     }
                 }
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -453,7 +453,7 @@ public class FlowweaveRingItem extends Item {
     private void applyInstantEffect(LivingEntity target, Holder<MobEffect> effect, int amplifier) {
         // Use vanilla's applyInstantenousEffect for immediate application
         // Parameters: source entity, owner entity, target, amplifier, proximity (1.0 = full effect)
-        effect.value().applyInstantenousEffect(null, target, target, amplifier, 1.0);
+        effect.value().applyInstantenousEffect(target, target, target, amplifier, 1.0);
     }
     
     /**
