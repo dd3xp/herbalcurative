@@ -50,6 +50,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         buildCauldronRecipes(output);
         buildHerbPotGrowingRecipes(output);
         buildIncenseBurningRecipes(output);
+        buildKilnCatalystRecipes(output);
         
         // Get registries for enchantments
         HolderLookup.Provider registries;
@@ -445,6 +446,24 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .save(output, "wither_skeleton");
     }
     
+    /**
+     * Kiln catalyst recipes.
+     * Define which items act as catalysts in the kiln, along with their
+     * output multiplier, speed multiplier, and uses per item.
+     */
+    private void buildKilnCatalystRecipes(RecipeOutput output) {
+        // Burnt Node: 2x output (ores/raw materials only), 4x speed, 8 uses per item
+        TagKey<Item> kilnCatalyzable = ItemTags.create(
+                ResourceLocation.fromNamespaceAndPath("herbalcurative", "kiln_catalyzable"));
+        KilnCatalystRecipeBuilder.builder()
+                .ingredient(ModItems.BURNT_NODE.get())
+                .affectedInputs(kilnCatalyzable)
+                .outputMultiplier(2)
+                .speedMultiplier(4)
+                .usesPerItem(8)
+                .build(output, "burnt_node");
+    }
+
     /**
      * Cauldron recipes: Brewing and Infusing.
      * 

@@ -6,6 +6,8 @@ import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
+import com.cahcap.common.recipe.KilnCatalystRecipe;
+import com.cahcap.common.recipe.KilnSmeltingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
@@ -51,6 +53,7 @@ public class ModRegistries {
     public static Supplier<Block> CAULDRON;
     public static Supplier<Block> HERB_POT;
     public static Supplier<Block> INCENSE_BURNER;
+    public static Supplier<Block> KILN;
     public static Supplier<Block> LUMISTONE;
     public static Supplier<Block> LUMISTONE_BRICKS;
     public static Supplier<Block> LUMISTONE_BRICK_SLAB;
@@ -114,7 +117,8 @@ public class ModRegistries {
     public static Supplier<BlockEntityType<?>> CAULDRON_BE;
     public static Supplier<BlockEntityType<?>> HERB_POT_BE;
     public static Supplier<BlockEntityType<?>> INCENSE_BURNER_BE;
-    
+    public static Supplier<BlockEntityType<?>> KILN_BE;
+
     // ==================== Recipe Types ====================
     public static Supplier<RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING_RECIPE_TYPE;
     public static Supplier<RecipeType<WorkbenchRecipe>> WORKBENCH_RECIPE_TYPE;
@@ -124,7 +128,9 @@ public class ModRegistries {
     public static Supplier<RecipeType<HerbPotGrowingRecipe>> HERB_POT_GROWING_RECIPE_TYPE;
     public static Supplier<RecipeType<IncenseBurningRecipe>> INCENSE_BURNING_RECIPE_TYPE;
     public static Supplier<RecipeSerializer<IncenseBurningRecipe>> INCENSE_BURNING_SERIALIZER;
-    
+    public static Supplier<RecipeType<KilnSmeltingRecipe>> KILN_SMELTING_RECIPE_TYPE;
+    public static Supplier<RecipeType<KilnCatalystRecipe>> KILN_CATALYST_RECIPE_TYPE;
+
     // ==================== Entity Types ====================
     public static Supplier<EntityType<FlowweaveProjectile>> FLOWWEAVE_PROJECTILE_TYPE;
 }

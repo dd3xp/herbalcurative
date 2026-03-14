@@ -27,6 +27,14 @@ public class ModItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvide
     // Mod-specific tags
     public static final TagKey<Item> HERB_PRODUCTS = ItemTags.create(
             ResourceLocation.fromNamespaceAndPath("herbalcurative", "herb_products"));
+    public static final TagKey<Item> KILN_CATALYZABLE = ItemTags.create(
+            ResourceLocation.fromNamespaceAndPath("herbalcurative", "kiln_catalyzable"));
+
+    // Common tags from other mods
+    private static final TagKey<Item> C_ORES = ItemTags.create(
+            ResourceLocation.fromNamespaceAndPath("c", "ores"));
+    private static final TagKey<Item> C_RAW_MATERIALS = ItemTags.create(
+            ResourceLocation.fromNamespaceAndPath("c", "raw_materials"));
     
     public ModItemTagsProvider(
             PackOutput output, 
@@ -97,5 +105,11 @@ public class ModItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvide
         
         // Red Cherry Bolt Magazine - Add to enchantable/durability tag (generic enchantable items)
         tag(ItemTags.DURABILITY_ENCHANTABLE).add(ModItems.RED_CHERRY_BOLT_MAGAZINE.get());
+
+        // ==================== Kiln Catalyzable tag ====================
+        // Items in this tag get output multiplier from kiln catalysts (ores + raw materials)
+        tag(KILN_CATALYZABLE)
+                .addOptionalTag(C_ORES)
+                .addOptionalTag(C_RAW_MATERIALS);
     }
 }

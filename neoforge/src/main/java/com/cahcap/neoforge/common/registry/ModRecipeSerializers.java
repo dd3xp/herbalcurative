@@ -6,6 +6,8 @@ import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
+import com.cahcap.common.recipe.KilnCatalystRecipe;
+import com.cahcap.common.recipe.KilnSmeltingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
@@ -37,9 +39,15 @@ public class ModRecipeSerializers {
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<HerbPotGrowingRecipe>> HERB_POT_GROWING = 
             RECIPE_SERIALIZERS.register("herb_pot_growing", () -> HerbPotGrowingRecipe.Serializer.INSTANCE);
     
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<IncenseBurningRecipe>> INCENSE_BURNING = 
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<IncenseBurningRecipe>> INCENSE_BURNING =
             RECIPE_SERIALIZERS.register("incense_burning", IncenseBurningRecipe.Serializer::new);
-    
+
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<KilnSmeltingRecipe>> KILN_SMELTING =
+            RECIPE_SERIALIZERS.register("kiln_smelting", () -> KilnSmeltingRecipe.Serializer.INSTANCE);
+
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<KilnCatalystRecipe>> KILN_CATALYST =
+            RECIPE_SERIALIZERS.register("kiln_catalyst", () -> KilnCatalystRecipe.Serializer.INSTANCE);
+
     public static void register(IEventBus modEventBus) {
         RECIPE_SERIALIZERS.register(modEventBus);
     }

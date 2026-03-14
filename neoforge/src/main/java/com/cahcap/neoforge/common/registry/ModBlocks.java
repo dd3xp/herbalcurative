@@ -292,6 +292,16 @@ public class ModBlocks {
                     .sound(SoundType.STONE)
                     .noOcclusion()));
 
+    public static final DeferredBlock<com.cahcap.neoforge.common.block.KilnBlock> KILN = BLOCKS.register("kiln",
+            () -> new com.cahcap.neoforge.common.block.KilnBlock(Multiblock.addInteriorSpaceProperties(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(2.0F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()
+                    .noOcclusion()
+                    .forceSolidOn())
+                    .lightLevel(state -> state.getValue(com.cahcap.common.block.KilnBlock.LIT) ? 15 : 0)));
+
     // ==================== Helper Methods ====================
     
     private static DeferredBlock<Block> registerFlower(String name) {

@@ -82,6 +82,11 @@
   "block.herbalcurative.cauldron": "Cauldron",
   "block.herbalcurative.herb_pot": "Herb Pot",
   "block.herbalcurative.incense_burner": "Incense Burner",
+  "block.herbalcurative.kiln": "Kiln",
+  "tooltip.herbalcurative.kiln.input": "Input",
+  "tooltip.herbalcurative.kiln.catalyst": "Catalyst",
+  "tooltip.herbalcurative.kiln.output": "Output",
+  "tooltip.herbalcurative.kiln.smelting": "Smelting",
   "block.herbalcurative.iron_cryst_plant": "Iron Crystal Plant",
   
   "item.herbalcurative.wither_skeleton_powder": "Wither Skeleton Powder",

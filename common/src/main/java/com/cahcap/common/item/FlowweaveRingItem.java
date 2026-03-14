@@ -11,6 +11,7 @@ import com.cahcap.common.entity.FlowweaveProjectile;
 import com.cahcap.common.multiblock.MultiblockCauldron;
 import com.cahcap.common.multiblock.MultiblockHerbCabinet;
 import com.cahcap.common.multiblock.MultiblockHerbalBlending;
+import com.cahcap.common.multiblock.MultiblockKiln;
 import com.cahcap.common.multiblock.MultiblockHerbalBlending.BlendingStructure;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
@@ -724,7 +725,11 @@ public class FlowweaveRingItem extends Item {
         BlockState clickedState = level.getBlockState(context.getClickedPos());
         Player player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
-        
+
+        if (!level.isClientSide()) {
+            System.out.println("[FlowweaveRing] useOn called! block=" + clickedState + " pos=" + context.getClickedPos());
+        }
+
         // Check if this click would trigger any action (for both client and server)
         boolean wouldTriggerAction = wouldTriggerAction(context, clickedState);
         
@@ -749,6 +754,18 @@ public class FlowweaveRingItem extends Item {
         // Try to form Cauldron multiblock
         if (MultiblockCauldron.INSTANCE.isBlockTrigger(clickedState)) {
             if (MultiblockCauldron.INSTANCE.createStructure(
+                    level,
+                    context.getClickedPos(),
+                    player)) {
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        // Try to form Kiln multiblock (trigger on stone brick top slab — front opening)
+        System.out.println("[FlowweaveRing] Clicked block: " + clickedState + " at " + context.getClickedPos());
+        System.out.println("[FlowweaveRing] isBlockTrigger: " + MultiblockKiln.INSTANCE.isBlockTrigger(clickedState));
+        if (MultiblockKiln.INSTANCE.isBlockTrigger(clickedState)) {
+            if (MultiblockKiln.INSTANCE.createStructure(
                     level,
                     context.getClickedPos(),
                     player)) {
@@ -922,6 +939,9 @@ public class FlowweaveRingItem extends Item {
             return true;
         }
         if (MultiblockCauldron.INSTANCE.isBlockTrigger(clickedState)) {
+            return true;
+        }
+        if (MultiblockKiln.INSTANCE.isBlockTrigger(clickedState)) {
             return true;
         }
         // Check formed Cauldron

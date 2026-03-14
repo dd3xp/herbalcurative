@@ -36,6 +36,7 @@ public class RegistryInit {
         ModRegistries.CAULDRON = () -> ModBlocks.CAULDRON.get();
         ModRegistries.HERB_POT = () -> ModBlocks.HERB_POT.get();
         ModRegistries.INCENSE_BURNER = () -> ModBlocks.INCENSE_BURNER.get();
+        ModRegistries.KILN = () -> ModBlocks.KILN.get();
         ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
         ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
         ModRegistries.LUMISTONE_BRICK_SLAB = () -> ModBlocks.LUMISTONE_BRICK_SLAB.get();
@@ -99,7 +100,8 @@ public class RegistryInit {
         ModRegistries.CAULDRON_BE = () -> ModBlockEntities.CAULDRON.get();
         ModRegistries.HERB_POT_BE = () -> ModBlockEntities.HERB_POT.get();
         ModRegistries.INCENSE_BURNER_BE = () -> ModBlockEntities.INCENSE_BURNER.get();
-        
+        ModRegistries.KILN_BE = () -> ModBlockEntities.KILN.get();
+
         // Entity Types
         ModRegistries.FLOWWEAVE_PROJECTILE_TYPE = () -> ModEntityTypes.FLOWWEAVE_PROJECTILE.get();
         

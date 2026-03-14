@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-11T09:32:00.398444	Recipes
+// 1.21.1	2026-03-14T13:45:38.782619	Recipes
 26bef6d7606d006967e73b540786020759ff24b3 data/herbalcurative/advancement/recipes/building_blocks/lumistone.json
 078f474aab4adcf44c51e63dcd6cce54dee4d920 data/herbalcurative/advancement/recipes/building_blocks/lumistone_bricks.json
 8bb38edf43e778856ffad99f2e30f06d3ab63b7b data/herbalcurative/advancement/recipes/building_blocks/lumistone_brick_slab.json
@@ -43,6 +43,7 @@ fd341a4c2b589d5e3e06451bb36e938669358cb8 data/herbalcurative/recipe/herb_pot_gro
 53d3a1a2c5126729b325953c25ee999d6af10267 data/herbalcurative/recipe/herb_pot_growing/verdscale_fern.json
 870a7355e3117caa17fa864c35121c2e3b0b26d2 data/herbalcurative/recipe/herb_pot_growing/zephyr_lily.json
 51f6ba86fffde351086bcda7ef0a412416c7b28e data/herbalcurative/recipe/incense_burning/wither_skeleton.json
+013033aacc76b2e65bc156d97b634787e8ae4959 data/herbalcurative/recipe/kiln_catalyst/burnt_node.json
 4004b9ea729cfc8161b5df2b971ffa9f1cb0529d data/herbalcurative/recipe/lumistone.json
 8953f281621593925694376fbd496a9989fdaa22 data/herbalcurative/recipe/lumistone_bricks.json
 630de6e21cc49601218240a52be68ef23408d915 data/herbalcurative/recipe/lumistone_brick_slab.json

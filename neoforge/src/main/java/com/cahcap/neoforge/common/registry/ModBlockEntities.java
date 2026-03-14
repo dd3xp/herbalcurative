@@ -6,6 +6,7 @@ import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
+import com.cahcap.common.blockentity.KilnBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -58,6 +59,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("incense_burner", () -> BlockEntityType.Builder.of(
                     IncenseBurnerBlockEntity::new,
                     ModBlocks.INCENSE_BURNER.get()
+            ).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<KilnBlockEntity>> KILN =
+            BLOCK_ENTITIES.register("kiln", () -> BlockEntityType.Builder.of(
+                    KilnBlockEntity::new,
+                    ModBlocks.KILN.get()
             ).build(null));
 }
 

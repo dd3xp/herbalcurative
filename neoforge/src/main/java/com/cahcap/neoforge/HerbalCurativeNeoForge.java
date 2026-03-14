@@ -57,6 +57,10 @@ public class HerbalCurativeNeoForge {
             ModBlocks.registerFlowerPots();
         });
         
+        // Initialize platform item transfer helper using NeoForge capabilities
+        com.cahcap.common.util.ItemTransferHelper.INSTANCE =
+                new com.cahcap.neoforge.common.handler.NeoForgeItemTransferHelper();
+
         HerbalCurativeCommon.commonSetup();
         LOGGER.info("Herbal Curative NeoForge common setup complete");
     }

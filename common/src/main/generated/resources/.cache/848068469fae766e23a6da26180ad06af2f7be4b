@@ -1,6 +1,7 @@
-// 1.21.1	2026-02-05T11:19:05.7162003	Tags for minecraft:item mod id herbalcurative
+// 1.21.1	2026-03-14T13:45:38.7856825	Tags for minecraft:item mod id herbalcurative
 f56c4de24a0014f37fc98b956a78ef540cabfcd9 data/c/tags/item/rods/wooden.json
 ed245ddc60be584b325fb47d0873fb59df4bb266 data/herbalcurative/tags/item/herb_products.json
+dabc65ca5a83023dd1609d9a0f8602348c139aa2 data/herbalcurative/tags/item/kiln_catalyzable.json
 66fa708944126a94ed6d2d6640f8ddb158da164f data/minecraft/tags/item/axes.json
 0b71e3c0340d3caf6bb3610e6b0774e42cceda2d data/minecraft/tags/item/chest_armor.json
 3b2d729b38ae0a65128fe35196488209de3221b3 data/minecraft/tags/item/enchantable/crossbow.json

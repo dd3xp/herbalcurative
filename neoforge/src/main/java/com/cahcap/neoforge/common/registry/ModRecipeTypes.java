@@ -6,6 +6,8 @@ import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
+import com.cahcap.common.recipe.KilnCatalystRecipe;
+import com.cahcap.common.recipe.KilnSmeltingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
@@ -63,14 +65,30 @@ public class ModRecipeTypes {
                 }
             });
     
-    public static final DeferredHolder<RecipeType<?>, RecipeType<IncenseBurningRecipe>> INCENSE_BURNING = 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<IncenseBurningRecipe>> INCENSE_BURNING =
             RECIPE_TYPES.register("incense_burning", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
                     return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "incense_burning").toString();
                 }
             });
-    
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<KilnSmeltingRecipe>> KILN_SMELTING =
+            RECIPE_TYPES.register("kiln_smelting", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "kiln_smelting").toString();
+                }
+            });
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<KilnCatalystRecipe>> KILN_CATALYST =
+            RECIPE_TYPES.register("kiln_catalyst", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "kiln_catalyst").toString();
+                }
+            });
+
     public static void register(IEventBus modEventBus) {
         RECIPE_TYPES.register(modEventBus);
     }
@@ -86,5 +104,7 @@ public class ModRecipeTypes {
         ModRegistries.CAULDRON_BREWING_RECIPE_TYPE = CAULDRON_BREWING;
         ModRegistries.HERB_POT_GROWING_RECIPE_TYPE = HERB_POT_GROWING;
         ModRegistries.INCENSE_BURNING_RECIPE_TYPE = INCENSE_BURNING;
+        ModRegistries.KILN_SMELTING_RECIPE_TYPE = KILN_SMELTING;
+        ModRegistries.KILN_CATALYST_RECIPE_TYPE = KILN_CATALYST;
     }
 }

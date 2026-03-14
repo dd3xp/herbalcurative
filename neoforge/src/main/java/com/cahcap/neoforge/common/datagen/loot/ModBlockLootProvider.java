@@ -102,6 +102,9 @@ public class ModBlockLootProvider extends LootTableProvider {
             
             // Cauldron - drops handled by block's getDrops method (position-based original blocks)
             this.add(ModBlocks.CAULDRON.get(), noDrop());
+
+            // Kiln - drops handled by block's getDrops method (position-based original blocks)
+            this.add(ModBlocks.KILN.get(), noDrop());
             
             // ==================== Potted plants (drop flower pot + plant) ====================
             

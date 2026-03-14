@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#c:ores",
+      "required": false
+    },
+    {
+      "id": "#c:raw_materials",
+      "required": false
+    }
+  ]
+}

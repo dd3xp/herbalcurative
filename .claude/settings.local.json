@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Minecraft/mods/herbalcurative/herbalcurative-1.21/common/src/main/resources -name *incense* -o -name *cauldron*)",
+      "Bash(find /c/Minecraft/mods/herbalcurative/herbalcurative-1.21 -path */neoforge/* -name *Registry* -o -path */neoforge/* -name *Register*)",
+      "Bash(python voxel.py --per-block \"../assets/herbalcurative/Klin/klin.json\")",
+      "Bash(./gradlew build:*)",
+      "Bash(./gradlew runData)",
+      "Bash(./gradlew runClient)",
+      "Bash(./gradlew compileJava)",
+      "Bash(./gradlew --no-daemon runData)"
+    ]
+  }
+}
