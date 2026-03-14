@@ -70,7 +70,7 @@ public class HerbPotTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int baseY = screenHeight / 2 + 24;
+        int baseY = screenHeight / 2 + 8;
 
         // === Top row: [Seedling] [arrow] [Output] ===
         if (!seedling.isEmpty()) {
@@ -84,27 +84,32 @@ public class HerbPotTooltipHandler {
             // Render seedling
             guiGraphics.renderItem(seedling, seedlingX, baseY);
 
-            // Render arrow
+            // Render arrow (always >>>, green when growing, gray when idle)
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 200);
-            String arrow = isGrowing ? ">>>" : "\u2192";
+            String arrow = ">>>";
             int arrowColor = isGrowing ? 0x55FF55 : 0xAAAAAA;
             int arrowTextX = arrowX + 8 - mc.font.width(arrow) / 2;
             guiGraphics.drawString(mc.font, arrow, arrowTextX, baseY + 4, arrowColor, true);
             guiGraphics.pose().popPose();
 
-            // Render output
+            // Render output (always show: pending output or recipe preview)
             if (pendingOutput != null && !pendingOutput.isEmpty()) {
                 guiGraphics.renderItem(pendingOutput, outputX, baseY);
+            } else {
+                ItemStack preview = pot.getRecipePreview();
+                if (!preview.isEmpty()) {
+                    guiGraphics.renderItem(preview, outputX, baseY);
+                }
             }
 
-            // Render growth progress bar below arrow
+            // Render progress bar (always visible, filled when growing)
+            int barWidth = 0;
             if (isGrowing) {
-                float progress = pot.getGrowthProgress();
-                int barWidth = (int) (16 * progress);
-                guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
-                guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(barWidth, 16), baseY + 18, 0xFF55FF55);
+                barWidth = (int) (16 * pot.getGrowthProgress());
             }
+            guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
+            guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(barWidth, 16), baseY + 18, 0xFF55FF55);
         }
 
         // === Bottom row: herbs ===

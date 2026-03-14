@@ -95,16 +95,28 @@ public class ModBlockLootProvider extends LootTableProvider {
             // ==================== Lumistone blocks ====================
             
             this.dropSelf(ModBlocks.LUMISTONE.get());
+            this.add(ModBlocks.LUMISTONE_SLAB.get(), this::createSlabItemTable);
+            this.dropSelf(ModBlocks.LUMISTONE_STAIRS.get());
+            this.dropSelf(ModBlocks.LUMISTONE_WALL.get());
+            this.dropSelf(ModBlocks.LUMISTONE_PRESSURE_PLATE.get());
+            this.dropSelf(ModBlocks.LUMISTONE_BUTTON.get());
             this.dropSelf(ModBlocks.LUMISTONE_BRICKS.get());
             this.dropSelf(ModBlocks.RUNE_STONE_BRICKS.get());
             this.add(ModBlocks.LUMISTONE_BRICK_SLAB.get(), this::createSlabItemTable);
             this.dropSelf(ModBlocks.LUMISTONE_BRICK_STAIRS.get());
-            
+            this.dropSelf(ModBlocks.LUMISTONE_BRICK_WALL.get());
+
+            // Magic Alloy Block
+            this.dropSelf(ModBlocks.MAGIC_ALLOY_BLOCK.get());
+
             // Cauldron - drops handled by block's getDrops method (position-based original blocks)
             this.add(ModBlocks.CAULDRON.get(), noDrop());
 
             // Kiln - drops handled by block's getDrops method (position-based original blocks)
             this.add(ModBlocks.KILN.get(), noDrop());
+
+            // Herb Vault - drops handled by block's getDrops method
+            this.add(ModBlocks.HERB_VAULT.get(), noDrop());
             
             // ==================== Potted plants (drop flower pot + plant) ====================
             

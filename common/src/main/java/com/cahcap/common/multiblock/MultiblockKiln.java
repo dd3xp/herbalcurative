@@ -8,8 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -45,7 +43,6 @@ import java.util.List;
  */
 public class MultiblockKiln {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MultiblockKiln.class);
     public static final MultiblockKiln INSTANCE = new MultiblockKiln();
 
     /**
@@ -73,23 +70,19 @@ public class MultiblockKiln {
             return false;
         }
 
-        LOGGER.info("[Kiln] createStructure called at {}", clickedPos);
 
         // Find master position: Pyrisage should be adjacent to the clicked slab on the same Y level
         BlockPos masterPos = findMasterFromSlab(level, clickedPos);
         if (masterPos == null) {
-            LOGGER.info("[Kiln] Failed: no Pyrisage found adjacent to clicked slab at {}", clickedPos);
             return false;
         }
 
         // Detect front face direction
         Direction facing = detectFrontFace(level, masterPos);
         if (facing == null) {
-            LOGGER.info("[Kiln] Failed: no front face detected (no stone brick top slab adjacent to pyrisage)");
             return false;
         }
 
-        LOGGER.info("[Kiln] Detected front face: {}", facing);
 
         // Validate structure
         if (!validateStructure(level, masterPos, facing)) {
@@ -172,12 +165,10 @@ public class MultiblockKiln {
                 if (x == 0 && z == 0) {
                     BlockState state = level.getBlockState(pos);
                     if (!isPyrisagePlantable(state)) {
-                        LOGGER.info("[Kiln] Layer 1 center ({}) is not pyrisage-plantable: {}", pos, state);
                         return false;
                     }
                 } else {
                     if (!level.getBlockState(pos).is(ModRegistries.LUMISTONE_BRICKS.get())) {
-                        LOGGER.info("[Kiln] Layer 1 ({},{}) at {} expected lumistone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
                         return false;
                     }
                 }
@@ -197,12 +188,10 @@ public class MultiblockKiln {
                     if (!state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get()) ||
                             !state.hasProperty(SlabBlock.TYPE) ||
                             state.getValue(SlabBlock.TYPE) != SlabType.TOP) {
-                        LOGGER.info("[Kiln] Layer 2 front ({},{}) at {} expected stone_brick_slab(top), got: {}", x, z, pos, state);
                         return false;
                     }
                 } else {
                     if (!level.getBlockState(pos).is(ModRegistries.LUMISTONE_BRICKS.get())) {
-                        LOGGER.info("[Kiln] Layer 2 ({},{}) at {} expected lumistone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
                         return false;
                     }
                 }
@@ -225,7 +214,6 @@ public class MultiblockKiln {
                 if (isCenterColumn) {
                     // Center column: stone bricks
                     if (!level.getBlockState(pos).is(ModRegistries.LUMISTONE_BRICKS.get())) {
-                        LOGGER.info("[Kiln] Layer 3 ({},{}) at {} expected lumistone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
                         return false;
                     }
                 } else {
@@ -234,14 +222,12 @@ public class MultiblockKiln {
                     if (!state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get()) ||
                             !state.hasProperty(SlabBlock.TYPE) ||
                             state.getValue(SlabBlock.TYPE) != SlabType.BOTTOM) {
-                        LOGGER.info("[Kiln] Layer 3 ({},{}) at {} expected stone_brick_slab(bottom), got: {}", x, z, pos, state);
                         return false;
                     }
                 }
             }
         }
 
-        LOGGER.info("[Kiln] Structure validated successfully!");
         return true;
     }
 

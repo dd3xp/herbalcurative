@@ -163,6 +163,9 @@ public class ModItems {
 
     // Kiln display item (for JADE/WTHIT, not placeable)
     public static final DeferredItem<Item> KILN = ITEMS.registerSimpleItem("kiln");
+
+    // Herb Vault display item (for JADE/WTHIT, not placeable)
+    public static final DeferredItem<Item> HERB_VAULT = ITEMS.registerSimpleItem("herb_vault");
     
     // Herb Pot - placeable cultivation block
     public static final DeferredItem<BlockItem> HERB_POT = ITEMS.register("herb_pot",
@@ -244,7 +247,25 @@ public class ModItems {
             () -> new BlockItem(ModBlocks.LUMISTONE_BRICK_SLAB.get(), new Item.Properties()));
     public static final DeferredItem<BlockItem> LUMISTONE_BRICK_STAIRS = ITEMS.register("lumistone_brick_stairs",
             () -> new BlockItem(ModBlocks.LUMISTONE_BRICK_STAIRS.get(), new Item.Properties()));
-    
+    public static final DeferredItem<BlockItem> LUMISTONE_BRICK_WALL = ITEMS.register("lumistone_brick_wall",
+            () -> new BlockItem(ModBlocks.LUMISTONE_BRICK_WALL.get(), new Item.Properties()));
+
+    // Lumistone variants
+    public static final DeferredItem<BlockItem> LUMISTONE_SLAB = ITEMS.register("lumistone_slab",
+            () -> new BlockItem(ModBlocks.LUMISTONE_SLAB.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_STAIRS = ITEMS.register("lumistone_stairs",
+            () -> new BlockItem(ModBlocks.LUMISTONE_STAIRS.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_WALL = ITEMS.register("lumistone_wall",
+            () -> new BlockItem(ModBlocks.LUMISTONE_WALL.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_PRESSURE_PLATE = ITEMS.register("lumistone_pressure_plate",
+            () -> new BlockItem(ModBlocks.LUMISTONE_PRESSURE_PLATE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> LUMISTONE_BUTTON = ITEMS.register("lumistone_button",
+            () -> new BlockItem(ModBlocks.LUMISTONE_BUTTON.get(), new Item.Properties()));
+
+    // Magic Alloy Block
+    public static final DeferredItem<BlockItem> MAGIC_ALLOY_BLOCK = ITEMS.register("magic_alloy_block",
+            () -> new BlockItem(ModBlocks.MAGIC_ALLOY_BLOCK.get(), new Item.Properties()));
+
     // ==================== Workbench Tools ====================
     // Repair: Cutting Knife + Forge Hammer = Iron Ingot, Feather Quill = Ink Sac, Woven Rope = String
     

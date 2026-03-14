@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "herbalcurative:lumistone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "herbalcurative:lumistone_button"
+  }
+}

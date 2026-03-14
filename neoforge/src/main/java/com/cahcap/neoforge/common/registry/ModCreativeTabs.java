@@ -72,10 +72,17 @@ public class ModCreativeTabs {
                         
                         // Lumistone Blocks
                         output.accept(ModBlocks.LUMISTONE.get());
+                        output.accept(ModBlocks.LUMISTONE_SLAB.get());
+                        output.accept(ModBlocks.LUMISTONE_STAIRS.get());
+                        output.accept(ModBlocks.LUMISTONE_WALL.get());
+                        output.accept(ModBlocks.LUMISTONE_PRESSURE_PLATE.get());
+                        output.accept(ModBlocks.LUMISTONE_BUTTON.get());
                         output.accept(ModBlocks.LUMISTONE_BRICKS.get());
                         output.accept(ModBlocks.RUNE_STONE_BRICKS.get());
                         output.accept(ModBlocks.LUMISTONE_BRICK_SLAB.get());
                         output.accept(ModBlocks.LUMISTONE_BRICK_STAIRS.get());
+                        output.accept(ModBlocks.LUMISTONE_BRICK_WALL.get());
+                        output.accept(ModBlocks.MAGIC_ALLOY_BLOCK.get());
                         
                         // Leafweave Armor
                         output.accept(ModItems.LEAFWEAVE_HELMET.get());
@@ -105,6 +112,8 @@ public class ModCreativeTabs {
                         output.accept(ModItems.HERB_POT.get());
                         output.accept(ModItems.INCENSE_BURNER.get());
                         
+                        output.accept(ModBlocks.MAGIC_ALLOY_BLOCK.get());
+
                         // Incense Powders
                         output.accept(ModItems.WITHER_SKELETON_POWDER.get());
                         

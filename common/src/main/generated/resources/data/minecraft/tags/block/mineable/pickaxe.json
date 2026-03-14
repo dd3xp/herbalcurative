@@ -8,6 +8,13 @@
     "herbalcurative:cauldron",
     "herbalcurative:herb_pot",
     "herbalcurative:incense_burner",
-    "herbalcurative:kiln"
+    "herbalcurative:kiln",
+    "herbalcurative:lumistone_brick_wall",
+    "herbalcurative:magic_alloy_block",
+    "herbalcurative:lumistone_slab",
+    "herbalcurative:lumistone_stairs",
+    "herbalcurative:lumistone_wall",
+    "herbalcurative:lumistone_pressure_plate",
+    "herbalcurative:lumistone_button"
   ]
 }

@@ -88,6 +88,30 @@ public class HerbPotBlockEntity extends BlockEntity {
         return pendingOutput;
     }
     
+    /**
+     * Get recipe output preview for tooltip display when not growing.
+     */
+    // Cached recipe preview (invalidated when seedling changes)
+    private ItemStack cachedPreviewSeedling = ItemStack.EMPTY;
+    private ItemStack cachedPreviewResult = ItemStack.EMPTY;
+
+    public ItemStack getRecipePreview() {
+        if (pendingOutput != null && !pendingOutput.isEmpty()) return pendingOutput.copy();
+        if (level == null || seedlingSlot.isEmpty()) return ItemStack.EMPTY;
+        if (!ItemStack.isSameItemSameComponents(seedlingSlot, cachedPreviewSeedling)) {
+            cachedPreviewSeedling = seedlingSlot.copy();
+            cachedPreviewResult = ItemStack.EMPTY;
+            for (RecipeHolder<HerbPotGrowingRecipe> holder : level.getRecipeManager()
+                    .getAllRecipesFor(ModRegistries.HERB_POT_GROWING_RECIPE_TYPE.get())) {
+                if (holder.value().getSeedling().test(seedlingSlot)) {
+                    cachedPreviewResult = holder.value().getResultItem(level.registryAccess()).copy();
+                    break;
+                }
+            }
+        }
+        return cachedPreviewResult;
+    }
+
     public float getGrowthProgress() {
         if (!isGrowing || totalGrowthTicks <= 0) {
             return 0f;

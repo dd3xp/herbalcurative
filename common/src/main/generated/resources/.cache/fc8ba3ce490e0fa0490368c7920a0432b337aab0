@@ -1,8 +1,8 @@
-// 1.21.1	2026-03-14T14:40:49.2258063	Tags for minecraft:block mod id herbalcurative
+// 1.21.1	2026-03-15T00:55:57.7765325	Tags for minecraft:block mod id herbalcurative
 938206c39a7e96b6d46b0eda6d1458df024a6218 data/c/tags/block/stones.json
 dc8f2520569e19559c350f0993a2d5b2f3e510e6 data/c/tags/block/stone_bricks.json
 96afa1b61cca9a3c4c94936a0489f6fb75012ace data/herbalcurative/tags/block/heat_sources.json
-7f458d542294fee7176e988aabee5c208ea8885b data/minecraft/tags/block/buttons.json
+9dac0e1122c15db14933a8739fc176e05ad53f60 data/minecraft/tags/block/buttons.json
 841d229b369c542704bdcb73c8cba3a59531147b data/minecraft/tags/block/fences.json
 4b83bf96de4efdf84d3379b7a85cddf84dade00d data/minecraft/tags/block/fence_gates.json
 cf8511379d7389774acd9ef892d5555f2405e767 data/minecraft/tags/block/flowers.json
@@ -10,12 +10,13 @@ cac8611abec82bb1379cb3623de7351b2359122d data/minecraft/tags/block/leaves.json
 b4c7c85a5fda6e23316185d2a57f6339db31b615 data/minecraft/tags/block/logs.json
 1e23e735e8a2bf34cb3cb28391e1c76e32dc420c data/minecraft/tags/block/mineable/axe.json
 eafcaab92dc78835a44b4209f76b2cdb48273e28 data/minecraft/tags/block/mineable/hoe.json
-0d801029a665ca0d93d28c963692e0b8efc13a3c data/minecraft/tags/block/mineable/pickaxe.json
+3e3454332d5743173a1b793c81eb3169fdd347a7 data/minecraft/tags/block/mineable/pickaxe.json
 81a822347c96b86d3610880bee90697b489ae1fb data/minecraft/tags/block/planks.json
-5f5b99e795bbc0841da1a5373afe0cb9605f3e47 data/minecraft/tags/block/pressure_plates.json
+8dee95a23849f6ea2589299c0d6a824fbc73fc60 data/minecraft/tags/block/pressure_plates.json
 4c329aac2d865a419beabf56e8feab16b0cda0a3 data/minecraft/tags/block/saplings.json
-742f14215ff85ab8a03103a1ba61ae4dc00dfd2d data/minecraft/tags/block/slabs.json
-d36f30f11cd87c346c6fb2d86758aff418991f36 data/minecraft/tags/block/stairs.json
+739666606d1488b3defc1ddcfe968b5b06f92e0f data/minecraft/tags/block/slabs.json
+85e94529dae0e424f6ee06c24056fbee74ed2260 data/minecraft/tags/block/stairs.json
+6ce57ff2f3c2afbfd7ea66cca35434f10f106ffa data/minecraft/tags/block/walls.json
 7f458d542294fee7176e988aabee5c208ea8885b data/minecraft/tags/block/wooden_buttons.json
 841d229b369c542704bdcb73c8cba3a59531147b data/minecraft/tags/block/wooden_fences.json
 5f5b99e795bbc0841da1a5373afe0cb9605f3e47 data/minecraft/tags/block/wooden_pressure_plates.json

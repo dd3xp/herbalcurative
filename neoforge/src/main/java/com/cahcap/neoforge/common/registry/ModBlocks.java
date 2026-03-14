@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.PressurePlateBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.WallBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -202,7 +203,48 @@ public class ModBlocks {
                     .strength(1.5F, 6.0F)
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 7)));
-    
+
+    public static final DeferredBlock<SlabBlock> LUMISTONE_SLAB = registerBlock("lumistone_slab",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
+
+    public static final DeferredBlock<StairBlock> LUMISTONE_STAIRS = registerBlock("lumistone_stairs",
+            () -> new StairBlock(LUMISTONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
+
+    public static final DeferredBlock<WallBlock> LUMISTONE_WALL = registerBlock("lumistone_wall",
+            () -> new WallBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)
+                    .forceSolidOn()));
+
+    public static final DeferredBlock<PressurePlateBlock> LUMISTONE_PRESSURE_PLATE = registerBlock("lumistone_pressure_plate",
+            () -> new PressurePlateBlock(BlockSetType.STONE, BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)
+                    .noCollission()));
+
+    public static final DeferredBlock<ButtonBlock> LUMISTONE_BUTTON = registerBlock("lumistone_button",
+            () -> new ButtonBlock(BlockSetType.STONE, 20, BlockBehaviour.Properties.of()
+                    .noCollission()
+                    .strength(0.5F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)));
+
     public static final DeferredBlock<Block> LUMISTONE_BRICKS = registerBlock("lumistone_bricks",
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -234,6 +276,25 @@ public class ModBlocks {
                     .strength(1.5F, 6.0F)
                     .sound(SoundType.STONE)
                     .lightLevel(state -> 7)));
+
+    public static final DeferredBlock<WallBlock> LUMISTONE_BRICK_WALL = registerBlock("lumistone_brick_wall",
+            () -> new WallBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(1.5F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .lightLevel(state -> 7)
+                    .forceSolidOn()));
+
+    // ==================== Magic Alloy ====================
+
+    public static final DeferredBlock<Block> MAGIC_ALLOY_BLOCK = registerBlock("magic_alloy_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .requiresCorrectToolForDrops()
+                    .strength(5.0F, 6.0F)
+                    .sound(SoundType.METAL)
+                    .lightLevel(state -> 3)));
 
     // ==================== Multiblock Structures ====================
     
@@ -276,7 +337,7 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .forceSolidOn())
-                    .lightLevel(state -> state.getValue(CauldronBlock.FORMED) ? 7 : 0)));
+                    .lightLevel(state -> 7)));
     
     public static final DeferredBlock<com.cahcap.common.block.HerbPotBlock> HERB_POT = BLOCKS.register("herb_pot",
             () -> new com.cahcap.common.block.HerbPotBlock(BlockBehaviour.Properties.of()
@@ -302,7 +363,17 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
                     .forceSolidOn())
-                    .lightLevel(state -> state.getValue(com.cahcap.common.block.KilnBlock.LIT) ? 15 : 0)));
+                    .lightLevel(state -> state.getValue(com.cahcap.common.block.KilnBlock.LIT) ? 15 : 7)));
+
+    public static final DeferredBlock<com.cahcap.neoforge.common.block.HerbVaultBlock> HERB_VAULT = BLOCKS.register("herb_vault",
+            () -> new com.cahcap.neoforge.common.block.HerbVaultBlock(Multiblock.addInteriorSpaceProperties(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(2.0F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()
+                    .noOcclusion()
+                    .forceSolidOn())
+                    .lightLevel(state -> 7)));
 
     // ==================== Helper Methods ====================
     

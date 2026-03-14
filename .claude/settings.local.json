@@ -10,7 +10,32 @@
       "Bash(./gradlew compileJava)",
       "Bash(./gradlew --no-daemon runData)",
       "Bash(python private/scripts/voxel.py --per-block \"private/assets/herbalcurative/Klin/klin.json\")",
-      "Bash(python private/scripts/voxel.py --per-block \"private/assets/herbalcurative/Cauldron/cauldron.json\")"
+      "Bash(python private/scripts/voxel.py --per-block \"private/assets/herbalcurative/Cauldron/cauldron.json\")",
+      "Bash(for f:*)",
+      "Bash(do test:*)",
+      "Bash(echo \"MISSING blockstate: $f\")",
+      "Bash(done)",
+      "Bash(echo \"MISSING item model: $f\")",
+      "Bash(xargs grep:*)",
+      "Bash(python private/scripts/voxel.py --per-block \"private/assets/herbalcurative/HerbVault/herb_vault.json\")",
+      "Bash(sed -i 's/private boolean validateStructure\\(Level level, BlockPos masterPos, Direction facing, Player player\\)/private boolean validateStructure\\(Level level, BlockPos masterPos, Direction facing\\)/' common/src/main/java/com/cahcap/common/multiblock/MultiblockHerbVault.java)",
+      "Bash(sed -i '/player\\\\.displayClientMessage/d' common/src/main/java/com/cahcap/common/multiblock/MultiblockHerbVault.java)",
+      "Bash(python3 -c \":*)",
+      "Bash(find c:/Minecraft/mods/herbalcurative/herbalcurative-1.21 -path */neoforge/client/extensions/common/IClientBlockExtensions*)",
+      "Bash(jar tf:*)",
+      "Bash(unzip -l c:/Minecraft/mods/herbalcurative/herbalcurative-1.21/.gradle/loom-cache/minecraftMaven/net/minecraft/neoforge-21.1.215-minecraft-merged-bbffebfba8/1.21.1-loom.mappings.1_21_1.layered+hash.729445375-v2-neoforge-21.1.215/neoforge-21.1.215-minecraft-merged-bbffebfba8-1.21.1-loom.mappings.1_21_1.layered+hash.729445375-v2-neoforge-21.1.215-sources.jar)",
+      "Bash(unzip -p c:/Minecraft/mods/herbalcurative/herbalcurative-1.21/.gradle/loom-cache/minecraftMaven/net/minecraft/neoforge-21.1.215-minecraft-merged-bbffebfba8/1.21.1-loom.mappings.1_21_1.layered+hash.729445375-v2-neoforge-21.1.215/neoforge-21.1.215-minecraft-merged-bbffebfba8-1.21.1-loom.mappings.1_21_1.layered+hash.729445375-v2-neoforge-21.1.215-sources.jar net/neoforged/neoforge/client/extensions/common/IClientBlockExtensions.java)",
+      "Bash(unzip -p c:/Minecraft/mods/herbalcurative/herbalcurative-1.21/.gradle/loom-cache/minecraftMaven/net/minecraft/neoforge-21.1.215-minecraft-merged-bbffebfba8/1.21.1-loom.mappings.1_21_1.layered+hash.729445375-v2-neoforge-21.1.215/neoforge-21.1.215-minecraft-merged-bbffebfba8-1.21.1-loom.mappings.1_21_1.layered+hash.729445375-v2-neoforge-21.1.215-sources.jar net/neoforged/neoforge/common/extensions/IBlockExtension.java)",
+      "Bash(grep -c \"addLandingEffects\\\\|addRunningEffects\" \"c:/Minecraft/mods/herbalcurative/herbalcurative-1.21/neoforge/src/main/java/com/cahcap/neoforge/common/block/\"*.java)",
+      "Bash(do)",
+      "Bash(sed -i 's/import com.cahcap.common.blockentity.MultiblockPartBlockEntity;\\\\n//g' \"$f\")",
+      "Bash(sed -i '/import com.cahcap.common.blockentity.MultiblockPartBlockEntity;/d' \"$f\")",
+      "Bash(sed -i '/import net.minecraft.core.particles.BlockParticleOption;/d' \"$f\")",
+      "Bash(sed -i '/import net.minecraft.core.particles.ParticleTypes;/d' \"$f\")",
+      "Bash(sed -i '/import net.minecraft.server.level.ServerLevel;/d' \"$f\")",
+      "Bash(sed -i '/import net.minecraft.world.entity.Entity;/d' \"$f\")",
+      "Bash(sed -i '/import net.minecraft.world.entity.LivingEntity;/d' \"$f\")",
+      "Bash(sed -i 's/import net.minecraft.world.level.material.PushReaction;/import com.cahcap.neoforge.client.extensions.MultiblockBlockExtension;\\\\nimport net.minecraft.server.level.ServerLevel;\\\\nimport net.minecraft.world.entity.Entity;\\\\nimport net.minecraft.world.entity.LivingEntity;\\\\nimport net.minecraft.world.level.material.PushReaction;/' \"$f\")"
     ]
   }
 }

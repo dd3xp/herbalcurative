@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "herbalcurative:block/lumistone_pressure_plate" },
+    "powered=true": { "model": "herbalcurative:block/lumistone_pressure_plate_down" }
+  }
+}

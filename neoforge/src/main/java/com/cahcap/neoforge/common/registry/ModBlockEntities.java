@@ -6,6 +6,7 @@ import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
+import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.blockentity.KilnBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
@@ -65,6 +66,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("kiln", () -> BlockEntityType.Builder.of(
                     KilnBlockEntity::new,
                     ModBlocks.KILN.get()
+            ).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HerbVaultBlockEntity>> HERB_VAULT =
+            BLOCK_ENTITIES.register("herb_vault", () -> BlockEntityType.Builder.of(
+                    HerbVaultBlockEntity::new,
+                    ModBlocks.HERB_VAULT.get()
             ).build(null));
 }
 

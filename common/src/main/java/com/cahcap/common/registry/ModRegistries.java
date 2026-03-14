@@ -54,10 +54,14 @@ public class ModRegistries {
     public static Supplier<Block> HERB_POT;
     public static Supplier<Block> INCENSE_BURNER;
     public static Supplier<Block> KILN;
+    public static Supplier<Block> HERB_VAULT;
+    public static Supplier<Block> RED_CHERRY_FENCE;
     public static Supplier<Block> LUMISTONE;
     public static Supplier<Block> LUMISTONE_BRICKS;
     public static Supplier<Block> LUMISTONE_BRICK_SLAB;
+    public static Supplier<Block> LUMISTONE_BRICK_WALL;
     public static Supplier<Block> RUNE_STONE_BRICKS;
+    public static Supplier<Block> MAGIC_ALLOY_BLOCK;
     
     // ==================== Items ====================
     public static Supplier<Item> SCALEPLATE;
@@ -104,6 +108,7 @@ public class ModRegistries {
     public static Supplier<Item> POT;
     public static Supplier<Item> CAULDRON_ITEM;
     public static Supplier<Item> KILN_ITEM;
+    public static Supplier<Item> HERB_VAULT_ITEM;
     public static Supplier<Item> INCENSE_BURNER_ITEM;
     public static Supplier<Item> WITHER_SKELETON_POWDER;
     
@@ -119,6 +124,7 @@ public class ModRegistries {
     public static Supplier<BlockEntityType<?>> HERB_POT_BE;
     public static Supplier<BlockEntityType<?>> INCENSE_BURNER_BE;
     public static Supplier<BlockEntityType<?>> KILN_BE;
+    public static Supplier<BlockEntityType<?>> HERB_VAULT_BE;
 
     // ==================== Recipe Types ====================
     public static Supplier<RecipeType<HerbalBlendingRecipe>> HERBAL_BLENDING_RECIPE_TYPE;

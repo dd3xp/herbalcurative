@@ -6,6 +6,7 @@ import com.cahcap.client.model.LeafweaveArmorModel;
 import com.cahcap.neoforge.client.renderer.CauldronRenderer;
 import com.cahcap.neoforge.client.renderer.HerbBoxItemRenderer;
 import com.cahcap.neoforge.client.renderer.HerbPotRenderer;
+import com.cahcap.neoforge.client.renderer.HerbVaultRenderer;
 import com.cahcap.neoforge.client.renderer.KilnRenderer;
 import com.cahcap.client.renderer.IncenseBurnerRenderer;
 import com.cahcap.client.renderer.RedCherryShelfRenderer;
@@ -175,6 +176,7 @@ public class HerbalCurativeNeoForgeClient {
             event.registerBlockEntityRenderer(ModBlockEntities.HERB_POT.get(), HerbPotRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.INCENSE_BURNER.get(), IncenseBurnerRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.KILN.get(), KilnRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.HERB_VAULT.get(), HerbVaultRenderer::new);
 
             // Entity renderers
             event.registerEntityRenderer(ModEntityTypes.FLOWWEAVE_PROJECTILE.get(), FlowweaveProjectileRenderer::new);
@@ -196,7 +198,8 @@ public class HerbalCurativeNeoForgeClient {
             event.registerBlock(MultiblockBlockExtension.INSTANCE,
                     ModBlocks.HERB_CABINET.get(),
                     ModBlocks.CAULDRON.get(),
-                    ModBlocks.KILN.get());
+                    ModBlocks.KILN.get(),
+                    ModBlocks.HERB_VAULT.get());
             
             // Leafweave Armor
             IClientItemExtensions leafweaveArmorExtensions = new IClientItemExtensions() {

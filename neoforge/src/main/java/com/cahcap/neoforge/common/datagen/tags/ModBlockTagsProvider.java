@@ -99,9 +99,17 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.CAULDRON.get(),
             ModBlocks.HERB_POT.get(),
             ModBlocks.INCENSE_BURNER.get(),
-            ModBlocks.KILN.get()
+            ModBlocks.KILN.get(),
+            ModBlocks.LUMISTONE_BRICK_WALL.get(),
+            ModBlocks.MAGIC_ALLOY_BLOCK.get(),
+            ModBlocks.LUMISTONE_SLAB.get(),
+            ModBlocks.LUMISTONE_STAIRS.get(),
+            ModBlocks.LUMISTONE_WALL.get(),
+            ModBlocks.LUMISTONE_PRESSURE_PLATE.get(),
+            ModBlocks.LUMISTONE_BUTTON.get(),
+            ModBlocks.HERB_VAULT.get()
         );
-        
+
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)
         this.tag(BlockTags.MINEABLE_WITH_HOE).add(
             // Herb flowers
@@ -127,13 +135,33 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         // minecraft:slabs - All slab blocks
         this.tag(BlockTags.SLABS).add(
             ModBlocks.RED_CHERRY_SLAB.get(),
+            ModBlocks.LUMISTONE_SLAB.get(),
             ModBlocks.LUMISTONE_BRICK_SLAB.get()
         );
-        
+
         // minecraft:stairs - All stair blocks
         this.tag(BlockTags.STAIRS).add(
             ModBlocks.RED_CHERRY_STAIRS.get(),
+            ModBlocks.LUMISTONE_STAIRS.get(),
             ModBlocks.LUMISTONE_BRICK_STAIRS.get()
+        );
+
+        // minecraft:walls - All wall blocks
+        this.tag(BlockTags.WALLS).add(
+            ModBlocks.LUMISTONE_WALL.get(),
+            ModBlocks.LUMISTONE_BRICK_WALL.get()
+        );
+
+        // minecraft:pressure_plates
+        this.tag(BlockTags.PRESSURE_PLATES).add(
+            ModBlocks.RED_CHERRY_PRESSURE_PLATE.get(),
+            ModBlocks.LUMISTONE_PRESSURE_PLATE.get()
+        );
+
+        // minecraft:buttons
+        this.tag(BlockTags.BUTTONS).add(
+            ModBlocks.RED_CHERRY_BUTTON.get(),
+            ModBlocks.LUMISTONE_BUTTON.get()
         );
         
         // minecraft:wooden_slabs - Wooden slab blocks
@@ -161,21 +189,11 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.RED_CHERRY_FENCE_GATE.get()
         );
         
-        // minecraft:buttons - All button blocks
-        this.tag(BlockTags.BUTTONS).add(
-            ModBlocks.RED_CHERRY_BUTTON.get()
-        );
-        
         // minecraft:wooden_buttons - Wooden button blocks
         this.tag(BlockTags.WOODEN_BUTTONS).add(
             ModBlocks.RED_CHERRY_BUTTON.get()
         );
-        
-        // minecraft:pressure_plates - All pressure plate blocks
-        this.tag(BlockTags.PRESSURE_PLATES).add(
-            ModBlocks.RED_CHERRY_PRESSURE_PLATE.get()
-        );
-        
+
         // minecraft:wooden_pressure_plates - Wooden pressure plate blocks
         this.tag(BlockTags.WOODEN_PRESSURE_PLATES).add(
             ModBlocks.RED_CHERRY_PRESSURE_PLATE.get()

@@ -69,33 +69,28 @@ public class IncenseBurnerTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int baseY = screenHeight / 2 + 24;
+        int baseY = screenHeight / 2 + 8;
 
         // === Powder + vertical progress bar ===
         int powderRowHeight = 0;
         if (!powder.isEmpty()) {
-            // Layout: [powder 16px] [gap 4px] [progress bar 4px wide x 16px tall]
-            int totalWidth = 24;
-            int startX = screenWidth / 2 - totalWidth / 2;
-            int powderX = startX;
-            int barX = startX + 18;
+            // Powder centered under crosshair, progress bar to the right
+            int powderX = screenWidth / 2 - 8;
+            int barX = powderX + 18;
 
             // Render powder icon
             guiGraphics.renderItem(powder, powderX, baseY);
 
-            // Render vertical progress bar next to powder
+            // Render vertical progress bar next to powder (always visible)
+            int barHeight = 16;
+            int filledHeight = 0;
             if (isBurning) {
-                int barHeight = 16;
-                float progress = burner.getBurnProgress();
-                int filledHeight = (int) (barHeight * progress);
-
-                // Background (dark gray)
-                guiGraphics.fill(barX, baseY, barX + 3, baseY + barHeight, 0xFF333333);
-                // Filled portion (from bottom up, orange)
-                guiGraphics.fill(barX, baseY + barHeight - filledHeight, barX + 3, baseY + barHeight, 0xFF2F6099);
+                filledHeight = (int) (barHeight * burner.getBurnProgress());
             }
+            guiGraphics.fill(barX, baseY, barX + 3, baseY + barHeight, 0xFF333333);
+            guiGraphics.fill(barX, baseY + barHeight - filledHeight, barX + 3, baseY + barHeight, 0xFF2F6099);
 
-            powderRowHeight = 24;
+            powderRowHeight = 18;
         }
 
         // === Bottom row: herbs ===

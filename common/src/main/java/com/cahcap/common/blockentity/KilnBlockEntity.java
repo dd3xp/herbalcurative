@@ -276,15 +276,23 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         }
     }
 
+    // Cached recipe preview (invalidated when input changes)
+    private ItemStack cachedPreviewInput = ItemStack.EMPTY;
+    private ItemStack cachedPreviewResult = ItemStack.EMPTY;
+
     /**
      * Get the expected smelting result for the current input (for tooltip preview).
-     * Returns EMPTY if no input or no matching recipe.
+     * Cached to avoid recipe lookups every render frame.
      */
     public ItemStack getRecipePreview() {
         KilnBlockEntity master = getMaster();
         if (master == null || master.inputSlot.isEmpty() || level == null) return ItemStack.EMPTY;
-        Optional<ItemStack> result = getSmeltingResult(level, master.inputSlot);
-        return result.map(ItemStack::copy).orElse(ItemStack.EMPTY);
+        if (!ItemStack.isSameItemSameComponents(master.inputSlot, cachedPreviewInput)) {
+            cachedPreviewInput = master.inputSlot.copy();
+            Optional<ItemStack> result = getSmeltingResult(level, master.inputSlot);
+            cachedPreviewResult = result.map(ItemStack::copy).orElse(ItemStack.EMPTY);
+        }
+        return cachedPreviewResult;
     }
 
     // ==================== Smelting Logic ====================
@@ -371,7 +379,13 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
                 blockEntity.isSmelting = false;
                 blockEntity.smeltProgress = 0;
                 blockEntity.catalyzed = false;
-                blockEntity.setLit(level, pos, state, false);
+
+                // Only turn off light if there's nothing left to smelt
+                boolean canContinue = !blockEntity.inputSlot.isEmpty()
+                        && getSmeltingResult(level, blockEntity.inputSlot).isPresent();
+                if (!canContinue) {
+                    blockEntity.setLit(level, pos, level.getBlockState(pos), false);
+                }
                 blockEntity.setChanged();
                 blockEntity.syncToClient();
             } else if (blockEntity.smeltProgress % 40 == 0) {

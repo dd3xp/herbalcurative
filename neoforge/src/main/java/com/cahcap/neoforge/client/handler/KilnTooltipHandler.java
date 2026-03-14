@@ -77,7 +77,7 @@ public class KilnTooltipHandler {
         // Layout: [input 16px] [gap 4px] [arrow 16px] [gap 4px] [output 16px]
         int totalWidth = 56;
         int startX = screenWidth / 2 - totalWidth / 2;
-        int baseY = screenHeight / 2 + 24; // Below crosshair with enough clearance
+        int baseY = screenHeight / 2 + 28;
 
         int inputX = startX;
         int arrowX = startX + 20;
@@ -89,10 +89,10 @@ public class KilnTooltipHandler {
             renderCount(guiGraphics, mc, input.getCount(), inputX, baseY, 0xFFFFFF);
         }
 
-        // Render arrow
+        // Render arrow (always >>>, orange when smelting, gray when idle)
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 200);
-        String arrow = master.isSmelting() ? ">>>" : "\u2192";
+        String arrow = ">>>";
         int arrowColor = master.isSmelting() ? 0xFFAA00 : 0xAAAAAA;
         int arrowTextX = arrowX + 8 - mc.font.width(arrow) / 2;
         guiGraphics.drawString(mc.font, arrow, arrowTextX, baseY + 4, arrowColor, true);
@@ -104,22 +104,22 @@ public class KilnTooltipHandler {
             renderCount(guiGraphics, mc, catalyst.getCount(), arrowX, baseY - 18, 0xFF6600);
         }
 
-        // Render output item: show cached output with count, or recipe preview without count
+        // Render output item: cached output with count, or recipe preview without count
         if (!output.isEmpty()) {
             guiGraphics.renderItem(output, outputX, baseY);
             renderCount(guiGraphics, mc, output.getCount(), outputX, baseY, 0xFFFF00);
         } else if (!recipePreview.isEmpty()) {
-            // Show preview of what will be produced (no count)
             guiGraphics.renderItem(recipePreview, outputX, baseY);
         }
 
-        // Render smelting progress bar below arrow
+        // Render progress bar (always visible, filled when smelting)
+        int progressFill = 0;
         if (master.isSmelting()) {
             int targetTime = master.getCurrentSmeltTime();
-            int progress = master.getSmeltProgress() * 16 / targetTime;
-            guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
-            guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(progress, 16), baseY + 18, 0xFFFF8800);
+            progressFill = master.getSmeltProgress() * 16 / targetTime;
         }
+        guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
+        guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(progressFill, 16), baseY + 18, 0xFFFF8800);
     }
 
     private static void renderCount(GuiGraphics guiGraphics, Minecraft mc, int count, int x, int y, int color) {

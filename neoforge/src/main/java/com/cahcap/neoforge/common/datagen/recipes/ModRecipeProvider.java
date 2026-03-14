@@ -212,6 +212,43 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .unlockedBy("has_herb_product", has(HERB_PRODUCTS))
             .save(output);
         
+        // Lumistone Slab: 3 lumistone -> 6 slabs
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE_SLAB.get(), 6)
+            .define('L', ModBlocks.LUMISTONE.get())
+            .pattern("LLL")
+            .unlockedBy("has_lumistone", has(ModBlocks.LUMISTONE.get()))
+            .save(output);
+
+        // Lumistone Stairs: 6 lumistone -> 4 stairs
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE_STAIRS.get(), 4)
+            .define('L', ModBlocks.LUMISTONE.get())
+            .pattern("L  ")
+            .pattern("LL ")
+            .pattern("LLL")
+            .unlockedBy("has_lumistone", has(ModBlocks.LUMISTONE.get()))
+            .save(output);
+
+        // Lumistone Wall: 6 lumistone -> 6 walls
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.LUMISTONE_WALL.get(), 6)
+            .define('L', ModBlocks.LUMISTONE.get())
+            .pattern("LLL")
+            .pattern("LLL")
+            .unlockedBy("has_lumistone", has(ModBlocks.LUMISTONE.get()))
+            .save(output);
+
+        // Lumistone Pressure Plate: 2 lumistone -> 1 pressure plate
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ModBlocks.LUMISTONE_PRESSURE_PLATE.get(), 1)
+            .define('L', ModBlocks.LUMISTONE.get())
+            .pattern("LL")
+            .unlockedBy("has_lumistone", has(ModBlocks.LUMISTONE.get()))
+            .save(output);
+
+        // Lumistone Button: 1 lumistone -> 1 button
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, ModBlocks.LUMISTONE_BUTTON.get(), 1)
+            .requires(ModBlocks.LUMISTONE.get())
+            .unlockedBy("has_lumistone", has(ModBlocks.LUMISTONE.get()))
+            .save(output);
+
         // Lumistone Bricks: 4 lumistone -> 4 lumistone bricks (like stone bricks)
         ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.LUMISTONE_BRICKS.get(), 4)
             .define('L', ModBlocks.LUMISTONE.get())
@@ -235,6 +272,29 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
             .pattern("LLL")
             .unlockedBy("has_lumistone_bricks", has(ModBlocks.LUMISTONE_BRICKS.get()))
             .save(output);
+
+        // Lumistone Brick Wall: 6 lumistone bricks -> 6 walls
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ModBlocks.LUMISTONE_BRICK_WALL.get(), 6)
+            .define('L', ModBlocks.LUMISTONE_BRICKS.get())
+            .pattern("LLL")
+            .pattern("LLL")
+            .unlockedBy("has_lumistone_bricks", has(ModBlocks.LUMISTONE_BRICKS.get()))
+            .save(output);
+
+        // Magic Alloy Block: 9 magic alloy ingots -> 1 block
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.MAGIC_ALLOY_BLOCK.get(), 1)
+            .define('M', ModItems.MAGIC_ALLOY_INGOT.get())
+            .pattern("MMM")
+            .pattern("MMM")
+            .pattern("MMM")
+            .unlockedBy("has_magic_alloy_ingot", has(ModItems.MAGIC_ALLOY_INGOT.get()))
+            .save(output);
+
+        // Magic Alloy Block -> 9 magic alloy ingots (reverse)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.MAGIC_ALLOY_INGOT.get(), 9)
+            .requires(ModBlocks.MAGIC_ALLOY_BLOCK.get())
+            .unlockedBy("has_magic_alloy_block", has(ModBlocks.MAGIC_ALLOY_BLOCK.get()))
+            .save(output, "herbalcurative:magic_alloy_ingot_from_block");
     }
     
     /**

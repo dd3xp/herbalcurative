@@ -1,7 +1,9 @@
 package com.cahcap.common.item;
 
 import com.cahcap.common.block.HerbCabinetBlock;
+import com.cahcap.common.block.HerbVaultBlock;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -130,6 +132,33 @@ public class HerbBoxItem extends Item {
             } else {
                 // Right Click Cabinet: Fill box from cabinet
                 fillFromCabinet(stack, cabinet, player);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
+        // Herb Vault interaction (same logic as cabinet)
+        if (blockEntity instanceof HerbVaultBlockEntity vault) {
+            if (!vault.isFormed()) {
+                return InteractionResult.PASS;
+            }
+
+            var blockState = level.getBlockState(pos);
+            var facing = blockState.getValue(HerbVaultBlock.FACING);
+            var clickedFace = context.getClickedFace();
+
+            if (clickedFace != facing) {
+                return InteractionResult.PASS;
+            }
+
+            if (level.isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
+
+            if (player != null && player.isShiftKeyDown()) {
+                transferToVault(stack, vault, player);
+            } else {
+                fillFromVault(stack, vault, player);
             }
 
             return InteractionResult.SUCCESS;
@@ -291,10 +320,54 @@ public class HerbBoxItem extends Item {
 
             if (added > 0) {
                 removeHerb(box, herbKey, added);
-                return true; // Herbs were transferred
+                return true;
             }
         }
-        return false; // No herbs transferred
+        return false;
+    }
+
+    // ==================== Herb Vault interaction ====================
+
+    private void fillFromVault(ItemStack box, HerbVaultBlockEntity vault, Player player) {
+        boolean anyTransferred = false;
+        for (String key : new String[]{"scaleplate", "dewpetal_shard", "golden_lilybell", "cryst_spine", "burnt_node", "heart_of_stardream"}) {
+            int boxCurrent = getHerbAmount(box, key);
+            int needed = MAX_CAPACITY - boxCurrent;
+            if (needed > 0) {
+                int available = vault.getHerbAmount(key);
+                int toTake = Math.min(needed, available);
+                if (toTake > 0) {
+                    vault.removeHerb(key, toTake);
+                    addHerb(box, key, toTake);
+                    anyTransferred = true;
+                }
+            }
+        }
+        vault.setChanged();
+        if (anyTransferred && player != null) {
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.4F,
+                    ((player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        }
+    }
+
+    private void transferToVault(ItemStack box, HerbVaultBlockEntity vault, Player player) {
+        boolean anyTransferred = false;
+        for (String key : new String[]{"scaleplate", "dewpetal_shard", "golden_lilybell", "cryst_spine", "burnt_node", "heart_of_stardream"}) {
+            int boxAmount = getHerbAmount(box, key);
+            if (boxAmount > 0) {
+                int added = vault.addHerb(key, boxAmount);
+                if (added > 0) {
+                    removeHerb(box, key, added);
+                    anyTransferred = true;
+                }
+            }
+        }
+        vault.setChanged();
+        if (anyTransferred && player != null) {
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.4F, 0.8F);
+        }
     }
 }
 

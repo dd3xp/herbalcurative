@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "herbalcurative:magic_alloy_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "herbalcurative:magic_alloy_ingot"
+  }
+}
