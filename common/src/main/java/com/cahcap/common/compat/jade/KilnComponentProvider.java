@@ -5,7 +5,7 @@ import com.cahcap.common.blockentity.KilnBlockEntity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
+import com.cahcap.common.registry.ModRegistries;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.ITooltip;
@@ -52,7 +52,7 @@ public class KilnComponentProvider implements IBlockComponentProvider {
             }
 
             if (master.isSmelting()) {
-                int progress = master.getSmeltProgress() * 100 / KilnBlockEntity.SMELT_TIME;
+                int progress = master.getSmeltProgress() * 100 / master.getCurrentSmeltTime();
                 tooltip.add(Component.translatable("tooltip.herbalcurative.kiln.smelting")
                         .append(": " + progress + "%"));
             }
@@ -62,7 +62,7 @@ public class KilnComponentProvider implements IBlockComponentProvider {
     @Nullable
     @Override
     public IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
-        return IElementHelper.get().item(new ItemStack(Blocks.STONE_BRICKS));
+        return IElementHelper.get().item(new ItemStack(ModRegistries.KILN.get()));
     }
 
     @Override

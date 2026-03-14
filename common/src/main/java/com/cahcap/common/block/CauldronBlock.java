@@ -478,7 +478,7 @@ public class CauldronBlock extends BaseEntityBlock {
             }
         }
         
-        // Brewing - campfire smoke effect (boiling)
+        // Brewing - campfire smoke + boiling bubbles
         if (be.isBrewing() && be.hasHeatSource()) {
             // Campfire smoke rising - boiling effect
             for (int i = 0; i < 2; i++) {
@@ -486,9 +486,17 @@ public class CauldronBlock extends BaseEntityBlock {
                     double x = pos.getX() - 0.5 + random.nextDouble() * 2;
                     double y = pos.getY() + 1.0;
                     double z = pos.getZ() - 0.5 + random.nextDouble() * 2;
-                    level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 
+                    level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z,
                             (random.nextDouble() - 0.5) * 0.02, 0.05, (random.nextDouble() - 0.5) * 0.02);
                 }
+            }
+            // Bubble pop particles on the liquid surface (boiling effect)
+            double liquidY = pos.getY() + (27.0 / 16.0);
+            for (int i = 0; i < 8; i++) {
+                double bx = pos.getX() - 0.7 + random.nextDouble() * 2.4;
+                double bz = pos.getZ() - 0.7 + random.nextDouble() * 2.4;
+                level.addParticle(ParticleTypes.BUBBLE_POP, bx, liquidY, bz,
+                        (random.nextDouble() - 0.5) * 0.03, 0.03 + random.nextDouble() * 0.02, (random.nextDouble() - 0.5) * 0.03);
             }
             // Bubble whirlpool sound (intense boiling)
             if (random.nextInt(2) == 0) {

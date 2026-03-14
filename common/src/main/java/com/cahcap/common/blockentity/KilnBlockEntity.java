@@ -595,8 +595,8 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
             // Layer 2: center = pyrisage(air after disassembly), front = stone brick slab (top),
             // rest = stone bricks
             if (dx == 0 && dz == 0) {
-                // Pyrisage was consumed during assembly
-                return Blocks.AIR.defaultBlockState();
+                // Restore pyrisage on soul sand when disassembled
+                return ModRegistries.PYRISAGE.get().defaultBlockState();
             }
             // Check if this is the front position
             Direction relDir = getRelativeDirection(dx, dz);

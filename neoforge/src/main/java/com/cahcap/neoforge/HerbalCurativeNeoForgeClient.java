@@ -193,9 +193,10 @@ public class HerbalCurativeNeoForgeClient {
         @SubscribeEvent
         public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
             // Block Extensions - Custom destroy particles for multiblock structures
-            event.registerBlock(MultiblockBlockExtension.INSTANCE, 
+            event.registerBlock(MultiblockBlockExtension.INSTANCE,
                     ModBlocks.HERB_CABINET.get(),
-                    ModBlocks.CAULDRON.get());
+                    ModBlocks.CAULDRON.get(),
+                    ModBlocks.KILN.get());
             
             // Leafweave Armor
             IClientItemExtensions leafweaveArmorExtensions = new IClientItemExtensions() {

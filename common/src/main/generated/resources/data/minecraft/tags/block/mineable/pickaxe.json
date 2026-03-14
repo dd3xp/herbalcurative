@@ -5,6 +5,9 @@
     "herbalcurative:rune_stone_bricks",
     "herbalcurative:lumistone_brick_slab",
     "herbalcurative:lumistone_brick_stairs",
-    "herbalcurative:cauldron"
+    "herbalcurative:cauldron",
+    "herbalcurative:herb_pot",
+    "herbalcurative:incense_burner",
+    "herbalcurative:kiln"
   ]
 }

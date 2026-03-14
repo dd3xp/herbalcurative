@@ -117,8 +117,8 @@ public class KilnTooltipHandler {
         if (master.isSmelting()) {
             int targetTime = master.getCurrentSmeltTime();
             int progress = master.getSmeltProgress() * 16 / targetTime;
-            guiGraphics.fill(arrowX, baseY + 18, arrowX + 16, baseY + 20, 0xFF333333);
-            guiGraphics.fill(arrowX, baseY + 18, arrowX + Math.min(progress, 16), baseY + 20, 0xFFFF8800);
+            guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
+            guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(progress, 16), baseY + 18, 0xFFFF8800);
         }
     }
 

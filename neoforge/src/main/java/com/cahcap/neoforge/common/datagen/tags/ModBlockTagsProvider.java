@@ -96,7 +96,10 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.RUNE_STONE_BRICKS.get(),
             ModBlocks.LUMISTONE_BRICK_SLAB.get(),
             ModBlocks.LUMISTONE_BRICK_STAIRS.get(),
-            ModBlocks.CAULDRON.get()
+            ModBlocks.CAULDRON.get(),
+            ModBlocks.HERB_POT.get(),
+            ModBlocks.INCENSE_BURNER.get(),
+            ModBlocks.KILN.get()
         );
         
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)

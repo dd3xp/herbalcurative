@@ -82,6 +82,11 @@ public class HerbPotBlockEntity extends BlockEntity {
     public boolean isGrowing() {
         return isGrowing;
     }
+
+    @Nullable
+    public ItemStack getPendingOutput() {
+        return pendingOutput;
+    }
     
     public float getGrowthProgress() {
         if (!isGrowing || totalGrowthTicks <= 0) {

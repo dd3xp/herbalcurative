@@ -196,13 +196,13 @@ public class IncenseBurnerBlock extends BaseEntityBlock {
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
         List<ItemStack> drops = new ArrayList<>();
-        drops.addAll(super.getDrops(state, builder));
-        
+        drops.add(new ItemStack(this));
+
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof IncenseBurnerBlockEntity burner) {
             drops.addAll(burner.getAllItems());
         }
-        
+
         return drops;
     }
     

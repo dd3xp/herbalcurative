@@ -9,7 +9,7 @@ import mcp.mobius.waila.api.ITooltipComponent;
 import mcp.mobius.waila.api.component.ItemComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
+import com.cahcap.common.registry.ModRegistries;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -22,7 +22,7 @@ enum KilnComponentProvider implements IBlockComponentProvider {
     @Nullable
     @Override
     public ITooltipComponent getIcon(IBlockAccessor accessor, IPluginConfig config) {
-        return new ItemComponent(new ItemStack(Blocks.STONE_BRICKS));
+        return new ItemComponent(new ItemStack(ModRegistries.KILN.get()));
     }
 
     @Override
@@ -55,7 +55,7 @@ enum KilnComponentProvider implements IBlockComponentProvider {
             }
 
             if (master.isSmelting()) {
-                int progress = master.getSmeltProgress() * 100 / KilnBlockEntity.SMELT_TIME;
+                int progress = master.getSmeltProgress() * 100 / master.getCurrentSmeltTime();
                 tooltip.addLine(Component.translatable("tooltip.herbalcurative.kiln.smelting")
                         .append(": " + progress + "%"));
             }

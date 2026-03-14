@@ -281,15 +281,17 @@ public class ModBlocks {
     public static final DeferredBlock<com.cahcap.common.block.HerbPotBlock> HERB_POT = BLOCKS.register("herb_pot",
             () -> new com.cahcap.common.block.HerbPotBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.TERRACOTTA_BROWN)
-                    .strength(2.0F, 3.0F)
+                    .strength(1.25F, 4.2F)
                     .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()
                     .noOcclusion()));
-    
+
     public static final DeferredBlock<com.cahcap.common.block.IncenseBurnerBlock> INCENSE_BURNER = BLOCKS.register("incense_burner",
             () -> new com.cahcap.common.block.IncenseBurnerBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
-                    .strength(2.0F, 3.0F)
+                    .strength(1.25F, 4.2F)
                     .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops()
                     .noOcclusion()));
 
     public static final DeferredBlock<com.cahcap.neoforge.common.block.KilnBlock> KILN = BLOCKS.register("kiln",

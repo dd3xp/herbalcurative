@@ -357,13 +357,13 @@ public class KilnBlock extends BaseEntityBlock {
             return;
         }
 
-        // Campfire smoke rising from chimney (top center)
-        if (random.nextInt(2) == 0) {
-            double x = pos.getX() + 0.5;
-            double y = pos.getY() + 1.5;
-            double z = pos.getZ() + 0.5;
+        // Campfire smoke rising from chimney (top center), same density as vanilla campfire
+        for (int i = 0; i < 3; i++) {
+            double x = pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4;
+            double y = pos.getY() + 1.5 + random.nextDouble() * 0.3;
+            double z = pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4;
             level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z,
-                    (random.nextDouble() - 0.5) * 0.01, 0.05, (random.nextDouble() - 0.5) * 0.01);
+                    (random.nextDouble() - 0.5) * 0.01, 0.07, (random.nextDouble() - 0.5) * 0.01);
         }
 
         // Fire particles from the front opening

@@ -1,7 +1,6 @@
 package com.cahcap.common.compat.jade;
 
 import com.cahcap.common.block.CauldronBlock;
-import com.cahcap.common.block.HerbBasketBlock;
 import com.cahcap.common.block.HerbCabinetBlock;
 import com.cahcap.common.block.KilnBlock;
 import snownee.jade.api.IWailaClientRegistration;
@@ -23,9 +22,6 @@ public class HerbalCurativeJadePlugin implements IWailaPlugin {
         // Register icon provider for Cauldron multiblock
         registration.registerBlockIcon(new CauldronIconProvider(), CauldronBlock.class);
         
-        // Register component provider for Herb Basket
-        registration.registerBlockComponent(new HerbBasketComponentProvider(), HerbBasketBlock.class);
-
         // Register icon and component provider for Kiln multiblock
         KilnComponentProvider kilnProvider = new KilnComponentProvider();
         registration.registerBlockIcon(kilnProvider, KilnBlock.class);

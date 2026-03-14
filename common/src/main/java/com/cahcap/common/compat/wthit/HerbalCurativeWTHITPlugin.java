@@ -1,7 +1,6 @@
 package com.cahcap.common.compat.wthit;
 
 import com.cahcap.common.block.CauldronBlock;
-import com.cahcap.common.block.HerbBasketBlock;
 import com.cahcap.common.block.HerbCabinetBlock;
 import com.cahcap.common.block.KilnBlock;
 import mcp.mobius.waila.api.IClientRegistrar;
@@ -23,9 +22,6 @@ public class HerbalCurativeWTHITPlugin implements IWailaClientPlugin, IWailaComm
         // Register icon provider for Cauldron multiblock
         registrar.icon(CauldronIconProvider.INSTANCE, CauldronBlock.class);
         
-        // Register component provider for Herb Basket
-        registrar.body(HerbBasketComponentProvider.INSTANCE, HerbBasketBlock.class);
-
         // Register icon and component provider for Kiln multiblock
         registrar.icon(KilnComponentProvider.INSTANCE, KilnBlock.class);
         registrar.body(KilnComponentProvider.INSTANCE, KilnBlock.class);

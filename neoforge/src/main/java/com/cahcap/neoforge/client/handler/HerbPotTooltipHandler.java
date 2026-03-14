@@ -23,8 +23,9 @@ import java.util.Map;
 
 /**
  * Client-side handler for rendering Herb Pot HUD tooltip.
- * Shows herb icons horizontally below crosshair when looking at a herb pot.
- * Style matches CauldronTooltipHandler with counts in bottom-right corner.
+ * Layout:
+ * - Top row: [Seedling] → [Output]  (with progress bar below arrow)
+ * - Bottom row: herbs horizontally
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class HerbPotTooltipHandler {
@@ -32,7 +33,7 @@ public class HerbPotTooltipHandler {
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        
+
         if (mc.level == null || mc.player == null) {
             return;
         }
@@ -45,19 +46,23 @@ public class HerbPotTooltipHandler {
         BlockHitResult blockHitResult = (BlockHitResult) hitResult;
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState state = mc.level.getBlockState(pos);
-        
+
         if (!(state.getBlock() instanceof HerbPotBlock)) {
             return;
         }
-        
+
         BlockEntity blockEntity = mc.level.getBlockEntity(pos);
         if (!(blockEntity instanceof HerbPotBlockEntity pot)) {
             return;
         }
 
+        ItemStack seedling = pot.getSeedling();
         Map<Item, Integer> herbs = pot.getHerbs();
-        
-        if (herbs.isEmpty()) {
+        ItemStack pendingOutput = pot.getPendingOutput();
+        boolean isGrowing = pot.isGrowing();
+
+        // Don't render if nothing to show
+        if (seedling.isEmpty() && herbs.isEmpty()) {
             return;
         }
 
@@ -65,37 +70,74 @@ public class HerbPotTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int currentY = screenHeight / 2 + 12;
-        
-        // Convert to list for indexed access
-        List<Map.Entry<Item, Integer>> itemList = new ArrayList<>(herbs.entrySet());
-        
-        // Calculate total width for centering (20 pixels per item)
-        int totalItems = itemList.size();
-        int totalWidth = totalItems * 20;
-        int startX = screenWidth / 2 - totalWidth / 2;
-        
-        // Render herb items horizontally
-        int currentX = startX;
-        for (Map.Entry<Item, Integer> entry : itemList) {
-            ItemStack stack = new ItemStack(entry.getKey());
-            guiGraphics.renderItem(stack, currentX, currentY);
-            currentX += 20;
+        int baseY = screenHeight / 2 + 24;
+
+        // === Top row: [Seedling] [arrow] [Output] ===
+        if (!seedling.isEmpty()) {
+            // Layout: [seedling 16px] [gap 4px] [arrow 16px] [gap 4px] [output 16px]
+            int totalWidth = 56;
+            int startX = screenWidth / 2 - totalWidth / 2;
+            int seedlingX = startX;
+            int arrowX = startX + 20;
+            int outputX = startX + 40;
+
+            // Render seedling
+            guiGraphics.renderItem(seedling, seedlingX, baseY);
+
+            // Render arrow
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+            String arrow = isGrowing ? ">>>" : "\u2192";
+            int arrowColor = isGrowing ? 0x55FF55 : 0xAAAAAA;
+            int arrowTextX = arrowX + 8 - mc.font.width(arrow) / 2;
+            guiGraphics.drawString(mc.font, arrow, arrowTextX, baseY + 4, arrowColor, true);
+            guiGraphics.pose().popPose();
+
+            // Render output
+            if (pendingOutput != null && !pendingOutput.isEmpty()) {
+                guiGraphics.renderItem(pendingOutput, outputX, baseY);
+            }
+
+            // Render growth progress bar below arrow
+            if (isGrowing) {
+                float progress = pot.getGrowthProgress();
+                int barWidth = (int) (16 * progress);
+                guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
+                guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(barWidth, 16), baseY + 18, 0xFF55FF55);
+            }
         }
-        
-        // Render counts on top (higher z-layer) in bottom-right corner of each item
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 200);
-        
-        currentX = startX;
-        for (Map.Entry<Item, Integer> entry : itemList) {
-            String countText = String.valueOf(entry.getValue());
-            int textX = currentX + 17 - mc.font.width(countText);
-            int textY = currentY + 9;
-            guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
-            currentX += 20;
+
+        // === Bottom row: herbs ===
+        if (!herbs.isEmpty()) {
+            int herbY = baseY + (seedling.isEmpty() ? 0 : 24);
+
+            List<Map.Entry<Item, Integer>> itemList = new ArrayList<>(herbs.entrySet());
+            int totalItems = itemList.size();
+            int totalWidth = totalItems * 20;
+            int startX = screenWidth / 2 - totalWidth / 2;
+
+            // Render herb items horizontally
+            int currentX = startX;
+            for (Map.Entry<Item, Integer> entry : itemList) {
+                ItemStack stack = new ItemStack(entry.getKey());
+                guiGraphics.renderItem(stack, currentX, herbY);
+                currentX += 20;
+            }
+
+            // Render counts
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+
+            currentX = startX;
+            for (Map.Entry<Item, Integer> entry : itemList) {
+                String countText = String.valueOf(entry.getValue());
+                int textX = currentX + 17 - mc.font.width(countText);
+                int textY = herbY + 9;
+                guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
+                currentX += 20;
+            }
+
+            guiGraphics.pose().popPose();
         }
-        
-        guiGraphics.pose().popPose();
     }
 }

@@ -23,8 +23,9 @@ import java.util.Map;
 
 /**
  * Client-side handler for rendering Incense Burner HUD tooltip.
- * Shows herb icons horizontally below crosshair when looking at an incense burner.
- * Also shows burning progress when active.
+ * Layout:
+ * - When burning: [Powder icon] [vertical progress bar]
+ * - Below: herbs horizontally (always shown if present)
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class IncenseBurnerTooltipHandler {
@@ -32,7 +33,7 @@ public class IncenseBurnerTooltipHandler {
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        
+
         if (mc.level == null || mc.player == null) {
             return;
         }
@@ -45,19 +46,22 @@ public class IncenseBurnerTooltipHandler {
         BlockHitResult blockHitResult = (BlockHitResult) hitResult;
         BlockPos pos = blockHitResult.getBlockPos();
         BlockState state = mc.level.getBlockState(pos);
-        
+
         if (!(state.getBlock() instanceof IncenseBurnerBlock)) {
             return;
         }
-        
+
         BlockEntity blockEntity = mc.level.getBlockEntity(pos);
         if (!(blockEntity instanceof IncenseBurnerBlockEntity burner)) {
             return;
         }
 
+        ItemStack powder = burner.getPowder();
         Map<Item, Integer> herbs = burner.getHerbs();
-        
-        if (herbs.isEmpty()) {
+        boolean isBurning = burner.isBurning();
+
+        // Don't render if nothing to show
+        if (powder.isEmpty() && herbs.isEmpty()) {
             return;
         }
 
@@ -65,37 +69,66 @@ public class IncenseBurnerTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int currentY = screenHeight / 2 + 12;
-        
-        // Convert to list for indexed access
-        List<Map.Entry<Item, Integer>> itemList = new ArrayList<>(herbs.entrySet());
-        
-        // Calculate total width for centering (20 pixels per item)
-        int totalItems = itemList.size();
-        int totalWidth = totalItems * 20;
-        int startX = screenWidth / 2 - totalWidth / 2;
-        
-        // Render herb items horizontally
-        int currentX = startX;
-        for (Map.Entry<Item, Integer> entry : itemList) {
-            ItemStack stack = new ItemStack(entry.getKey());
-            guiGraphics.renderItem(stack, currentX, currentY);
-            currentX += 20;
+        int baseY = screenHeight / 2 + 24;
+
+        // === Powder + vertical progress bar ===
+        int powderRowHeight = 0;
+        if (!powder.isEmpty()) {
+            // Layout: [powder 16px] [gap 4px] [progress bar 4px wide x 16px tall]
+            int totalWidth = 24;
+            int startX = screenWidth / 2 - totalWidth / 2;
+            int powderX = startX;
+            int barX = startX + 18;
+
+            // Render powder icon
+            guiGraphics.renderItem(powder, powderX, baseY);
+
+            // Render vertical progress bar next to powder
+            if (isBurning) {
+                int barHeight = 16;
+                float progress = burner.getBurnProgress();
+                int filledHeight = (int) (barHeight * progress);
+
+                // Background (dark gray)
+                guiGraphics.fill(barX, baseY, barX + 3, baseY + barHeight, 0xFF333333);
+                // Filled portion (from bottom up, orange)
+                guiGraphics.fill(barX, baseY + barHeight - filledHeight, barX + 3, baseY + barHeight, 0xFF2F6099);
+            }
+
+            powderRowHeight = 24;
         }
-        
-        // Render counts on top (higher z-layer) in bottom-right corner of each item
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 200);
-        
-        currentX = startX;
-        for (Map.Entry<Item, Integer> entry : itemList) {
-            String countText = String.valueOf(entry.getValue());
-            int textX = currentX + 17 - mc.font.width(countText);
-            int textY = currentY + 9;
-            guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
-            currentX += 20;
+
+        // === Bottom row: herbs ===
+        if (!herbs.isEmpty()) {
+            int herbY = baseY + powderRowHeight;
+
+            List<Map.Entry<Item, Integer>> itemList = new ArrayList<>(herbs.entrySet());
+            int totalItems = itemList.size();
+            int totalWidth = totalItems * 20;
+            int startX = screenWidth / 2 - totalWidth / 2;
+
+            // Render herb items horizontally
+            int currentX = startX;
+            for (Map.Entry<Item, Integer> entry : itemList) {
+                ItemStack stack = new ItemStack(entry.getKey());
+                guiGraphics.renderItem(stack, currentX, herbY);
+                currentX += 20;
+            }
+
+            // Render counts
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+
+            currentX = startX;
+            for (Map.Entry<Item, Integer> entry : itemList) {
+                String countText = String.valueOf(entry.getValue());
+                int textX = currentX + 17 - mc.font.width(countText);
+                int textY = herbY + 9;
+                guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
+                currentX += 20;
+            }
+
+            guiGraphics.pose().popPose();
         }
-        
-        guiGraphics.pose().popPose();
     }
 }
