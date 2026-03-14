@@ -181,6 +181,7 @@ public class HerbVaultBlock extends BaseEntityBlock {
         return SHAPES_BY_FACING[facing.get2DDataValue()][index];
     }
 
+
     @Override
     protected boolean isOcclusionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) { return false; }
 

@@ -201,7 +201,8 @@ public class CauldronBlock extends BaseEntityBlock {
             default -> Shapes.block();
         };
     }
-    
+
+
     @Override
     protected boolean isOcclusionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return false;

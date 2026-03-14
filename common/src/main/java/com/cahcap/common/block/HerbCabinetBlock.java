@@ -163,7 +163,8 @@ public class HerbCabinetBlock extends BaseEntityBlock {
         }
         return SHAPES_BY_FACING[facing.get2DDataValue()][posInMultiblock];
     }
-    
+
+
     @Override
     protected boolean isOcclusionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return false;

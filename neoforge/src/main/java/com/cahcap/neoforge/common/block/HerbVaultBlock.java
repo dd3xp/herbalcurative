@@ -6,10 +6,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import com.cahcap.neoforge.client.extensions.MultiblockBlockExtension;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.material.PushReaction;
 
 /**
@@ -36,13 +32,4 @@ public class HerbVaultBlock extends com.cahcap.common.block.HerbVaultBlock {
         return PushReaction.BLOCK;
     }
 
-    @Override
-    public boolean addLandingEffects(BlockState state, ServerLevel level, BlockPos pos, BlockState state2, LivingEntity entity, int numberOfParticles) {
-        return MultiblockBlockExtension.handleLandingEffects(level, pos, entity, numberOfParticles);
-    }
-
-    @Override
-    public boolean addRunningEffects(BlockState state, Level level, BlockPos pos, Entity entity) {
-        return MultiblockBlockExtension.handleRunningEffects(level, pos, entity);
-    }
 }

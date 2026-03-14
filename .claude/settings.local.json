@@ -35,7 +35,14 @@
       "Bash(sed -i '/import net.minecraft.server.level.ServerLevel;/d' \"$f\")",
       "Bash(sed -i '/import net.minecraft.world.entity.Entity;/d' \"$f\")",
       "Bash(sed -i '/import net.minecraft.world.entity.LivingEntity;/d' \"$f\")",
-      "Bash(sed -i 's/import net.minecraft.world.level.material.PushReaction;/import com.cahcap.neoforge.client.extensions.MultiblockBlockExtension;\\\\nimport net.minecraft.server.level.ServerLevel;\\\\nimport net.minecraft.world.entity.Entity;\\\\nimport net.minecraft.world.entity.LivingEntity;\\\\nimport net.minecraft.world.level.material.PushReaction;/' \"$f\")"
+      "Bash(sed -i 's/import net.minecraft.world.level.material.PushReaction;/import com.cahcap.neoforge.client.extensions.MultiblockBlockExtension;\\\\nimport net.minecraft.server.level.ServerLevel;\\\\nimport net.minecraft.world.entity.Entity;\\\\nimport net.minecraft.world.entity.LivingEntity;\\\\nimport net.minecraft.world.level.material.PushReaction;/' \"$f\")",
+      "Bash(find c:/Minecraft/mods/herbalcurative/reference-mods/ImmersiveEngineering-1.21.1/src/main/java/ -name *Multiblock*Block* -o -name *IEMulti*)",
+      "Bash(find c:/Minecraft/mods/herbalcurative/reference-mods/ImmersiveEngineering-1.21.1/src/main/java/ -name *IEBaseBlock* -o -name *IEBlock* -o -name *IEEntityBlock*)",
+      "Read(//c/Minecraft/mods/herbalcurative/herbalcurative-1.21/**)",
+      "Bash(echo \"$f: already has getDestroyProgress\")",
+      "Bash(echo \"$f: MISSING getDestroyProgress\")",
+      "Bash(echo \"$f: already has\")",
+      "Bash(echo \"$f: needs\")"
     ]
   }
 }

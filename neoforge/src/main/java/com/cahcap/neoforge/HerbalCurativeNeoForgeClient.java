@@ -39,7 +39,6 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import com.cahcap.neoforge.client.extensions.MultiblockBlockExtension;
 import org.jetbrains.annotations.NotNull;
 
 @Mod(value = HerbalCurativeCommon.MOD_ID, dist = Dist.CLIENT)
@@ -194,13 +193,6 @@ public class HerbalCurativeNeoForgeClient {
 
         @SubscribeEvent
         public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-            // Block Extensions - Custom destroy particles for multiblock structures
-            event.registerBlock(MultiblockBlockExtension.INSTANCE,
-                    ModBlocks.HERB_CABINET.get(),
-                    ModBlocks.CAULDRON.get(),
-                    ModBlocks.KILN.get(),
-                    ModBlocks.HERB_VAULT.get());
-            
             // Leafweave Armor
             IClientItemExtensions leafweaveArmorExtensions = new IClientItemExtensions() {
                 @Override
