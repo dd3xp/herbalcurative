@@ -8,7 +8,9 @@
       "Bash(./gradlew runData)",
       "Bash(./gradlew runClient)",
       "Bash(./gradlew compileJava)",
-      "Bash(./gradlew --no-daemon runData)"
+      "Bash(./gradlew --no-daemon runData)",
+      "Bash(python private/scripts/voxel.py --per-block \"private/assets/herbalcurative/Klin/klin.json\")",
+      "Bash(python private/scripts/voxel.py --per-block \"private/assets/herbalcurative/Cauldron/cauldron.json\")"
     ]
   }
 }

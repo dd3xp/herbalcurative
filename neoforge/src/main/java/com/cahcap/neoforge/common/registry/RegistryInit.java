@@ -86,6 +86,7 @@ public class RegistryInit {
         ModRegistries.FORGE_HAMMER = () -> ModItems.FORGE_HAMMER.get();
         ModRegistries.POT = () -> ModItems.POT.get();
         ModRegistries.CAULDRON_ITEM = () -> ModItems.CAULDRON.get();
+        ModRegistries.KILN_ITEM = () -> ModItems.KILN.get();
         ModRegistries.INCENSE_BURNER_ITEM = () -> ModItems.INCENSE_BURNER.get();
         ModRegistries.WITHER_SKELETON_POWDER = () -> ModItems.WITHER_SKELETON_POWDER.get();
         

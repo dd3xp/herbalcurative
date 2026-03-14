@@ -22,7 +22,7 @@ enum KilnComponentProvider implements IBlockComponentProvider {
     @Nullable
     @Override
     public ITooltipComponent getIcon(IBlockAccessor accessor, IPluginConfig config) {
-        return new ItemComponent(new ItemStack(ModRegistries.KILN.get()));
+        return new ItemComponent(new ItemStack(ModRegistries.KILN_ITEM.get()));
     }
 
     @Override

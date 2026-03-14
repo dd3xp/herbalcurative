@@ -586,14 +586,14 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         int dz = targetPos.getZ() - masterPos.getZ();
 
         if (dy == -1) {
-            // Layer 1: center = soul sand (default pyrisage-plantable), rest = stone bricks
+            // Layer 1: center = soul sand (default pyrisage-plantable), rest = lumistone bricks
             if (dx == 0 && dz == 0) {
                 return Blocks.SOUL_SAND.defaultBlockState();
             }
-            return Blocks.STONE_BRICKS.defaultBlockState();
+            return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
         } else if (dy == 0) {
-            // Layer 2: center = pyrisage(air after disassembly), front = stone brick slab (top),
-            // rest = stone bricks
+            // Layer 2: center = pyrisage, front = lumistone brick slab (top),
+            // rest = lumistone bricks
             if (dx == 0 && dz == 0) {
                 // Restore pyrisage on soul sand when disassembled
                 return ModRegistries.PYRISAGE.get().defaultBlockState();
@@ -601,20 +601,18 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
             // Check if this is the front position
             Direction relDir = getRelativeDirection(dx, dz);
             if (relDir == facing) {
-                return Blocks.STONE_BRICK_SLAB.defaultBlockState()
+                return ModRegistries.LUMISTONE_BRICK_SLAB.get().defaultBlockState()
                         .setValue(SlabBlock.TYPE, SlabType.TOP);
             }
-            return Blocks.STONE_BRICKS.defaultBlockState();
+            return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
         } else if (dy == 1) {
-            // Layer 3: center column (along facing axis) = stone bricks, sides = slabs
-            // For north/south facing: center column is dx=0
-            // For east/west facing: center column is dz=0
+            // Layer 3: center column (along facing axis) = lumistone bricks, sides = slabs
             boolean facingAlongZ = (facing == Direction.NORTH || facing == Direction.SOUTH);
             boolean isCenterColumn = facingAlongZ ? (dx == 0) : (dz == 0);
             if (isCenterColumn) {
-                return Blocks.STONE_BRICKS.defaultBlockState();
+                return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
             } else {
-                return Blocks.STONE_BRICK_SLAB.defaultBlockState()
+                return ModRegistries.LUMISTONE_BRICK_SLAB.get().defaultBlockState()
                         .setValue(SlabBlock.TYPE, SlabType.BOTTOM);
             }
         }
@@ -641,14 +639,14 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
 
     @Override
     public ItemStack getOriginalBlock() {
-        return new ItemStack(Blocks.STONE_BRICKS);
+        return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
     }
 
     @Override
     public BlockState getOriginalBlockState() {
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) {
-            return Blocks.STONE_BRICKS.defaultBlockState();
+            return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
         }
         return getOriginalBlockForPosition(getBlockPos(), masterPos);
     }

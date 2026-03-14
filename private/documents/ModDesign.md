@@ -202,14 +202,14 @@
     **第二层**：
       <table border="1">
       <tr><td>空</td><td>空</td><td>空</td></tr>
-      <tr><td>空</td><td>符文石砖</td><td>空</td></tr>
+      <tr><td>空</td><td>微光石砖</td><td>空</td></tr>
       <tr><td>空</td><td>空</td><td>空</td></tr>
       </table>
 
     **第三层**：
       <table border="1">
       <tr><td>空</td><td>空</td><td>空</td></tr>
-      <tr><td>空</td><td>符文石砖</td><td>空</td></tr>
+      <tr><td>空</td><td>微光石砖</td><td>空</td></tr>
       <tr><td>空</td><td>空</td><td>空</td></tr>
       </table>
 
@@ -244,23 +244,23 @@
 
   **第一层**：
     <table border="1">
-    <tr><td>石砖</td><td>石砖</td><td>石砖</td></tr>
-    <tr><td>石砖</td><td>可以种植炼狱草的任何方块</td><td>石砖</td></tr>
-    <tr><td>石砖</td><td>石砖</td><td>石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖</td><td>微光石砖</td></tr>
+    <tr><td>微光石砖</td><td>可以种植炼狱草的任何方块</td><td>微光石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖</td><td>微光石砖</td></tr>
     </table>
 
   **第二层**：
     <table border="1">
-    <tr><td>石砖</td><td>石砖</td><td>石砖</td></tr>
-    <tr><td>石砖</td><td>炼狱草</td><td>石砖</td></tr>
-    <tr><td>石砖</td><td>石砖台阶上半砖（正面）</td><td>石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖</td><td>微光石砖</td></tr>
+    <tr><td>微光石砖</td><td>炼狱草</td><td>微光石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖台阶上半砖（正面）</td><td>微光石砖</td></tr>
     </table>
 
   **第三层**：
     <table border="1">
-    <tr><td>石砖台阶下半砖</td><td>石砖</td><td>石砖台阶下半砖</td></tr>
-    <tr><td>石砖台阶下半砖</td><td>石砖</td><td>石砖台阶下半砖</td></tr>
-    <tr><td>石砖台阶下半砖</td><td>石砖</td><td>石砖台阶下半砖</td></tr>
+    <tr><td>微光石砖台阶下半砖</td><td>微光石砖</td><td>微光石砖台阶下半砖</td></tr>
+    <tr><td>微光石砖台阶下半砖</td><td>微光石砖</td><td>微光石砖台阶下半砖</td></tr>
+    <tr><td>微光石砖台阶下半砖</td><td>微光石砖</td><td>微光石砖台阶下半砖</td></tr>
     </table>
 
     多方块结构搭建完成后，使用织流环右键炼狱草可以进行组装。
@@ -287,23 +287,23 @@
 
   **第一层**：
     <table border="1">
-    <tr><td>石砖</td><td>石砖</td><td>石砖</td></tr>
-    <tr><td>石砖</td><td>石砖</td><td>石砖</td></tr>
-    <tr><td>石砖</td><td>石砖</td><td>石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖</td><td>微光石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖</td><td>微光石砖</td></tr>
+    <tr><td>微光石砖</td><td>微光石砖</td><td>微光石砖</td></tr>
     </table>
 
   **第二层**：
     <table border="1">
-    <tr><td>红樱木原木</td><td>石砖墙</td><td>红樱木原木</td></tr>
-    <tr><td>石砖墙</td><td>魔法合金块</td><td>石砖墙</td></tr>
+    <tr><td>红樱木原木</td><td>微光石砖墙</td><td>红樱木原木</td></tr>
+    <tr><td>微光石砖墙</td><td>魔法合金块</td><td>微光石砖墙</td></tr>
     <tr><td>红樱木原木</td><td>红樱木栅栏（正面）</td><td>红樱木原木</td></tr>
     </table>
 
   **第三层**：
     <table border="1">
-    <tr><td>石砖台阶下半砖</td><td>石砖台阶下半砖</td><td>石砖台阶下半砖</td></tr>
-    <tr><td>石砖台阶下半砖</td><td>石砖</td><td>石砖台阶下半砖</td></tr>
-    <tr><td>石砖台阶下半砖</td><td>石砖台阶下半砖</td><td>石砖台阶下半砖</td></tr>
+    <tr><td>微光石砖台阶下半砖</td><td>微光石砖台阶下半砖</td><td>微光石砖台阶下半砖</td></tr>
+    <tr><td>微光石砖台阶下半砖</td><td>微光石砖</td><td>微光石砖台阶下半砖</td></tr>
+    <tr><td>微光石砖台阶下半砖</td><td>微光石砖台阶下半砖</td><td>微光石砖台阶下半砖</td></tr>
     </table>
 
     多方块结构搭建完成后，用织流环右击栅栏可将其变成一个拥有新的材质的整体，整体中的每个方块都视作这个容器。在其正面的格子里，会以以下顺序渲染出每种草药的物品材质：

@@ -82,13 +82,13 @@ public class KilnBlock extends BaseEntityBlock {
         // Define NORTH shapes: dx=-1..1, dy=-1..1, dz=-1..1
         // dy=-1
         NORTH_SHAPES[idx(-1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(12, 0, 0, 16, 16, 16));
-        NORTH_SHAPES[idx(-1,-1, 0)] = Shapes.or(Block.box(0, 12, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 4, 16), Block.box(0, 4, 12, 16, 12, 16), Block.box(0, 4, 0, 16, 12, 4));
+        NORTH_SHAPES[idx(-1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
         NORTH_SHAPES[idx(-1,-1, 1)] = Block.box(4, 0, 0, 16, 16, 12);
         NORTH_SHAPES[idx( 0,-1,-1)] = Shapes.or(Block.box(0, 0, 4, 16, 8, 16), Block.box(0, 4, 0, 16, 8, 4));
         NORTH_SHAPES[idx( 0,-1, 0)] = Block.box(0, 0, 0, 16, 4, 16);
-        NORTH_SHAPES[idx( 0,-1, 1)] = Shapes.or(Block.box(0, 12, 0, 16, 16, 16), Block.box(0, 4, 0, 4, 12, 16), Block.box(12, 4, 0, 16, 12, 16), Block.box(0, 0, 0, 16, 4, 16));
+        NORTH_SHAPES[idx( 0,-1, 1)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 5, 0, 5, 11, 16), Block.box(11, 5, 0, 16, 11, 16), Block.box(0, 0, 0, 16, 5, 16));
         NORTH_SHAPES[idx( 1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(0, 0, 0, 4, 16, 16));
-        NORTH_SHAPES[idx( 1,-1, 0)] = Shapes.or(Block.box(0, 12, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 4, 16), Block.box(0, 4, 12, 16, 12, 16), Block.box(0, 4, 0, 16, 12, 4));
+        NORTH_SHAPES[idx( 1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
         NORTH_SHAPES[idx( 1,-1, 1)] = Block.box(0, 0, 0, 12, 16, 12);
         // dy=0
         NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(12, 8, 4, 16, 16, 12), Block.box(12, 4, 4, 16, 8, 16), Block.box(12, 0, 0, 16, 4, 16));

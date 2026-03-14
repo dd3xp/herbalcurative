@@ -160,6 +160,9 @@ public class ModItems {
     
     // Cauldron display item (for JADE/WTHIT, not placeable)
     public static final DeferredItem<Item> CAULDRON = ITEMS.registerSimpleItem("cauldron");
+
+    // Kiln display item (for JADE/WTHIT, not placeable)
+    public static final DeferredItem<Item> KILN = ITEMS.registerSimpleItem("kiln");
     
     // Herb Pot - placeable cultivation block
     public static final DeferredItem<BlockItem> HERB_POT = ITEMS.register("herb_pot",

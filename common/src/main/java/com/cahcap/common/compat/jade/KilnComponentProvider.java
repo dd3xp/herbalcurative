@@ -62,7 +62,7 @@ public class KilnComponentProvider implements IBlockComponentProvider {
     @Nullable
     @Override
     public IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
-        return IElementHelper.get().item(new ItemStack(ModRegistries.KILN.get()));
+        return IElementHelper.get().item(new ItemStack(ModRegistries.KILN_ITEM.get()));
     }
 
     @Override

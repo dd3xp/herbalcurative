@@ -68,24 +68,24 @@ public class CauldronBlock extends BaseEntityBlock {
     public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
     
     // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
-    private static final VoxelShape SHAPE_N1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4), Block.box(0, 12, 4, 4, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));
-    private static final VoxelShape SHAPE_N1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 4, 16, 16));
-    private static final VoxelShape SHAPE_N1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16), Block.box(0, 12, 0, 4, 16, 12), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16));
-    private static final VoxelShape SHAPE_0_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4));
+    private static final VoxelShape SHAPE_N1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(0, 12, 6, 6, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));
+    private static final VoxelShape SHAPE_N1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 6, 16, 16));
+    private static final VoxelShape SHAPE_N1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(0, 12, 0, 6, 16, 10), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16));
+    private static final VoxelShape SHAPE_0_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6));
     private static final VoxelShape SHAPE_0_0_0 = Block.box(0, 8, 0, 16, 12, 16);
-    private static final VoxelShape SHAPE_0_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16));
-    private static final VoxelShape SHAPE_1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 4), Block.box(12, 12, 4, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4));
-    private static final VoxelShape SHAPE_1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(12, 12, 0, 16, 16, 16));
-    private static final VoxelShape SHAPE_1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 12, 16, 16, 16), Block.box(12, 12, 0, 16, 16, 12), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16));
-    private static final VoxelShape SHAPE_N1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 4), Block.box(0, 0, 4, 4, 16, 16));
-    private static final VoxelShape SHAPE_N1_1_0 = Block.box(0, 0, 0, 4, 16, 16);
-    private static final VoxelShape SHAPE_N1_1_1 = Shapes.or(Block.box(0, 0, 12, 16, 16, 16), Block.box(0, 0, 0, 4, 16, 12));
-    private static final VoxelShape SHAPE_0_1_N1 = Block.box(0, 0, 0, 16, 16, 4);
+    private static final VoxelShape SHAPE_0_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16));
+    private static final VoxelShape SHAPE_1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(10, 12, 6, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4));
+    private static final VoxelShape SHAPE_1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(10, 12, 0, 16, 16, 16));
+    private static final VoxelShape SHAPE_1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(10, 12, 0, 16, 16, 10), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16));
+    private static final VoxelShape SHAPE_N1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(0, 0, 6, 6, 16, 16));
+    private static final VoxelShape SHAPE_N1_1_0 = Block.box(0, 0, 0, 6, 16, 16);
+    private static final VoxelShape SHAPE_N1_1_1 = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(0, 0, 0, 6, 16, 10));
+    private static final VoxelShape SHAPE_0_1_N1 = Block.box(0, 0, 0, 16, 16, 6);
     private static final VoxelShape SHAPE_0_1_0 = Shapes.empty();  // Center: pot opening
-    private static final VoxelShape SHAPE_0_1_1 = Block.box(0, 0, 12, 16, 16, 16);
-    private static final VoxelShape SHAPE_1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 4), Block.box(12, 0, 4, 16, 16, 16));
-    private static final VoxelShape SHAPE_1_1_0 = Block.box(12, 0, 0, 16, 16, 16);
-    private static final VoxelShape SHAPE_1_1_1 = Shapes.or(Block.box(0, 0, 12, 16, 16, 16), Block.box(12, 0, 0, 16, 16, 12));
+    private static final VoxelShape SHAPE_0_1_1 = Block.box(0, 0, 10, 16, 16, 16);
+    private static final VoxelShape SHAPE_1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(10, 0, 6, 16, 16, 16));
+    private static final VoxelShape SHAPE_1_1_0 = Block.box(10, 0, 0, 16, 16, 16);
+    private static final VoxelShape SHAPE_1_1_1 = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(10, 0, 0, 16, 16, 10));
     
     public CauldronBlock(Properties properties) {
         super(properties);
@@ -464,9 +464,9 @@ public class CauldronBlock extends BaseEntityBlock {
             // Multiple smoke particles rising from the liquid surface
             for (int i = 0; i < 3; i++) {
                 if (random.nextInt(2) == 0) {
-                    double x = pos.getX() - 0.8 + random.nextDouble() * 2.6;
+                    double x = pos.getX() - 0.625 + random.nextDouble() * 2.25;
                     double y = pos.getY() + 0.9;
-                    double z = pos.getZ() - 0.8 + random.nextDouble() * 2.6;
+                    double z = pos.getZ() - 0.625 + random.nextDouble() * 2.25;
                     level.addParticle(ParticleTypes.SMOKE, x, y, z, 
                             (random.nextDouble() - 0.5) * 0.01, 0.03, (random.nextDouble() - 0.5) * 0.01);
                 }
@@ -483,9 +483,9 @@ public class CauldronBlock extends BaseEntityBlock {
             // Campfire smoke rising - boiling effect
             for (int i = 0; i < 2; i++) {
                 if (random.nextInt(2) == 0) {
-                    double x = pos.getX() - 0.5 + random.nextDouble() * 2;
+                    double x = pos.getX() - 0.4 + random.nextDouble() * 1.8;
                     double y = pos.getY() + 1.0;
-                    double z = pos.getZ() - 0.5 + random.nextDouble() * 2;
+                    double z = pos.getZ() - 0.4 + random.nextDouble() * 1.8;
                     level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z,
                             (random.nextDouble() - 0.5) * 0.02, 0.05, (random.nextDouble() - 0.5) * 0.02);
                 }
@@ -493,8 +493,8 @@ public class CauldronBlock extends BaseEntityBlock {
             // Bubble pop particles on the liquid surface (boiling effect)
             double liquidY = pos.getY() + (27.0 / 16.0);
             for (int i = 0; i < 8; i++) {
-                double bx = pos.getX() - 0.7 + random.nextDouble() * 2.4;
-                double bz = pos.getZ() - 0.7 + random.nextDouble() * 2.4;
+                double bx = pos.getX() - 0.625 + random.nextDouble() * 2.25;
+                double bz = pos.getZ() - 0.625 + random.nextDouble() * 2.25;
                 level.addParticle(ParticleTypes.BUBBLE_POP, bx, liquidY, bz,
                         (random.nextDouble() - 0.5) * 0.03, 0.03 + random.nextDouble() * 0.02, (random.nextDouble() - 0.5) * 0.03);
             }

@@ -26,22 +26,22 @@ import java.util.List;
  * Layout (ground placement, front = south by default):
  *
  * Layer 1 (bottom, y=-1 from master):
- *   [StoneBricks][StoneBricks][StoneBricks]
- *   [StoneBricks][PyrisagePlantable][StoneBricks]
- *   [StoneBricks][StoneBricks][StoneBricks]
+ *   [LumistoneBricks][LumistoneBricks][LumistoneBricks]
+ *   [LumistoneBricks][PyrisagePlantable][LumistoneBricks]
+ *   [LumistoneBricks][LumistoneBricks][LumistoneBricks]
  *
  * Layer 2 (middle, y=0, master layer):
- *   [StoneBricks][StoneBricks][StoneBricks]
- *   [StoneBricks][Pyrisage (MASTER)][StoneBricks]
- *   [StoneBricks][StoneBrickSlab(top, front)][StoneBricks]
+ *   [LumistoneBricks][LumistoneBricks][LumistoneBricks]
+ *   [LumistoneBricks][Pyrisage (MASTER)][LumistoneBricks]
+ *   [LumistoneBricks][LumistoneBrickSlab(top, front)][LumistoneBricks]
  *
  * Layer 3 (top, y=1):
- *   [StoneBrickSlab(bottom)][StoneBricks][StoneBrickSlab(bottom)]
- *   [StoneBrickSlab(bottom)][StoneBricks][StoneBrickSlab(bottom)]
- *   [StoneBrickSlab(bottom)][StoneBricks][StoneBrickSlab(bottom)]
+ *   [LumistoneBrickSlab(bottom)][LumistoneBricks][LumistoneBrickSlab(bottom)]
+ *   [LumistoneBrickSlab(bottom)][LumistoneBricks][LumistoneBrickSlab(bottom)]
+ *   [LumistoneBrickSlab(bottom)][LumistoneBricks][LumistoneBrickSlab(bottom)]
  *
  * Trigger: Right-click Pyrisage with Flowweave Ring to assemble.
- * Front face: The side with the stone brick slab on layer 2.
+ * Front face: The side with the lumistone brick slab on layer 2.
  */
 public class MultiblockKiln {
 
@@ -50,21 +50,21 @@ public class MultiblockKiln {
 
     /**
      * Check if the clicked block can trigger kiln formation.
-     * Trigger: stone brick slab (top half) — the front opening of the kiln on Layer 2.
+     * Trigger: lumistone brick slab (top half) — the front opening of the kiln on Layer 2.
      */
     public boolean isBlockTrigger(BlockState state) {
-        return state.is(Blocks.STONE_BRICK_SLAB) &&
+        return state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get()) &&
                 state.hasProperty(SlabBlock.TYPE) &&
                 state.getValue(SlabBlock.TYPE) == SlabType.TOP;
     }
 
     /**
      * Attempt to create the kiln multiblock structure.
-     * The clicked block is the stone brick slab (top half) on the front of Layer 2.
+     * The clicked block is the lumistone brick slab (top half) on the front of Layer 2.
      * We search adjacent blocks for the Pyrisage to locate the master position.
      *
      * @param level      The world
-     * @param clickedPos Position of the clicked stone brick slab
+     * @param clickedPos Position of the clicked lumistone brick slab
      * @param player     The player who triggered the formation
      * @return true if structure was successfully formed
      */
@@ -145,14 +145,14 @@ public class MultiblockKiln {
     }
 
     /**
-     * Detect the front face direction by finding the stone brick slab (top) on layer 2.
+     * Detect the front face direction by finding the lumistone brick slab (top) on layer 2.
      * The front is the direction from master towards the slab.
      */
     private Direction detectFrontFace(Level level, BlockPos masterPos) {
         for (Direction dir : Direction.Plane.HORIZONTAL) {
             BlockPos slabPos = masterPos.relative(dir);
             BlockState state = level.getBlockState(slabPos);
-            if (state.is(Blocks.STONE_BRICK_SLAB) &&
+            if (state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get()) &&
                     state.hasProperty(SlabBlock.TYPE) &&
                     state.getValue(SlabBlock.TYPE) == SlabType.TOP) {
                 return dir;
@@ -176,15 +176,15 @@ public class MultiblockKiln {
                         return false;
                     }
                 } else {
-                    if (!level.getBlockState(pos).is(Blocks.STONE_BRICKS)) {
-                        LOGGER.info("[Kiln] Layer 1 ({},{}) at {} expected stone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
+                    if (!level.getBlockState(pos).is(ModRegistries.LUMISTONE_BRICKS.get())) {
+                        LOGGER.info("[Kiln] Layer 1 ({},{}) at {} expected lumistone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
                         return false;
                     }
                 }
             }
         }
 
-        // === Layer 2 (y=0): 7 stone bricks + 1 pyrisage(master) + 1 stone brick slab(top, front) ===
+        // === Layer 2 (y=0): 7 stone bricks + 1 pyrisage(master) + 1 lumistone brick slab(top, front) ===
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 BlockPos pos = masterPos.offset(x, 0, z);
@@ -194,22 +194,22 @@ public class MultiblockKiln {
                 Direction relDir = getRelativeDirection(x, z);
                 if (relDir == facing) {
                     BlockState state = level.getBlockState(pos);
-                    if (!state.is(Blocks.STONE_BRICK_SLAB) ||
+                    if (!state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get()) ||
                             !state.hasProperty(SlabBlock.TYPE) ||
                             state.getValue(SlabBlock.TYPE) != SlabType.TOP) {
                         LOGGER.info("[Kiln] Layer 2 front ({},{}) at {} expected stone_brick_slab(top), got: {}", x, z, pos, state);
                         return false;
                     }
                 } else {
-                    if (!level.getBlockState(pos).is(Blocks.STONE_BRICKS)) {
-                        LOGGER.info("[Kiln] Layer 2 ({},{}) at {} expected stone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
+                    if (!level.getBlockState(pos).is(ModRegistries.LUMISTONE_BRICKS.get())) {
+                        LOGGER.info("[Kiln] Layer 2 ({},{}) at {} expected lumistone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
                         return false;
                     }
                 }
             }
         }
 
-        // === Layer 3 (y=1): center column (along facing axis) = stone bricks, sides = stone brick slab (bottom) ===
+        // === Layer 3 (y=1): center column (along facing axis) = stone bricks, sides = lumistone brick slab (bottom) ===
         // Design (viewed from front):
         // [slab][bricks][slab]
         // [slab][bricks][slab]
@@ -224,14 +224,14 @@ public class MultiblockKiln {
                 boolean isCenterColumn = facingAlongZ ? (x == 0) : (z == 0);
                 if (isCenterColumn) {
                     // Center column: stone bricks
-                    if (!level.getBlockState(pos).is(Blocks.STONE_BRICKS)) {
-                        LOGGER.info("[Kiln] Layer 3 ({},{}) at {} expected stone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
+                    if (!level.getBlockState(pos).is(ModRegistries.LUMISTONE_BRICKS.get())) {
+                        LOGGER.info("[Kiln] Layer 3 ({},{}) at {} expected lumistone_bricks, got: {}", x, z, pos, level.getBlockState(pos));
                         return false;
                     }
                 } else {
-                    // Side columns: stone brick slab (bottom half)
+                    // Side columns: lumistone brick slab (bottom half)
                     BlockState state = level.getBlockState(pos);
-                    if (!state.is(Blocks.STONE_BRICK_SLAB) ||
+                    if (!state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get()) ||
                             !state.hasProperty(SlabBlock.TYPE) ||
                             state.getValue(SlabBlock.TYPE) != SlabType.BOTTOM) {
                         LOGGER.info("[Kiln] Layer 3 ({},{}) at {} expected stone_brick_slab(bottom), got: {}", x, z, pos, state);

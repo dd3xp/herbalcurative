@@ -41,11 +41,11 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
     // Liquid rendering dimensions (relative to master block at center of Layer 1)
     // The cauldron is 3x3, master is at center bottom, liquid fills the interior
     // Model: bottom Y=8 to 12, walls Y=12 to 32
-    // Wall inner edges: all sides from -12 to 28 (now a perfect square, 40x40 pixels)
-    private static final float LIQUID_MIN_X = -12.0f / 16.0f;   // West wall inner edge
-    private static final float LIQUID_MAX_X = 28.0f / 16.0f;    // East wall inner edge
-    private static final float LIQUID_MIN_Z = -12.0f / 16.0f;   // North wall inner edge
-    private static final float LIQUID_MAX_Z = 28.0f / 16.0f;    // South wall inner edge
+    // Wall inner edges: all sides from -10 to 26 (36x36 pixels with 6px thick walls)
+    private static final float LIQUID_MIN_X = -10.0f / 16.0f;   // West wall inner edge
+    private static final float LIQUID_MAX_X = 26.0f / 16.0f;    // East wall inner edge
+    private static final float LIQUID_MIN_Z = -10.0f / 16.0f;   // North wall inner edge
+    private static final float LIQUID_MAX_Z = 26.0f / 16.0f;    // South wall inner edge
     private static final float LIQUID_BASE_Y = 12.0f / 16.0f;   // Top of bottom plate (Y=12)
     private static final float LIQUID_FULL_Y = 27.0f / 16.0f;   // ~75% height (bottom=12, top=32, 75%=27)
     

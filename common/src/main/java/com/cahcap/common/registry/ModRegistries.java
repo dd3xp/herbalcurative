@@ -103,6 +103,7 @@ public class ModRegistries {
     public static Supplier<Item> FORGE_HAMMER;
     public static Supplier<Item> POT;
     public static Supplier<Item> CAULDRON_ITEM;
+    public static Supplier<Item> KILN_ITEM;
     public static Supplier<Item> INCENSE_BURNER_ITEM;
     public static Supplier<Item> WITHER_SKELETON_POWDER;
     
