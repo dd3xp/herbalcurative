@@ -81,33 +81,33 @@ public class KilnBlock extends BaseEntityBlock {
     static {
         // Define NORTH shapes: dx=-1..1, dy=-1..1, dz=-1..1
         // dy=-1
-        NORTH_SHAPES[idx(-1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(12, 0, 0, 16, 16, 16));
+        NORTH_SHAPES[idx(-1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 16, 16), Block.box(15, 13, 0, 16, 16, 16), Block.box(15, 0, 0, 16, 13, 16));
         NORTH_SHAPES[idx(-1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
         NORTH_SHAPES[idx(-1,-1, 1)] = Block.box(4, 0, 0, 16, 16, 12);
-        NORTH_SHAPES[idx( 0,-1,-1)] = Shapes.or(Block.box(0, 0, 4, 16, 8, 16), Block.box(0, 4, 0, 16, 8, 4));
+        NORTH_SHAPES[idx( 0,-1,-1)] = Shapes.or(Block.box(2, 0, 4, 14, 8, 16), Block.box(3, 4, 0, 13, 8, 4), Block.box(5, 15, 0, 11, 16, 12), Block.box(11, 13, 0, 16, 16, 16), Block.box(0, 13, 0, 5, 16, 16), Block.box(13, 0, 0, 16, 13, 16), Block.box(0, 0, 0, 3, 13, 16));
         NORTH_SHAPES[idx( 0,-1, 0)] = Block.box(0, 0, 0, 16, 4, 16);
         NORTH_SHAPES[idx( 0,-1, 1)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 5, 0, 5, 11, 16), Block.box(11, 5, 0, 16, 11, 16), Block.box(0, 0, 0, 16, 5, 16));
-        NORTH_SHAPES[idx( 1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(0, 0, 0, 4, 16, 16));
+        NORTH_SHAPES[idx( 1,-1,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 16, 16), Block.box(0, 13, 0, 1, 16, 16), Block.box(0, 0, 0, 1, 13, 16));
         NORTH_SHAPES[idx( 1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
         NORTH_SHAPES[idx( 1,-1, 1)] = Block.box(0, 0, 0, 12, 16, 12);
         // dy=0
-        NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(12, 8, 4, 16, 16, 12), Block.box(12, 4, 4, 16, 8, 16), Block.box(12, 0, 0, 16, 4, 16));
+        NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 16, 16), Block.box(15, 3, 4, 16, 16, 12), Block.box(15, 1, 4, 16, 3, 12), Block.box(15, 1, 12, 16, 16, 16), Block.box(15, 0, 0, 16, 1, 16));
         NORTH_SHAPES[idx(-1, 0, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 16, 16), Block.box(12, 0, 0, 16, 16, 16));
         NORTH_SHAPES[idx(-1, 0, 1)] = Block.box(4, 0, 0, 16, 16, 12);
-        NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 8, 4, 16, 16, 12), Block.box(4, 4, 0, 12, 8, 16), Block.box(0, 8, 12, 16, 16, 16), Block.box(12, 0, 0, 16, 4, 16), Block.box(0, 0, 0, 4, 4, 16), Block.box(12, 4, 0, 16, 8, 16), Block.box(0, 4, 0, 4, 8, 16));
+        NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 3, 4, 16, 16, 12), Block.box(14, 1, 4, 16, 3, 12), Block.box(0, 1, 4, 2, 3, 12), Block.box(2, 1, 0, 14, 3, 12), Block.box(5, 0, 0, 11, 1, 12), Block.box(0, 1, 12, 16, 16, 16), Block.box(11, 0, 0, 16, 1, 16), Block.box(0, 0, 0, 5, 1, 16));
         NORTH_SHAPES[idx( 0, 0, 0)] = Shapes.empty();
         NORTH_SHAPES[idx( 0, 0, 1)] = Shapes.or(Block.box(0, 0, 4, 16, 16, 12), Block.box(0, 0, 0, 16, 16, 4));
-        NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 16, 16), Block.box(0, 8, 4, 4, 16, 12), Block.box(0, 4, 4, 4, 8, 16), Block.box(0, 0, 0, 4, 4, 16));
+        NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 16, 16), Block.box(0, 3, 4, 1, 16, 12), Block.box(0, 1, 4, 1, 3, 12), Block.box(0, 1, 12, 1, 16, 16), Block.box(0, 0, 0, 1, 1, 16));
         NORTH_SHAPES[idx( 1, 0, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 16, 16), Block.box(0, 0, 0, 4, 16, 16));
         NORTH_SHAPES[idx( 1, 0, 1)] = Block.box(0, 0, 0, 12, 16, 12);
         // dy=1
-        NORTH_SHAPES[idx(-1, 1,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 4, 16), Block.box(12, 0, 4, 16, 4, 12), Block.box(8, 4, 4, 16, 10, 16));
+        NORTH_SHAPES[idx(-1, 1,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 4, 16), Block.box(15, 0, 4, 16, 4, 12), Block.box(8, 4, 4, 16, 10, 16), Block.box(15, 0, 12, 16, 4, 16));
         NORTH_SHAPES[idx(-1, 1, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 4, 16), Block.box(8, 4, 0, 16, 10, 16), Block.box(12, 0, 0, 16, 4, 16));
         NORTH_SHAPES[idx(-1, 1, 1)] = Shapes.or(Block.box(4, 0, 0, 16, 4, 12), Block.box(8, 4, 0, 16, 10, 12));
         NORTH_SHAPES[idx( 0, 1,-1)] = Shapes.or(Block.box(0, 0, 4, 16, 4, 12), Block.box(0, 4, 4, 16, 10, 16), Block.box(0, 0, 12, 16, 4, 16));
         NORTH_SHAPES[idx( 0, 1, 0)] = Block.box(0, 4, 0, 16, 10, 16);
         NORTH_SHAPES[idx( 0, 1, 1)] = Shapes.or(Block.box(0, 0, 4, 16, 4, 12), Block.box(0, 4, 0, 16, 10, 12), Block.box(0, 0, 0, 16, 4, 4));
-        NORTH_SHAPES[idx( 1, 1,-1)] = Shapes.or(Block.box(4, 0, 4, 12, 4, 16), Block.box(0, 0, 4, 4, 4, 12), Block.box(0, 4, 4, 8, 10, 16));
+        NORTH_SHAPES[idx( 1, 1,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 4, 16), Block.box(0, 0, 4, 1, 4, 12), Block.box(0, 4, 4, 8, 10, 16), Block.box(0, 0, 12, 1, 4, 16));
         NORTH_SHAPES[idx( 1, 1, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 4, 16), Block.box(0, 4, 0, 8, 10, 16), Block.box(0, 0, 0, 4, 4, 16));
         NORTH_SHAPES[idx( 1, 1, 1)] = Shapes.or(Block.box(0, 0, 0, 12, 4, 12), Block.box(0, 4, 0, 8, 10, 12));
 
