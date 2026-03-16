@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-15T00:55:57.7765325	Tags for minecraft:block mod id herbalcurative
+// 1.21.1	2026-03-16T18:28:23.6240267	Tags for minecraft:block mod id herbalcurative
 938206c39a7e96b6d46b0eda6d1458df024a6218 data/c/tags/block/stones.json
 dc8f2520569e19559c350f0993a2d5b2f3e510e6 data/c/tags/block/stone_bricks.json
 96afa1b61cca9a3c4c94936a0489f6fb75012ace data/herbalcurative/tags/block/heat_sources.json
@@ -10,7 +10,7 @@ cac8611abec82bb1379cb3623de7351b2359122d data/minecraft/tags/block/leaves.json
 b4c7c85a5fda6e23316185d2a57f6339db31b615 data/minecraft/tags/block/logs.json
 1e23e735e8a2bf34cb3cb28391e1c76e32dc420c data/minecraft/tags/block/mineable/axe.json
 eafcaab92dc78835a44b4209f76b2cdb48273e28 data/minecraft/tags/block/mineable/hoe.json
-3e3454332d5743173a1b793c81eb3169fdd347a7 data/minecraft/tags/block/mineable/pickaxe.json
+4747239e7da3b3db456d2ee3aa73d36043fa6c92 data/minecraft/tags/block/mineable/pickaxe.json
 81a822347c96b86d3610880bee90697b489ae1fb data/minecraft/tags/block/planks.json
 8dee95a23849f6ea2589299c0d6a824fbc73fc60 data/minecraft/tags/block/pressure_plates.json
 4c329aac2d865a419beabf56e8feab16b0cda0a3 data/minecraft/tags/block/saplings.json

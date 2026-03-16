@@ -35,9 +35,9 @@ public class ModCreativeTabs {
                         output.accept(ModItems.ROSYNIA_SEED.get());
                         
                         // Crafting Materials
-                        output.accept(ModItems.LEATHER_ARMOR.get());
-                        output.accept(ModItems.VELVET_ARMOR.get());
-                        output.accept(ModItems.SILK_ARMOR.get());
+                        output.accept(ModItems.LEATHER_PLATE.get());
+                        output.accept(ModItems.VELVET_PLATE.get());
+                        output.accept(ModItems.SILK_PLATE.get());
                         output.accept(ModItems.MAGIC_ALLOY_DUST.get());
                         output.accept(ModItems.MAGIC_ALLOY_INGOT.get());
                         output.accept(ModItems.BRILLIANT_GEM_DUST.get());

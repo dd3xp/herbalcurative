@@ -42,7 +42,24 @@
       "Bash(echo \"$f: already has getDestroyProgress\")",
       "Bash(echo \"$f: MISSING getDestroyProgress\")",
       "Bash(echo \"$f: already has\")",
-      "Bash(echo \"$f: needs\")"
+      "Bash(echo \"$f: needs\")",
+      "Bash(find /c/Codes/herbalcurative -type f -path */tags/item* -name *.json)",
+      "Bash(find /c/Codes/herbalcurative -type f \\\\\\(-name *.md -o -name *.txt \\\\\\) -path *doc*)",
+      "Bash(mv textures/item/leather_armor.png textures/item/leather_plate.png)",
+      "Bash(mv textures/item/velvet_armor.png textures/item/velvet_plate.png)",
+      "Bash(mv textures/item/silk_armor.png textures/item/silk_plate.png)",
+      "Bash(rm models/item/leather_armor.json models/item/velvet_armor.json models/item/silk_armor.json)",
+      "Bash(where java:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/17145/.gradle/**)",
+      "Read(//c/Users/17145/**)",
+      "Read(//c/Users/17145/.sdkman/candidates/**)",
+      "Bash(reg query:*)",
+      "Bash(java -version)",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\BellSoft\\\\'' -ErrorAction SilentlyContinue | Select-Object Name\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files'' -Directory | Where-Object { $_.Name -match ''bell|java|jdk|adopt|zulu|corretto|temurin'' } | Select-Object -ExpandProperty FullName\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\Java'' | Select-Object -ExpandProperty Name\")",
+      "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''Machine''\\); [System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''User''\\)\")"
     ]
   }
 }

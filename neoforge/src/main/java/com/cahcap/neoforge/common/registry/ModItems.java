@@ -43,10 +43,10 @@ public class ModItems {
 
     // ==================== Crafting Materials ====================
     
-    // Armor materials
-    public static final DeferredItem<Item> LEATHER_ARMOR = ITEMS.registerSimpleItem("leather_armor");
-    public static final DeferredItem<Item> VELVET_ARMOR = ITEMS.registerSimpleItem("velvet_armor");
-    public static final DeferredItem<Item> SILK_ARMOR = ITEMS.registerSimpleItem("silk_armor");
+    // Plate materials (crafting intermediates for armor sets)
+    public static final DeferredItem<Item> LEATHER_PLATE = ITEMS.registerSimpleItem("leather_plate");
+    public static final DeferredItem<Item> VELVET_PLATE = ITEMS.registerSimpleItem("velvet_plate");
+    public static final DeferredItem<Item> SILK_PLATE = ITEMS.registerSimpleItem("silk_plate");
     
     // Magic Alloy materials
     public static final DeferredItem<Item> MAGIC_ALLOY_DUST = ITEMS.registerSimpleItem("magic_alloy_dust");
