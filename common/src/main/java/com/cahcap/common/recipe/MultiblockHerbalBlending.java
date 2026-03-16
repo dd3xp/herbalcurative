@@ -1,4 +1,4 @@
-package com.cahcap.common.multiblock;
+package com.cahcap.common.recipe;
 
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
