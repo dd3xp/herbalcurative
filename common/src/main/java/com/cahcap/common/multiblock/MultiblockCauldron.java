@@ -105,7 +105,6 @@ public class MultiblockCauldron {
                         cauldron.formed = true;
                         cauldron.posInMultiblock = t.posInMultiblock();
                         cauldron.offset = new int[]{offsetX, offsetY, offsetZ};
-                        cauldron.renderAABB = null;
                     }
                 });
 

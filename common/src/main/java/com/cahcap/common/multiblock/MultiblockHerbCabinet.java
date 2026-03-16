@@ -32,7 +32,7 @@ public class MultiblockHerbCabinet {
         if (level.isClientSide) {
             return false;
         }
-        
+
         // Get facing direction from the clicked face
         Direction facing;
         if (side.getAxis() == Direction.Axis.Y) {
@@ -40,26 +40,12 @@ public class MultiblockHerbCabinet {
         } else {
             facing = side;
         }
-        
-        Direction right = facing.getClockWise();
-        
-        // Clicked position should be center-bottom
-        BlockPos bottomLeft = clickedPos.relative(right.getOpposite());
-        
-        // Validate structure
-        for (int h = 0; h < 2; h++) {
-            for (int w = 0; w < 3; w++) {
-                BlockPos checkPos = bottomLeft.relative(Direction.UP, h).relative(right, w);
-                BlockState state = level.getBlockState(checkPos);
-                
-                if (!state.is(ModRegistries.RED_CHERRY_LOG.get())) {
-                    return false;
-                }
-            }
-        }
-        
-        // Structure is valid - transform it
+
         BlockPos masterPos = clickedPos;
+
+        if (!validateStructure(level, masterPos, facing)) {
+            return false;
+        }
 
         // Build transform list: 3x2, master at (0,0) center-bottom = (1,0) in grid
         List<Multiblock.BlockTransform> transforms = new ArrayList<>();
@@ -91,12 +77,26 @@ public class MultiblockHerbCabinet {
                         cabinet.formed = true;
                         cabinet.posInMultiblock = t.posInMultiblock();
                         cabinet.offset = new int[]{offsetX, offsetY, offsetZ};
-                        cabinet.renderAABB = null;
                     }
                 });
 
         level.playSound(null, masterPos, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
-        
+
+        return true;
+    }
+
+    private boolean validateStructure(Level level, BlockPos masterPos, Direction facing) {
+        Direction right = facing.getClockWise();
+        BlockPos bottomLeft = masterPos.relative(right.getOpposite());
+
+        for (int h = 0; h < 2; h++) {
+            for (int w = 0; w < 3; w++) {
+                BlockPos checkPos = bottomLeft.relative(Direction.UP, h).relative(right, w);
+                if (!level.getBlockState(checkPos).is(ModRegistries.RED_CHERRY_LOG.get())) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 }

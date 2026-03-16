@@ -1524,7 +1524,20 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         return getOriginalBlockForPosition(getBlockPos(), masterPos);
     }
-    
+
+    public AABB computeRenderAABB() {
+        if (renderAABB == null && formed) {
+            BlockPos masterPos = getMasterPos();
+            if (masterPos != null) {
+                renderAABB = new AABB(
+                        masterPos.getX() - 1, masterPos.getY(), masterPos.getZ() - 1,
+                        masterPos.getX() + 2, masterPos.getY() + 2, masterPos.getZ() + 2
+                );
+            }
+        }
+        return renderAABB;
+    }
+
     // ==================== NBT Serialization ====================
     
     @Override

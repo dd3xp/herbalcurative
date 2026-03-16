@@ -214,7 +214,27 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
     public ItemStack getOriginalBlock() {
         return new ItemStack(ModRegistries.RED_CHERRY_LOG.get());
     }
-    
+
+    public AABB computeRenderAABB() {
+        if (renderAABB == null && formed) {
+            BlockPos masterPos = getMasterPos();
+            if (masterPos != null && facing != null) {
+                Direction right = facing.getClockWise();
+                BlockPos bottomLeft = masterPos.relative(right.getOpposite());
+                BlockPos topRight = bottomLeft.relative(Direction.UP, 1).relative(right, 2);
+                renderAABB = new AABB(
+                        Math.min(bottomLeft.getX(), topRight.getX()),
+                        Math.min(bottomLeft.getY(), topRight.getY()),
+                        Math.min(bottomLeft.getZ(), topRight.getZ()),
+                        Math.max(bottomLeft.getX(), topRight.getX()) + 1,
+                        Math.max(bottomLeft.getY(), topRight.getY()) + 1,
+                        Math.max(bottomLeft.getZ(), topRight.getZ()) + 1
+                );
+            }
+        }
+        return renderAABB;
+    }
+
     public static Item[] getAllHerbItems() {
         return new Item[] {
                 ModRegistries.SCALEPLATE.get(),

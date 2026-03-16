@@ -75,8 +75,4 @@ public class KilnRenderer implements BlockEntityRenderer<KilnBlockEntity> {
         poseStack.popPose();
     }
 
-    @Override
-    public boolean shouldRenderOffScreen(KilnBlockEntity blockEntity) {
-        return blockEntity.isFormed();
-    }
 }
