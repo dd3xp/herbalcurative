@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundEvents;
  * Layout (default facing SOUTH, viewed from front):
  * <pre>
  * Layer y=1: [Log][Log][Log]
- * Layer y=0: [Log][Log (MASTER)][Log]  ← Trigger: any log
+ * Layer y=0: [Log][Log (MASTER/TRIGGER)][Log]
  * </pre>
  */
 public class MultiblockHerbCabinet {
@@ -20,7 +20,7 @@ public class MultiblockHerbCabinet {
             .define('L', state -> state.is(ModRegistries.RED_CHERRY_LOG.get()))
             .define('M', state -> state.is(ModRegistries.RED_CHERRY_LOG.get()))
             .master('M')
-            .trigger('L', 'M')
+            .trigger('M')
             .result(() -> ModRegistries.HERB_CABINET.get())
             .sound(SoundEvents.WOOD_PLACE, 1.0f, 1.0f)
             .build();

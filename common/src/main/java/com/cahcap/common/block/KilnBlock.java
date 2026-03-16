@@ -96,21 +96,21 @@ public class KilnBlock extends BaseEntityBlock {
         NORTH_SHAPES[idx(-1, 0, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 16, 16), Block.box(12, 0, 0, 16, 16, 16));
         NORTH_SHAPES[idx(-1, 0, 1)] = Block.box(4, 0, 0, 16, 16, 12);
         NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 3, 4, 16, 16, 12), Block.box(14, 1, 4, 16, 3, 12), Block.box(0, 1, 4, 2, 3, 12), Block.box(2, 1, 0, 14, 3, 12), Block.box(5, 0, 0, 11, 1, 12), Block.box(0, 1, 12, 16, 16, 16), Block.box(11, 0, 0, 16, 1, 16), Block.box(0, 0, 0, 5, 1, 16));
-        NORTH_SHAPES[idx( 0, 0, 0)] = Shapes.empty();
+        NORTH_SHAPES[idx( 0, 0, 0)] = Block.box(0, 0, 0, 16, 4, 16);
         NORTH_SHAPES[idx( 0, 0, 1)] = Shapes.or(Block.box(0, 0, 4, 16, 16, 12), Block.box(0, 0, 0, 16, 16, 4));
         NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 16, 16), Block.box(0, 3, 4, 1, 16, 12), Block.box(0, 1, 4, 1, 3, 12), Block.box(0, 1, 12, 1, 16, 16), Block.box(0, 0, 0, 1, 1, 16));
         NORTH_SHAPES[idx( 1, 0, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 16, 16), Block.box(0, 0, 0, 4, 16, 16));
         NORTH_SHAPES[idx( 1, 0, 1)] = Block.box(0, 0, 0, 12, 16, 12);
         // dy=1
-        NORTH_SHAPES[idx(-1, 1,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 4, 16), Block.box(15, 0, 4, 16, 4, 12), Block.box(8, 4, 4, 16, 10, 16), Block.box(15, 0, 12, 16, 4, 16));
-        NORTH_SHAPES[idx(-1, 1, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 4, 16), Block.box(8, 4, 0, 16, 10, 16), Block.box(12, 0, 0, 16, 4, 16));
-        NORTH_SHAPES[idx(-1, 1, 1)] = Shapes.or(Block.box(4, 0, 0, 16, 4, 12), Block.box(8, 4, 0, 16, 10, 12));
-        NORTH_SHAPES[idx( 0, 1,-1)] = Shapes.or(Block.box(0, 0, 4, 16, 4, 12), Block.box(0, 4, 4, 16, 10, 16), Block.box(0, 0, 12, 16, 4, 16));
-        NORTH_SHAPES[idx( 0, 1, 0)] = Block.box(0, 4, 0, 16, 10, 16);
-        NORTH_SHAPES[idx( 0, 1, 1)] = Shapes.or(Block.box(0, 0, 4, 16, 4, 12), Block.box(0, 4, 0, 16, 10, 12), Block.box(0, 0, 0, 16, 4, 4));
-        NORTH_SHAPES[idx( 1, 1,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 4, 16), Block.box(0, 0, 4, 1, 4, 12), Block.box(0, 4, 4, 8, 10, 16), Block.box(0, 0, 12, 1, 4, 16));
-        NORTH_SHAPES[idx( 1, 1, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 4, 16), Block.box(0, 4, 0, 8, 10, 16), Block.box(0, 0, 0, 4, 4, 16));
-        NORTH_SHAPES[idx( 1, 1, 1)] = Shapes.or(Block.box(0, 0, 0, 12, 4, 12), Block.box(0, 4, 0, 8, 10, 12));
+        NORTH_SHAPES[idx(-1, 1,-1)] = Block.box(8, 0, 4, 16, 6, 16);
+        NORTH_SHAPES[idx(-1, 1, 0)] = Block.box(8, 0, 0, 16, 6, 16);
+        NORTH_SHAPES[idx(-1, 1, 1)] = Block.box(8, 0, 0, 16, 6, 12);
+        NORTH_SHAPES[idx( 0, 1,-1)] = Block.box(0, 0, 4, 16, 6, 16);
+        NORTH_SHAPES[idx( 0, 1, 0)] = Block.box(0, 0, 0, 16, 6, 16);
+        NORTH_SHAPES[idx( 0, 1, 1)] = Block.box(0, 0, 0, 16, 6, 12);
+        NORTH_SHAPES[idx( 1, 1,-1)] = Block.box(0, 0, 4, 8, 6, 16);
+        NORTH_SHAPES[idx( 1, 1, 0)] = Block.box(0, 0, 0, 8, 6, 16);
+        NORTH_SHAPES[idx( 1, 1, 1)] = Block.box(0, 0, 0, 8, 6, 12);
 
         // Precompute rotated shapes for all facings
         for (int i = 0; i < 27; i++) {
@@ -191,9 +191,8 @@ public class KilnBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) return getShapeForPosition(pos, masterPos, be.getFacing());
+        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be && be.formed) {
+            return getShapeForPosition(be.facing, be.offset);
         }
         return Shapes.empty();
     }
@@ -203,31 +202,22 @@ public class KilnBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) return getShapeForPosition(pos, masterPos, be.getFacing());
+        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be && be.formed) {
+            return getShapeForPosition(be.facing, be.offset);
         }
         return Shapes.empty();
     }
 
-    private VoxelShape getShapeForPosition(BlockPos targetPos, BlockPos masterPos, Direction facing) {
-        int worldDx = targetPos.getX() - masterPos.getX();
-        int dy = targetPos.getY() - masterPos.getY();
-        int worldDz = targetPos.getZ() - masterPos.getZ();
+    private VoxelShape getShapeForPosition(Direction facing, int[] offset) {
+        if (offset == null) return Shapes.block();
+        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
 
-        // Inverse-rotate world (dx,dz) back to NORTH-model space to get the shape index,
-        // then use the pre-rotated shape for the actual facing.
-        // The blockstate rotation for facing X uses rotateShape(northShape, X),
-        // which rotates the geometry. So we need to look up using NORTH-space coords.
-        //
-        // Blockstate visual rotation: NORTH→identity, SOUTH→180, EAST→90CW, WEST→270CW
-        // Inverse (world→model): SOUTH: (-dx,-dz), EAST: (dz,-dx), WEST: (-dz,dx)
         int modelDx, modelDz;
         switch (facing) {
             case SOUTH -> { modelDx = -worldDx; modelDz = -worldDz; }
             case EAST  -> { modelDx = worldDz; modelDz = -worldDx; }
             case WEST  -> { modelDx = -worldDz; modelDz = worldDx; }
-            default    -> { modelDx = worldDx; modelDz = worldDz; }  // NORTH
+            default    -> { modelDx = worldDx; modelDz = worldDz; }
         }
 
         if (modelDx < -1 || modelDx > 1 || dy < -1 || dy > 1 || modelDz < -1 || modelDz > 1) {
@@ -313,10 +303,10 @@ public class KilnBlock extends BaseEntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        if (level.getBlockEntity(pos) instanceof KilnBlockEntity kiln) {
-            BlockPos masterPos = kiln.getMasterPos();
+        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be && be.formed) {
+            BlockPos masterPos = be.getMasterPos();
             if (masterPos != null) {
-                return kiln.getOriginalItemForPosition(pos, masterPos);
+                return be.getOriginalItemForPosition(pos, masterPos);
             }
         }
         return new ItemStack(net.minecraft.world.level.block.Blocks.STONE_BRICKS);
@@ -325,16 +315,15 @@ public class KilnBlock extends BaseEntityBlock {
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (blockEntity instanceof KilnBlockEntity kiln) {
-            if (kiln.suppressDrops) {
+        if (blockEntity instanceof KilnBlockEntity be) {
+            if (be.suppressDrops) {
                 return Collections.emptyList();
             }
-            BlockPos masterPos = kiln.getMasterPos();
-            BlockPos thisPos = params.getOptionalParameter(LootContextParams.ORIGIN) != null ?
-                    BlockPos.containing(params.getOptionalParameter(LootContextParams.ORIGIN)) :
-                    kiln.getBlockPos();
-            if (masterPos != null) {
-                return Collections.singletonList(kiln.getOriginalItemForPosition(thisPos, masterPos));
+            if (be.formed) {
+                BlockPos masterPos = be.getMasterPos();
+                if (masterPos != null) {
+                    return Collections.singletonList(be.getOriginalItemForPosition(be.getBlockPos(), masterPos));
+                }
             }
         }
         return Collections.singletonList(new ItemStack(net.minecraft.world.level.block.Blocks.STONE_BRICKS));

@@ -60,7 +60,19 @@
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files'' -Directory | Where-Object { $_.Name -match ''bell|java|jdk|adopt|zulu|corretto|temurin'' } | Select-Object -ExpandProperty FullName\")",
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\Java'' | Select-Object -ExpandProperty Name\")",
       "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''Machine''\\); [System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''User''\\)\")",
-      "Bash(export JAVA_HOME=\"/c/Program Files/Java/jdk-21.0.10\")"
+      "Bash(export JAVA_HOME=\"/c/Program Files/Java/jdk-21.0.10\")",
+      "Bash(python voxel.py --per-block \"/c/Codes/herbalcurative/private/assets/herbalcurative/Klin/klin.json\")",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(powershell.exe -Command \"cd ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts''; python voxel.py --per-block ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json'' 2>&1\")",
+      "Bash(powershell.exe -Command \"python --version 2>&1; pip --version 2>&1\")",
+      "Bash(powershell.exe -Command \"python --version\")",
+      "Bash(powershell.exe -Command \"python --version 2>&1; cd ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts''; python voxel.py --per-block ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json'' 2>&1\")",
+      "Bash(powershell.exe -Command \"python -c ''print\\(1\\)''\")",
+      "Bash(tr ';' '\\\\n')",
+      "Bash(powershell.exe -Command \"cd ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts''; python voxel.py --per-block ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json'' 2>&1; Write-Host ''EXIT:'' $LASTEXITCODE\")",
+      "Bash(powershell.exe -Command \"cd C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts; python voxel.py --per-block C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json 2>&1; Write-Host EXIT: $LASTEXITCODE\")",
+      "Bash(powershell.exe -Command \"& ''C:\\\\Users\\\\17145\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python314\\\\python.exe'' ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts\\\\voxel.py'' --per-block ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json'' 2>&1\")",
+      "Bash(git checkout:*)"
     ]
   }
 }

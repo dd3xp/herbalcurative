@@ -1487,7 +1487,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         int dy = targetPos.getY() - masterPos.getY();
         int dx = targetPos.getX() - masterPos.getX();
         int dz = targetPos.getZ() - masterPos.getZ();
-        
+
         if (dy == 0) {
             // Layer 1 (master layer)
             // Corners: Lumistone Bricks
@@ -1507,8 +1507,14 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                 return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
             }
         }
-        
+
         return Blocks.AIR.defaultBlockState();
+    }
+
+    public ItemStack getOriginalItemForPosition(BlockPos targetPos, BlockPos masterPos) {
+        BlockState state = getOriginalBlockForPosition(targetPos, masterPos);
+        if (state.isAir()) return ItemStack.EMPTY;
+        return new ItemStack(state.getBlock());
     }
     
     @Override

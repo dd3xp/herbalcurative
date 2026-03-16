@@ -68,25 +68,66 @@ public class CauldronBlock extends BaseEntityBlock {
     public static final BooleanProperty FORMED = Multiblock.FORMED;
     public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
     
-    // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
-    private static final VoxelShape SHAPE_N1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(0, 12, 6, 6, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));
-    private static final VoxelShape SHAPE_N1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 6, 16, 16));
-    private static final VoxelShape SHAPE_N1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(0, 12, 0, 6, 16, 10), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16));
-    private static final VoxelShape SHAPE_0_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6));
-    private static final VoxelShape SHAPE_0_0_0 = Block.box(0, 8, 0, 16, 12, 16);
-    private static final VoxelShape SHAPE_0_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16));
-    private static final VoxelShape SHAPE_1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(10, 12, 6, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4));
-    private static final VoxelShape SHAPE_1_0_0 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(10, 12, 0, 16, 16, 16));
-    private static final VoxelShape SHAPE_1_0_1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(10, 12, 0, 16, 16, 10), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16));
-    private static final VoxelShape SHAPE_N1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(0, 0, 6, 6, 16, 16));
-    private static final VoxelShape SHAPE_N1_1_0 = Block.box(0, 0, 0, 6, 16, 16);
-    private static final VoxelShape SHAPE_N1_1_1 = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(0, 0, 0, 6, 16, 10));
-    private static final VoxelShape SHAPE_0_1_N1 = Block.box(0, 0, 0, 16, 16, 6);
-    private static final VoxelShape SHAPE_0_1_0 = Shapes.empty();  // Center: pot opening
-    private static final VoxelShape SHAPE_0_1_1 = Block.box(0, 0, 10, 16, 16, 16);
-    private static final VoxelShape SHAPE_1_1_N1 = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(10, 0, 6, 16, 16, 16));
-    private static final VoxelShape SHAPE_1_1_0 = Block.box(10, 0, 0, 16, 16, 16);
-    private static final VoxelShape SHAPE_1_1_1 = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(10, 0, 0, 16, 16, 10));
+    // Per-block collision/selection shapes (NORTH orientation)
+    // Indexed by dy * 9 + (dx+1) * 3 + (dz+1), where dy=0..1, dx/dz=-1..1
+    private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[18];
+    private static final VoxelShape[][] SHAPES_BY_FACING = new VoxelShape[4][18];
+
+    static {
+        // dy=0 (bottom layer - master layer)
+        NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(0, 12, 6, 6, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));
+        NORTH_SHAPES[idx(-1, 0, 0)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 6, 16, 16));
+        NORTH_SHAPES[idx(-1, 0, 1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(0, 12, 0, 6, 16, 10), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16));
+        NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6));
+        NORTH_SHAPES[idx( 0, 0, 0)] = Block.box(0, 8, 0, 16, 12, 16);
+        NORTH_SHAPES[idx( 0, 0, 1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16));
+        NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(10, 12, 6, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4));
+        NORTH_SHAPES[idx( 1, 0, 0)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(10, 12, 0, 16, 16, 16));
+        NORTH_SHAPES[idx( 1, 0, 1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(10, 12, 0, 16, 16, 10), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16));
+        // dy=1 (top layer)
+        NORTH_SHAPES[idx(-1, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(0, 0, 6, 6, 16, 16));
+        NORTH_SHAPES[idx(-1, 1, 0)] = Block.box(0, 0, 0, 6, 16, 16);
+        NORTH_SHAPES[idx(-1, 1, 1)] = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(0, 0, 0, 6, 16, 10));
+        NORTH_SHAPES[idx( 0, 1,-1)] = Block.box(0, 0, 0, 16, 16, 6);
+        NORTH_SHAPES[idx( 0, 1, 0)] = Shapes.empty();
+        NORTH_SHAPES[idx( 0, 1, 1)] = Block.box(0, 0, 10, 16, 16, 16);
+        NORTH_SHAPES[idx( 1, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(10, 0, 6, 16, 16, 16));
+        NORTH_SHAPES[idx( 1, 1, 0)] = Block.box(10, 0, 0, 16, 16, 16);
+        NORTH_SHAPES[idx( 1, 1, 1)] = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(10, 0, 0, 16, 16, 10));
+
+        // Precompute rotated shapes for all facings
+        for (int i = 0; i < 18; i++) {
+            VoxelShape shape = NORTH_SHAPES[i];
+            if (shape == null) shape = Shapes.empty();
+            SHAPES_BY_FACING[Direction.NORTH.get2DDataValue()][i] = shape;
+            SHAPES_BY_FACING[Direction.SOUTH.get2DDataValue()][i] = rotateShape(shape, Direction.SOUTH);
+            SHAPES_BY_FACING[Direction.WEST.get2DDataValue()][i] = rotateShape(shape, Direction.WEST);
+            SHAPES_BY_FACING[Direction.EAST.get2DDataValue()][i] = rotateShape(shape, Direction.EAST);
+        }
+    }
+
+    private static int idx(int dx, int dy, int dz) {
+        return dy * 9 + (dx + 1) * 3 + (dz + 1);
+    }
+
+    private static VoxelShape rotateShape(VoxelShape shape, Direction to) {
+        VoxelShape[] buffer = new VoxelShape[]{Shapes.empty()};
+        shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            double x1 = minX * 16, y1 = minY * 16, z1 = minZ * 16;
+            double x2 = maxX * 16, y2 = maxY * 16, z2 = maxZ * 16;
+            double nx1, nz1, nx2, nz2;
+            switch (to) {
+                case SOUTH -> { nx1 = 16 - x2; nz1 = 16 - z2; nx2 = 16 - x1; nz2 = 16 - z1; }
+                case WEST  -> { nx1 = z1; nz1 = 16 - x2; nx2 = z2; nz2 = 16 - x1; }
+                case EAST  -> { nx1 = 16 - z2; nz1 = x1; nx2 = 16 - z1; nz2 = x2; }
+                default    -> { nx1 = x1; nz1 = z1; nx2 = x2; nz2 = z2; }
+            }
+            buffer[0] = Shapes.or(buffer[0], Block.box(
+                    Math.min(nx1, nx2), y1, Math.min(nz1, nz2),
+                    Math.max(nx1, nx2), y2, Math.max(nz1, nz2)));
+        });
+        return buffer[0];
+    }
     
     public CauldronBlock(Properties properties) {
         super(properties);
@@ -129,9 +170,8 @@ public class CauldronBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) return getOriginalCollisionShape(pos, masterPos);
+        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be && be.formed) {
+            return getShapeForPosition(be.facing, be.offset);
         }
         return Shapes.empty();
     }
@@ -141,66 +181,30 @@ public class CauldronBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) return getOriginalCollisionShape(pos, masterPos);
+        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be && be.formed) {
+            return getShapeForPosition(be.facing, be.offset);
         }
         return Shapes.empty();
     }
     
-    /**
-     * Get the collision/selection shape for a position from Blockbench model (voxel.py --per-block).
-     */
-    private VoxelShape getOriginalCollisionShape(BlockPos targetPos, BlockPos masterPos) {
-        int dx = targetPos.getX() - masterPos.getX();
-        int dy = targetPos.getY() - masterPos.getY();
-        int dz = targetPos.getZ() - masterPos.getZ();
+    private VoxelShape getShapeForPosition(Direction facing, int[] offset) {
+        if (offset == null) return Shapes.block();
+        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
 
-        return switch (dy) {
-            case 0 -> switch (dx) {
-                case -1 -> switch (dz) {
-                    case -1 -> SHAPE_N1_0_N1;
-                    case 0 -> SHAPE_N1_0_0;
-                    case 1 -> SHAPE_N1_0_1;
-                    default -> Shapes.block();
-                };
-                case 0 -> switch (dz) {
-                    case -1 -> SHAPE_0_0_N1;
-                    case 0 -> SHAPE_0_0_0;
-                    case 1 -> SHAPE_0_0_1;
-                    default -> Shapes.block();
-                };
-                case 1 -> switch (dz) {
-                    case -1 -> SHAPE_1_0_N1;
-                    case 0 -> SHAPE_1_0_0;
-                    case 1 -> SHAPE_1_0_1;
-                    default -> Shapes.block();
-                };
-                default -> Shapes.block();
-            };
-            case 1 -> switch (dx) {
-                case -1 -> switch (dz) {
-                    case -1 -> SHAPE_N1_1_N1;
-                    case 0 -> SHAPE_N1_1_0;
-                    case 1 -> SHAPE_N1_1_1;
-                    default -> Shapes.block();
-                };
-                case 0 -> switch (dz) {
-                    case -1 -> SHAPE_0_1_N1;
-                    case 0 -> SHAPE_0_1_0;
-                    case 1 -> SHAPE_0_1_1;
-                    default -> Shapes.block();
-                };
-                case 1 -> switch (dz) {
-                    case -1 -> SHAPE_1_1_N1;
-                    case 0 -> SHAPE_1_1_0;
-                    case 1 -> SHAPE_1_1_1;
-                    default -> Shapes.block();
-                };
-                default -> Shapes.block();
-            };
-            default -> Shapes.block();
-        };
+        int modelDx, modelDz;
+        switch (facing) {
+            case SOUTH -> { modelDx = -worldDx; modelDz = -worldDz; }
+            case EAST  -> { modelDx = worldDz; modelDz = -worldDx; }
+            case WEST  -> { modelDx = -worldDz; modelDz = worldDx; }
+            default    -> { modelDx = worldDx; modelDz = worldDz; }
+        }
+
+        if (modelDx < -1 || modelDx > 1 || dy < 0 || dy > 1 || modelDz < -1 || modelDz > 1) {
+            return Shapes.block();
+        }
+
+        int index = idx(modelDx, dy, modelDz);
+        return SHAPES_BY_FACING[facing.get2DDataValue()][index];
     }
 
 
@@ -386,11 +390,10 @@ public class CauldronBlock extends BaseEntityBlock {
     
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        // Return the original block for creative pick block
-        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity cauldron) {
-            BlockPos masterPos = cauldron.getMasterPos();
+        if (level.getBlockEntity(pos) instanceof CauldronBlockEntity be && be.formed) {
+            BlockPos masterPos = be.getMasterPos();
             if (masterPos != null) {
-                return getOriginalItemForPosition(pos, masterPos);
+                return be.getOriginalItemForPosition(pos, masterPos);
             }
         }
         return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
@@ -399,51 +402,18 @@ public class CauldronBlock extends BaseEntityBlock {
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (blockEntity instanceof CauldronBlockEntity cauldron) {
-            if (cauldron.suppressDrops) {
+        if (blockEntity instanceof CauldronBlockEntity be) {
+            if (be.suppressDrops) {
                 return Collections.emptyList();
             }
-            // Drop the original block based on position
-            BlockPos masterPos = cauldron.getMasterPos();
-            BlockPos thisPos = params.getOptionalParameter(LootContextParams.ORIGIN) != null ?
-                    BlockPos.containing(params.getOptionalParameter(LootContextParams.ORIGIN)) :
-                    cauldron.getBlockPos();
-            if (masterPos != null) {
-                return Collections.singletonList(getOriginalItemForPosition(thisPos, masterPos));
+            if (be.formed) {
+                BlockPos masterPos = be.getMasterPos();
+                if (masterPos != null) {
+                    return Collections.singletonList(be.getOriginalItemForPosition(be.getBlockPos(), masterPos));
+                }
             }
         }
-        // Default: drop Lumistone Bricks
         return Collections.singletonList(new ItemStack(ModRegistries.LUMISTONE_BRICKS.get()));
-    }
-    
-    /**
-     * Get the original item that should drop for a position in the multiblock.
-     */
-    private ItemStack getOriginalItemForPosition(BlockPos targetPos, BlockPos masterPos) {
-        int dy = targetPos.getY() - masterPos.getY();
-        int dx = targetPos.getX() - masterPos.getX();
-        int dz = targetPos.getZ() - masterPos.getZ();
-        
-        if (dy == 0) {
-            // Layer 1 (master layer)
-            // Corners: Lumistone Bricks
-            if ((dx == -1 || dx == 1) && (dz == -1 || dz == 1)) {
-                return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
-            }
-            // Edge middles + center: Lumistone Brick Slab
-            return new ItemStack(ModRegistries.LUMISTONE_BRICK_SLAB.get());
-        } else if (dy == 1) {
-            // Layer 2
-            if (dx == 0 && dz == 0) {
-                // Center: nothing (was air)
-                return ItemStack.EMPTY;
-            } else {
-                // Outer 8: Lumistone Bricks
-                return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
-            }
-        }
-        
-        return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
     }
     
     @Override

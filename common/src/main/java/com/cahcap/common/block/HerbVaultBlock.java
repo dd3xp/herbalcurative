@@ -14,6 +14,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -134,6 +135,12 @@ public class HerbVaultBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Nullable
+    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new HerbVaultBlockEntity(pos, state);
     }
@@ -146,9 +153,8 @@ public class HerbVaultBlock extends BaseEntityBlock {
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) return Shapes.block();
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) return getShapeForPosition(pos, masterPos, be.facing);
+        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
+            return getShapeForPosition(be.facing, be.offset);
         }
         return Shapes.empty();
     }
@@ -156,19 +162,16 @@ public class HerbVaultBlock extends BaseEntityBlock {
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) return Shapes.block();
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) return getShapeForPosition(pos, masterPos, be.facing);
+        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
+            return getShapeForPosition(be.facing, be.offset);
         }
         return Shapes.empty();
     }
 
-    private VoxelShape getShapeForPosition(BlockPos targetPos, BlockPos masterPos, Direction facing) {
-        int worldDx = targetPos.getX() - masterPos.getX();
-        int dy = targetPos.getY() - masterPos.getY();
-        int worldDz = targetPos.getZ() - masterPos.getZ();
+    private VoxelShape getShapeForPosition(Direction facing, int[] offset) {
+        if (offset == null) return Shapes.block();
+        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
 
-        // Inverse-rotate world (dx,dz) back to NORTH-model space
         int modelDx, modelDz;
         switch (facing) {
             case SOUTH -> { modelDx = -worldDx; modelDz = -worldDz; }
@@ -297,10 +300,10 @@ public class HerbVaultBlock extends BaseEntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity vault) {
-            BlockPos masterPos = vault.getMasterPos();
+        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
+            BlockPos masterPos = be.getMasterPos();
             if (masterPos != null) {
-                return vault.getOriginalItemForPosition(pos, masterPos);
+                return be.getOriginalItemForPosition(pos, masterPos);
             }
         }
         return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
@@ -308,12 +311,16 @@ public class HerbVaultBlock extends BaseEntityBlock {
 
     @Override
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        BlockEntity be = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (be instanceof HerbVaultBlockEntity vault && vault.suppressDrops) return Collections.emptyList();
-        if (be instanceof HerbVaultBlockEntity vault && vault.formed) {
-            BlockPos masterPos = vault.getMasterPos();
-            if (masterPos != null) {
-                return Collections.singletonList(vault.getOriginalItemForPosition(vault.getBlockPos(), masterPos));
+        BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (blockEntity instanceof HerbVaultBlockEntity be) {
+            if (be.suppressDrops) {
+                return Collections.emptyList();
+            }
+            if (be.formed) {
+                BlockPos masterPos = be.getMasterPos();
+                if (masterPos != null) {
+                    return Collections.singletonList(be.getOriginalItemForPosition(be.getBlockPos(), masterPos));
+                }
             }
         }
         return Collections.singletonList(new ItemStack(ModRegistries.LUMISTONE_BRICKS.get()));

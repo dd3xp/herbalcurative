@@ -134,7 +134,7 @@ public class HerbCabinetBlock extends BaseEntityBlock {
             return Shapes.block();
         }
         if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be && be.formed) {
-            return getShapeForPosition(state.getValue(FACING), be.posInMultiblock);
+            return getShapeForPosition(state.getValue(FACING), be.offset);
         }
         // BE not ready (chunk loading race): return empty to avoid suffocation/collision issues
         return Shapes.empty();
@@ -146,23 +146,32 @@ public class HerbCabinetBlock extends BaseEntityBlock {
             return Shapes.block();
         }
         if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be && be.formed) {
-            return getShapeForPosition(state.getValue(FACING), be.posInMultiblock);
+            return getShapeForPosition(state.getValue(FACING), be.offset);
         }
         // BE not ready (chunk loading race): return empty to avoid suffocation/collision issues
         return Shapes.empty();
     }
-    
+
     /**
-     * Get the collision/selection shape for a position based on facing and posInMultiblock.
-     * Layout (3x2, posInMultiblock = h * 3 + w):
-     * [3][4][5]  <- Top row (h=1)
-     * [0][1][2]  <- Bottom row (h=0), [1] is master
+     * Get the collision/selection shape based on facing and world offset from master.
+     * Inverse-rotates world offset to NORTH-model space, then looks up pre-rotated shape.
+     * Layout (3x2, index = dy * 3 + (modelDx + 1)):
+     * [3][4][5]  <- Top row (dy=1)
+     * [0][1][2]  <- Bottom row (dy=0), [1] is master
      */
-    private VoxelShape getShapeForPosition(Direction facing, int posInMultiblock) {
-        if (posInMultiblock < 0 || posInMultiblock >= 6) {
-            return Shapes.block();
+    private VoxelShape getShapeForPosition(Direction facing, int[] offset) {
+        if (offset == null) return Shapes.block();
+        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
+        int modelDx;
+        switch (facing) {
+            case SOUTH -> modelDx = -worldDx;
+            case EAST  -> modelDx = worldDz;
+            case WEST  -> modelDx = -worldDz;
+            default    -> modelDx = worldDx;  // NORTH
         }
-        return SHAPES_BY_FACING[facing.get2DDataValue()][posInMultiblock];
+        int index = dy * 3 + (modelDx + 1);
+        if (index < 0 || index >= 6) return Shapes.block();
+        return SHAPES_BY_FACING[facing.get2DDataValue()][index];
     }
 
 

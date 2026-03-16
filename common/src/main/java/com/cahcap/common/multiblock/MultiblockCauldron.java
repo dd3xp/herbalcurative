@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.SlabType;
  *   [LumiBricks][   Air    ][LumiBricks]
  *   [LumiBricks][LumiBricks][LumiBricks]
  * </pre>
- * Trigger: any Lumistone Brick position.
+ * Trigger: edge-center Lumistone Bricks on layer y=1.
  */
 public class MultiblockCauldron {
 
@@ -30,10 +30,11 @@ public class MultiblockCauldron {
                     "CMC",
                     "BCB")
             .layer(1,
-                    "BBB",
-                    "B.B",
-                    "BBB")
+                    "BEB",
+                    "E.E",
+                    "BEB")
             .define('B', state -> state.is(ModRegistries.LUMISTONE_BRICKS.get()))
+            .define('E', state -> state.is(ModRegistries.LUMISTONE_BRICKS.get()))
             .define('C', state -> state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get())
                     && state.hasProperty(SlabBlock.TYPE)
                     && state.getValue(SlabBlock.TYPE) == SlabType.TOP)
@@ -42,7 +43,7 @@ public class MultiblockCauldron {
                     && state.getValue(SlabBlock.TYPE) == SlabType.TOP)
             .define('.', state -> state.isAir())
             .master('M')
-            .trigger('B')
+            .trigger('E')
             .result(() -> ModRegistries.CAULDRON.get())
             .sound(SoundEvents.STONE_PLACE, 1.0f, 0.8f)
             .build();
