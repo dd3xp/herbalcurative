@@ -42,11 +42,11 @@ public class HerbVaultTooltipHandler {
         // Only show tooltip when looking at the front face
         if (blockHitResult.getDirection() != vault.getFacing()) return;
 
-        // Only show tooltip for front-row blocks (facing direction offset == +1, dy == 0)
+        // Only show tooltip for front-row blocks (facing direction offset == +1)
         int[] offset = vault.offset;
         net.minecraft.core.Direction facing = vault.getFacing();
         int forwardOffset = facing.getStepX() * offset[0] + facing.getStepZ() * offset[2];
-        if (forwardOffset != 1 || offset[1] != 0) return;
+        if (forwardOffset != 1 || offset[1] > 0) return;
 
         int herbIndex = vault.getHerbIndexForBlock();
         if (herbIndex < 0 || herbIndex >= 6) return;

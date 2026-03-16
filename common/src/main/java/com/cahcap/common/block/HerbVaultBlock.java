@@ -207,7 +207,7 @@ public class HerbVaultBlock extends BaseEntityBlock {
         Direction facing = be.facing;
         int[] off = be.offset;
         int fwd = facing.getStepX() * off[0] + facing.getStepZ() * off[2];
-        return fwd == 1 && off[1] == 0;
+        return fwd == 1 && off[1] <= 0;
     }
 
     // ==================== Interaction (same as HerbCabinetBlock) ====================
