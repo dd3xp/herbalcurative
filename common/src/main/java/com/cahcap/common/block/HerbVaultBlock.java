@@ -199,6 +199,14 @@ public class HerbVaultBlock extends BaseEntityBlock {
         return state.getValue(FORMED) ? 0 : super.getLightBlock(state, level, pos);
     }
 
+    /** Returns true if the block at pos is on the front row (forwardOffset==1, dy==0). */
+    public static boolean isFrontRow(HerbVaultBlockEntity be) {
+        Direction facing = be.facing;
+        int[] off = be.offset;
+        int fwd = facing.getStepX() * off[0] + facing.getStepZ() * off[2];
+        return fwd == 1 && off[1] == 0;
+    }
+
     // ==================== Interaction (same as HerbCabinetBlock) ====================
 
     @Override
@@ -206,6 +214,8 @@ public class HerbVaultBlock extends BaseEntityBlock {
                                                Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand == InteractionHand.OFF_HAND) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (hitResult.getDirection() != state.getValue(FACING)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && !isFrontRow(be))
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (stack.is(ModRegistries.HERB_BOX.get())) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
@@ -247,6 +257,7 @@ public class HerbVaultBlock extends BaseEntityBlock {
 
         HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
         if (!(hitResult instanceof BlockHitResult blockHit) || blockHit.getDirection() != state.getValue(FACING)) return;
+        if (!isFrontRow(be)) return;
 
         int herbIndex = be.getHerbIndexForBlock();
         if (herbIndex < 0 || herbIndex >= 6) return;

@@ -147,7 +147,7 @@ public class HerbBoxItem extends Item {
             var facing = blockState.getValue(HerbVaultBlock.FACING);
             var clickedFace = context.getClickedFace();
 
-            if (clickedFace != facing) {
+            if (clickedFace != facing || !HerbVaultBlock.isFrontRow(vault)) {
                 return InteractionResult.PASS;
             }
 
