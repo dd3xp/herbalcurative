@@ -8,6 +8,7 @@ import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.common.entity.FlowweaveProjectile;
+import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.multiblock.MultiblockCauldron;
 import com.cahcap.common.multiblock.MultiblockHerbCabinet;
 import com.cahcap.common.multiblock.MultiblockHerbalBlending;
@@ -737,44 +738,18 @@ public class FlowweaveRingItem extends Item {
         
         // Server-side: actually perform the actions
         
-        // Try to form Herb Cabinet multiblock
-        if (MultiblockHerbCabinet.INSTANCE.isBlockTrigger(clickedState)) {
-            if (MultiblockHerbCabinet.INSTANCE.createStructure(
-                    level,
-                    context.getClickedPos(),
-                    context.getClickedFace(),
-                    player)) {
-                return InteractionResult.SUCCESS;
-            }
-        }
-        
-        // Try to form Cauldron multiblock
-        if (MultiblockCauldron.INSTANCE.isBlockTrigger(clickedState)) {
-            if (MultiblockCauldron.INSTANCE.createStructure(
-                    level,
-                    context.getClickedPos(),
-                    player)) {
-                return InteractionResult.SUCCESS;
-            }
-        }
-
-        // Try to form Kiln multiblock (trigger on lumistone brick top slab — front opening)
-        if (MultiblockKiln.INSTANCE.isBlockTrigger(clickedState)) {
-            if (MultiblockKiln.INSTANCE.createStructure(
-                    level,
-                    context.getClickedPos(),
-                    player)) {
-                return InteractionResult.SUCCESS;
-            }
-        }
-        
-        // Try to form Herb Vault multiblock (trigger on red cherry fence)
-        if (MultiblockHerbVault.INSTANCE.isBlockTrigger(clickedState)) {
-            if (MultiblockHerbVault.INSTANCE.createStructure(
-                    level,
-                    context.getClickedPos(),
-                    player)) {
-                return InteractionResult.SUCCESS;
+        // Try to form multiblock structures
+        for (Multiblock blueprint : new Multiblock[]{
+                MultiblockHerbCabinet.BLUEPRINT,
+                MultiblockCauldron.BLUEPRINT,
+                MultiblockKiln.BLUEPRINT,
+                MultiblockHerbVault.BLUEPRINT
+        }) {
+            if (blueprint.isBlockTrigger(clickedState)) {
+                if (blueprint.tryAssemble(level, context.getClickedPos(),
+                        context.getClickedFace(), player)) {
+                    return InteractionResult.SUCCESS;
+                }
             }
         }
 
@@ -940,17 +915,15 @@ public class FlowweaveRingItem extends Item {
         ItemStack stack = context.getItemInHand();
         
         // Check multiblock triggers
-        if (MultiblockHerbCabinet.INSTANCE.isBlockTrigger(clickedState)) {
-            return true;
-        }
-        if (MultiblockCauldron.INSTANCE.isBlockTrigger(clickedState)) {
-            return true;
-        }
-        if (MultiblockKiln.INSTANCE.isBlockTrigger(clickedState)) {
-            return true;
-        }
-        if (MultiblockHerbVault.INSTANCE.isBlockTrigger(clickedState)) {
-            return true;
+        for (Multiblock blueprint : new Multiblock[]{
+                MultiblockHerbCabinet.BLUEPRINT,
+                MultiblockCauldron.BLUEPRINT,
+                MultiblockKiln.BLUEPRINT,
+                MultiblockHerbVault.BLUEPRINT
+        }) {
+            if (blueprint.isBlockTrigger(clickedState)) {
+                return true;
+            }
         }
         // Check formed Cauldron
         if (clickedState.is(ModRegistries.CAULDRON.get()) && clickedState.getValue(CauldronBlock.FORMED)) {

@@ -2,6 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
+import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -41,9 +42,9 @@ import java.util.List;
 public class HerbVaultBlock extends BaseEntityBlock {
 
     public static final MapCodec<HerbVaultBlock> CODEC = simpleCodec(HerbVaultBlock::new);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
+    public static final DirectionProperty FACING = Multiblock.FACING;
+    public static final BooleanProperty FORMED = Multiblock.FORMED;
+    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
 
     // Per-block collision shapes (27 blocks, NORTH orientation)
     private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[27];

@@ -2,6 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.CauldronBlockEntity;
 import com.cahcap.common.item.PotItem;
+import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -63,9 +64,9 @@ public class CauldronBlock extends BaseEntityBlock {
     
     public static final MapCodec<CauldronBlock> CODEC = simpleCodec(CauldronBlock::new);
     
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
+    public static final DirectionProperty FACING = Multiblock.FACING;
+    public static final BooleanProperty FORMED = Multiblock.FORMED;
+    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
     
     // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
     private static final VoxelShape SHAPE_N1_0_N1 = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(0, 12, 6, 6, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));

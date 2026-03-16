@@ -1,6 +1,7 @@
 package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.KilnBlockEntity;
+import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -66,9 +67,9 @@ public class KilnBlock extends BaseEntityBlock {
 
     public static final MapCodec<KilnBlock> CODEC = simpleCodec(KilnBlock::new);
 
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
+    public static final DirectionProperty FACING = Multiblock.FACING;
+    public static final BooleanProperty FORMED = Multiblock.FORMED;
+    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
     // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)

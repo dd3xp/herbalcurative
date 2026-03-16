@@ -59,7 +59,8 @@
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\BellSoft\\\\'' -ErrorAction SilentlyContinue | Select-Object Name\")",
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files'' -Directory | Where-Object { $_.Name -match ''bell|java|jdk|adopt|zulu|corretto|temurin'' } | Select-Object -ExpandProperty FullName\")",
       "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\Java'' | Select-Object -ExpandProperty Name\")",
-      "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''Machine''\\); [System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''User''\\)\")"
+      "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''Machine''\\); [System.Environment]::GetEnvironmentVariable\\(''JAVA_HOME'', ''User''\\)\")",
+      "Bash(export JAVA_HOME=\"/c/Program Files/Java/jdk-21.0.10\")"
     ]
   }
 }

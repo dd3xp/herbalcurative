@@ -1,6 +1,7 @@
 package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -87,9 +88,9 @@ public class HerbCabinetBlock extends BaseEntityBlock {
     
     public static final MapCodec<HerbCabinetBlock> CODEC = simpleCodec(HerbCabinetBlock::new);
     
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
+    public static final DirectionProperty FACING = Multiblock.FACING;
+    public static final BooleanProperty FORMED = Multiblock.FORMED;
+    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
     
     public HerbCabinetBlock(Properties properties) {
         super(properties);
