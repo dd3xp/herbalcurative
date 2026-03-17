@@ -9,14 +9,14 @@ import java.util.function.Predicate;
 
 /**
  * Platform-agnostic item transfer abstraction.
- * NeoForge module sets the INSTANCE to use IItemHandler capability,
+ * Mod loader module sets the INSTANCE to use platform-specific item transfer,
  * supporting any mod container (vanilla chests, drawers, pipes, herb cabinets, etc).
  *
  * Usage: ItemTransferHelper.INSTANCE.extractItem(...)
  */
 public final class ItemTransferHelper {
 
-    /** Platform implementation, set by NeoForge module on init. */
+    /** Platform implementation, set by mod loader module on init. */
     public static Provider INSTANCE = null;
 
     public interface Provider {

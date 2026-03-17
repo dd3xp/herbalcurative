@@ -21,6 +21,7 @@ public class MultiblockHerbCabinet {
             .define('M', state -> state.is(ModRegistries.RED_CHERRY_LOG.get()))
             .master('M')
             .trigger('M')
+            .mirrorable()
             .result(() -> ModRegistries.HERB_CABINET.get())
             .sound(SoundEvents.WOOD_PLACE, 1.0f, 1.0f)
             .build();

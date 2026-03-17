@@ -49,6 +49,7 @@ public class MultiblockHerbVault {
                     && state.getValue(SlabBlock.TYPE) == SlabType.BOTTOM)
             .master('#')
             .trigger('F')
+            .mirrorable()
             .result(() -> ModRegistries.HERB_VAULT.get())
             .sound(SoundEvents.STONE_PLACE, 1.0f, 0.8f)
             .build();

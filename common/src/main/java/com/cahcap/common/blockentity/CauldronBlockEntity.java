@@ -88,9 +88,6 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     // Heat source detection
     private boolean hasHeatSource = false;
     
-    // Suppress drops during disassembly
-    public boolean suppressDrops = false;
-    
     // Infusing state (automatic crafting when item is in fluid)
     private ItemStack infusingInput = ItemStack.EMPTY;
     private ItemStack infusingOutput = ItemStack.EMPTY;
@@ -1453,9 +1450,14 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         for (BlockPos targetPos : structurePositions) {
             if (level.getBlockState(targetPos).is(ModRegistries.CAULDRON.get())) {
                 if (!targetPos.equals(breakPos)) {
-                    // Determine what original block to place
-                    BlockState originalBlock = getOriginalBlockForPosition(targetPos, masterPos);
-                    level.setBlock(targetPos, originalBlock, 2);
+                    BlockState original = null;
+                    if (level.getBlockEntity(targetPos) instanceof CauldronBlockEntity cauldron2) {
+                        original = cauldron2.originalBlockState;
+                    }
+                    if (original == null) {
+                        original = getOriginalBlockForPosition(targetPos, masterPos);
+                    }
+                    level.setBlock(targetPos, original, 2);
                 }
             }
         }
@@ -1524,6 +1526,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     
     @Override
     public BlockState getOriginalBlockState() {
+        if (originalBlockState != null) {
+            return originalBlockState;
+        }
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) {
             return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();

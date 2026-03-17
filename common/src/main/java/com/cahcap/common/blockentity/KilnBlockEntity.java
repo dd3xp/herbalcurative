@@ -73,9 +73,6 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
     // Whether the current input is affected by catalyst output multiplier
     private boolean inputAffectedByCatalyst = false;
 
-    // Suppress drops during disassembly
-    public boolean suppressDrops = false;
-
     // Cached render bounding box
     public AABB renderAABB = null;
 
@@ -434,8 +431,8 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         if (ItemTransferHelper.INSTANCE == null) return;
 
         Direction front = facing;
-        Direction right = front.getClockWise();
-        Direction left = front.getCounterClockWise();
+        Direction right = mirrored ? front.getCounterClockWise() : front.getClockWise();
+        Direction left = mirrored ? front.getClockWise() : front.getCounterClockWise();
         Direction back = front.getOpposite();
 
         // Auto I/O positions: adjacent to the Layer 1 center block (one block below master).
@@ -557,8 +554,14 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         for (BlockPos targetPos : structurePositions) {
             if (level.getBlockState(targetPos).is(ModRegistries.KILN.get())) {
                 if (!targetPos.equals(breakPos)) {
-                    BlockState originalBlock = getOriginalBlockForPosition(targetPos, masterPos);
-                    level.setBlock(targetPos, originalBlock, 2);
+                    BlockState original = null;
+                    if (level.getBlockEntity(targetPos) instanceof KilnBlockEntity kiln) {
+                        original = kiln.originalBlockState;
+                    }
+                    if (original == null) {
+                        original = getOriginalBlockForPosition(targetPos, masterPos);
+                    }
+                    level.setBlock(targetPos, original, 2);
                 }
             }
         }
@@ -658,6 +661,10 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
 
     @Override
     public BlockState getOriginalBlockState() {
+        if (originalBlockState != null) {
+            return originalBlockState;
+        }
+        // Legacy fallback for worlds saved before original block memorization
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) {
             return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
@@ -688,7 +695,6 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         tag.putInt("CatalystOutputMultiplier", currentCatalystOutputMultiplier);
         tag.putInt("CatalystSpeedMultiplier", currentCatalystSpeedMultiplier);
         tag.putBoolean("InputAffectedByCatalyst", inputAffectedByCatalyst);
-        tag.putBoolean("SuppressDrops", suppressDrops);
     }
 
     @Override
@@ -711,14 +717,13 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         currentCatalystSpeedMultiplier = tag.getInt("CatalystSpeedMultiplier");
         if (currentCatalystSpeedMultiplier <= 0) currentCatalystSpeedMultiplier = 1;
         inputAffectedByCatalyst = tag.getBoolean("InputAffectedByCatalyst");
-        suppressDrops = tag.getBoolean("SuppressDrops");
     }
 
     // ==================== Render ====================
 
     /**
      * Compute render bounding box lazily.
-     * NeoForge renderer can call this to get the expanded AABB.
+     * Renderer can call this to get the expanded AABB.
      */
     public AABB computeRenderAABB() {
         if (renderAABB == null && formed) {

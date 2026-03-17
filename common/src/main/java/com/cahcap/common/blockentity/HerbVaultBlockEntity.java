@@ -35,7 +35,6 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     private long lastClickTime;
     private UUID lastClickUUID;
 
-    public boolean suppressDrops = false;
     public AABB renderAABB = null;
 
     public HerbVaultBlockEntity(BlockPos pos, BlockState state) {
@@ -217,7 +216,13 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
         for (BlockPos targetPos : positions) {
             if (level.getBlockState(targetPos).is(ModRegistries.HERB_VAULT.get())) {
                 if (!targetPos.equals(breakPos)) {
-                    BlockState original = getOriginalBlockForPosition(targetPos, masterPos);
+                    BlockState original = null;
+                    if (level.getBlockEntity(targetPos) instanceof HerbVaultBlockEntity vault2) {
+                        original = vault2.originalBlockState;
+                    }
+                    if (original == null) {
+                        original = getOriginalBlockForPosition(targetPos, masterPos);
+                    }
                     // Update connections for fences/walls by computing shape from neighbors
                     BlockState updated = Block.updateFromNeighbourShapes(original, level, targetPos);
                     level.setBlock(targetPos, updated, 3);
@@ -299,6 +304,9 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
 
     @Override
     public BlockState getOriginalBlockState() {
+        if (originalBlockState != null) {
+            return originalBlockState;
+        }
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) {
             return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
@@ -381,7 +389,6 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
                 tag.putInt(key, herbStorage.getOrDefault(herb, 0));
             }
         }
-        tag.putBoolean("SuppressDrops", suppressDrops);
     }
 
     @Override
@@ -395,6 +402,5 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
                 }
             }
         }
-        suppressDrops = tag.getBoolean("SuppressDrops");
     }
 }

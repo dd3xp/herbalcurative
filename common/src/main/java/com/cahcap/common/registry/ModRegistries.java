@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 /**
  * Common registry references for cross-platform access.
- * Platform-specific modules (NeoForge, Fabric) should populate these suppliers during initialization.
+ * Mod loader modules should populate these suppliers during initialization.
  */
 public class ModRegistries {
     

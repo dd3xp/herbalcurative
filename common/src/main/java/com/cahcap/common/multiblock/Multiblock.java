@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
@@ -41,6 +43,7 @@ public class Multiblock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
     public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
+    public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
 
     /**
      * Add properties for multiblock blocks with interior space (player can stand inside).
@@ -58,6 +61,7 @@ public class Multiblock {
     private final Set<Character> triggerSymbols;
     private final Map<Character, Predicate<BlockState>> predicates;
     private final Supplier<Block> resultBlock;
+    private final boolean supportsMirroring;
     private final SoundEvent sound;
     private final float soundVolume;
     private final float soundPitch;
@@ -72,12 +76,13 @@ public class Multiblock {
 
     private Multiblock(List<PatternEntry> entries, Set<Character> triggerSymbols,
                        Map<Character, Predicate<BlockState>> predicates,
-                       Supplier<Block> resultBlock, SoundEvent sound,
-                       float soundVolume, float soundPitch) {
+                       Supplier<Block> resultBlock, boolean supportsMirroring,
+                       SoundEvent sound, float soundVolume, float soundPitch) {
         this.entries = entries;
         this.triggerSymbols = triggerSymbols;
         this.predicates = predicates;
         this.resultBlock = resultBlock;
+        this.supportsMirroring = supportsMirroring;
         this.sound = sound;
         this.soundVolume = soundVolume;
         this.soundPitch = soundPitch;
@@ -123,30 +128,35 @@ public class Multiblock {
             }
         }
 
-        // Try all trigger positions × all rotations, deduplicate by (masterPos, facing)
-        record Match(BlockPos masterPos, Direction facing) {}
+        // Try all trigger positions × all rotations × mirror states
+        record Match(BlockPos masterPos, Direction facing, boolean mirrored) {}
         Match preferredMatch = null;
         Match anyMatch = null;
         Set<Long> tried = new HashSet<>();
+        boolean[] mirrorOptions = supportsMirroring ? new boolean[]{false, true} : new boolean[]{false};
 
         for (PatternEntry trigger : triggers) {
-            for (Direction facing : Direction.Plane.HORIZONTAL) {
-                BlockPos rotatedOffset = rotateOffset(trigger.offset(), facing);
-                BlockPos masterPos = clickedPos.subtract(rotatedOffset);
+            for (boolean mirrored : mirrorOptions) {
+                for (Direction facing : Direction.Plane.HORIZONTAL) {
+                    BlockPos blueprintOffset = mirrored ? mirrorOffset(trigger.offset()) : trigger.offset();
+                    BlockPos rotatedOffset = rotateOffset(blueprintOffset, facing);
+                    BlockPos masterPos = clickedPos.subtract(rotatedOffset);
 
-                long key = masterPos.asLong() * 4 + facing.get2DDataValue();
-                if (!tried.add(key)) continue;
+                    long key = masterPos.asLong() * 8 + facing.get2DDataValue() * 2 + (mirrored ? 1 : 0);
+                    if (!tried.add(key)) continue;
 
-                if (validateStructure(level, masterPos, facing)) {
-                    Match match = new Match(masterPos, facing);
-                    if (facing == preferredFacing && preferredMatch == null) {
-                        preferredMatch = match;
+                    if (validateStructure(level, masterPos, facing, mirrored)) {
+                        Match match = new Match(masterPos, facing, mirrored);
+                        if (facing == preferredFacing && !mirrored && preferredMatch == null) {
+                            preferredMatch = match;
+                        }
+                        if (anyMatch == null) {
+                            anyMatch = match;
+                        }
+                        if (preferredMatch != null) break;
                     }
-                    if (anyMatch == null) {
-                        anyMatch = match;
-                    }
-                    if (preferredMatch != null) break;
                 }
+                if (preferredMatch != null) break;
             }
             if (preferredMatch != null) break;
         }
@@ -154,16 +164,17 @@ public class Multiblock {
         Match best = preferredMatch != null ? preferredMatch : anyMatch;
         if (best == null) return false;
 
-        doAssemble(level, best.masterPos(), best.facing());
+        doAssemble(level, best.masterPos(), best.facing(), best.mirrored());
         level.playSound(null, best.masterPos(), sound, SoundSource.BLOCKS, soundVolume, soundPitch);
         return true;
     }
 
     // ---- Internal logic ----
 
-    private boolean validateStructure(Level level, BlockPos masterPos, Direction facing) {
+    private boolean validateStructure(Level level, BlockPos masterPos, Direction facing, boolean mirrored) {
         for (PatternEntry entry : entries) {
-            BlockPos rotated = rotateOffset(entry.offset(), facing);
+            BlockPos localOffset = mirrored ? mirrorOffset(entry.offset()) : entry.offset();
+            BlockPos rotated = rotateOffset(localOffset, facing);
             BlockPos worldPos = masterPos.offset(rotated);
             Predicate<BlockState> predicate = predicates.get(entry.symbol());
             if (!predicate.test(level.getBlockState(worldPos))) {
@@ -173,17 +184,19 @@ public class Multiblock {
         return true;
     }
 
-    private void doAssemble(Level level, BlockPos masterPos, Direction facing) {
+    private void doAssemble(Level level, BlockPos masterPos, Direction facing, boolean mirrored) {
         List<BlockTransform> transforms = new ArrayList<>();
         for (int i = 0; i < entries.size(); i++) {
             PatternEntry entry = entries.get(i);
-            BlockPos rotated = rotateOffset(entry.offset(), facing);
+            BlockPos localOffset = mirrored ? mirrorOffset(entry.offset()) : entry.offset();
+            BlockPos rotated = rotateOffset(localOffset, facing);
             transforms.add(new BlockTransform(rotated, entry.isMaster(), i));
         }
 
         BlockState baseState = resultBlock.get().defaultBlockState()
                 .setValue(FACING, facing)
-                .setValue(FORMED, true);
+                .setValue(FORMED, true)
+                .setValue(MIRRORED, mirrored);
 
         for (BlockTransform t : transforms) {
             BlockPos pos = t.worldPos(masterPos);
@@ -196,17 +209,26 @@ public class Multiblock {
             if (be instanceof MultiblockPartBlockEntity part) {
                 part.facing = facing;
                 part.formed = true;
+                part.mirrored = mirrored;
                 part.posInMultiblock = t.posInMultiblock();
                 part.offset = new int[]{
                         pos.getX() - masterPos.getX(),
                         pos.getY() - masterPos.getY(),
                         pos.getZ() - masterPos.getZ()
                 };
+                part.originalBlockState = oldState;
                 part.setChanged();
             }
 
             level.sendBlockUpdated(pos, oldState, newState, Block.UPDATE_ALL);
         }
+    }
+
+    /**
+     * Mirror an offset on the X axis in blueprint-local space (flip left/right).
+     */
+    private static BlockPos mirrorOffset(BlockPos offset) {
+        return new BlockPos(-offset.getX(), offset.getY(), offset.getZ());
     }
 
     private static BlockPos rotateOffset(BlockPos offset, Direction facing) {
@@ -232,6 +254,7 @@ public class Multiblock {
         private char masterSymbol;
         private final Set<Character> triggerSymbols = new HashSet<>();
         private Supplier<Block> resultBlock;
+        private boolean supportsMirroring = false;
         private SoundEvent sound;
         private float soundVolume = 1.0f;
         private float soundPitch = 1.0f;
@@ -271,6 +294,12 @@ public class Multiblock {
         /** The result block that all positions will be replaced with. */
         public Builder result(Supplier<Block> block) {
             this.resultBlock = block;
+            return this;
+        }
+
+        /** Enable mirrored assembly (left/right flip). */
+        public Builder mirrorable() {
+            this.supportsMirroring = true;
             return this;
         }
 
@@ -327,7 +356,7 @@ public class Multiblock {
             }
 
             return new Multiblock(entries, triggerSymbols, predicates,
-                    resultBlock, sound, soundVolume, soundPitch);
+                    resultBlock, supportsMirroring, sound, soundVolume, soundPitch);
         }
     }
 }

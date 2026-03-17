@@ -44,6 +44,7 @@ public class MultiblockCauldron {
             .define('.', state -> state.isAir())
             .master('M')
             .trigger('E')
+            .mirrorable()
             .result(() -> ModRegistries.CAULDRON.get())
             .sound(SoundEvents.STONE_PLACE, 1.0f, 0.8f)
             .build();

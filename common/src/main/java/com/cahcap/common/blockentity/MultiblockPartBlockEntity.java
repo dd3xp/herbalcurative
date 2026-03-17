@@ -3,7 +3,9 @@ package com.cahcap.common.blockentity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -19,6 +21,9 @@ public abstract class MultiblockPartBlockEntity extends BlockEntity {
     public int posInMultiblock = -1;
     public int[] offset = {0, 0, 0};
     public Direction facing = Direction.NORTH;
+    public boolean mirrored = false;
+    public BlockState originalBlockState = null;
+    public boolean suppressDrops = false;
     
     protected final int[] structureDimensions;
     
@@ -68,11 +73,14 @@ public abstract class MultiblockPartBlockEntity extends BlockEntity {
     
     /**
      * Get the original block state for this position in the multiblock.
-     * Used for destroy particle effects.
-     * Default implementation returns the default state of getOriginalBlock().
-     * Override in subclasses if different positions have different original blocks.
+     * Used for destroy particle effects and block restoration on disassembly.
+     * Prefers the stored originalBlockState (captured at assembly time).
+     * Falls back to getOriginalBlock() for legacy worlds.
      */
     public BlockState getOriginalBlockState() {
+        if (originalBlockState != null) {
+            return originalBlockState;
+        }
         ItemStack originalBlock = getOriginalBlock();
         if (originalBlock.isEmpty()) {
             return null;
@@ -88,6 +96,11 @@ public abstract class MultiblockPartBlockEntity extends BlockEntity {
         tag.putInt("posInMultiblock", posInMultiblock);
         tag.putIntArray("offset", offset);
         tag.putInt("facing", facing.get3DDataValue());
+        tag.putBoolean("mirrored", mirrored);
+        tag.putBoolean("SuppressDrops", suppressDrops);
+        if (originalBlockState != null) {
+            tag.put("originalBlockState", NbtUtils.writeBlockState(originalBlockState));
+        }
     }
     
     @Override
@@ -103,6 +116,15 @@ public abstract class MultiblockPartBlockEntity extends BlockEntity {
             offset = new int[]{0, 0, 0};
         }
         facing = Direction.from3DDataValue(tag.getInt("facing"));
+        mirrored = tag.getBoolean("mirrored");
+        suppressDrops = tag.getBoolean("SuppressDrops");
+        if (tag.contains("originalBlockState")) {
+            originalBlockState = NbtUtils.readBlockState(
+                    registries.lookupOrThrow(Registries.BLOCK),
+                    tag.getCompound("originalBlockState"));
+        } else {
+            originalBlockState = null;
+        }
     }
     
     @Override

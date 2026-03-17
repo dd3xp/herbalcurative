@@ -1,20 +1,106 @@
 {
   "variants": {
-    "facing=north,formed=false,is_master=false": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=south,formed=false,is_master=false": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=west,formed=false,is_master=false": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=east,formed=false,is_master=false": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=north,formed=false,is_master=true": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=south,formed=false,is_master=true": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=west,formed=false,is_master=true": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=east,formed=false,is_master=true": { "model": "herbalcurative:block/lumistone_bricks" },
-    "facing=north,formed=true,is_master=false": { "model": "herbalcurative:block/kiln_invisible" },
-    "facing=south,formed=true,is_master=false": { "model": "herbalcurative:block/kiln_invisible" },
-    "facing=west,formed=true,is_master=false": { "model": "herbalcurative:block/kiln_invisible" },
-    "facing=east,formed=true,is_master=false": { "model": "herbalcurative:block/kiln_invisible" },
-    "facing=north,formed=true,is_master=true": { "model": "herbalcurative:block/herb_vault" },
-    "facing=south,formed=true,is_master=true": { "model": "herbalcurative:block/herb_vault", "y": 180 },
-    "facing=west,formed=true,is_master=true": { "model": "herbalcurative:block/herb_vault", "y": 270 },
-    "facing=east,formed=true,is_master=true": { "model": "herbalcurative:block/herb_vault", "y": 90 }
+    "facing=north,formed=false,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=north,formed=false,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=south,formed=false,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=south,formed=false,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=west,formed=false,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=west,formed=false,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=east,formed=false,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=east,formed=false,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=north,formed=false,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=north,formed=false,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=south,formed=false,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=south,formed=false,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=west,formed=false,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=west,formed=false,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=east,formed=false,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=east,formed=false,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/lumistone_bricks"
+    },
+    "facing=north,formed=true,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=north,formed=true,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=south,formed=true,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=south,formed=true,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=west,formed=true,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=west,formed=true,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=east,formed=true,is_master=false,mirrored=false": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=east,formed=true,is_master=false,mirrored=true": {
+      "model": "herbalcurative:block/kiln_invisible"
+    },
+    "facing=north,formed=true,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/herb_vault"
+    },
+    "facing=north,formed=true,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/herb_vault"
+    },
+    "facing=south,formed=true,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/herb_vault",
+      "y": 180
+    },
+    "facing=south,formed=true,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/herb_vault",
+      "y": 180
+    },
+    "facing=west,formed=true,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/herb_vault",
+      "y": 270
+    },
+    "facing=west,formed=true,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/herb_vault",
+      "y": 270
+    },
+    "facing=east,formed=true,is_master=true,mirrored=false": {
+      "model": "herbalcurative:block/herb_vault",
+      "y": 90
+    },
+    "facing=east,formed=true,is_master=true,mirrored=true": {
+      "model": "herbalcurative:block/herb_vault",
+      "y": 90
+    }
   }
 }

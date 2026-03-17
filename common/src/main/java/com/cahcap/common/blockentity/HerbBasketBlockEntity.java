@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Block entity for Herb Basket.
  * Stores up to 256 of a single herb type.
- * Automation support is provided via IItemHandler capability in NeoForge.
+ * Automation support is provided via platform-specific item handler capabilities.
  */
 public class HerbBasketBlockEntity extends BlockEntity {
     

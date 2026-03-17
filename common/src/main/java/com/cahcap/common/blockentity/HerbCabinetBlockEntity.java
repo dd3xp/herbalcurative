@@ -25,8 +25,6 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
     private long lastClickTime;
     private UUID lastClickUUID;
     
-    public boolean suppressDrops = false;
-    
     // Cached render bounding box to avoid recalculation every frame
     public AABB renderAABB = null;
     
@@ -198,10 +196,17 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
         for (int h = 0; h < 2; h++) {
             for (int w = 0; w < 3; w++) {
                 BlockPos targetPos = bottomLeft.relative(Direction.UP, h).relative(right, w);
-                
+
                 if (level.getBlockState(targetPos).is(ModRegistries.HERB_CABINET.get())) {
                     if (!targetPos.equals(breakPos)) {
-                        level.setBlock(targetPos, ModRegistries.RED_CHERRY_LOG.get().defaultBlockState(), 2);
+                        BlockState original = null;
+                        if (level.getBlockEntity(targetPos) instanceof HerbCabinetBlockEntity cabinet2) {
+                            original = cabinet2.originalBlockState;
+                        }
+                        if (original == null) {
+                            original = ModRegistries.RED_CHERRY_LOG.get().defaultBlockState();
+                        }
+                        level.setBlock(targetPos, original, 2);
                     }
                 }
             }
@@ -349,7 +354,7 @@ public class HerbCabinetBlockEntity extends MultiblockPartBlockEntity {
     
     /**
      * Get item handler callback for this block entity
-     * Used by NeoForge capabilities system
+     * Used by mod loader capabilities system
      */
     public ItemHandlerCallback getItemHandlerCallback() {
         return new ItemHandlerCallback() {

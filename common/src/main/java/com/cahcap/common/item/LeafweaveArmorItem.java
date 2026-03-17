@@ -17,7 +17,7 @@ public class LeafweaveArmorItem extends ArmorItem {
     
     /**
      * Returns the armor texture location.
-     * This is used by NeoForge's IClientItemExtensions or getArmorTexture override.
+     * Used by the mod loader's armor texture override.
      */
     public ResourceLocation getArmorTextureLocation() {
         return ARMOR_TEXTURE;

@@ -1,7 +1,6 @@
 package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.KilnBlockEntity;
-import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -14,73 +13,37 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Kiln Block - A 3x3x3 multiblock structure for smelting.
- *
- * Structure (ground placement, looking from above):
- *
- * Layer 1 (y=-1, bottom):
- *   [StoneBricks][StoneBricks][StoneBricks]
- *   [StoneBricks][PyrisagePlantable][StoneBricks]
- *   [StoneBricks][StoneBricks][StoneBricks]
- *
- * Layer 2 (y=0, middle - master layer):
- *   [StoneBricks][StoneBricks][StoneBricks]
- *   [StoneBricks][Pyrisage (MASTER)][StoneBricks]
- *   [StoneBricks][StoneBrickSlab(top, front)][StoneBricks]
- *
- * Layer 3 (y=1, top):
- *   [StoneBrickSlab(bottom)][StoneBricks][StoneBrickSlab(bottom)]
- *   [StoneBrickSlab(bottom)][StoneBricks][StoneBrickSlab(bottom)]
- *   [StoneBrickSlab(bottom)][StoneBricks][StoneBrickSlab(bottom)]
- *
- * The master block is at the center of Layer 2 (Pyrisage position).
  */
-public class KilnBlock extends BaseEntityBlock {
+public class KilnBlock extends MultiblockPartBlock {
 
     public static final MapCodec<KilnBlock> CODEC = simpleCodec(KilnBlock::new);
 
-    public static final DirectionProperty FACING = Multiblock.FACING;
-    public static final BooleanProperty FORMED = Multiblock.FORMED;
-    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
     // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
     // NORTH-facing shapes (model default orientation), indexed by (dy+1)*9 + (dx+1)*3 + (dz+1)
     private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[27];
-
-    // Precomputed rotated shapes for all 4 directions [facing][posIndex]
-    private static final VoxelShape[][] SHAPES_BY_FACING = new VoxelShape[4][27];
+    private static final VoxelShape[][] SHAPES_BY_FACING;
+    private static final VoxelShape[][] SHAPES_BY_FACING_MIRRORED;
 
     static {
-        // Define NORTH shapes: dx=-1..1, dy=-1..1, dz=-1..1
         // dy=-1
         NORTH_SHAPES[idx(-1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 16, 16), Block.box(15, 13, 0, 16, 16, 16), Block.box(15, 0, 0, 16, 13, 16));
         NORTH_SHAPES[idx(-1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
@@ -112,51 +75,20 @@ public class KilnBlock extends BaseEntityBlock {
         NORTH_SHAPES[idx( 1, 1, 0)] = Block.box(0, 0, 0, 8, 6, 16);
         NORTH_SHAPES[idx( 1, 1, 1)] = Block.box(0, 0, 0, 8, 6, 12);
 
-        // Precompute rotated shapes for all facings
-        for (int i = 0; i < 27; i++) {
-            VoxelShape shape = NORTH_SHAPES[i];
-            if (shape == null) shape = Shapes.empty();
-            SHAPES_BY_FACING[Direction.NORTH.get2DDataValue()][i] = shape;
-            SHAPES_BY_FACING[Direction.SOUTH.get2DDataValue()][i] = rotateShape(shape, Direction.SOUTH);
-            SHAPES_BY_FACING[Direction.WEST.get2DDataValue()][i] = rotateShape(shape, Direction.WEST);
-            SHAPES_BY_FACING[Direction.EAST.get2DDataValue()][i] = rotateShape(shape, Direction.EAST);
-        }
+        SHAPES_BY_FACING = precomputeRotatedShapes(NORTH_SHAPES);
+        SHAPES_BY_FACING_MIRRORED = precomputeMirroredShapes(NORTH_SHAPES, i -> {
+            int dy = (i / 9) - 1, dx = ((i % 9) / 3) - 1, dz = (i % 3) - 1;
+            return idx(-dx, dy, dz);
+        });
     }
 
     private static int idx(int dx, int dy, int dz) {
         return (dy + 1) * 9 + (dx + 1) * 3 + (dz + 1);
     }
 
-    /**
-     * Rotate a VoxelShape from NORTH orientation to the given direction.
-     * Same approach as HerbCabinetBlock.
-     */
-    private static VoxelShape rotateShape(VoxelShape shape, Direction to) {
-        VoxelShape[] buffer = new VoxelShape[]{Shapes.empty()};
-        shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
-            double x1 = minX * 16, y1 = minY * 16, z1 = minZ * 16;
-            double x2 = maxX * 16, y2 = maxY * 16, z2 = maxZ * 16;
-            double nx1, nz1, nx2, nz2;
-            switch (to) {
-                case SOUTH -> { nx1 = 16 - x2; nz1 = 16 - z2; nx2 = 16 - x1; nz2 = 16 - z1; }
-                case WEST  -> { nx1 = z1; nz1 = 16 - x2; nx2 = z2; nz2 = 16 - x1; }
-                case EAST  -> { nx1 = 16 - z2; nz1 = x1; nx2 = 16 - z1; nz2 = x2; }
-                default    -> { nx1 = x1; nz1 = z1; nx2 = x2; nz2 = z2; }
-            }
-            buffer[0] = Shapes.or(buffer[0], Block.box(
-                    Math.min(nx1, nx2), y1, Math.min(nz1, nz2),
-                    Math.max(nx1, nx2), y2, Math.max(nz1, nz2)));
-        });
-        return buffer[0];
-    }
-
     public KilnBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(FORMED, false)
-                .setValue(IS_MASTER, false)
-                .setValue(LIT, false));
+        registerDefaultState(defaultBlockState().setValue(LIT, false));
     }
 
     @Override
@@ -166,13 +98,8 @@ public class KilnBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED, IS_MASTER, LIT);
-    }
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        super.createBlockStateDefinition(builder);
+        builder.add(LIT);
     }
 
     @Nullable
@@ -182,76 +109,25 @@ public class KilnBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (!state.getValue(FORMED)) {
-            return Shapes.block();
-        }
-        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be && be.formed) {
-            return getShapeForPosition(be.facing, be.offset);
-        }
-        return Shapes.empty();
-    }
-
-    @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (!state.getValue(FORMED)) {
-            return Shapes.block();
-        }
-        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be && be.formed) {
-            return getShapeForPosition(be.facing, be.offset);
-        }
-        return Shapes.empty();
-    }
-
-    private VoxelShape getShapeForPosition(Direction facing, int[] offset) {
-        if (offset == null) return Shapes.block();
-        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
-
-        int modelDx, modelDz;
-        switch (facing) {
-            case SOUTH -> { modelDx = -worldDx; modelDz = -worldDz; }
-            case EAST  -> { modelDx = worldDz; modelDz = -worldDx; }
-            case WEST  -> { modelDx = -worldDz; modelDz = worldDx; }
-            default    -> { modelDx = worldDx; modelDz = worldDz; }
-        }
+    protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
+        int[] model = worldToModelOffset(facing, offset);
+        int modelDx = model[0], dy = model[1], modelDz = model[2];
 
         if (modelDx < -1 || modelDx > 1 || dy < -1 || dy > 1 || modelDz < -1 || modelDz > 1) {
             return Shapes.block();
         }
 
         int index = idx(modelDx, dy, modelDz);
-        return SHAPES_BY_FACING[facing.get2DDataValue()][index];
-    }
-
-
-    @Override
-    protected boolean isOcclusionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
-        return false;
+        VoxelShape[][] table = mirrored ? SHAPES_BY_FACING_MIRRORED : SHAPES_BY_FACING;
+        return table[facing.get2DDataValue()][index];
     }
 
     @Override
-    protected boolean useShapeForLightOcclusion(BlockState state) {
-        return false;
+    protected ItemStack getDefaultDropItem() {
+        return new ItemStack(net.minecraft.world.level.block.Blocks.STONE_BRICKS);
     }
 
-    @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(FORMED);
-    }
-
-    @Override
-    protected int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
-        if (state.getValue(FORMED)) {
-            return 0;
-        }
-        return super.getLightBlock(state, level, pos);
-    }
-
+    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
@@ -268,87 +144,22 @@ public class KilnBlock extends BaseEntityBlock {
         if (hand == InteractionHand.OFF_HAND) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-
         if (!state.getValue(FORMED)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-
-        // Flowweave Ring: pass to item handler (for potential future interactions)
         if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-
-        // Kiln has no manual item insertion/extraction - all I/O is automatic via adjacent chests
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-    }
-
-    /**
-     * Handle block destruction logic for formed multiblock.
-     */
-    public boolean handleBlockDestruction(BlockState state, Level level, BlockPos pos, Player player, FluidState fluid) {
-        return true;
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock())) {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof KilnBlockEntity be) {
-                if (!be.suppressDrops && be.formed) {
-                    be.disassemble();
-                }
-            }
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        if (level.getBlockEntity(pos) instanceof KilnBlockEntity be && be.formed) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) {
-                return be.getOriginalItemForPosition(pos, masterPos);
-            }
-        }
-        return new ItemStack(net.minecraft.world.level.block.Blocks.STONE_BRICKS);
-    }
-
-    @Override
-    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (blockEntity instanceof KilnBlockEntity be) {
-            if (be.suppressDrops) {
-                return Collections.emptyList();
-            }
-            if (be.formed) {
-                BlockPos masterPos = be.getMasterPos();
-                if (masterPos != null) {
-                    return Collections.singletonList(be.getOriginalItemForPosition(be.getBlockPos(), masterPos));
-                }
-            }
-        }
-        return Collections.singletonList(new ItemStack(net.minecraft.world.level.block.Blocks.STONE_BRICKS));
     }
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (!state.getValue(FORMED)) {
-            return;
-        }
+        if (!state.getValue(FORMED)) return;
+        if (!(level.getBlockEntity(pos) instanceof KilnBlockEntity be)) return;
+        if (!be.isMaster()) return;
+        if (!be.isSmelting()) return;
 
-        if (!(level.getBlockEntity(pos) instanceof KilnBlockEntity be)) {
-            return;
-        }
-
-        if (!be.isMaster()) {
-            return;
-        }
-
-        // Only show effects when smelting
-        if (!be.isSmelting()) {
-            return;
-        }
-
-        // Campfire smoke rising from chimney (top center), same density as vanilla campfire
         for (int i = 0; i < 3; i++) {
             double x = pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4;
             double y = pos.getY() + 1.5 + random.nextDouble() * 0.3;
@@ -357,7 +168,6 @@ public class KilnBlock extends BaseEntityBlock {
                     (random.nextDouble() - 0.5) * 0.01, 0.07, (random.nextDouble() - 0.5) * 0.01);
         }
 
-        // Fire particles from the front opening
         if (random.nextInt(3) == 0) {
             Direction facing = state.getValue(FACING);
             double x = pos.getX() + 0.5 + facing.getStepX() * 0.6;
@@ -366,7 +176,6 @@ public class KilnBlock extends BaseEntityBlock {
             level.addParticle(ParticleTypes.SMALL_FLAME, x, y, z, 0, 0.01, 0);
         }
 
-        // Fire crackle sound
         if (random.nextInt(4) == 0) {
             level.playLocalSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                     SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);

@@ -2,7 +2,6 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
-import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.common.registry.ModRegistries;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -14,42 +13,25 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-
-public class HerbVaultBlock extends BaseEntityBlock {
+public class HerbVaultBlock extends MultiblockPartBlock {
 
     public static final MapCodec<HerbVaultBlock> CODEC = simpleCodec(HerbVaultBlock::new);
-    public static final DirectionProperty FACING = Multiblock.FACING;
-    public static final BooleanProperty FORMED = Multiblock.FORMED;
-    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
 
-    // Per-block collision shapes (27 blocks, NORTH orientation)
     private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[27];
-    private static final VoxelShape[][] SHAPES_BY_FACING = new VoxelShape[4][27];
+    private static final VoxelShape[][] SHAPES_BY_FACING;
+    private static final VoxelShape[][] SHAPES_BY_FACING_MIRRORED;
 
     static {
         // dy=-1
@@ -83,61 +65,23 @@ public class HerbVaultBlock extends BaseEntityBlock {
         NORTH_SHAPES[idx( 1, 1, 0)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 0, 12, 8, 16));
         NORTH_SHAPES[idx( 1, 1, 1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 0, 12, 8, 12));
 
-        // Precompute rotated shapes
-        for (int i = 0; i < 27; i++) {
-            VoxelShape shape = NORTH_SHAPES[i];
-            if (shape == null) shape = Shapes.empty();
-            SHAPES_BY_FACING[Direction.NORTH.get2DDataValue()][i] = shape;
-            SHAPES_BY_FACING[Direction.SOUTH.get2DDataValue()][i] = rotateShape(shape, Direction.SOUTH);
-            SHAPES_BY_FACING[Direction.WEST.get2DDataValue()][i] = rotateShape(shape, Direction.WEST);
-            SHAPES_BY_FACING[Direction.EAST.get2DDataValue()][i] = rotateShape(shape, Direction.EAST);
-        }
+        SHAPES_BY_FACING = precomputeRotatedShapes(NORTH_SHAPES);
+        SHAPES_BY_FACING_MIRRORED = precomputeMirroredShapes(NORTH_SHAPES, i -> {
+            int dy = (i / 9) - 1, dx = ((i % 9) / 3) - 1, dz = (i % 3) - 1;
+            return idx(-dx, dy, dz);
+        });
     }
 
     private static int idx(int dx, int dy, int dz) {
         return (dy + 1) * 9 + (dx + 1) * 3 + (dz + 1);
     }
 
-    private static VoxelShape rotateShape(VoxelShape shape, Direction to) {
-        VoxelShape[] buffer = new VoxelShape[]{Shapes.empty()};
-        shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
-            double x1 = minX * 16, y1 = minY * 16, z1 = minZ * 16;
-            double x2 = maxX * 16, y2 = maxY * 16, z2 = maxZ * 16;
-            double nx1, nz1, nx2, nz2;
-            switch (to) {
-                case SOUTH -> { nx1 = 16 - x2; nz1 = 16 - z2; nx2 = 16 - x1; nz2 = 16 - z1; }
-                case WEST -> { nx1 = z1; nz1 = 16 - x2; nx2 = z2; nz2 = 16 - x1; }
-                case EAST -> { nx1 = 16 - z2; nz1 = x1; nx2 = 16 - z1; nz2 = x2; }
-                default -> { nx1 = x1; nz1 = z1; nx2 = x2; nz2 = z2; }
-            }
-            buffer[0] = Shapes.or(buffer[0], Block.box(
-                    Math.min(nx1, nx2), y1, Math.min(nz1, nz2),
-                    Math.max(nx1, nx2), y2, Math.max(nz1, nz2)));
-        });
-        return buffer[0];
-    }
-
     public HerbVaultBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(FORMED, false)
-                .setValue(IS_MASTER, false));
     }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() { return CODEC; }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED, IS_MASTER);
-    }
-
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
 
     @Nullable
     @Override
@@ -146,60 +90,19 @@ public class HerbVaultBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (!state.getValue(FORMED)) return Shapes.block();
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
-            return getShapeForPosition(be.facing, be.offset);
-        }
-        return Shapes.empty();
-    }
-
-    @Override
-    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (!state.getValue(FORMED)) return Shapes.block();
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
-            return getShapeForPosition(be.facing, be.offset);
-        }
-        return Shapes.empty();
-    }
-
-    private VoxelShape getShapeForPosition(Direction facing, int[] offset) {
-        if (offset == null) return Shapes.block();
-        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
-
-        int modelDx, modelDz;
-        switch (facing) {
-            case SOUTH -> { modelDx = -worldDx; modelDz = -worldDz; }
-            case EAST  -> { modelDx = worldDz; modelDz = -worldDx; }
-            case WEST  -> { modelDx = -worldDz; modelDz = worldDx; }
-            default    -> { modelDx = worldDx; modelDz = worldDz; }
-        }
+    protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
+        int[] model = worldToModelOffset(facing, offset);
+        int modelDx = model[0], dy = model[1], modelDz = model[2];
 
         if (modelDx < -1 || modelDx > 1 || dy < -1 || dy > 1 || modelDz < -1 || modelDz > 1) return Shapes.block();
         int index = idx(modelDx, dy, modelDz);
-        return SHAPES_BY_FACING[facing.get2DDataValue()][index];
-    }
-
-
-    @Override
-    protected boolean isOcclusionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) { return false; }
-
-    @Override
-    protected boolean useShapeForLightOcclusion(BlockState state) { return false; }
-
-    @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(FORMED);
+        VoxelShape[][] table = mirrored ? SHAPES_BY_FACING_MIRRORED : SHAPES_BY_FACING;
+        return table[facing.get2DDataValue()][index];
     }
 
     @Override
-    protected int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(FORMED) ? 0 : super.getLightBlock(state, level, pos);
+    protected ItemStack getDefaultDropItem() {
+        return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
     }
 
     /** Returns true if the block at pos is on the front row (forwardOffset==1, dy==0). */
@@ -210,7 +113,7 @@ public class HerbVaultBlock extends BaseEntityBlock {
         return fwd == 1 && off[1] <= 0;
     }
 
-    // ==================== Interaction (same as HerbCabinetBlock) ====================
+    // ==================== Interaction ====================
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
@@ -249,12 +152,10 @@ public class HerbVaultBlock extends BaseEntityBlock {
         return ItemInteractionResult.SUCCESS;
     }
 
-    @Override
-    protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
-        handleHerbExtraction(level, pos, player, state);
-    }
-
-    private void handleHerbExtraction(Level level, BlockPos pos, Player player, BlockState state) {
+    /**
+     * Extract herbs on left-click. Called from mod loader's event handler.
+     */
+    public void handleLeftClickExtraction(Level level, BlockPos pos, Player player, BlockState state) {
         if (level.isClientSide) return;
         if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.formed) return;
 
@@ -277,52 +178,15 @@ public class HerbVaultBlock extends BaseEntityBlock {
         }
     }
 
-    public boolean handleBlockDestruction(BlockState state, Level level, BlockPos pos, Player player, FluidState fluid) {
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
-            HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
-            if (hitResult instanceof BlockHitResult blockHit && blockHit.getDirection() == state.getValue(FACING)) {
-                if (player.isCreative()) handleHerbExtraction(level, pos, player, state);
-                return false;
-            }
-        }
-        return true;
-    }
+    /**
+     * Check if the left-click should be intercepted (prevent breaking, allow extraction).
+     * Returns true if the click targets a front-face block with herb interaction.
+     */
+    public boolean shouldInterceptLeftClick(BlockState state, Level level, BlockPos pos, Player player) {
+        if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.formed) return false;
+        if (!isFrontRow(be)) return false;
 
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
-        if (!state.is(newState.getBlock())) {
-            if (!level.isClientSide && level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) {
-                if (!be.suppressDrops && be.formed) be.disassemble();
-            }
-        }
-        super.onRemove(state, level, pos, newState, movedByPiston);
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
-            BlockPos masterPos = be.getMasterPos();
-            if (masterPos != null) {
-                return be.getOriginalItemForPosition(pos, masterPos);
-            }
-        }
-        return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
-    }
-
-    @Override
-    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (blockEntity instanceof HerbVaultBlockEntity be) {
-            if (be.suppressDrops) {
-                return Collections.emptyList();
-            }
-            if (be.formed) {
-                BlockPos masterPos = be.getMasterPos();
-                if (masterPos != null) {
-                    return Collections.singletonList(be.getOriginalItemForPosition(be.getBlockPos(), masterPos));
-                }
-            }
-        }
-        return Collections.singletonList(new ItemStack(ModRegistries.LUMISTONE_BRICKS.get()));
+        HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
+        return hitResult instanceof BlockHitResult blockHit && blockHit.getDirection() == state.getValue(FACING);
     }
 }

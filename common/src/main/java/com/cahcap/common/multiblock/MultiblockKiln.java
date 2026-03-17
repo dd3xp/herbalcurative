@@ -56,6 +56,7 @@ public class MultiblockKiln {
                     && state.getValue(SlabBlock.TYPE) == SlabType.BOTTOM)
             .master('#')
             .trigger('T')
+            .mirrorable()
             .result(() -> ModRegistries.KILN.get())
             .sound(SoundEvents.STONE_PLACE, 1.0f, 0.8f)
             .build();
