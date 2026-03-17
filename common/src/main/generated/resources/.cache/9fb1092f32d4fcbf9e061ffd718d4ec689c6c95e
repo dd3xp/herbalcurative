@@ -1,4 +1,4 @@
-// 1.21.1	2026-03-15T00:55:57.7725311	Recipes
+// 1.21.1	2026-03-18T02:29:45.6511277	Recipes
 26bef6d7606d006967e73b540786020759ff24b3 data/herbalcurative/advancement/recipes/building_blocks/lumistone.json
 078f474aab4adcf44c51e63dcd6cce54dee4d920 data/herbalcurative/advancement/recipes/building_blocks/lumistone_bricks.json
 8bb38edf43e778856ffad99f2e30f06d3ab63b7b data/herbalcurative/advancement/recipes/building_blocks/lumistone_brick_slab.json
@@ -36,7 +36,7 @@ abca25adec6f443e60106a0a1b66490701c0320c data/herbalcurative/recipe/cauldron_bre
 871b0698808760c0e9bd9fcd0e1693a90bb2d6e7 data/herbalcurative/recipe/cauldron_brewing/regeneration_potion.json
 df3cf42a45238f1bcebc743b095c8ffdfe3fb8dc data/herbalcurative/recipe/cauldron_brewing/strength_potion.json
 afd505ec063c27ea2f853bec1a79a463155e588e data/herbalcurative/recipe/cauldron_brewing/travel_potion.json
-ebc3634b4089accd2969d88d3612ea128f1a9c4c data/herbalcurative/recipe/cauldron_infusing/enchanted_golden_apple.json
+afc6aa82c23c0372e521bca3ae83c7f80199a59d data/herbalcurative/recipe/cauldron_infusing/enchanted_golden_apple.json
 61847dbc8fc908f2d870b54efb945c5855906da6 data/herbalcurative/recipe/cauldron_infusing/flowweave_ring_binding.json
 19b40a0f475c3f308a5aba5fa4d784b4db721bfc data/herbalcurative/recipe/cauldron_infusing/flowweave_ring_unbinding.json
 740bd5c08386d84e745652d55e4493ec14e0d3ff data/herbalcurative/recipe/cauldron_infusing/wet_sponge.json

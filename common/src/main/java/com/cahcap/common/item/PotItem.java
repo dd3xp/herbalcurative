@@ -89,35 +89,67 @@ public class PotItem extends Item {
             return InteractionResult.PASS;
         }
         
-        // Can only collect potion (not regular fluid)
+        ItemStack stack = context.getItemInHand();
+        Player player = context.getPlayer();
+
+        if (isFilled(stack)) {
+            // Pour pot back into empty cauldron
+            if (!master.getFluid().isEmpty()) {
+                return InteractionResult.PASS; // Cauldron not empty
+            }
+
+            // Restore potion from pot data
+            java.util.List<String> potionTypes = getPotionTypes(stack);
+            java.util.List<MobEffect> effects = new java.util.ArrayList<>();
+            for (String type : potionTypes) {
+                ResourceLocation id = ResourceLocation.tryParse(type);
+                if (id != null) {
+                    MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+                    if (effect != null) effects.add(effect);
+                }
+            }
+            if (effects.isEmpty()) return InteractionResult.PASS;
+
+            int units = getUses(stack);
+            int duration = getDuration(stack);
+            int amplifier = getLevel(stack) - 1;
+            int color = getPotionColor(stack);
+
+            // Fill cauldron with water first, then convert to potion
+            master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000);
+            master.getFluid().convertToBoilingPotion(effects, color);
+            master.getFluid().convertToPotion(duration, amplifier, color);
+            // Set the actual potion units from pot
+            master.getFluid().consumeUnits(CauldronBlockEntity.CauldronFluid.MAX_POTION_UNITS - units);
+
+            emptyPot(stack);
+            level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+            master.syncToClient();
+            return InteractionResult.SUCCESS;
+        }
+
+        // Empty pot: collect potion from cauldron
         if (!master.getFluid().isPotion()) {
             return InteractionResult.PASS;
         }
-        
-        ItemStack stack = context.getItemInHand();
-        
-        // Check if pot is already filled
-        if (isFilled(stack)) {
-            return InteractionResult.PASS;
-        }
-        
+
         // Get effect IDs for pot
         java.util.List<String> effectIds = new java.util.ArrayList<>();
-        for (net.minecraft.world.effect.MobEffect effect : master.getFluid().getEffects()) {
-            net.minecraft.resources.ResourceLocation effectResLoc = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect);
+        for (MobEffect effect : master.getFluid().getEffects()) {
+            ResourceLocation effectResLoc = BuiltInRegistries.MOB_EFFECT.getKey(effect);
             if (effectResLoc != null) {
                 effectIds.add(effectResLoc.toString());
             }
         }
-        
-        // Fill the pot with potion
-        fillPot(stack, effectIds, master.getFluidColor(), 
+
+        // Fill the pot with remaining potion units, store base (undiluted) color
+        int units = master.getFluid().getPotionUnits();
+        fillPot(stack, effectIds, master.getFluid().getBaseColor(),
                 master.getPotionDuration(), master.getPotionLevel());
-        
+        setUses(stack, units);
+
         // Return any floating materials and output slot to player
-        Player player = context.getPlayer();
         if (player != null) {
-            // Return materials
             for (ItemStack material : master.getMaterials()) {
                 if (!material.isEmpty()) {
                     if (!player.getInventory().add(material.copy())) {
@@ -125,7 +157,6 @@ public class PotItem extends Item {
                     }
                 }
             }
-            // Return output slot
             if (master.hasOutputSlotItems()) {
                 ItemStack output = master.extractFromOutputSlot();
                 if (!output.isEmpty()) {
@@ -135,12 +166,11 @@ public class PotItem extends Item {
                 }
             }
         }
-        
-        // Clear the cauldron fluid (this also clears materials and output slot)
+
+        // Clear the cauldron (potion fully taken)
         master.clearFluid();
-        
+
         level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-        
         return InteractionResult.SUCCESS;
     }
     

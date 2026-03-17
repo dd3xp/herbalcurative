@@ -885,8 +885,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             outputSlot.grow(toAdd);
         }
         
-        // Convert any fluid (water, potion, lava, etc.) to water
-        fluid.convertToWater();
+        // Consume potion units (water is never consumed)
+        if (fluid.isPotion() && currentInfusingRecipe.getFluidCost() > 0) {
+            fluid.consumeUnits(currentInfusingRecipe.getFluidCost());
+        }
         
         // Reset infusing state
         isInfusing = false;
@@ -1704,8 +1706,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             POTION          // Finished potion with effect properties
         }
         
+        public static final int MAX_POTION_UNITS = 32;
+
         private FluidType type = FluidType.EMPTY;
         private int amount = 0;  // In millibuckets (1000 = 1 bucket)
+        private int potionUnits = 0;  // Potion dose units (0-32), only meaningful for POTION type
         
         // For FLUID type
         private Fluid fluid = null;
@@ -1745,6 +1750,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             cf.amplifier = amplifier;
             cf.color = color;
             cf.amount = amount;
+            cf.potionUnits = MAX_POTION_UNITS;
             return cf;
         }
         
@@ -1798,6 +1804,22 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         public int getAmount() {
             return amount;
         }
+
+        public int getPotionUnits() {
+            return potionUnits;
+        }
+
+        /**
+         * Consume potion units. If units reach 0, convert to water.
+         * @param units number of units to consume
+         */
+        public void consumeUnits(int units) {
+            if (!isPotion()) return;
+            potionUnits = Math.max(0, potionUnits - units);
+            if (potionUnits <= 0) {
+                convertToWater();
+            }
+        }
         
         public Fluid getFluid() {
             return fluid;
@@ -1825,15 +1847,40 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             return amplifier;
         }
         
+        /**
+         * Get the display color (interpolated for potions based on remaining units).
+         * Use for rendering the fluid in the cauldron and tooltip.
+         */
         public int getColor() {
             if (type == FluidType.EMPTY) {
                 return 0;
             } else if (type == FluidType.FLUID) {
                 return getFluidColor(fluid);
+            } else if (type == FluidType.POTION && potionUnits < MAX_POTION_UNITS && potionUnits > 0) {
+                float ratio = (float) potionUnits / MAX_POTION_UNITS;
+                return lerpColor(WATER_COLOR, color, ratio);
             } else {
-                // POTION or BOILING_POTION
                 return color;
             }
+        }
+
+        /**
+         * Get the original undiluted potion color (not interpolated).
+         * Use when storing to pot or serialization that needs the base color.
+         */
+        public int getBaseColor() {
+            return color;
+        }
+
+        private static final int WATER_COLOR = 0x3F76E4;
+
+        private static int lerpColor(int from, int to, float ratio) {
+            int fr = (from >> 16) & 0xFF, fg = (from >> 8) & 0xFF, fb = from & 0xFF;
+            int tr = (to >> 16) & 0xFF, tg = (to >> 8) & 0xFF, tb = to & 0xFF;
+            int r = (int) (fr + (tr - fr) * ratio);
+            int g = (int) (fg + (tg - fg) * ratio);
+            int b = (int) (fb + (tb - fb) * ratio);
+            return (r << 16) | (g << 8) | b;
         }
         
         private static int getFluidColor(Fluid fluid) {
@@ -1855,6 +1902,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         public void clear() {
             this.type = FluidType.EMPTY;
             this.amount = 0;
+            this.potionUnits = 0;
             this.fluid = null;
             this.effects.clear();
             this.duration = 0;
@@ -1868,6 +1916,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         public void convertToWater() {
             this.type = FluidType.FLUID;
             this.fluid = Fluids.WATER;
+            this.potionUnits = 0;
             this.effects.clear();
             this.duration = 0;
             this.amplifier = 0;
@@ -1902,6 +1951,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             this.type = FluidType.POTION;
             this.duration = duration;
             this.amplifier = amplifier;
+            this.potionUnits = MAX_POTION_UNITS;
             // Set color from first effect (boiling used water color)
             if (!this.effects.isEmpty()) {
                 this.color = this.effects.get(0).getColor();
@@ -1914,6 +1964,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         public void convertToPotion(int duration, int amplifier, int color) {
             if (this.type != FluidType.BOILING_POTION) return;
             this.type = FluidType.POTION;
+            this.potionUnits = MAX_POTION_UNITS;
             this.duration = duration;
             this.amplifier = amplifier;
             this.color = color;
@@ -1938,7 +1989,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             CompoundTag tag = new CompoundTag();
             tag.putString("Type", type.name());
             tag.putInt("Amount", amount);
-            
+            tag.putInt("PotionUnits", potionUnits);
+
             if (type == FluidType.FLUID && fluid != null) {
                 tag.putString("Fluid", net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(fluid).toString());
             } else if ((type == FluidType.POTION || type == FluidType.BOILING_POTION) && !effects.isEmpty()) {
@@ -1966,7 +2018,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             String typeName = tag.getString("Type");
             cf.type = FluidType.valueOf(typeName.isEmpty() ? "EMPTY" : typeName);
             cf.amount = tag.getInt("Amount");
-            
+            cf.potionUnits = tag.getInt("PotionUnits");
+
             if (cf.type == FluidType.FLUID && tag.contains("Fluid")) {
                 net.minecraft.resources.ResourceLocation fluidId = net.minecraft.resources.ResourceLocation.tryParse(tag.getString("Fluid"));
                 if (fluidId != null) {

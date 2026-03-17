@@ -16,30 +16,30 @@
 
 - **花韵兜帽**：
   <table border="1">
-  <tr><td>鳞甲: 16</td><td>绒甲</td><td>魔法合金锭</td><td>绒甲</td><td>水晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>绒甲</td><td>无</td><td>绒甲</td><td>燃烧草段: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>绒甲</td><td>绒甲</td><td>绒甲</td><td>水晶刺: 0</td></tr>
+  <tr><td>雨露花瓣: 0</td><td>魔法合金锭</td><td>无</td><td>魔法合金锭</td><td>燃烧草段: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>无</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **花韵大衣**：
   <table border="1">
-  <tr><td>鳞甲: 16</td><td>绒甲</td><td>无</td><td>绒甲</td><td>水晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>绒甲</td><td>魔法合金锭</td><td>绒甲</td><td>燃烧草段: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>魔法合金锭</td><td>无</td><td>魔法合金锭</td><td>水晶刺: 0</td></tr>
+  <tr><td>雨露花瓣: 0</td><td>绒甲</td><td>绒甲</td><td>绒甲</td><td>燃烧草段: 0</td></tr>
   <tr><td>金铃花: 0</td><td>绒甲</td><td>绒甲</td><td>绒甲</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **花韵短袍**：
   <table border="1">
-  <tr><td>鳞甲: 16</td><td>绒甲</td><td>魔法合金锭</td><td>绒甲</td><td>水晶刺: 0</td></tr>
+  <tr><td>鳞甲: 16</td><td>绒甲</td><td>绒甲</td><td>绒甲</td><td>水晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>绒甲</td><td>无</td><td>绒甲</td><td>燃烧草段: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>绒甲</td><td>无</td><td>绒甲</td><td>星忆花心: 0</td></tr>
+  <tr><td>金铃花: 0</td><td>魔法合金锭</td><td>无</td><td>魔法合金锭</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **花韵靴子**：
   <table border="1">
   <tr><td>鳞甲: 16</td><td>无</td><td>无</td><td>无</td><td>水晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>绒甲</td><td>无</td><td>绒甲</td><td>燃烧草段: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>绒甲</td><td>魔法合金锭</td><td>绒甲</td><td>星忆花心: 0</td></tr>
+  <tr><td>金铃花: 0</td><td>魔法合金锭</td><td>无</td><td>魔法合金锭</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **魔法合金剑**：
@@ -93,30 +93,30 @@
 
 - **深林兜帽**：
   <table border="1">
-  <tr><td>鳞甲: 64</td><td>丝甲</td><td>璀璨宝石</td><td>丝甲</td><td>水晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>丝甲</td><td>无</td><td>丝甲</td><td>燃烧草段: 0</td></tr>
+  <tr><td>鳞甲: 64</td><td>丝甲</td><td>丝甲</td><td>丝甲</td><td>水晶刺: 0</td></tr>
+  <tr><td>雨露花瓣: 0</td><td>璀璨宝石</td><td>无</td><td>璀璨宝石</td><td>燃烧草段: 0</td></tr>
   <tr><td>金铃花: 0</td><td>无</td><td>无</td><td>无</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **深林大衣**：
   <table border="1">
-  <tr><td>鳞甲: 64</td><td>丝甲</td><td>无</td><td>丝甲</td><td>水晶刺: 0</td></tr>
-  <tr><td>雨露花瓣: 0</td><td>丝甲</td><td>璀璨宝石</td><td>丝甲</td><td>燃烧草段: 0</td></tr>
+  <tr><td>鳞甲: 64</td><td>璀璨宝石</td><td>无</td><td>璀璨宝石</td><td>水晶刺: 0</td></tr>
+  <tr><td>雨露花瓣: 0</td><td>丝甲</td><td>丝甲</td><td>丝甲</td><td>燃烧草段: 0</td></tr>
   <tr><td>金铃花: 0</td><td>丝甲</td><td>丝甲</td><td>丝甲</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **深林短袍**：
   <table border="1">
-  <tr><td>鳞甲: 64</td><td>丝甲</td><td>璀璨宝石</td><td>丝甲</td><td>水晶刺: 0</td></tr>
+  <tr><td>鳞甲: 64</td><td>丝甲</td><td>丝甲</td><td>丝甲</td><td>水晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>丝甲</td><td>无</td><td>丝甲</td><td>燃烧草段: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>丝甲</td><td>无</td><td>丝甲</td><td>星忆花心: 0</td></tr>
+  <tr><td>金铃花: 0</td><td>璀璨宝石</td><td>无</td><td>璀璨宝石</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **深林靴子**：
   <table border="1">
   <tr><td>鳞甲: 64</td><td>无</td><td>无</td><td>无</td><td>水晶刺: 0</td></tr>
   <tr><td>雨露花瓣: 0</td><td>丝甲</td><td>无</td><td>丝甲</td><td>燃烧草段: 0</td></tr>
-  <tr><td>金铃花: 0</td><td>丝甲</td><td>璀璨宝石</td><td>丝甲</td><td>星忆花心: 0</td></tr>
+  <tr><td>金铃花: 0</td><td>璀璨宝石</td><td>无</td><td>璀璨宝石</td><td>星忆花心: 0</td></tr>
   </table>
 
 - **璀璨宝石剑**：

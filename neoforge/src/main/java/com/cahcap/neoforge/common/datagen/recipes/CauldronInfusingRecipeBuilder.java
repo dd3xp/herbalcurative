@@ -40,6 +40,7 @@ public class CauldronInfusingRecipeBuilder {
     private int minLevel = 1;           // Minimum potion level (1 = level I)
     private boolean isFlowweaveRingBinding = false;  // Special: dynamic output for Flowweave Ring
     private boolean isFlowweaveRingUnbinding = false; // Special: clear ring binding in water
+    private int fluidCost = 32;                        // Potion units consumed (0-32)
     
     private CauldronInfusingRecipeBuilder() {
     }
@@ -199,6 +200,15 @@ public class CauldronInfusingRecipeBuilder {
      * Soaking a ring in water will clear its binding.
      * Input is automatically set to 1 Flowweave Ring.
      */
+    /**
+     * Set how many potion units this recipe consumes (default 32 = all).
+     * Water-based recipes never consume fluid regardless of this value.
+     */
+    public CauldronInfusingRecipeBuilder fluidCost(int cost) {
+        this.fluidCost = cost;
+        return this;
+    }
+
     public CauldronInfusingRecipeBuilder flowweaveRingUnbinding() {
         this.isFlowweaveRingUnbinding = true;
         return this;
@@ -246,7 +256,8 @@ public class CauldronInfusingRecipeBuilder {
                 minDuration,
                 minLevel,
                 isFlowweaveRingBinding,
-                isFlowweaveRingUnbinding
+                isFlowweaveRingUnbinding,
+                fluidCost
         );
         
         recipeOutput.accept(id, recipe, null);

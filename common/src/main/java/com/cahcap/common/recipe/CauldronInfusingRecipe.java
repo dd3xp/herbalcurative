@@ -52,9 +52,11 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
     private final int minLevel;
     private final boolean isFlowweaveRingBinding;   // Special: dynamic output for Flowweave Ring binding
     private final boolean isFlowweaveRingUnbinding; // Special: clear ring binding in water
-    
-    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType, 
-                          int minDuration, int minLevel, boolean isFlowweaveRingBinding, boolean isFlowweaveRingUnbinding) {
+    private final int fluidCost;                    // Potion units consumed (0 = no consumption, 32 = all)
+
+    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType,
+                          int minDuration, int minLevel, boolean isFlowweaveRingBinding, boolean isFlowweaveRingUnbinding,
+                          int fluidCost) {
         this.inputs = new ArrayList<>(inputs);
         this.output = output;
         this.fluidType = fluidType;
@@ -63,18 +65,22 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
         this.minLevel = minLevel;
         this.isFlowweaveRingBinding = isFlowweaveRingBinding;
         this.isFlowweaveRingUnbinding = isFlowweaveRingUnbinding;
+        this.fluidCost = fluidCost;
     }
     
-    // Constructor with only binding flag (for compatibility)
-    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType, 
+    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType,
+                          int minDuration, int minLevel, boolean isFlowweaveRingBinding, boolean isFlowweaveRingUnbinding) {
+        this(inputs, output, fluidType, potionType, minDuration, minLevel, isFlowweaveRingBinding, isFlowweaveRingUnbinding, 32);
+    }
+
+    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType,
                           int minDuration, int minLevel, boolean isFlowweaveRingBinding) {
-        this(inputs, output, fluidType, potionType, minDuration, minLevel, isFlowweaveRingBinding, false);
+        this(inputs, output, fluidType, potionType, minDuration, minLevel, isFlowweaveRingBinding, false, 32);
     }
-    
-    // Convenience constructor without flowweave flags
-    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType, 
+
+    public CauldronInfusingRecipe(List<IngredientWithCount> inputs, ItemStack output, String fluidType, String potionType,
                           int minDuration, int minLevel) {
-        this(inputs, output, fluidType, potionType, minDuration, minLevel, false, false);
+        this(inputs, output, fluidType, potionType, minDuration, minLevel, false, false, 32);
     }
     
     @Override
@@ -228,6 +234,7 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
     public int getProcessingTime() { return INFUSING_TIME_TICKS; }
     public boolean isFlowweaveRingBinding() { return isFlowweaveRingBinding; }
     public boolean isFlowweaveRingUnbinding() { return isFlowweaveRingUnbinding; }
+    public int getFluidCost() { return fluidCost; }
     
     // Fluid/Potion matching helpers
     public boolean requiresFluid() {
@@ -318,7 +325,8 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
                 Codec.INT.optionalFieldOf("min_duration", 0).forGetter(CauldronInfusingRecipe::getMinDuration),
                 Codec.INT.optionalFieldOf("min_level", 1).forGetter(CauldronInfusingRecipe::getMinLevel),
                 Codec.BOOL.optionalFieldOf("flowweave_ring_binding", false).forGetter(CauldronInfusingRecipe::isFlowweaveRingBinding),
-                Codec.BOOL.optionalFieldOf("flowweave_ring_unbinding", false).forGetter(CauldronInfusingRecipe::isFlowweaveRingUnbinding)
+                Codec.BOOL.optionalFieldOf("flowweave_ring_unbinding", false).forGetter(CauldronInfusingRecipe::isFlowweaveRingUnbinding),
+                Codec.INT.optionalFieldOf("fluid_cost", 32).forGetter(CauldronInfusingRecipe::getFluidCost)
             ).apply(instance, CauldronInfusingRecipe::new)
         );
         
@@ -337,7 +345,8 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
                 int minLevel = ByteBufCodecs.VAR_INT.decode(buf);
                 boolean isFlowweaveRingBinding = ByteBufCodecs.BOOL.decode(buf);
                 boolean isFlowweaveRingUnbinding = ByteBufCodecs.BOOL.decode(buf);
-                return new CauldronInfusingRecipe(inputs, output, fluidType, potionType, minDuration, minLevel, isFlowweaveRingBinding, isFlowweaveRingUnbinding);
+                int fluidCost = ByteBufCodecs.VAR_INT.decode(buf);
+                return new CauldronInfusingRecipe(inputs, output, fluidType, potionType, minDuration, minLevel, isFlowweaveRingBinding, isFlowweaveRingUnbinding, fluidCost);
             }
             
             @Override
@@ -354,6 +363,7 @@ public class CauldronInfusingRecipe implements Recipe<SingleRecipeInput> {
                 ByteBufCodecs.VAR_INT.encode(buf, recipe.getMinLevel());
                 ByteBufCodecs.BOOL.encode(buf, recipe.isFlowweaveRingBinding());
                 ByteBufCodecs.BOOL.encode(buf, recipe.isFlowweaveRingUnbinding());
+                ByteBufCodecs.VAR_INT.encode(buf, recipe.getFluidCost());
             }
         };
         

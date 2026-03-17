@@ -5,8 +5,6 @@
 | 产物 | 产物个数 | 材料 |
 |----|----|----|
 | **皮甲** | 1 | 皮革，任意树叶 |
-| **治愈花** | 1 | 枯萎花瓣，任意装有治疗药水的壶（不会消耗整个壶，只会消耗1点可饮用点数） |
-| **坚韧藤蔓** | 1 | 古老藤蔓，任意装有力量药水的壶（不会消耗整个壶，只会消耗1点可饮用点数） |
 
 ## 有序合成
 
@@ -19,30 +17,30 @@
 
 - **织叶兜帽**：
   <table border="1">
-  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
-  <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
+  <tr><td>微光石</td><td>无</td><td>微光石</td></tr>
   <tr><td>无</td><td>无</td><td>无</td></tr>
   </table>
 
 - **织叶大衣**：
   <table border="1">
-  <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
-  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>微光石</td><td>无</td><td>微光石</td></tr>
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
   <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
   </table>
 
 - **织叶短袍**：
   <table border="1">
-  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>皮甲</td><td>皮甲</td><td>皮甲</td></tr>
   <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
-  <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
+  <tr><td>微光石</td><td>无</td><td>微光石</td></tr>
   </table>
 
 - **织叶靴子**：
   <table border="1">
   <tr><td>无</td><td>无</td><td>无</td></tr>
   <tr><td>皮甲</td><td>无</td><td>皮甲</td></tr>
-  <tr><td>皮甲</td><td>微光石</td><td>皮甲</td></tr>
+  <tr><td>微光石</td><td>无</td><td>微光石</td></tr>
   </table>
 
 - **微光石剑**：

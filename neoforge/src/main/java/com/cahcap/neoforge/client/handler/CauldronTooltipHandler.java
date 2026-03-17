@@ -3,9 +3,13 @@ package com.cahcap.neoforge.client.handler;
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.blockentity.CauldronBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -86,75 +90,83 @@ public class CauldronTooltipHandler {
         boolean hasOutput = !outputSlot.isEmpty();
 
         // Don't render if nothing to show
-        if (items.isEmpty() && !hasOutput) {
+        boolean hasPotionUnits = master.getFluid().isPotion();
+        if (items.isEmpty() && !hasOutput && !hasPotionUnits) {
             return;
         }
+
+        // Potion units info
+        boolean hasPotion = master.getFluid().isPotion();
+        int potionUnits = hasPotion ? master.getFluid().getPotionUnits() : 0;
+        int potionColor = hasPotion ? master.getFluid().getColor() : 0;
 
         GuiGraphics guiGraphics = event.getGuiGraphics();
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        // Calculate widths for each row
         int totalItems = items.size();
         int materialsWidth = totalItems * 20;
-        int outputWidth = hasOutput ? 20 : 0;
-        
-        // Position below crosshair
-        int materialsY = screenHeight / 2 + 12;
-        int outputY = materialsY + 20; // Output on second row
-        
-        // Render materials/herbs first row
+        int centerX = screenWidth / 2;
+        int currentY = screenHeight / 2 + 12;
+
+        // Row 1: Materials/herbs (top)
         if (totalItems > 0) {
-            int materialsStartX = screenWidth / 2 - materialsWidth / 2;
-            int currentX = materialsStartX;
-            
-            for (int i = 0; i < items.size(); i++) {
-                ItemCountPair pair = items.get(i);
-                ItemStack stack = new ItemStack(pair.item);
-                
-                // Render the item icon
-                guiGraphics.renderItem(stack, currentX, materialsY);
+            int startX = centerX - materialsWidth / 2;
+            int currentX = startX;
+
+            for (ItemCountPair pair : items) {
+                guiGraphics.renderItem(new ItemStack(pair.item), currentX, currentY);
                 currentX += 20;
             }
-            
-            // Render text on top of materials (higher z-layer)
+
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 200);
-            
-            currentX = materialsStartX;
-            for (int i = 0; i < items.size(); i++) {
-                ItemCountPair pair = items.get(i);
-                
-                // Render the amount as overlay
+            currentX = startX;
+            for (ItemCountPair pair : items) {
                 String countText = String.valueOf(pair.count);
-                int textX = currentX + 17 - mc.font.width(countText);
-                int textY = materialsY + 9;
-                guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFFFF, true);
+                guiGraphics.drawString(mc.font, countText,
+                        currentX + 17 - mc.font.width(countText), currentY + 9, 0xFFFFFF, true);
                 currentX += 20;
             }
-            
             guiGraphics.pose().popPose();
+            currentY += 20;
         }
-        
-        // Render output on second row (centered)
+
+        // Row 2: Potion units (middle) — water texture tinted with potion color + "X/32"
+        if (hasPotion) {
+            String unitsText = potionUnits + "/" + CauldronBlockEntity.CauldronFluid.MAX_POTION_UNITS;
+            int textWidth = mc.font.width(unitsText);
+            int iconSize = 12;
+            int gap = 3;
+            int totalWidth = iconSize + gap + textWidth;
+            int startX = centerX - totalWidth / 2;
+            int sy = currentY + 2;
+
+            // Render water_still texture tinted with potion color
+            TextureAtlasSprite sprite = mc.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                    .apply(ResourceLocation.withDefaultNamespace("block/water_still"));
+            float r = ((potionColor >> 16) & 0xFF) / 255.0f;
+            float g = ((potionColor >> 8) & 0xFF) / 255.0f;
+            float b = (potionColor & 0xFF) / 255.0f;
+            RenderSystem.setShaderColor(r, g, b, 0.9f);
+            guiGraphics.blit(startX, sy, 0, iconSize, iconSize, sprite);
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+            // Draw text
+            guiGraphics.drawString(mc.font, unitsText, startX + iconSize + gap, currentY + 4, 0xFFFFFF, true);
+            currentY += 18;
+        }
+
+        // Row 3: Output item (bottom)
         if (hasOutput) {
-            int outputStartX = screenWidth / 2 - outputWidth / 2;
-            
-            // If no materials, render output on first row instead
-            int outputRenderY = totalItems > 0 ? outputY : materialsY;
-            
-            // Render output item
-            guiGraphics.renderItem(outputSlot, outputStartX, outputRenderY);
-            
-            // Render output count with yellow color
+            int startX = centerX - 10;
+            guiGraphics.renderItem(outputSlot, startX, currentY);
+
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 200);
-            
             String countText = String.valueOf(outputSlot.getCount());
-            int textX = outputStartX + 17 - mc.font.width(countText);
-            int textY = outputRenderY + 9;
-            guiGraphics.drawString(mc.font, countText, textX, textY, 0xFFFF00, true); // Yellow for output
-            
+            guiGraphics.drawString(mc.font, countText,
+                    startX + 17 - mc.font.width(countText), currentY + 9, 0xFFFF00, true);
             guiGraphics.pose().popPose();
         }
     }

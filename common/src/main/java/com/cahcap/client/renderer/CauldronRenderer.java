@@ -78,10 +78,9 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
         int skyLight = blockEntity.getLevel().getBrightness(LightLayer.SKY, pos);
         int light = LightTexture.pack(Math.max(blockLight, 7), skyLight); // Minimum light for liquid visibility
         
-        // No rotation needed - liquid area is now a perfect square
-        
-        // Render liquid surface
-        renderLiquidSurface(poseStack, bufferSource, light, liquidColor);
+        // Render liquid surface (rotate UV based on facing so wave lines are parallel to front)
+        net.minecraft.core.Direction facing = blockEntity.getFacing();
+        renderLiquidSurface(poseStack, bufferSource, light, liquidColor, facing);
         
         // Render materials floating in the liquid (when not brewing)
         if (!blockEntity.isBrewing()) {
@@ -97,8 +96,8 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
         renderOutputSlot(blockEntity, poseStack, bufferSource, light, partialTick);
     }
     
-    private void renderLiquidSurface(PoseStack poseStack, MultiBufferSource bufferSource, 
-                                      int light, int color) {
+    private void renderLiquidSurface(PoseStack poseStack, MultiBufferSource bufferSource,
+                                      int light, int color, net.minecraft.core.Direction facing) {
         poseStack.pushPose();
         
         // Get water texture
@@ -121,61 +120,54 @@ public class CauldronRenderer implements BlockEntityRenderer<CauldronBlockEntity
         float v0 = sprite.getV0();
         float v1 = sprite.getV1();
         
+        // Rotate UV 90° for EAST/WEST so wave lines stay parallel to front face
+        boolean rotateUV = (facing == net.minecraft.core.Direction.EAST || facing == net.minecraft.core.Direction.WEST);
+
         // Render liquid as a 3x3 grid of tiles, each tile is 1 block size
-        // This creates proper tiling without stretching the texture
-        float tileSize = 1.0f; // 1 block per tile
-        
+        float tileSize = 1.0f;
+
         for (int tx = 0; tx < 3; tx++) {
             for (int tz = 0; tz < 3; tz++) {
-                // Calculate tile bounds, clamped to liquid area
                 float tileMinX = LIQUID_MIN_X + tx * tileSize;
                 float tileMaxX = Math.min(tileMinX + tileSize, LIQUID_MAX_X);
                 float tileMinZ = LIQUID_MIN_Z + tz * tileSize;
                 float tileMaxZ = Math.min(tileMinZ + tileSize, LIQUID_MAX_Z);
-                
-                // Skip if tile is outside liquid area
-                if (tileMinX >= LIQUID_MAX_X || tileMinZ >= LIQUID_MAX_Z) {
-                    continue;
-                }
-                
-                // Clamp to liquid bounds
+
+                if (tileMinX >= LIQUID_MAX_X || tileMinZ >= LIQUID_MAX_Z) continue;
+
                 tileMinX = Math.max(tileMinX, LIQUID_MIN_X);
                 tileMinZ = Math.max(tileMinZ, LIQUID_MIN_Z);
-                
-                // Calculate UV based on how much of the tile is visible
+
                 float visibleWidth = tileMaxX - tileMinX;
                 float visibleDepth = tileMaxZ - tileMinZ;
-                float uvMaxU = u0 + (u1 - u0) * visibleWidth;
-                float uvMaxV = v0 + (v1 - v0) * visibleDepth;
-                
-                // Render this tile
+
+                // Calculate UV extents within sprite range
+                float uFracW = (u1 - u0) * visibleWidth;
+                float vFracD = (v1 - v0) * visibleDepth;
+
+                // 4 corners: NW(minX,minZ) SW(minX,maxZ) SE(maxX,maxZ) NE(maxX,minZ)
+                float nwU, nwV, swU, swV, seU, seV, neU, neV;
+                if (rotateUV) {
+                    // 90° CW: world-X maps to V, world-Z maps to U
+                    nwU = u0;          nwV = v0;
+                    swU = u0 + vFracD; swV = v0;
+                    seU = u0 + vFracD; seV = v0 + uFracW;
+                    neU = u0;          neV = v0 + uFracW;
+                } else {
+                    nwU = u0;          nwV = v0;
+                    swU = u0;          swV = v0 + vFracD;
+                    seU = u0 + uFracW; seV = v0 + vFracD;
+                    neU = u0 + uFracW; neV = v0;
+                }
+
                 consumer.addVertex(matrix, tileMinX, LIQUID_FULL_Y, tileMinZ)
-                        .setColor(r, g, b, a)
-                        .setUv(u0, v0)
-                        .setOverlay(0)
-                        .setLight(light)
-                        .setNormal(0, 1, 0);
-                
+                        .setColor(r, g, b, a).setUv(nwU, nwV).setOverlay(0).setLight(light).setNormal(0, 1, 0);
                 consumer.addVertex(matrix, tileMinX, LIQUID_FULL_Y, tileMaxZ)
-                        .setColor(r, g, b, a)
-                        .setUv(u0, uvMaxV)
-                        .setOverlay(0)
-                        .setLight(light)
-                        .setNormal(0, 1, 0);
-                
+                        .setColor(r, g, b, a).setUv(swU, swV).setOverlay(0).setLight(light).setNormal(0, 1, 0);
                 consumer.addVertex(matrix, tileMaxX, LIQUID_FULL_Y, tileMaxZ)
-                        .setColor(r, g, b, a)
-                        .setUv(uvMaxU, uvMaxV)
-                        .setOverlay(0)
-                        .setLight(light)
-                        .setNormal(0, 1, 0);
-                
+                        .setColor(r, g, b, a).setUv(seU, seV).setOverlay(0).setLight(light).setNormal(0, 1, 0);
                 consumer.addVertex(matrix, tileMaxX, LIQUID_FULL_Y, tileMinZ)
-                        .setColor(r, g, b, a)
-                        .setUv(uvMaxU, v0)
-                        .setOverlay(0)
-                        .setLight(light)
-                        .setNormal(0, 1, 0);
+                        .setColor(r, g, b, a).setUv(neU, neV).setOverlay(0).setLight(light).setNormal(0, 1, 0);
             }
         }
         

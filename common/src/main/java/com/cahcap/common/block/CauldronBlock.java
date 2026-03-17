@@ -137,7 +137,12 @@ public class CauldronBlock extends MultiblockPartBlock {
                 return ItemInteractionResult.SUCCESS;
             }
 
-            if (stack.getItem() instanceof PotItem && !PotItem.isFilled(stack) && master.getFluid().isPotion() && !player.isShiftKeyDown()) {
+            // Empty pot on potion cauldron: fill pot
+            if (stack.getItem() instanceof PotItem && !PotItem.isFilled(stack) && master.getFluid().isPotion()) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
+            // Filled pot on empty cauldron: pour back
+            if (stack.getItem() instanceof PotItem && PotItem.isFilled(stack) && master.getFluid().isEmpty()) {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
             if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {

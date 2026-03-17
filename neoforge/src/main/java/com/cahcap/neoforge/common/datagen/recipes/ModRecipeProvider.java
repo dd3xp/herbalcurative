@@ -627,9 +627,10 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         
         // Enchanted Golden Apple: Regeneration 2 Potion (8+ min) + 1 Apple -> Enchanted Golden Apple
         CauldronInfusingRecipeBuilder.builder()
-                .requirePotion("minecraft:regeneration", 480, 2)  // 480 seconds = 8 minutes
+                .requirePotion("minecraft:regeneration", 90, 2)  // 90 seconds = 1:30
                 .input(Items.APPLE, 1)  // Exactly 1 apple
                 .output(Items.ENCHANTED_GOLDEN_APPLE)
+                .fluidCost(1)  // Consumes 1 potion unit
                 .build(output, "enchanted_golden_apple");
         
         // ==================== Flowweave Ring Binding ====================
