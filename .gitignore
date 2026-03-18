@@ -24,12 +24,10 @@ runs
 run-data
 
 # Data generation
-src/main/generated/
+neoforge/src/main/generated/
 
 # private
-private/othermods/
 private/modpacks
-private/assets/minecraft
 
 # repo
 repo
