@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -37,11 +38,15 @@ public class KilnBlock extends MultiblockPartBlock {
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
     private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/kiln.json");
+    public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, SHAPES.totalPositions() - 1);
 
     public KilnBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(LIT, false));
+        registerDefaultState(defaultBlockState().setValue(LIT, false).setValue(POSITION, 0));
     }
+
+    @Override
+    public IntegerProperty getPositionProperty() { return POSITION; }
 
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
@@ -51,7 +56,7 @@ public class KilnBlock extends MultiblockPartBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(LIT);
+        builder.add(LIT, POSITION);
     }
 
     @Nullable

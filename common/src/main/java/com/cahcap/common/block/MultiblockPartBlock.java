@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -42,21 +43,24 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = Multiblock.FACING;
     public static final BooleanProperty FORMED = Multiblock.FORMED;
-    public static final BooleanProperty IS_MASTER = Multiblock.IS_MASTER;
     public static final BooleanProperty MIRRORED = Multiblock.MIRRORED;
+
+    /**
+     * Each subclass defines its own POSITION property with the appropriate range.
+     */
+    public abstract IntegerProperty getPositionProperty();
 
     protected MultiblockPartBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any()
-                .setValue(FACING, Direction.NORTH)
-                .setValue(FORMED, false)
-                .setValue(IS_MASTER, false)
-                .setValue(MIRRORED, false));
     }
 
+    /**
+     * Subclasses MUST override this to add their own POSITION property.
+     * Call super first, then add POSITION.
+     */
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, FORMED, IS_MASTER, MIRRORED);
+        builder.add(FACING, FORMED, MIRRORED);
     }
 
     @Nullable

@@ -1,6 +1,7 @@
 package com.cahcap.common.multiblock;
 
 import com.cahcap.common.blockentity.MultiblockPartBlockEntity;
+import com.cahcap.common.util.MultiblockShapes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -14,8 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
@@ -42,7 +42,6 @@ public class Multiblock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
-    public static final BooleanProperty IS_MASTER = BooleanProperty.create("is_master");
     public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
 
     /**
@@ -66,9 +65,9 @@ public class Multiblock {
     private final float soundVolume;
     private final float soundPitch;
 
-    private record PatternEntry(BlockPos offset, char symbol, boolean isMaster) {}
+    private record PatternEntry(BlockPos offset, char symbol, boolean isMaster, int positionIndex) {}
 
-    private record BlockTransform(BlockPos offsetFromMaster, boolean isMaster, int posInMultiblock) {
+    private record BlockTransform(BlockPos offsetFromMaster, boolean isMaster, int posInMultiblock, int positionIndex) {
         BlockPos worldPos(BlockPos masterPos) {
             return masterPos.offset(offsetFromMaster.getX(), offsetFromMaster.getY(), offsetFromMaster.getZ());
         }
@@ -190,10 +189,14 @@ public class Multiblock {
             PatternEntry entry = entries.get(i);
             BlockPos localOffset = mirrored ? mirrorOffset(entry.offset()) : entry.offset();
             BlockPos rotated = rotateOffset(localOffset, facing);
-            transforms.add(new BlockTransform(rotated, entry.isMaster(), i));
+            transforms.add(new BlockTransform(rotated, entry.isMaster(), i, entry.positionIndex()));
         }
 
-        BlockState baseState = resultBlock.get().defaultBlockState()
+        Block block = resultBlock.get();
+        IntegerProperty positionProp = block instanceof com.cahcap.common.block.MultiblockPartBlock mb
+                ? mb.getPositionProperty() : null;
+
+        BlockState baseState = block.defaultBlockState()
                 .setValue(FACING, facing)
                 .setValue(FORMED, true)
                 .setValue(MIRRORED, mirrored);
@@ -201,7 +204,9 @@ public class Multiblock {
         for (BlockTransform t : transforms) {
             BlockPos pos = t.worldPos(masterPos);
             BlockState oldState = level.getBlockState(pos);
-            BlockState newState = baseState.setValue(IS_MASTER, t.isMaster());
+            BlockState newState = positionProp != null
+                    ? baseState.setValue(positionProp, t.positionIndex())
+                    : baseState;
 
             level.setBlock(pos, newState, 0);
 
@@ -333,7 +338,29 @@ public class Multiblock {
                 throw new IllegalStateException("Master symbol '" + masterSymbol + "' not found in pattern");
             }
 
-            // Build entries with offsets relative to master
+            // Build entries with offsets relative to master, compute model-space axis ranges
+            int mdxMin = Integer.MAX_VALUE, mdxMax = Integer.MIN_VALUE;
+            int mdyMin = Integer.MAX_VALUE, mdyMax = Integer.MIN_VALUE;
+            int mdzMin = Integer.MAX_VALUE, mdzMax = Integer.MIN_VALUE;
+
+            // First pass: compute axis ranges in model space (NORTH-oriented)
+            for (var entry : layerPatterns.entrySet()) {
+                int y = entry.getKey();
+                String[] rows = entry.getValue();
+                for (int z = 0; z < rows.length; z++) {
+                    for (int x = 0; x < rows[z].length(); x++) {
+                        int bpDx = x - masterGx, bpDy = y - masterGy, bpDz = z - masterGz;
+                        int[] model = MultiblockShapes.blueprintToModel(bpDx, bpDy, bpDz);
+                        mdxMin = Math.min(mdxMin, model[0]); mdxMax = Math.max(mdxMax, model[0]);
+                        mdyMin = Math.min(mdyMin, model[1]); mdyMax = Math.max(mdyMax, model[1]);
+                        mdzMin = Math.min(mdzMin, model[2]); mdzMax = Math.max(mdzMax, model[2]);
+                    }
+                }
+            }
+            int xSize = mdxMax - mdxMin + 1;
+            int zSize = mdzMax - mdzMin + 1;
+
+            // Second pass: build entries with model-space position indices
             List<PatternEntry> entries = new ArrayList<>();
             for (var entry : layerPatterns.entrySet()) {
                 int y = entry.getKey();
@@ -345,12 +372,14 @@ public class Multiblock {
                             throw new IllegalStateException("Undefined symbol '" + symbol
                                     + "' at layer " + y + " row " + z + " col " + x);
                         }
-                        int offsetX = x - masterGx;
-                        int offsetY = y - masterGy;
-                        int offsetZ = z - masterGz;
+                        int bpDx = x - masterGx, bpDy = y - masterGy, bpDz = z - masterGz;
+                        int[] model = MultiblockShapes.blueprintToModel(bpDx, bpDy, bpDz);
                         boolean isMaster = (symbol == masterSymbol);
+                        int positionIndex = (model[1] - mdyMin) * xSize * zSize
+                                + (model[0] - mdxMin) * zSize
+                                + (model[2] - mdzMin);
                         entries.add(new PatternEntry(
-                                new BlockPos(offsetX, offsetY, offsetZ), symbol, isMaster));
+                                new BlockPos(bpDx, bpDy, bpDz), symbol, isMaster, positionIndex));
                     }
                 }
             }

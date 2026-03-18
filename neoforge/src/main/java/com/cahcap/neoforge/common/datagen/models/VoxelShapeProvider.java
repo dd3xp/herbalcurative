@@ -146,6 +146,17 @@ public class VoxelShapeProvider implements DataProvider {
 
         // Build output JSON
         JsonObject result = new JsonObject();
+
+        // Axis ranges metadata (model space, NORTH-oriented)
+        JsonObject axisRanges = new JsonObject();
+        axisRanges.addProperty("dx_min", bxMin);
+        axisRanges.addProperty("dx_max", bxMax - 1);
+        axisRanges.addProperty("dy_min", byMin);
+        axisRanges.addProperty("dy_max", byMax - 1);
+        axisRanges.addProperty("dz_min", bzMin);
+        axisRanges.addProperty("dz_max", bzMax - 1);
+        result.add("axis_ranges", axisRanges);
+
         JsonObject shapesJson = new JsonObject();
 
         for (Map.Entry<String, List<double[]>> entry : shapesByPos.entrySet()) {

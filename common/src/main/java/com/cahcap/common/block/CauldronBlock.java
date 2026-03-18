@@ -21,7 +21,10 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -34,9 +37,20 @@ public class CauldronBlock extends MultiblockPartBlock {
     public static final MapCodec<CauldronBlock> CODEC = simpleCodec(CauldronBlock::new);
 
     private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/cauldron.json");
+    public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, SHAPES.totalPositions() - 1);
 
     public CauldronBlock(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(POSITION, 0));
+    }
+
+    @Override
+    public IntegerProperty getPositionProperty() { return POSITION; }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(POSITION);
     }
 
     @Override

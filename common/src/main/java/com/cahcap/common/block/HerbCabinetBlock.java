@@ -15,8 +15,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -29,9 +32,20 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     public static final MapCodec<HerbCabinetBlock> CODEC = simpleCodec(HerbCabinetBlock::new);
 
     private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_cabinet.json");
+    public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, SHAPES.totalPositions() - 1);
 
     public HerbCabinetBlock(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(POSITION, 0));
+    }
+
+    @Override
+    public IntegerProperty getPositionProperty() { return POSITION; }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(POSITION);
     }
 
     @Override

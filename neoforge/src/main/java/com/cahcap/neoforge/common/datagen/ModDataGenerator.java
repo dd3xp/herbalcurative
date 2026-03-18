@@ -36,8 +36,10 @@ public class ModDataGenerator {
                 .getParent() // project root
                 .resolve("common/src/main/resources");
 
-        // Asset generation (voxelshapes from model JSONs)
+        // Asset generation (voxelshapes + split models + blockstates from model JSONs)
         generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.VoxelShapeProvider(packOutput, commonResources));
+        generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.ModelSplitProvider(packOutput, commonResources));
+        generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.MultiblockStateProvider(packOutput, commonResources));
 
         // Server-side data generation
         if (event.includeServer()) {
