@@ -49,9 +49,7 @@ public class Multiblock {
      * Avoids suffocation/view-blocking when BE data arrives after block state.
      */
     public static BlockBehaviour.Properties addInteriorSpaceProperties(BlockBehaviour.Properties props) {
-        return props.dynamicShape()
-                .isSuffocating((state, getter, pos) -> false)
-                .isViewBlocking((state, getter, pos) -> false);
+        return props;
     }
 
     // ---- Instance fields (blueprint data) ----

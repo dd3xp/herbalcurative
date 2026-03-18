@@ -115,6 +115,17 @@ public class MultiblockShapes {
     // ==================== Shape Lookup ====================
 
     /**
+     * Look up the shape by position index, facing, and mirror state.
+     */
+    public VoxelShape getByIndex(Direction facing, int index, boolean mirrored) {
+        if (index < 0 || index >= northShapes.length) {
+            return Shapes.block();
+        }
+        VoxelShape[][] table = mirrored ? byFacingMirrored : byFacing;
+        return table[facing.get2DDataValue()][index];
+    }
+
+    /**
      * Look up the shape for a given world offset, facing, and mirror state.
      */
     public VoxelShape get(Direction facing, int[] offset, boolean mirrored) {

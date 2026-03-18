@@ -60,6 +60,9 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     }
 
     @Override
+    protected MultiblockShapes getMultiblockShapes() { return SHAPES; }
+
+    @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
         if (offset == null) return Shapes.block();
         return SHAPES.get(facing, offset, mirrored);

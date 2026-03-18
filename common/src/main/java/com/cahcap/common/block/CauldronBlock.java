@@ -65,6 +65,9 @@ public class CauldronBlock extends MultiblockPartBlock {
     }
 
     @Override
+    protected MultiblockShapes getMultiblockShapes() { return SHAPES; }
+
+    @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
         return SHAPES.get(facing, offset, mirrored);
     }
