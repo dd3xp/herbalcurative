@@ -124,9 +124,14 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     }
 
     /**
-     * Extract herbs on left-click. Called from mod loader's event handler.
+     * Extract herbs on left-click via Block.attack().
+     * Called once when the player starts breaking (like Storage Drawers).
+     * In survival mode the block enters "breaking" state normally; subsequent
+     * ticks go through continueDestroyBlock which does NOT call attack() again,
+     * so extraction only happens once per click.
      */
-    public void handleLeftClickExtraction(Level level, BlockPos pos, Player player, BlockState state) {
+    @Override
+    protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (level.isClientSide) return;
         if (!(level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) || !be.formed) return;
 
@@ -149,10 +154,10 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     }
 
     /**
-     * Check if the left-click should be intercepted (prevent breaking, allow extraction).
-     * Returns true if the click targets the front face of a formed cabinet.
+     * Check if the left-click targets the front face of a formed cabinet.
+     * Used by the creative-mode event handler.
      */
-    public boolean shouldInterceptLeftClick(BlockState state, Level level, BlockPos pos, Player player) {
+    public boolean isFrontFaceClick(BlockState state, Level level, BlockPos pos, Player player) {
         if (!(level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) || !be.formed) return false;
 
         HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
