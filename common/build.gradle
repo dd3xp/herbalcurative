@@ -6,7 +6,6 @@ loom {
     accessWidenerPath = file("src/main/resources/herbalcurative.accesswidener")
 }
 
-sourceSets.main.resources.srcDir('src/main/generated/resources')
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
