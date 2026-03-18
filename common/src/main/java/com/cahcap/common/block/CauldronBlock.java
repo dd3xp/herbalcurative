@@ -3,6 +3,7 @@ package com.cahcap.common.block;
 import com.cahcap.common.blockentity.CauldronBlockEntity;
 import com.cahcap.common.item.PotItem;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,13 +18,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,44 +33,7 @@ public class CauldronBlock extends MultiblockPartBlock {
 
     public static final MapCodec<CauldronBlock> CODEC = simpleCodec(CauldronBlock::new);
 
-    // Per-block collision/selection shapes (NORTH orientation)
-    // Indexed by dy * 9 + (dx+1) * 3 + (dz+1), where dy=0..1, dx/dz=-1..1
-    private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[18];
-    private static final VoxelShape[][] SHAPES_BY_FACING;
-    private static final VoxelShape[][] SHAPES_BY_FACING_MIRRORED;
-
-    static {
-        // dy=0 (bottom layer - master layer)
-        NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(0, 12, 6, 6, 16, 16), Block.box(4, 0, 0, 8, 8, 4), Block.box(0, 0, 4, 4, 8, 8), Block.box(0, 0, 0, 4, 8, 4));
-        NORTH_SHAPES[idx(-1, 0, 0)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 6, 16, 16));
-        NORTH_SHAPES[idx(-1, 0, 1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(0, 12, 0, 6, 16, 10), Block.box(0, 0, 8, 4, 8, 12), Block.box(4, 0, 12, 8, 8, 16), Block.box(0, 0, 12, 4, 8, 16));
-        NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6));
-        NORTH_SHAPES[idx( 0, 0, 0)] = Block.box(0, 8, 0, 16, 12, 16);
-        NORTH_SHAPES[idx( 0, 0, 1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16));
-        NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 0, 16, 16, 6), Block.box(10, 12, 6, 16, 16, 16), Block.box(12, 0, 4, 16, 8, 8), Block.box(12, 0, 0, 16, 8, 4), Block.box(8, 0, 0, 12, 8, 4));
-        NORTH_SHAPES[idx( 1, 0, 0)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(10, 12, 0, 16, 16, 16));
-        NORTH_SHAPES[idx( 1, 0, 1)] = Shapes.or(Block.box(0, 8, 0, 16, 12, 16), Block.box(0, 12, 10, 16, 16, 16), Block.box(10, 12, 0, 16, 16, 10), Block.box(12, 0, 8, 16, 8, 12), Block.box(12, 0, 12, 16, 8, 16), Block.box(8, 0, 12, 12, 8, 16));
-        // dy=1 (top layer)
-        NORTH_SHAPES[idx(-1, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(0, 0, 6, 6, 16, 16));
-        NORTH_SHAPES[idx(-1, 1, 0)] = Block.box(0, 0, 0, 6, 16, 16);
-        NORTH_SHAPES[idx(-1, 1, 1)] = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(0, 0, 0, 6, 16, 10));
-        NORTH_SHAPES[idx( 0, 1,-1)] = Block.box(0, 0, 0, 16, 16, 6);
-        NORTH_SHAPES[idx( 0, 1, 0)] = Shapes.empty();
-        NORTH_SHAPES[idx( 0, 1, 1)] = Block.box(0, 0, 10, 16, 16, 16);
-        NORTH_SHAPES[idx( 1, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 16, 6), Block.box(10, 0, 6, 16, 16, 16));
-        NORTH_SHAPES[idx( 1, 1, 0)] = Block.box(10, 0, 0, 16, 16, 16);
-        NORTH_SHAPES[idx( 1, 1, 1)] = Shapes.or(Block.box(0, 0, 10, 16, 16, 16), Block.box(10, 0, 0, 16, 16, 10));
-
-        SHAPES_BY_FACING = precomputeRotatedShapes(NORTH_SHAPES);
-        SHAPES_BY_FACING_MIRRORED = precomputeMirroredShapes(NORTH_SHAPES, i -> {
-            int dy = i / 9, dx = ((i % 9) / 3) - 1, dz = (i % 3) - 1;
-            return idx(-dx, dy, dz);
-        });
-    }
-
-    private static int idx(int dx, int dy, int dz) {
-        return dy * 9 + (dx + 1) * 3 + (dz + 1);
-    }
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/cauldron.json");
 
     public CauldronBlock(Properties properties) {
         super(properties);
@@ -90,16 +52,7 @@ public class CauldronBlock extends MultiblockPartBlock {
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
-        int[] model = worldToModelOffset(facing, offset);
-        int modelDx = model[0], dy = model[1], modelDz = model[2];
-
-        if (modelDx < -1 || modelDx > 1 || dy < 0 || dy > 1 || modelDz < -1 || modelDz > 1) {
-            return Shapes.block();
-        }
-
-        int index = idx(modelDx, dy, modelDz);
-        VoxelShape[][] table = mirrored ? SHAPES_BY_FACING_MIRRORED : SHAPES_BY_FACING;
-        return table[facing.get2DDataValue()][index];
+        return SHAPES.get(facing, offset, mirrored);
     }
 
     @Override

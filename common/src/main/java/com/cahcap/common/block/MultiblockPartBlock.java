@@ -225,7 +225,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
     /**
      * Inverse-rotate world offset to model space.
      */
-    protected static int[] worldToModelOffset(Direction facing, int[] offset) {
+    public static int[] worldToModelOffset(Direction facing, int[] offset) {
         int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
         int modelDx, modelDz;
         switch (facing) {
@@ -243,7 +243,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
      * @param northShapes shapes in NORTH orientation
      * @return [facing_2d][index] shape array
      */
-    protected static VoxelShape[][] precomputeRotatedShapes(VoxelShape[] northShapes) {
+    public static VoxelShape[][] precomputeRotatedShapes(VoxelShape[] northShapes) {
         VoxelShape[][] result = new VoxelShape[4][northShapes.length];
         for (int i = 0; i < northShapes.length; i++) {
             VoxelShape shape = northShapes[i] != null ? northShapes[i] : Shapes.empty();
@@ -264,7 +264,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
      * @param mirrorIndex  maps an index to its X-mirrored counterpart (e.g., swap dx → -dx)
      * @return [facing_2d][index] mirrored shape array
      */
-    protected static VoxelShape[][] precomputeMirroredShapes(VoxelShape[] northShapes, IntUnaryOperator mirrorIndex) {
+    public static VoxelShape[][] precomputeMirroredShapes(VoxelShape[] northShapes, IntUnaryOperator mirrorIndex) {
         VoxelShape[][] result = new VoxelShape[4][northShapes.length];
         for (int i = 0; i < northShapes.length; i++) {
             int mi = mirrorIndex.applyAsInt(i);

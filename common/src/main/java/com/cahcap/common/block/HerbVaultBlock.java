@@ -3,6 +3,7 @@ package com.cahcap.common.block;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -29,52 +29,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
 
     public static final MapCodec<HerbVaultBlock> CODEC = simpleCodec(HerbVaultBlock::new);
 
-    private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[27];
-    private static final VoxelShape[][] SHAPES_BY_FACING;
-    private static final VoxelShape[][] SHAPES_BY_FACING_MIRRORED;
-
-    static {
-        // dy=-1
-        NORTH_SHAPES[idx(-1,-1,-1)] = Shapes.or(Block.box(0, 0, 0, 5, 8, 5), Block.box(1, 8, 1, 4, 16, 4), Block.box(2, 4, 4, 4, 16, 16), Block.box(4, 4, 3, 16, 16, 4), Block.box(5, 0, 5, 16, 4, 16), Block.box(5, 0, 1, 16, 4, 5), Block.box(1, 0, 5, 5, 4, 16), Block.box(4, 4, 2, 6, 16, 3), Block.box(4, 4, 2, 16, 6, 3));
-        NORTH_SHAPES[idx(-1,-1, 0)] = Shapes.or(Block.box(2, 4, 0, 4, 16, 16), Block.box(5, 0, 0, 16, 4, 16), Block.box(1, 0, 0, 5, 4, 16));
-        NORTH_SHAPES[idx(-1,-1, 1)] = Shapes.or(Block.box(0, 0, 11, 5, 8, 16), Block.box(1, 8, 12, 4, 16, 15), Block.box(2, 4, 0, 4, 16, 12), Block.box(4, 4, 12, 16, 16, 14), Block.box(5, 0, 0, 16, 4, 11), Block.box(5, 0, 11, 16, 4, 15), Block.box(1, 0, 0, 5, 4, 11));
-        NORTH_SHAPES[idx( 0,-1,-1)] = Shapes.or(Block.box(0, 4, 3, 16, 16, 4), Block.box(0, 0, 5, 16, 4, 16), Block.box(0, 0, 1, 16, 4, 5), Block.box(0, 4, 2, 3, 16, 3), Block.box(13, 4, 2, 16, 16, 3), Block.box(0, 4, 2, 16, 6, 3));
-        NORTH_SHAPES[idx( 0,-1, 0)] = Block.box(0, 0, 0, 16, 4, 16);
-        NORTH_SHAPES[idx( 0,-1, 1)] = Shapes.or(Block.box(0, 4, 12, 16, 16, 14), Block.box(0, 0, 0, 16, 4, 11), Block.box(0, 0, 11, 16, 4, 15));
-        NORTH_SHAPES[idx( 1,-1,-1)] = Shapes.or(Block.box(11, 0, 0, 16, 8, 5), Block.box(12, 8, 1, 15, 16, 4), Block.box(12, 4, 4, 14, 16, 16), Block.box(0, 4, 3, 12, 16, 4), Block.box(0, 0, 5, 11, 4, 16), Block.box(0, 0, 1, 11, 4, 5), Block.box(11, 0, 5, 15, 4, 16), Block.box(10, 4, 2, 12, 16, 3), Block.box(0, 4, 2, 12, 6, 3));
-        NORTH_SHAPES[idx( 1,-1, 0)] = Shapes.or(Block.box(12, 4, 0, 14, 16, 16), Block.box(0, 0, 0, 11, 4, 16), Block.box(11, 0, 0, 15, 4, 16));
-        NORTH_SHAPES[idx( 1,-1, 1)] = Shapes.or(Block.box(11, 0, 11, 16, 8, 16), Block.box(12, 8, 12, 15, 16, 15), Block.box(12, 4, 0, 14, 16, 12), Block.box(0, 4, 12, 12, 16, 14), Block.box(0, 0, 0, 11, 4, 11), Block.box(0, 0, 11, 11, 4, 15), Block.box(11, 0, 0, 15, 4, 11));
-        // dy=0
-        NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(1, 0, 1, 4, 14, 4), Block.box(0, 14, 0, 16, 16, 16), Block.box(2, 0, 4, 4, 14, 16), Block.box(4, 0, 3, 16, 14, 4), Block.box(4, 0, 2, 6, 12, 3), Block.box(4, 12, 2, 16, 14, 3), Block.box(4, 0, 2, 16, 2, 3));
-        NORTH_SHAPES[idx(-1, 0, 0)] = Shapes.or(Block.box(0, 14, 0, 16, 16, 16), Block.box(2, 0, 0, 4, 14, 16));
-        NORTH_SHAPES[idx(-1, 0, 1)] = Shapes.or(Block.box(1, 0, 12, 4, 14, 15), Block.box(0, 14, 0, 16, 16, 16), Block.box(2, 0, 0, 4, 14, 12), Block.box(4, 0, 12, 16, 14, 14));
-        NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 14, 0, 16, 16, 16), Block.box(0, 0, 3, 16, 14, 4), Block.box(0, 0, 2, 3, 14, 3), Block.box(13, 0, 2, 16, 14, 3), Block.box(0, 12, 2, 16, 14, 3), Block.box(0, 0, 2, 16, 2, 3));
-        NORTH_SHAPES[idx( 0, 0, 0)] = Block.box(0, 14, 0, 16, 16, 16);
-        NORTH_SHAPES[idx( 0, 0, 1)] = Shapes.or(Block.box(0, 14, 0, 16, 16, 16), Block.box(0, 0, 12, 16, 14, 14));
-        NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(12, 0, 1, 15, 14, 4), Block.box(0, 14, 0, 16, 16, 16), Block.box(12, 0, 4, 14, 14, 16), Block.box(0, 0, 3, 12, 14, 4), Block.box(10, 0, 2, 12, 14, 3), Block.box(0, 12, 2, 12, 14, 3), Block.box(0, 0, 2, 12, 2, 3));
-        NORTH_SHAPES[idx( 1, 0, 0)] = Shapes.or(Block.box(0, 14, 0, 16, 16, 16), Block.box(12, 0, 0, 14, 14, 16));
-        NORTH_SHAPES[idx( 1, 0, 1)] = Shapes.or(Block.box(12, 0, 12, 15, 14, 15), Block.box(0, 14, 0, 16, 16, 16), Block.box(12, 0, 0, 14, 14, 12), Block.box(0, 0, 12, 12, 14, 14));
-        // dy=1
-        NORTH_SHAPES[idx(-1, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(4, 3, 4, 16, 8, 16));
-        NORTH_SHAPES[idx(-1, 1, 0)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(4, 3, 0, 16, 8, 16));
-        NORTH_SHAPES[idx(-1, 1, 1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(4, 3, 0, 16, 8, 12));
-        NORTH_SHAPES[idx( 0, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 4, 16, 8, 16));
-        NORTH_SHAPES[idx( 0, 1, 0)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 0, 16, 8, 16));
-        NORTH_SHAPES[idx( 0, 1, 1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 0, 16, 8, 12));
-        NORTH_SHAPES[idx( 1, 1,-1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 4, 12, 8, 16));
-        NORTH_SHAPES[idx( 1, 1, 0)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 0, 12, 8, 16));
-        NORTH_SHAPES[idx( 1, 1, 1)] = Shapes.or(Block.box(0, 0, 0, 16, 3, 16), Block.box(0, 3, 0, 12, 8, 12));
-
-        SHAPES_BY_FACING = precomputeRotatedShapes(NORTH_SHAPES);
-        SHAPES_BY_FACING_MIRRORED = precomputeMirroredShapes(NORTH_SHAPES, i -> {
-            int dy = (i / 9) - 1, dx = ((i % 9) / 3) - 1, dz = (i % 3) - 1;
-            return idx(-dx, dy, dz);
-        });
-    }
-
-    private static int idx(int dx, int dy, int dz) {
-        return (dy + 1) * 9 + (dx + 1) * 3 + (dz + 1);
-    }
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_vault.json");
 
     public HerbVaultBlock(Properties properties) {
         super(properties);
@@ -91,13 +46,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
-        int[] model = worldToModelOffset(facing, offset);
-        int modelDx = model[0], dy = model[1], modelDz = model[2];
-
-        if (modelDx < -1 || modelDx > 1 || dy < -1 || dy > 1 || modelDz < -1 || modelDz > 1) return Shapes.block();
-        int index = idx(modelDx, dy, modelDz);
-        VoxelShape[][] table = mirrored ? SHAPES_BY_FACING_MIRRORED : SHAPES_BY_FACING;
-        return table[facing.get2DDataValue()][index];
+        return SHAPES.get(facing, offset, mirrored);
     }
 
     @Override

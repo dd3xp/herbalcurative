@@ -2,6 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.KilnBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +14,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,54 +36,7 @@ public class KilnBlock extends MultiblockPartBlock {
 
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
-    // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
-    // NORTH-facing shapes (model default orientation), indexed by (dy+1)*9 + (dx+1)*3 + (dz+1)
-    private static final VoxelShape[] NORTH_SHAPES = new VoxelShape[27];
-    private static final VoxelShape[][] SHAPES_BY_FACING;
-    private static final VoxelShape[][] SHAPES_BY_FACING_MIRRORED;
-
-    static {
-        // dy=-1
-        NORTH_SHAPES[idx(-1,-1,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 16, 16), Block.box(15, 13, 0, 16, 16, 16), Block.box(15, 0, 0, 16, 13, 16));
-        NORTH_SHAPES[idx(-1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
-        NORTH_SHAPES[idx(-1,-1, 1)] = Block.box(4, 0, 0, 16, 16, 12);
-        NORTH_SHAPES[idx( 0,-1,-1)] = Shapes.or(Block.box(2, 0, 4, 14, 8, 16), Block.box(3, 4, 0, 13, 8, 4), Block.box(5, 15, 0, 11, 16, 12), Block.box(11, 13, 0, 16, 16, 16), Block.box(0, 13, 0, 5, 16, 16), Block.box(13, 0, 0, 16, 13, 16), Block.box(0, 0, 0, 3, 13, 16));
-        NORTH_SHAPES[idx( 0,-1, 0)] = Block.box(0, 0, 0, 16, 4, 16);
-        NORTH_SHAPES[idx( 0,-1, 1)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 5, 0, 5, 11, 16), Block.box(11, 5, 0, 16, 11, 16), Block.box(0, 0, 0, 16, 5, 16));
-        NORTH_SHAPES[idx( 1,-1,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 16, 16), Block.box(0, 13, 0, 1, 16, 16), Block.box(0, 0, 0, 1, 13, 16));
-        NORTH_SHAPES[idx( 1,-1, 0)] = Shapes.or(Block.box(0, 11, 0, 16, 16, 16), Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 11, 16, 11, 16), Block.box(0, 5, 0, 16, 11, 5));
-        NORTH_SHAPES[idx( 1,-1, 1)] = Block.box(0, 0, 0, 12, 16, 12);
-        // dy=0
-        NORTH_SHAPES[idx(-1, 0,-1)] = Shapes.or(Block.box(4, 0, 4, 15, 16, 16), Block.box(15, 3, 4, 16, 16, 12), Block.box(15, 1, 4, 16, 3, 12), Block.box(15, 1, 12, 16, 16, 16), Block.box(15, 0, 0, 16, 1, 16));
-        NORTH_SHAPES[idx(-1, 0, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 16, 16), Block.box(12, 0, 0, 16, 16, 16));
-        NORTH_SHAPES[idx(-1, 0, 1)] = Block.box(4, 0, 0, 16, 16, 12);
-        NORTH_SHAPES[idx( 0, 0,-1)] = Shapes.or(Block.box(0, 3, 4, 16, 16, 12), Block.box(14, 1, 4, 16, 3, 12), Block.box(0, 1, 4, 2, 3, 12), Block.box(2, 1, 0, 14, 3, 12), Block.box(5, 0, 0, 11, 1, 12), Block.box(0, 1, 12, 16, 16, 16), Block.box(11, 0, 0, 16, 1, 16), Block.box(0, 0, 0, 5, 1, 16));
-        NORTH_SHAPES[idx( 0, 0, 0)] = Block.box(0, 0, 0, 16, 4, 16);
-        NORTH_SHAPES[idx( 0, 0, 1)] = Shapes.or(Block.box(0, 0, 4, 16, 16, 12), Block.box(0, 0, 0, 16, 16, 4));
-        NORTH_SHAPES[idx( 1, 0,-1)] = Shapes.or(Block.box(1, 0, 4, 12, 16, 16), Block.box(0, 3, 4, 1, 16, 12), Block.box(0, 1, 4, 1, 3, 12), Block.box(0, 1, 12, 1, 16, 16), Block.box(0, 0, 0, 1, 1, 16));
-        NORTH_SHAPES[idx( 1, 0, 0)] = Shapes.or(Block.box(4, 0, 0, 12, 16, 16), Block.box(0, 0, 0, 4, 16, 16));
-        NORTH_SHAPES[idx( 1, 0, 1)] = Block.box(0, 0, 0, 12, 16, 12);
-        // dy=1
-        NORTH_SHAPES[idx(-1, 1,-1)] = Block.box(8, 0, 4, 16, 6, 16);
-        NORTH_SHAPES[idx(-1, 1, 0)] = Block.box(8, 0, 0, 16, 6, 16);
-        NORTH_SHAPES[idx(-1, 1, 1)] = Block.box(8, 0, 0, 16, 6, 12);
-        NORTH_SHAPES[idx( 0, 1,-1)] = Block.box(0, 0, 4, 16, 6, 16);
-        NORTH_SHAPES[idx( 0, 1, 0)] = Block.box(0, 0, 0, 16, 6, 16);
-        NORTH_SHAPES[idx( 0, 1, 1)] = Block.box(0, 0, 0, 16, 6, 12);
-        NORTH_SHAPES[idx( 1, 1,-1)] = Block.box(0, 0, 4, 8, 6, 16);
-        NORTH_SHAPES[idx( 1, 1, 0)] = Block.box(0, 0, 0, 8, 6, 16);
-        NORTH_SHAPES[idx( 1, 1, 1)] = Block.box(0, 0, 0, 8, 6, 12);
-
-        SHAPES_BY_FACING = precomputeRotatedShapes(NORTH_SHAPES);
-        SHAPES_BY_FACING_MIRRORED = precomputeMirroredShapes(NORTH_SHAPES, i -> {
-            int dy = (i / 9) - 1, dx = ((i % 9) / 3) - 1, dz = (i % 3) - 1;
-            return idx(-dx, dy, dz);
-        });
-    }
-
-    private static int idx(int dx, int dy, int dz) {
-        return (dy + 1) * 9 + (dx + 1) * 3 + (dz + 1);
-    }
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/kiln.json");
 
     public KilnBlock(Properties properties) {
         super(properties);
@@ -110,16 +62,7 @@ public class KilnBlock extends MultiblockPartBlock {
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
-        int[] model = worldToModelOffset(facing, offset);
-        int modelDx = model[0], dy = model[1], modelDz = model[2];
-
-        if (modelDx < -1 || modelDx > 1 || dy < -1 || dy > 1 || modelDz < -1 || modelDz > 1) {
-            return Shapes.block();
-        }
-
-        int index = idx(modelDx, dy, modelDz);
-        VoxelShape[][] table = mirrored ? SHAPES_BY_FACING_MIRRORED : SHAPES_BY_FACING;
-        return table[facing.get2DDataValue()][index];
+        return SHAPES.get(facing, offset, mirrored);
     }
 
     @Override

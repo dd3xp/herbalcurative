@@ -2,6 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -26,25 +26,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class HerbCabinetBlock extends MultiblockPartBlock {
 
-    // Per-block collision/selection shapes from Blockbench model (voxel.py --per-block)
-    // Herb Cabinet is 3x2x1 (WxHxD), facing NORTH by default
-    // posInMultiblock layout: [3][4][5] top, [0][1][2] bottom, [1] is master
-
-    private static final VoxelShape SHAPE_N_0 = Shapes.or(Block.box(2, 2, 1, 4, 16, 2), Block.box(4, 2, 1, 16, 4, 2), Block.box(4, 15, 1, 16, 16, 2), Block.box(2, 2, 2, 16, 16, 3), Block.box(0, 2, 0, 2, 16, 16), Block.box(2, 2, 14, 16, 16, 15), Block.box(0, 0, 0, 16, 2, 16));
-    private static final VoxelShape SHAPE_N_1 = Shapes.or(Block.box(0, 2, 1, 16, 4, 2), Block.box(0, 15, 1, 16, 16, 2), Block.box(14, 4, 1, 16, 16, 2), Block.box(0, 4, 1, 2, 16, 2), Block.box(0, 2, 2, 16, 16, 3), Block.box(0, 2, 14, 16, 16, 15), Block.box(0, 0, 0, 16, 2, 16));
-    private static final VoxelShape SHAPE_N_2 = Shapes.or(Block.box(12, 2, 1, 14, 16, 2), Block.box(0, 2, 1, 12, 4, 2), Block.box(0, 15, 1, 12, 16, 2), Block.box(0, 2, 2, 14, 16, 3), Block.box(14, 2, 0, 16, 16, 16), Block.box(0, 2, 14, 14, 16, 15), Block.box(0, 0, 0, 16, 2, 16));
-    private static final VoxelShape SHAPE_N_3 = Shapes.or(Block.box(2, 0, 1, 4, 14, 2), Block.box(4, 12, 1, 16, 14, 2), Block.box(4, 0, 1, 16, 1, 2), Block.box(2, 0, 2, 16, 14, 3), Block.box(0, 0, 0, 2, 14, 16), Block.box(2, 0, 14, 16, 14, 15), Block.box(0, 14, 0, 16, 16, 16));
-    private static final VoxelShape SHAPE_N_4 = Shapes.or(Block.box(0, 12, 1, 16, 14, 2), Block.box(0, 0, 1, 16, 1, 2), Block.box(14, 0, 1, 16, 12, 2), Block.box(0, 0, 1, 2, 12, 2), Block.box(0, 0, 2, 16, 14, 3), Block.box(0, 0, 14, 16, 14, 15), Block.box(0, 14, 0, 16, 16, 16));
-    private static final VoxelShape SHAPE_N_5 = Shapes.or(Block.box(12, 0, 1, 14, 14, 2), Block.box(0, 12, 1, 12, 14, 2), Block.box(0, 0, 1, 12, 1, 2), Block.box(0, 0, 2, 14, 14, 3), Block.box(14, 0, 0, 16, 14, 16), Block.box(0, 0, 14, 14, 14, 15), Block.box(0, 14, 0, 16, 16, 16));
-
-    private static final VoxelShape[] NORTH_SHAPES = {SHAPE_N_0, SHAPE_N_1, SHAPE_N_2, SHAPE_N_3, SHAPE_N_4, SHAPE_N_5};
-    private static final VoxelShape[][] SHAPES_BY_FACING = precomputeRotatedShapes(NORTH_SHAPES);
-    private static final VoxelShape[][] SHAPES_BY_FACING_MIRRORED = precomputeMirroredShapes(NORTH_SHAPES, i -> {
-        int row = i / 3, col = i % 3;
-        return row * 3 + (2 - col);
-    });
-
     public static final MapCodec<HerbCabinetBlock> CODEC = simpleCodec(HerbCabinetBlock::new);
+
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_cabinet.json");
 
     public HerbCabinetBlock(Properties properties) {
         super(properties);
@@ -64,18 +48,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {
         if (offset == null) return Shapes.block();
-        int worldDx = offset[0], dy = offset[1], worldDz = offset[2];
-        int modelDx;
-        switch (facing) {
-            case SOUTH -> modelDx = -worldDx;
-            case EAST  -> modelDx = worldDz;
-            case WEST  -> modelDx = -worldDz;
-            default    -> modelDx = worldDx;
-        }
-        int index = dy * 3 + (modelDx + 1);
-        if (index < 0 || index >= 6) return Shapes.block();
-        VoxelShape[][] table = mirrored ? SHAPES_BY_FACING_MIRRORED : SHAPES_BY_FACING;
-        return table[facing.get2DDataValue()][index];
+        return SHAPES.get(facing, offset, mirrored);
     }
 
     @Override

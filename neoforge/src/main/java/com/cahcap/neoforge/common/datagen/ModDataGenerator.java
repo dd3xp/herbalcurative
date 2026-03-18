@@ -13,6 +13,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -21,31 +22,40 @@ import java.util.concurrent.CompletableFuture;
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModDataGenerator {
-    
+
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         net.minecraft.data.DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        
+
+        // Common module resources path (for reading model JSONs)
+        Path commonResources = packOutput.getOutputFolder()
+                .getParent().getParent().getParent().getParent() // neoforge/
+                .getParent() // project root
+                .resolve("common/src/main/resources");
+
+        // Asset generation (voxelshapes from model JSONs)
+        generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.VoxelShapeProvider(packOutput, commonResources));
+
         // Server-side data generation
         if (event.includeServer()) {
             // Loot Tables
             generator.addProvider(true, new ModBlockLootProvider(packOutput, lookupProvider));
-            
+
             // Recipes (vanilla crafting + herbal blending)
             generator.addProvider(true, new ModRecipeProvider(packOutput, lookupProvider));
-            
+
             // Tags
             ModBlockTagsProvider blockTagsProvider = new ModBlockTagsProvider(packOutput, lookupProvider, existingFileHelper);
             generator.addProvider(true, blockTagsProvider);
             generator.addProvider(true, new ModItemTagsProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-            
+
             // World Generation + Biome Modifiers
             ModWorldGenProvider.addProviders(generator, packOutput, lookupProvider, existingFileHelper);
         }
-        
+
         HerbalCurativeCommon.LOGGER.info("Herbal Curative data generation setup complete!");
     }
 }
