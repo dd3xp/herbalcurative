@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -59,32 +59,42 @@ public class WorkbenchBlock extends BaseEntityBlock {
     public static final MapCodec<WorkbenchBlock> CODEC = simpleCodec(WorkbenchBlock::new);
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final EnumProperty<WorkbenchPart> PART = EnumProperty.create("part", WorkbenchPart.class);
-    
-    // VoxelShape for the workbench - full blocks for simplicity
-    protected static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
-    
+    public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, 2);
+    public static final int POS_LEFT = 0, POS_CENTER = 1, POS_RIGHT = 2;
+
+    // VoxelShapes loaded from data-driven JSON
+    private static final com.cahcap.common.util.MultiblockShapes SHAPES =
+            com.cahcap.common.util.MultiblockShapes.load("/assets/herbalcurative/voxelshapes/workbench.json");
+
     public WorkbenchBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(PART, WorkbenchPart.CENTER));
+                .setValue(POSITION, POS_CENTER));
     }
-    
+
     @Override
     protected MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
-    
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART);
+        builder.add(FACING, POSITION);
     }
-    
+
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        int posIndex = state.getValue(POSITION);
+        return SHAPES.getByIndex(state.getValue(FACING), posIndex, false);
     }
+
+    @Override
+    protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        int posIndex = state.getValue(POSITION);
+        return SHAPES.getByIndex(state.getValue(FACING), posIndex, false);
+    }
+
     
     @Nullable
     @Override
@@ -114,22 +124,22 @@ public class WorkbenchBlock extends BaseEntityBlock {
         
         return defaultBlockState()
                 .setValue(FACING, facing)
-                .setValue(PART, WorkbenchPart.CENTER);
+                .setValue(POSITION, POS_CENTER);
     }
     
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        if (!level.isClientSide && state.getValue(PART) == WorkbenchPart.CENTER) {
+        if (!level.isClientSide && state.getValue(POSITION) == POS_CENTER) {
             Direction facing = state.getValue(FACING);
             Direction left = facing.getCounterClockWise();
             Direction right = facing.getClockWise();
-            
+
             // Place left and right parts
             BlockPos leftPos = pos.relative(left);
             BlockPos rightPos = pos.relative(right);
-            
-            level.setBlock(leftPos, state.setValue(PART, WorkbenchPart.LEFT), 3);
-            level.setBlock(rightPos, state.setValue(PART, WorkbenchPart.RIGHT), 3);
+
+            level.setBlock(leftPos, state.setValue(POSITION, POS_LEFT), 3);
+            level.setBlock(rightPos, state.setValue(POSITION, POS_RIGHT), 3);
         }
         super.onPlace(state, level, pos, oldState, movedByPiston);
     }
@@ -137,25 +147,25 @@ public class WorkbenchBlock extends BaseEntityBlock {
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                       LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        WorkbenchPart part = state.getValue(PART);
+        int position = state.getValue(POSITION);
         Direction facing = state.getValue(FACING);
-        
+
         // Check if the connected parts are still valid
-        if (part == WorkbenchPart.CENTER) {
+        if (position == POS_CENTER) {
             Direction left = facing.getCounterClockWise();
             Direction right = facing.getClockWise();
-            
+
             if (direction == left || direction == right) {
-                if (!neighborState.is(this) || neighborState.getValue(PART) == WorkbenchPart.CENTER) {
+                if (!neighborState.is(this) || neighborState.getValue(POSITION) == POS_CENTER) {
                     return Blocks.AIR.defaultBlockState();
                 }
             }
         } else {
             // LEFT or RIGHT part - check if center is still there
-            Direction toCenter = part == WorkbenchPart.LEFT ? facing.getClockWise() : facing.getCounterClockWise();
-            
+            Direction toCenter = position == POS_LEFT ? facing.getClockWise() : facing.getCounterClockWise();
+
             if (direction == toCenter) {
-                if (!neighborState.is(this) || neighborState.getValue(PART) != WorkbenchPart.CENTER) {
+                if (!neighborState.is(this) || neighborState.getValue(POSITION) != POS_CENTER) {
                     return Blocks.AIR.defaultBlockState();
                 }
             }
@@ -173,7 +183,7 @@ public class WorkbenchBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         // Only the center part has a block entity
-        if (state.getValue(PART) == WorkbenchPart.CENTER) {
+        if (state.getValue(POSITION) == POS_CENTER) {
             return new WorkbenchBlockEntity(pos, state);
         }
         return null;
@@ -184,13 +194,13 @@ public class WorkbenchBlock extends BaseEntityBlock {
      */
     @Nullable
     private WorkbenchBlockEntity getCenterBlockEntity(Level level, BlockPos pos, BlockState state) {
-        WorkbenchPart part = state.getValue(PART);
+        int position = state.getValue(POSITION);
         Direction facing = state.getValue(FACING);
-        
+
         BlockPos centerPos;
-        if (part == WorkbenchPart.CENTER) {
+        if (position == POS_CENTER) {
             centerPos = pos;
-        } else if (part == WorkbenchPart.LEFT) {
+        } else if (position == POS_LEFT) {
             centerPos = pos.relative(facing.getClockWise());
         } else { // RIGHT
             centerPos = pos.relative(facing.getCounterClockWise());
@@ -278,32 +288,28 @@ public class WorkbenchBlock extends BaseEntityBlock {
         }
         
         ItemStack heldItem = player.getItemInHand(hand);
-        WorkbenchPart part = state.getValue(PART);
-        
+        int position = state.getValue(POSITION);
+
         // Check if using Flowweave Ring on center block
-        if (heldItem.is(ModRegistries.FLOWWEAVE_RING.get()) && part == WorkbenchPart.CENTER) {
+        if (heldItem.is(ModRegistries.FLOWWEAVE_RING.get()) && position == POS_CENTER) {
             // Trigger crafting logic (handled by FlowweaveRingItem)
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        
+
         // Place item
         if (!heldItem.isEmpty()) {
             boolean placed = false;
             boolean isCreative = player.getAbilities().instabuild;
-            
-            switch (part) {
-                case LEFT:
-                    // Auto-place tool in first available slot
-                    placed = workbench.addTool(heldItem, isCreative);
-                    break;
-                case CENTER:
-                    // Place input item
-                    placed = workbench.setInputItem(heldItem, isCreative);
-                    break;
-                case RIGHT:
-                    // Push to material stack
-                    placed = workbench.pushMaterial(heldItem, isCreative);
-                    break;
+
+            if (position == POS_LEFT) {
+                // Auto-place tool in first available slot
+                placed = workbench.addTool(heldItem, isCreative);
+            } else if (position == POS_CENTER) {
+                // Place input item
+                placed = workbench.setInputItem(heldItem, isCreative);
+            } else if (position == POS_RIGHT) {
+                // Push to material stack
+                placed = workbench.pushMaterial(heldItem, isCreative);
             }
             
             if (placed) {
@@ -332,25 +338,21 @@ public class WorkbenchBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
         
-        WorkbenchPart part = state.getValue(PART);
+        int position = state.getValue(POSITION);
         ItemStack removed = ItemStack.EMPTY;
-        
-        switch (part) {
-            case LEFT:
-                // Take out tool from specific slot based on hit location
-                int toolSlot = getToolSlotFromHit(hitResult, state);
-                if (toolSlot >= 0) {
-                    removed = workbench.removeTool(toolSlot);
-                }
-                break;
-            case CENTER:
-                // Take out input item
-                removed = workbench.removeInputItem();
-                break;
-            case RIGHT:
-                // Pop from material stack
-                removed = workbench.popMaterial();
-                break;
+
+        if (position == POS_LEFT) {
+            // Take out tool from specific slot based on hit location
+            int toolSlot = getToolSlotFromHit(hitResult, state);
+            if (toolSlot >= 0) {
+                removed = workbench.removeTool(toolSlot);
+            }
+        } else if (position == POS_CENTER) {
+            // Take out input item
+            removed = workbench.removeInputItem();
+        } else if (position == POS_RIGHT) {
+            // Pop from material stack
+            removed = workbench.popMaterial();
         }
         
         if (!removed.isEmpty()) {
@@ -372,7 +374,7 @@ public class WorkbenchBlock extends BaseEntityBlock {
         List<ItemStack> drops = new ArrayList<>();
         
         // Only drop items from center block to avoid duplicates
-        if (state.getValue(PART) == WorkbenchPart.CENTER) {
+        if (state.getValue(POSITION) == POS_CENTER) {
             drops.addAll(super.getDrops(state, builder));
             
             // Add stored items to drops
@@ -389,7 +391,7 @@ public class WorkbenchBlock extends BaseEntityBlock {
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             // Drop items if moved by piston
-            if (movedByPiston && state.getValue(PART) == WorkbenchPart.CENTER) {
+            if (movedByPiston && state.getValue(POSITION) == POS_CENTER) {
                 BlockEntity be = level.getBlockEntity(pos);
                 if (be instanceof WorkbenchBlockEntity workbench) {
                     for (ItemStack item : workbench.getAllItems()) {
@@ -401,7 +403,7 @@ public class WorkbenchBlock extends BaseEntityBlock {
             }
             
             // Break connected parts
-            if (state.getValue(PART) == WorkbenchPart.CENTER) {
+            if (state.getValue(POSITION) == POS_CENTER) {
                 Direction facing = state.getValue(FACING);
                 Direction left = facing.getCounterClockWise();
                 Direction right = facing.getClockWise();
@@ -420,23 +422,4 @@ public class WorkbenchBlock extends BaseEntityBlock {
         super.onRemove(state, level, pos, newState, movedByPiston);
     }
     
-    /**
-     * Enum representing the three parts of the workbench.
-     */
-    public enum WorkbenchPart implements net.minecraft.util.StringRepresentable {
-        LEFT("left"),
-        CENTER("center"),
-        RIGHT("right");
-        
-        private final String name;
-        
-        WorkbenchPart(String name) {
-            this.name = name;
-        }
-        
-        @Override
-        public String getSerializedName() {
-            return name;
-        }
-    }
 }

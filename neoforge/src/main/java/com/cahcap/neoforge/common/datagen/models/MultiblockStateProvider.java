@@ -28,8 +28,14 @@ public class MultiblockStateProvider implements DataProvider {
             String unformedModel,
             boolean unformedHasRotation,
             String particleTexture,
-            List<String> extraProperties
-    ) {}
+            List<String> extraProperties,
+            boolean simpleMode // true = no FORMED/MIRRORED properties (e.g., workbench)
+    ) {
+        MultiblockConfig(String blockName, String unformedModel, boolean unformedHasRotation,
+                         String particleTexture, List<String> extraProperties) {
+            this(blockName, unformedModel, unformedHasRotation, particleTexture, extraProperties, false);
+        }
+    }
 
     public MultiblockStateProvider(PackOutput output, Path commonResourcesDir) {
         this.output = output;
@@ -52,6 +58,9 @@ public class MultiblockStateProvider implements DataProvider {
         futures.add(generate(cache, new MultiblockConfig(
                 "kiln", "herbalcurative:block/stone_bricks", false,
                 "herbalcurative:block/kiln", List.of("lit"))));
+        futures.add(generate(cache, new MultiblockConfig(
+                "workbench", "herbalcurative:block/workbench_part_1_0_0", false,
+                "herbalcurative:block/workbench", List.of(), true)));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -189,19 +198,35 @@ public class MultiblockStateProvider implements DataProvider {
                 String facing = facings[fi];
                 int rotation = rotations[fi];
 
-                for (boolean formed : new boolean[]{false, true}) {
-                    for (boolean mirrored : new boolean[]{false, true}) {
-                        for (int position = 0; position < totalPositions; position++) {
-                            String key = buildVariantKey(facing, formed, mirrored, position, extras);
+                if (config.simpleMode) {
+                    // Simple mode: only FACING + POSITION (no FORMED/MIRRORED)
+                    for (int position = 0; position < totalPositions; position++) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("facing=").append(facing);
+                        for (Map.Entry<String, String> e : new TreeMap<>(extras).entrySet()) {
+                            sb.append(",").append(e.getKey()).append("=").append(e.getValue());
+                        }
+                        sb.append(",position=").append(position);
 
-                            JsonObject variant;
-                            if (!formed) {
-                                variant = buildUnformedVariant(config, facing, rotation);
-                            } else {
-                                variant = buildFormedVariant(config, ranges, occupiedPositions,
-                                        position, mirrored, rotation);
+                        JsonObject variant = buildFormedVariant(config, ranges, occupiedPositions,
+                                position, false, rotation);
+                        variants.add(sb.toString(), variant);
+                    }
+                } else {
+                    for (boolean formed : new boolean[]{false, true}) {
+                        for (boolean mirrored : new boolean[]{false, true}) {
+                            for (int position = 0; position < totalPositions; position++) {
+                                String key = buildVariantKey(facing, formed, mirrored, position, extras);
+
+                                JsonObject variant;
+                                if (!formed) {
+                                    variant = buildUnformedVariant(config, facing, rotation);
+                                } else {
+                                    variant = buildFormedVariant(config, ranges, occupiedPositions,
+                                            position, mirrored, rotation);
+                                }
+                                variants.add(key, variant);
                             }
-                            variants.add(key, variant);
                         }
                     }
                 }

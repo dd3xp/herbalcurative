@@ -73,6 +73,48 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
         return new ItemStack(ModRegistries.RED_CHERRY_LOG.get());
     }
 
+    // ==================== Grid Cell Targeting ====================
+
+    /**
+     * Grid cell bounds per slot in local block coordinates (0-16), NORTH facing.
+     * [slot][0=minX, 1=maxX, 2=minY, 3=maxY]
+     */
+    private static final double[][] GRID_CELLS = {
+            {4, 16, 1, 12},   // slot 0: top-left (dx=-1, dy=1)
+            {2, 14, 1, 12},   // slot 1: top-center (dx=0, dy=1)
+            {0, 12, 1, 12},   // slot 2: top-right (dx=1, dy=1)
+            {4, 16, 4, 15},   // slot 3: bottom-left (dx=-1, dy=0)
+            {2, 14, 4, 15},   // slot 4: bottom-center (dx=0, dy=0)
+            {0, 12, 4, 15},   // slot 5: bottom-right (dx=1, dy=0)
+    };
+
+    /**
+     * Check if a hit location on the front face is within the grid cell for the given herb slot.
+     * Converts world hit coordinates to model-space face coordinates, then checks bounds.
+     */
+    public static boolean isHitInGridCell(BlockHitResult hitResult, BlockPos pos, Direction facing, int herbIndex) {
+        if (herbIndex < 0 || herbIndex >= GRID_CELLS.length) return false;
+
+        // Get local coordinates (0-1) within the block
+        double localX = (hitResult.getLocation().x - pos.getX()) * 16;
+        double localY = (hitResult.getLocation().y - pos.getY()) * 16;
+        double localZ = (hitResult.getLocation().z - pos.getZ()) * 16;
+
+        // Convert to model-space "across" coordinate on the front face
+        // The front face is perpendicular to the FACING direction.
+        // In model space (NORTH), across = X, up = Y.
+        double faceX, faceY;
+        switch (facing) {
+            case SOUTH -> { faceX = 16 - localX; faceY = localY; }
+            case EAST  -> { faceX = 16 - localZ; faceY = localY; }
+            case WEST  -> { faceX = localZ; faceY = localY; }
+            default    -> { faceX = localX; faceY = localY; } // NORTH
+        }
+
+        double[] cell = GRID_CELLS[herbIndex];
+        return faceX >= cell[0] && faceX <= cell[1] && faceY >= cell[2] && faceY <= cell[3];
+    }
+
     // ==================== Interaction ====================
 
     @Override
@@ -85,6 +127,11 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
 
         if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
             if (!be.formed) return ItemInteractionResult.SUCCESS;
+
+            int herbIndex = be.getHerbIndexForBlock();
+            if (!isHitInGridCell(hitResult, pos, state.getValue(FACING), herbIndex)) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
 
             boolean isDouble = be.isDoubleClick(player.getUUID());
             int totalAdded = 0;
@@ -129,6 +176,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
         if (!(hitResult instanceof BlockHitResult blockHit) || blockHit.getDirection() != state.getValue(FACING)) return;
 
         int herbIndex = be.getHerbIndexForBlock();
+        if (!isHitInGridCell(blockHit, pos, state.getValue(FACING), herbIndex)) return;
         if (herbIndex < 0 || herbIndex >= 6) return;
 
         Item herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];

@@ -51,7 +51,9 @@ public class HerbVaultTooltipHandler {
                 int forwardOffset = facing.getStepX() * offset[0] + facing.getStepZ() * offset[2];
                 if (forwardOffset == 1 && offset[1] <= 0) {
                     int herbIndex = vault.getHerbIndexForBlock();
-                    if (herbIndex >= 0 && herbIndex < 6) {
+                    if (herbIndex >= 0 && herbIndex < 6
+                            && com.cahcap.common.block.HerbVaultBlock.isHitInGridCell(
+                                    blockHitResult, targetPos, facing, herbIndex)) {
                         herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];
                         amount = vault.getHerbAmount(herb);
                     }

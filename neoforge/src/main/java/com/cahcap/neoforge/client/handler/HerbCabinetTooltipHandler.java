@@ -1,6 +1,7 @@
 package com.cahcap.neoforge.client.handler;
 
 import com.cahcap.HerbalCurativeCommon;
+import com.cahcap.common.block.HerbCabinetBlock;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.neoforge.common.registry.ModItems;
 import net.minecraft.client.Minecraft;
@@ -62,7 +63,9 @@ public class HerbCabinetTooltipHandler {
             if (blockEntity instanceof HerbCabinetBlockEntity cab && cab.isFormed()
                     && blockHitResult.getDirection() == cab.getFacing()) {
                 int herbIndex = cab.getHerbIndexForBlock();
-                if (herbIndex >= 0 && herbIndex < 6) {
+                if (herbIndex >= 0 && herbIndex < 6
+                        && HerbCabinetBlock.isHitInGridCell(blockHitResult, targetPos,
+                                cab.getFacing(), herbIndex)) {
                     herb = getHerbItem(herbIndex);
                     if (herb != null) {
                         String herbKey = getHerbKey(herbIndex);

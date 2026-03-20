@@ -787,7 +787,7 @@ public class FlowweaveRingItem extends Item {
         
         // Try to trigger Workbench crafting (right-click center block)
         if (clickedState.is(ModRegistries.WORKBENCH.get())) {
-            if (clickedState.getValue(WorkbenchBlock.PART) == WorkbenchBlock.WorkbenchPart.CENTER) {
+            if (clickedState.getValue(WorkbenchBlock.POSITION) == WorkbenchBlock.POS_CENTER) {
                 boolean isShift = player != null && player.isShiftKeyDown();
                 if (tryWorkbenchCraft(level, context.getClickedPos(), player, isShift)) {
                     return InteractionResult.SUCCESS;
@@ -934,7 +934,7 @@ public class FlowweaveRingItem extends Item {
             return true;
         }
         if (clickedState.is(ModRegistries.WORKBENCH.get()) 
-                && clickedState.getValue(WorkbenchBlock.PART) == WorkbenchBlock.WorkbenchPart.CENTER) {
+                && clickedState.getValue(WorkbenchBlock.POSITION) == WorkbenchBlock.POS_CENTER) {
             return true;
         }
         // Check Herb Basket (with bound herb, shift+right-click)

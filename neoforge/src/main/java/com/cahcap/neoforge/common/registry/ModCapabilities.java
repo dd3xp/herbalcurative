@@ -95,10 +95,10 @@ public class ModCapabilities {
             Capabilities.ItemHandler.BLOCK,
             (level, pos, state, blockEntity, context) -> {
                 if (state.getBlock() instanceof WorkbenchBlock) {
-                    WorkbenchBlock.WorkbenchPart part = state.getValue(WorkbenchBlock.PART);
+                    int position = state.getValue(WorkbenchBlock.POSITION);
                     WorkbenchBlockEntity workbench = WorkbenchItemHandler.getWorkbenchBlockEntity(level, pos, state);
                     if (workbench != null) {
-                        return new WorkbenchItemHandler(workbench, part);
+                        return new WorkbenchItemHandler(workbench, position);
                     }
                 }
                 return null;

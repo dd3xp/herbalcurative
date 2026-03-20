@@ -79,6 +79,43 @@ public class HerbVaultBlock extends MultiblockPartBlock {
         return fwd == 1 && off[1] <= 0;
     }
 
+    // ==================== Grid Cell Targeting ====================
+
+    /**
+     * Grid cell bounds per slot in local block coordinates (0-16), NORTH facing.
+     * [slot][0=minX, 1=maxX, 2=minY, 3=maxY]
+     */
+    private static final double[][] GRID_CELLS = {
+            {6, 16, 2, 12},   // slot 0: top-left (dx=-1, dy=0)
+            {3, 13, 2, 12},   // slot 1: top-center (dx=0, dy=0)
+            {0, 10, 2, 12},   // slot 2: top-right (dx=1, dy=0)
+            {6, 16, 6, 16},   // slot 3: bottom-left (dx=-1, dy=-1)
+            {3, 13, 6, 16},   // slot 4: bottom-center (dx=0, dy=-1)
+            {0, 10, 6, 16},   // slot 5: bottom-right (dx=1, dy=-1)
+    };
+
+    /**
+     * Check if a hit location on the front face is within the grid cell for the given herb slot.
+     */
+    public static boolean isHitInGridCell(BlockHitResult hitResult, BlockPos pos, net.minecraft.core.Direction facing, int herbIndex) {
+        if (herbIndex < 0 || herbIndex >= GRID_CELLS.length) return false;
+
+        double localX = (hitResult.getLocation().x - pos.getX()) * 16;
+        double localY = (hitResult.getLocation().y - pos.getY()) * 16;
+        double localZ = (hitResult.getLocation().z - pos.getZ()) * 16;
+
+        double faceX, faceY;
+        switch (facing) {
+            case SOUTH -> { faceX = 16 - localX; faceY = localY; }
+            case EAST  -> { faceX = 16 - localZ; faceY = localY; }
+            case WEST  -> { faceX = localZ; faceY = localY; }
+            default    -> { faceX = localX; faceY = localY; }
+        }
+
+        double[] cell = GRID_CELLS[herbIndex];
+        return faceX >= cell[0] && faceX <= cell[1] && faceY >= cell[2] && faceY <= cell[3];
+    }
+
     // ==================== Interaction ====================
 
     @Override
@@ -92,6 +129,11 @@ public class HerbVaultBlock extends MultiblockPartBlock {
         if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
         if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
+            int herbIndex = be.getHerbIndexForBlock();
+            if (!isHitInGridCell(hitResult, pos, state.getValue(FACING), herbIndex)) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
+
             boolean isDouble = be.isDoubleClick(player.getUUID());
             int totalAdded = 0;
 
@@ -132,6 +174,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
         if (!isFrontRow(be)) return;
 
         int herbIndex = be.getHerbIndexForBlock();
+        if (!isHitInGridCell(blockHit, pos, state.getValue(FACING), herbIndex)) return;
         if (herbIndex < 0 || herbIndex >= 6) return;
 
         Item herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];

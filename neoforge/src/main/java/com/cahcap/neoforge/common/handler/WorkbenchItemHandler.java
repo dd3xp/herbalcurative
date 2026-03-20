@@ -24,39 +24,35 @@ import org.jetbrains.annotations.NotNull;
 public class WorkbenchItemHandler implements IItemHandler {
     
     private final WorkbenchBlockEntity workbench;
-    private final WorkbenchBlock.WorkbenchPart part;
-    
-    public WorkbenchItemHandler(WorkbenchBlockEntity workbench, WorkbenchBlock.WorkbenchPart part) {
+    private final int position;
+
+    public WorkbenchItemHandler(WorkbenchBlockEntity workbench, int position) {
         this.workbench = workbench;
-        this.part = part;
+        this.position = position;
     }
     
     @Override
     public int getSlots() {
-        return switch (part) {
-            case LEFT -> WorkbenchBlockEntity.TOOL_SLOTS;    // 4 tool slots
-            case CENTER -> 1;                                  // 1 input slot
-            case RIGHT -> WorkbenchBlockEntity.MATERIAL_SLOTS; // 9 material slots
-        };
+        if (position == WorkbenchBlock.POS_LEFT) return WorkbenchBlockEntity.TOOL_SLOTS;    // 4 tool slots
+        if (position == WorkbenchBlock.POS_CENTER) return 1;                                 // 1 input slot
+        return WorkbenchBlockEntity.MATERIAL_SLOTS; // 9 material slots (RIGHT)
     }
     
     @Override
     public @NotNull ItemStack getStackInSlot(int slot) {
-        return switch (part) {
-            case LEFT -> {
-                if (slot >= 0 && slot < WorkbenchBlockEntity.TOOL_SLOTS) {
-                    yield workbench.getToolAt(slot);
-                }
-                yield ItemStack.EMPTY;
+        if (position == WorkbenchBlock.POS_LEFT) {
+            if (slot >= 0 && slot < WorkbenchBlockEntity.TOOL_SLOTS) {
+                return workbench.getToolAt(slot);
             }
-            case CENTER -> slot == 0 ? workbench.getInputItem() : ItemStack.EMPTY;
-            case RIGHT -> {
-                if (slot >= 0 && slot < workbench.getMaterialCount()) {
-                    yield workbench.getMaterialAt(slot);
-                }
-                yield ItemStack.EMPTY;
+            return ItemStack.EMPTY;
+        } else if (position == WorkbenchBlock.POS_CENTER) {
+            return slot == 0 ? workbench.getInputItem() : ItemStack.EMPTY;
+        } else { // RIGHT
+            if (slot >= 0 && slot < workbench.getMaterialCount()) {
+                return workbench.getMaterialAt(slot);
             }
-        };
+            return ItemStack.EMPTY;
+        }
     }
     
     @Override
@@ -65,11 +61,9 @@ public class WorkbenchItemHandler implements IItemHandler {
             return ItemStack.EMPTY;
         }
         
-        return switch (part) {
-            case LEFT -> insertTool(slot, stack, simulate);
-            case CENTER -> insertInput(stack, simulate);
-            case RIGHT -> insertMaterial(stack, simulate);
-        };
+        if (position == WorkbenchBlock.POS_LEFT) return insertTool(slot, stack, simulate);
+        if (position == WorkbenchBlock.POS_CENTER) return insertInput(stack, simulate);
+        return insertMaterial(stack, simulate);
     }
     
     private ItemStack insertTool(int slot, ItemStack stack, boolean simulate) {
@@ -222,13 +216,13 @@ public class WorkbenchItemHandler implements IItemHandler {
             return null;
         }
         
-        WorkbenchBlock.WorkbenchPart part = state.getValue(WorkbenchBlock.PART);
+        int position = state.getValue(WorkbenchBlock.POSITION);
         Direction facing = state.getValue(WorkbenchBlock.FACING);
-        
+
         BlockPos centerPos;
-        if (part == WorkbenchBlock.WorkbenchPart.CENTER) {
+        if (position == WorkbenchBlock.POS_CENTER) {
             centerPos = pos;
-        } else if (part == WorkbenchBlock.WorkbenchPart.LEFT) {
+        } else if (position == WorkbenchBlock.POS_LEFT) {
             centerPos = pos.relative(facing.getClockWise());
         } else { // RIGHT
             centerPos = pos.relative(facing.getCounterClockWise());
