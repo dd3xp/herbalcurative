@@ -32,6 +32,8 @@ import java.util.Map;
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class CauldronTooltipHandler {
 
+    private static final TooltipAnimator animator = new TooltipAnimator();
+
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -40,43 +42,32 @@ public class CauldronTooltipHandler {
             return;
         }
 
+        // Find cauldron master
+        CauldronBlockEntity master = null;
         HitResult hitResult = mc.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) {
-            return;
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            BlockPos pos = blockHitResult.getBlockPos();
+            BlockState state = mc.level.getBlockState(pos);
+            if (state.is(ModRegistries.CAULDRON.get())) {
+                BlockEntity blockEntity = mc.level.getBlockEntity(pos);
+                if (blockEntity instanceof CauldronBlockEntity cauldron) {
+                    master = cauldron.getMaster();
+                }
+            }
         }
 
-        BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockState state = mc.level.getBlockState(pos);
-        
-        // Check if looking at cauldron
-        if (!state.is(ModRegistries.CAULDRON.get())) {
-            return;
-        }
-        
-        BlockEntity blockEntity = mc.level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CauldronBlockEntity cauldron)) {
-            return;
-        }
-
-        // Get the master block entity
-        CauldronBlockEntity master = cauldron.getMaster();
-        if (master == null) {
-            return;
-        }
+        if (master == null) { animator.reset(); return; }
 
         // Get materials/herbs to display
         List<ItemCountPair> items = new ArrayList<>();
-        
+
         if (master.isBrewing()) {
-            // Show herbs during brewing
             Map<Item, Integer> herbs = master.getHerbs();
             for (Map.Entry<Item, Integer> entry : herbs.entrySet()) {
                 items.add(new ItemCountPair(entry.getKey(), entry.getValue()));
             }
         } else {
-            // Show materials when not brewing - one icon per slot (no merging)
-            // Items with low stack limit (e.g. flowweave ring max 2) may occupy multiple slots
             List<ItemStack> materials = master.getMaterials();
             for (ItemStack stack : materials) {
                 if (!stack.isEmpty()) {
@@ -84,16 +75,16 @@ public class CauldronTooltipHandler {
                 }
             }
         }
-        
-        // Get output slot contents
+
         ItemStack outputSlot = master.getOutputSlot();
         boolean hasOutput = !outputSlot.isEmpty();
-
-        // Don't render if nothing to show
         boolean hasPotionUnits = master.getFluid().isPotion();
         if (items.isEmpty() && !hasOutput && !hasPotionUnits) {
+            animator.reset();
             return;
         }
+
+        float anim = animator.update(master.getBlockPos());
 
         // Potion units info
         boolean hasPotion = master.getFluid().isPotion();
@@ -107,7 +98,13 @@ public class CauldronTooltipHandler {
         int totalItems = items.size();
         int materialsWidth = totalItems * 20;
         int centerX = screenWidth / 2;
-        int currentY = screenHeight / 2 + 12;
+        int centerY = screenHeight / 2;
+        int currentY = centerY + 10;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(anim, anim, 1.0f);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
 
         // Row 1: Materials/herbs (top)
         if (totalItems > 0) {
@@ -169,6 +166,8 @@ public class CauldronTooltipHandler {
                     startX + 17 - mc.font.width(countText), currentY + 9, 0xFFFF00, true);
             guiGraphics.pose().popPose();
         }
+
+        guiGraphics.pose().popPose();
     }
 
     private static class ItemCountPair {

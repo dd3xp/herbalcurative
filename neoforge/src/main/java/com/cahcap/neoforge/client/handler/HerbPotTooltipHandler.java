@@ -30,6 +30,8 @@ import java.util.Map;
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class HerbPotTooltipHandler {
 
+    private static final TooltipAnimator animator = new TooltipAnimator();
+
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -38,39 +40,43 @@ public class HerbPotTooltipHandler {
             return;
         }
 
+        HerbPotBlockEntity pot = null;
+        BlockPos targetPos = null;
         HitResult hitResult = mc.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) {
-            return;
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            targetPos = blockHitResult.getBlockPos();
+            BlockState state = mc.level.getBlockState(targetPos);
+            if (state.getBlock() instanceof HerbPotBlock) {
+                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
+                if (blockEntity instanceof HerbPotBlockEntity p) {
+                    pot = p;
+                }
+            }
         }
 
-        BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockState state = mc.level.getBlockState(pos);
+        ItemStack seedling = pot != null ? pot.getSeedling() : ItemStack.EMPTY;
+        Map<Item, Integer> herbs = pot != null ? pot.getHerbs() : java.util.Map.of();
+        ItemStack pendingOutput = pot != null ? pot.getPendingOutput() : ItemStack.EMPTY;
+        boolean isGrowing = pot != null && pot.isGrowing();
 
-        if (!(state.getBlock() instanceof HerbPotBlock)) {
-            return;
-        }
-
-        BlockEntity blockEntity = mc.level.getBlockEntity(pos);
-        if (!(blockEntity instanceof HerbPotBlockEntity pot)) {
-            return;
-        }
-
-        ItemStack seedling = pot.getSeedling();
-        Map<Item, Integer> herbs = pot.getHerbs();
-        ItemStack pendingOutput = pot.getPendingOutput();
-        boolean isGrowing = pot.isGrowing();
-
-        // Don't render if nothing to show
-        if (seedling.isEmpty() && herbs.isEmpty()) {
-            return;
-        }
+        boolean hasContent = !seedling.isEmpty() || !herbs.isEmpty();
+        if (!hasContent) { animator.reset(); return; }
+        float anim = animator.update(targetPos);
 
         GuiGraphics guiGraphics = event.getGuiGraphics();
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int baseY = screenHeight / 2 + 8;
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(anim, anim, 1.0f);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
+
+        int baseY = centerY + 10;
 
         // === Top row: [Seedling] [arrow] [Output] ===
         if (!seedling.isEmpty()) {
@@ -144,5 +150,7 @@ public class HerbPotTooltipHandler {
 
             guiGraphics.pose().popPose();
         }
+
+        guiGraphics.pose().popPose();
     }
 }

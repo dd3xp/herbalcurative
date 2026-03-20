@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * Jade icon provider for Herbal Curative blocks.
  * Provides custom icons for multiblock structures and special blocks.
  */
-public class HerbalCurativeIconProvider implements IBlockComponentProvider {
+public class HerbCabinetComponentProvider implements IBlockComponentProvider {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "icon_provider");
 
     @Override

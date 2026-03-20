@@ -17,18 +17,11 @@ public class HerbalCurativeWTHITPlugin implements IWailaClientPlugin, IWailaComm
 
     @Override
     public void register(IClientRegistrar registrar) {
-        // Register icon provider for Herb Cabinet multiblock
-        registrar.icon(HerbalCurativeIconProvider.INSTANCE, HerbCabinetBlock.class);
-        
-        // Register icon provider for Cauldron multiblock
-        registrar.icon(CauldronIconProvider.INSTANCE, CauldronBlock.class);
-        
-        // Register icon and component provider for Kiln multiblock
+        // Register component providers for multiblock structures (icon only)
+        registrar.icon(HerbCabinetComponentProvider.INSTANCE, HerbCabinetBlock.class);
+        registrar.icon(CauldronComponentProvider.INSTANCE, CauldronBlock.class);
         registrar.icon(KilnComponentProvider.INSTANCE, KilnBlock.class);
-        registrar.body(KilnComponentProvider.INSTANCE, KilnBlock.class);
-
-        // Register icon provider for Herb Vault multiblock
-        registrar.icon(HerbVaultIconProvider.INSTANCE, HerbVaultBlock.class);
+        registrar.icon(HerbVaultComponentProvider.INSTANCE, HerbVaultBlock.class);
     }
 
     @Override

@@ -23,38 +23,48 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class HerbVaultTooltipHandler {
 
+    private static final TooltipAnimator animator = new TooltipAnimator();
+
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
 
-        if (mc.level == null || mc.player == null) return;
+        if (mc.level == null || mc.player == null) {
+            animator.reset();
+            return;
+        }
+
+        // Find herb vault and determine content
+        BlockPos targetPos = null;
+        Item herb = null;
+        int amount = 0;
 
         HitResult hitResult = mc.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) return;
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            targetPos = blockHitResult.getBlockPos();
+            BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
+            if (blockEntity instanceof HerbVaultBlockEntity vault && vault.isFormed()
+                    && blockHitResult.getDirection() == vault.getFacing()) {
+                int[] offset = vault.offset;
+                net.minecraft.core.Direction facing = vault.getFacing();
+                int forwardOffset = facing.getStepX() * offset[0] + facing.getStepZ() * offset[2];
+                if (forwardOffset == 1 && offset[1] <= 0) {
+                    int herbIndex = vault.getHerbIndexForBlock();
+                    if (herbIndex >= 0 && herbIndex < 6) {
+                        herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];
+                        amount = vault.getHerbAmount(herb);
+                    }
+                }
+            }
+        }
 
-        BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockEntity blockEntity = mc.level.getBlockEntity(pos);
+        if (herb == null || amount <= 0) {
+            animator.reset();
+            return;
+        }
 
-        if (!(blockEntity instanceof HerbVaultBlockEntity vault)) return;
-        if (!vault.isFormed()) return;
-
-        // Only show tooltip when looking at the front face
-        if (blockHitResult.getDirection() != vault.getFacing()) return;
-
-        // Only show tooltip for front-row blocks (facing direction offset == +1)
-        int[] offset = vault.offset;
-        net.minecraft.core.Direction facing = vault.getFacing();
-        int forwardOffset = facing.getStepX() * offset[0] + facing.getStepZ() * offset[2];
-        if (forwardOffset != 1 || offset[1] > 0) return;
-
-        int herbIndex = vault.getHerbIndexForBlock();
-        if (herbIndex < 0 || herbIndex >= 6) return;
-
-        Item herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];
-        int amount = vault.getHerbAmount(herb);
-
-        if (amount <= 0) return;
+        float anim = animator.update(targetPos);
 
         ItemStack stack = new ItemStack(herb);
 
@@ -62,8 +72,16 @@ public class HerbVaultTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int x = screenWidth / 2 - 8;
-        int y = screenHeight / 2 + 12;
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(anim, anim, 1.0f);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
+
+        int x = centerX - 8;
+        int y = centerY + 10;
 
         guiGraphics.renderItem(stack, x, y);
 
@@ -71,5 +89,7 @@ public class HerbVaultTooltipHandler {
         int textX = x + 16 + 2;
         int textY = y + 4;
         guiGraphics.drawString(mc.font, amountText, textX, textY, 0xFFFFFF, true);
+
+        guiGraphics.pose().popPose();
     }
 }

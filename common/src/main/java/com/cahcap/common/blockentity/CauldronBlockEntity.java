@@ -1115,8 +1115,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         BlockPos masterPos = getBlockPos();
         double minX = masterPos.getX() - 1;
         double maxX = masterPos.getX() + 2;
-        double minY = masterPos.getY() + 1.5; // Liquid surface level
-        double maxY = masterPos.getY() + 3;   // Up to 1.5 blocks above
+        double minY = masterPos.getY() + 0.5; // Below liquid surface to catch sunken items
+        double maxY = masterPos.getY() + 2;   // Up to cauldron top (2 blocks tall)
         double minZ = masterPos.getZ() - 1;
         double maxZ = masterPos.getZ() + 2;
         

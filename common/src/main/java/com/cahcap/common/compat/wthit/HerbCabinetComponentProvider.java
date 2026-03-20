@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
  * WTHIT icon provider for Herbal Curative blocks.
  * Provides custom icons for multiblock structures and special blocks.
  */
-enum HerbalCurativeIconProvider implements IBlockComponentProvider {
+enum HerbCabinetComponentProvider implements IBlockComponentProvider {
 
     INSTANCE;
 

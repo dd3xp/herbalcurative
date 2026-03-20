@@ -17,19 +17,11 @@ import snownee.jade.api.WailaPlugin;
 public class HerbalCurativeJadePlugin implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
-        // Register icon provider for Herb Cabinet multiblock
-        registration.registerBlockIcon(new HerbalCurativeIconProvider(), HerbCabinetBlock.class);
-        
-        // Register icon provider for Cauldron multiblock
-        registration.registerBlockIcon(new CauldronIconProvider(), CauldronBlock.class);
-        
-        // Register icon and component provider for Kiln multiblock
-        KilnComponentProvider kilnProvider = new KilnComponentProvider();
-        registration.registerBlockIcon(kilnProvider, KilnBlock.class);
-        registration.registerBlockComponent(kilnProvider, KilnBlock.class);
-
-        // Register icon provider for Herb Vault multiblock
-        registration.registerBlockIcon(new HerbVaultIconProvider(), HerbVaultBlock.class);
+        // Register component providers for multiblock structures (icon only)
+        registration.registerBlockIcon(new HerbCabinetComponentProvider(), HerbCabinetBlock.class);
+        registration.registerBlockIcon(new CauldronComponentProvider(), CauldronBlock.class);
+        registration.registerBlockIcon(new KilnComponentProvider(), KilnBlock.class);
+        registration.registerBlockIcon(new HerbVaultComponentProvider(), HerbVaultBlock.class);
     }
 
     @Override

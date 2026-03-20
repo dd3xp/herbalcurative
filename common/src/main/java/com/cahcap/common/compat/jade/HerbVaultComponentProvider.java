@@ -13,7 +13,7 @@ import snownee.jade.api.ui.IElementHelper;
 
 import org.jetbrains.annotations.Nullable;
 
-public class HerbVaultIconProvider implements IBlockComponentProvider {
+public class HerbVaultComponentProvider implements IBlockComponentProvider {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "herb_vault_icon");
 
     @Override

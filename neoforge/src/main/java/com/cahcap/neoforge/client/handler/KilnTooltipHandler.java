@@ -25,6 +25,8 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class KilnTooltipHandler {
 
+    private static final TooltipAnimator animator = new TooltipAnimator();
+
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -33,51 +35,48 @@ public class KilnTooltipHandler {
             return;
         }
 
+        // Determine if we're looking at a valid formed kiln with content
+        KilnBlockEntity master = null;
+        BlockPos targetPos = null;
         HitResult hitResult = mc.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) {
-            return;
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            targetPos = blockHitResult.getBlockPos();
+            BlockState state = mc.level.getBlockState(targetPos);
+            if (state.getBlock() instanceof KilnBlock && state.getValue(KilnBlock.FORMED)) {
+                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
+                if (blockEntity instanceof KilnBlockEntity kiln) {
+                    master = kiln.getMaster();
+                }
+            }
         }
 
-        BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockState state = mc.level.getBlockState(pos);
+        ItemStack input = master != null ? master.getInputSlot() : ItemStack.EMPTY;
+        ItemStack catalyst = master != null ? master.getCatalystSlot() : ItemStack.EMPTY;
+        ItemStack output = master != null ? master.getOutputSlot() : ItemStack.EMPTY;
+        ItemStack recipePreview = master != null ? master.getRecipePreview() : ItemStack.EMPTY;
 
-        if (!(state.getBlock() instanceof KilnBlock)) {
-            return;
-        }
-
-        if (!state.getValue(KilnBlock.FORMED)) {
-            return;
-        }
-
-        BlockEntity blockEntity = mc.level.getBlockEntity(pos);
-        if (!(blockEntity instanceof KilnBlockEntity kiln)) {
-            return;
-        }
-
-        KilnBlockEntity master = kiln.getMaster();
-        if (master == null) {
-            return;
-        }
-
-        ItemStack input = master.getInputSlot();
-        ItemStack catalyst = master.getCatalystSlot();
-        ItemStack output = master.getOutputSlot();
-        ItemStack recipePreview = master.getRecipePreview();
-
-        // Don't render if nothing to show
-        if (input.isEmpty() && catalyst.isEmpty() && output.isEmpty() && recipePreview.isEmpty()) {
-            return;
-        }
+        boolean hasContent = !input.isEmpty() || !catalyst.isEmpty() || !output.isEmpty() || !recipePreview.isEmpty();
+        if (!hasContent) { animator.reset(); return; }
+        float anim = animator.update(master.getBlockPos());
 
         GuiGraphics guiGraphics = event.getGuiGraphics();
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        // Apply scale animation from crosshair center
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(anim, anim, 1.0f);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
+
         // Layout: [input 16px] [gap 4px] [arrow 16px] [gap 4px] [output 16px]
         int totalWidth = 56;
-        int startX = screenWidth / 2 - totalWidth / 2;
-        int baseY = screenHeight / 2 + 28;
+        int startX = centerX - totalWidth / 2;
+        int baseY = centerY + 10;
 
         int inputX = startX;
         int arrowX = startX + 20;
@@ -89,19 +88,14 @@ public class KilnTooltipHandler {
             renderCount(guiGraphics, mc, input.getCount(), inputX, baseY, 0xFFFFFF);
         }
 
-        // Render arrow (always >>>, orange when smelting, gray when idle)
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 200);
-        String arrow = ">>>";
-        int arrowColor = master.isSmelting() ? 0xFFAA00 : 0xAAAAAA;
-        int arrowTextX = arrowX + 8 - mc.font.width(arrow) / 2;
-        guiGraphics.drawString(mc.font, arrow, arrowTextX, baseY + 4, arrowColor, true);
-        guiGraphics.pose().popPose();
-
-        // Render catalyst above arrow
-        if (!catalyst.isEmpty()) {
-            guiGraphics.renderItem(catalyst, arrowX, baseY - 18);
-            renderCount(guiGraphics, mc, catalyst.getCount(), arrowX, baseY - 18, 0xFF6600);
+        // Render arrow (only when smelting)
+        if (master.isSmelting()) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 200);
+            String arrow = ">>>";
+            int arrowTextX = arrowX + 8 - mc.font.width(arrow) / 2;
+            guiGraphics.drawString(mc.font, arrow, arrowTextX, baseY + 4, 0xFFAA00, true);
+            guiGraphics.pose().popPose();
         }
 
         // Render output item: cached output with count, or recipe preview without count
@@ -112,14 +106,23 @@ public class KilnTooltipHandler {
             guiGraphics.renderItem(recipePreview, outputX, baseY);
         }
 
-        // Render progress bar (always visible, filled when smelting)
-        int progressFill = 0;
+        // Render progress bar below arrow (only when smelting)
         if (master.isSmelting()) {
             int targetTime = master.getCurrentSmeltTime();
-            progressFill = master.getSmeltProgress() * 16 / targetTime;
+            int progressFill = master.getSmeltProgress() * 16 / targetTime;
+            guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
+            guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(progressFill, 16), baseY + 18, 0xFFFF8800);
         }
-        guiGraphics.fill(arrowX, baseY + 16, arrowX + 16, baseY + 18, 0xFF333333);
-        guiGraphics.fill(arrowX, baseY + 16, arrowX + Math.min(progressFill, 16), baseY + 18, 0xFFFF8800);
+
+        // Render catalyst below progress bar (or directly below items if not smelting)
+        if (!catalyst.isEmpty()) {
+            boolean hasTopRow = !input.isEmpty() || !output.isEmpty() || !recipePreview.isEmpty();
+            int catalystY = baseY + (hasTopRow && master.isSmelting() ? 24 : hasTopRow ? 20 : 0);
+            guiGraphics.renderItem(catalyst, arrowX, catalystY);
+            renderCount(guiGraphics, mc, catalyst.getCount(), arrowX, catalystY, 0xFF6600);
+        }
+
+        guiGraphics.pose().popPose();
     }
 
     private static void renderCount(GuiGraphics guiGraphics, Minecraft mc, int count, int x, int y, int color) {

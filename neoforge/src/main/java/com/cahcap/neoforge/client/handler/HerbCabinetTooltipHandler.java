@@ -22,6 +22,8 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class HerbCabinetTooltipHandler {
 
+    private static final TooltipAnimator animator = new TooltipAnimator();
+
     /**
      * Get the herb item at the given index
      */
@@ -42,51 +44,43 @@ public class HerbCabinetTooltipHandler {
         Minecraft mc = Minecraft.getInstance();
         
         if (mc.level == null || mc.player == null) {
+            animator.reset();
             return;
         }
+
+        // Find herb cabinet and determine content
+        HerbCabinetBlockEntity cabinet = null;
+        BlockPos targetPos = null;
+        Item herb = null;
+        int amount = 0;
 
         HitResult hitResult = mc.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) {
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            targetPos = blockHitResult.getBlockPos();
+            BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
+            if (blockEntity instanceof HerbCabinetBlockEntity cab && cab.isFormed()
+                    && blockHitResult.getDirection() == cab.getFacing()) {
+                int herbIndex = cab.getHerbIndexForBlock();
+                if (herbIndex >= 0 && herbIndex < 6) {
+                    herb = getHerbItem(herbIndex);
+                    if (herb != null) {
+                        String herbKey = getHerbKey(herbIndex);
+                        amount = cab.getHerbAmount(herbKey);
+                        if (amount > 0) {
+                            cabinet = cab;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (cabinet == null) {
+            animator.reset();
             return;
         }
 
-        BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockEntity blockEntity = mc.level.getBlockEntity(pos);
-
-        if (!(blockEntity instanceof HerbCabinetBlockEntity cabinet)) {
-            return;
-        }
-
-        // Only show tooltip if multiblock is formed
-        if (!cabinet.isFormed()) {
-            return;
-        }
-
-        // Only show tooltip when looking at the front face
-        if (blockHitResult.getDirection() != cabinet.getFacing()) {
-            return;
-        }
-
-        // Get which herb this block corresponds to
-        int herbIndex = cabinet.getHerbIndexForBlock();
-        if (herbIndex < 0 || herbIndex >= 6) {
-            return;
-        }
-
-        // Get the herb at this slot
-        Item herb = getHerbItem(herbIndex);
-        if (herb == null) {
-            return;
-        }
-        
-        String herbKey = getHerbKey(herbIndex);
-        int amount = cabinet.getHerbAmount(herbKey);
-
-        // Don't render if slot is empty
-        if (amount <= 0) {
-            return;
-        }
+        float anim = animator.update(targetPos);
 
         // Prepare item stack for rendering
         ItemStack stack = new ItemStack(herb);
@@ -95,9 +89,17 @@ public class HerbCabinetTooltipHandler {
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(anim, anim, 1.0f);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
+
         // Position below crosshair
-        int x = screenWidth / 2 - 8; // Item icon is 16x16, so center it
-        int y = screenHeight / 2 + 12;
+        int x = centerX - 8; // Item icon is 16x16, so center it
+        int y = centerY + 10;
 
         // Render the item icon
         guiGraphics.renderItem(stack, x, y);
@@ -107,6 +109,8 @@ public class HerbCabinetTooltipHandler {
         int textX = x + 16 + 2; // Right of the item icon
         int textY = y + 4; // Vertically centered with icon
         guiGraphics.drawString(mc.font, amountText, textX, textY, 0xFFFFFF, true);
+
+        guiGraphics.pose().popPose();
     }
 
     private static String getHerbKey(int index) {

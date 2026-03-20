@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  * Jade icon provider for Cauldron multiblock.
  * Shows the cauldron item model.
  */
-public class CauldronIconProvider implements IBlockComponentProvider {
+public class CauldronComponentProvider implements IBlockComponentProvider {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "cauldron_icon_provider");
 
     @Override

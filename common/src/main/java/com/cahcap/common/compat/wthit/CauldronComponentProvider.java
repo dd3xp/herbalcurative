@@ -10,15 +10,23 @@ import mcp.mobius.waila.api.component.ItemComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public enum HerbVaultIconProvider implements IBlockComponentProvider {
+/**
+ * WTHIT icon provider for Cauldron multiblock.
+ * Shows the cauldron item model.
+ */
+enum CauldronComponentProvider implements IBlockComponentProvider {
+
     INSTANCE;
 
     @Nullable
     @Override
     public ITooltipComponent getIcon(IBlockAccessor accessor, IPluginConfig config) {
-        return new ItemComponent(new ItemStack(ModRegistries.HERB_VAULT_ITEM.get()));
+        // Return the cauldron item to show cauldron model
+        return new ItemComponent(new ItemStack(ModRegistries.CAULDRON_ITEM.get()));
     }
 
     @Override
-    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {}
+    public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
+        // No additional body content needed
+    }
 }

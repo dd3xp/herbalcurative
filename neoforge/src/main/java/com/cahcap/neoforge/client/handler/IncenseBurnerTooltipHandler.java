@@ -30,6 +30,8 @@ import java.util.Map;
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
 public class IncenseBurnerTooltipHandler {
 
+    private static final TooltipAnimator animator = new TooltipAnimator();
+
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -38,38 +40,42 @@ public class IncenseBurnerTooltipHandler {
             return;
         }
 
+        IncenseBurnerBlockEntity burner = null;
+        BlockPos targetPos = null;
         HitResult hitResult = mc.hitResult;
-        if (hitResult == null || hitResult.getType() != HitResult.Type.BLOCK) {
-            return;
+        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
+            targetPos = blockHitResult.getBlockPos();
+            BlockState state = mc.level.getBlockState(targetPos);
+            if (state.getBlock() instanceof IncenseBurnerBlock) {
+                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
+                if (blockEntity instanceof IncenseBurnerBlockEntity b) {
+                    burner = b;
+                }
+            }
         }
 
-        BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-        BlockPos pos = blockHitResult.getBlockPos();
-        BlockState state = mc.level.getBlockState(pos);
+        ItemStack powder = burner != null ? burner.getPowder() : ItemStack.EMPTY;
+        Map<Item, Integer> herbs = burner != null ? burner.getHerbs() : java.util.Map.of();
+        boolean isBurning = burner != null && burner.isBurning();
 
-        if (!(state.getBlock() instanceof IncenseBurnerBlock)) {
-            return;
-        }
-
-        BlockEntity blockEntity = mc.level.getBlockEntity(pos);
-        if (!(blockEntity instanceof IncenseBurnerBlockEntity burner)) {
-            return;
-        }
-
-        ItemStack powder = burner.getPowder();
-        Map<Item, Integer> herbs = burner.getHerbs();
-        boolean isBurning = burner.isBurning();
-
-        // Don't render if nothing to show
-        if (powder.isEmpty() && herbs.isEmpty()) {
-            return;
-        }
+        boolean hasContent = !powder.isEmpty() || !herbs.isEmpty();
+        if (!hasContent) { animator.reset(); return; }
+        float anim = animator.update(targetPos);
 
         GuiGraphics guiGraphics = event.getGuiGraphics();
         int screenWidth = guiGraphics.guiWidth();
         int screenHeight = guiGraphics.guiHeight();
 
-        int baseY = screenHeight / 2 + 8;
+        int centerX = screenWidth / 2;
+        int centerY = screenHeight / 2;
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(centerX, centerY, 0);
+        guiGraphics.pose().scale(anim, anim, 1.0f);
+        guiGraphics.pose().translate(-centerX, -centerY, 0);
+
+        int baseY = centerY + 10;
 
         // === Powder + vertical progress bar ===
         int powderRowHeight = 0;
@@ -125,5 +131,7 @@ public class IncenseBurnerTooltipHandler {
 
             guiGraphics.pose().popPose();
         }
+
+        guiGraphics.pose().popPose();
     }
 }
