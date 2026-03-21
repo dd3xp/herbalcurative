@@ -25,6 +25,7 @@
   ![VoxelShape2](./images/VoxelShape2.png)  
   碰撞箱使用voxel.py生成
 - 釜碰撞箱问题：釜内往墙壁走会被弹回、按住 shift 出现黑色窒息遮挡。根因是客户端加载区块时 BlockState 先于 BlockEntity 到达，在 BE 未就绪时 `getCollisionShape` 回退到 `Shapes.block()`，18 个方块瞬间变成完整方块碰撞。修复：formed 状态下 BE 不可用时回退改为 `Shapes.empty()`；方块注册添加 `dynamicShape()`、`isSuffocating(false)`、`isViewBlocking(false)`。
+- 格子问题：多方块结构的相邻方块之间出现光照格子（亮度不连续）。根因是 Blockbench 导出的模型 JSON 中每个 element 都带有 `rotation: {angle: 0, axis: y, origin: ...}` 属性。虽然 angle=0 没有实际旋转效果，但 Minecraft 在 bake 模型时对有 `rotation` 属性的 element 走了不同的渲染代码路径，影响了 AO（Ambient Occlusion）的计算，导致相邻方块的 AO 插值不一致。修复：在 ModelSplitProvider 裁剪元素时，如果 `rotation.angle == 0`，直接删除该 `rotation` 属性，不写入 _part_ 模型 JSON。
 
 ## md语句相关
 

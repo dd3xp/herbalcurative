@@ -217,19 +217,23 @@ public class ModelSplitProvider implements DataProvider {
         result.add("from", newFrom);
         result.add("to", newTo);
 
-        // Mirror rotation origin on X, negate Y-axis rotation angle
+        // Mirror rotation origin on X, negate Y-axis rotation angle, skip if angle is 0
         if (original.has("rotation")) {
-            JsonObject rot = original.getAsJsonObject("rotation").deepCopy();
-            JsonArray origin = rot.getAsJsonArray("origin");
-            JsonArray newOrigin = new JsonArray();
-            newOrigin.add(16.0 - origin.get(0).getAsDouble());
-            newOrigin.add(origin.get(1).getAsDouble());
-            newOrigin.add(origin.get(2).getAsDouble());
-            rot.add("origin", newOrigin);
-            if ("y".equals(rot.get("axis").getAsString())) {
-                rot.addProperty("angle", -rot.get("angle").getAsDouble());
+            JsonObject rot = original.getAsJsonObject("rotation");
+            double angle = rot.has("angle") ? rot.get("angle").getAsDouble() : 0;
+            if (angle != 0) {
+                JsonObject rotCopy = rot.deepCopy();
+                JsonArray origin = rotCopy.getAsJsonArray("origin");
+                JsonArray newOrigin = new JsonArray();
+                newOrigin.add(16.0 - origin.get(0).getAsDouble());
+                newOrigin.add(origin.get(1).getAsDouble());
+                newOrigin.add(origin.get(2).getAsDouble());
+                rotCopy.add("origin", newOrigin);
+                if ("y".equals(rotCopy.get("axis").getAsString())) {
+                    rotCopy.addProperty("angle", -rotCopy.get("angle").getAsDouble());
+                }
+                result.add("rotation", rotCopy);
             }
-            result.add("rotation", rot);
         }
 
         // Mirror faces: swap east↔west, reverse U for X-dependent faces
@@ -321,16 +325,20 @@ public class ModelSplitProvider implements DataProvider {
         newTo.add(czMax - baseZ);
         result.add("to", newTo);
 
-        // Rotation — adjust origin to local space
+        // Rotation — adjust origin to local space, skip if angle is 0
         if (original.has("rotation")) {
-            JsonObject rot = original.getAsJsonObject("rotation").deepCopy();
-            JsonArray origin = rot.getAsJsonArray("origin");
-            JsonArray newOrigin = new JsonArray();
-            newOrigin.add(origin.get(0).getAsDouble() - baseX);
-            newOrigin.add(origin.get(1).getAsDouble() - baseY);
-            newOrigin.add(origin.get(2).getAsDouble() - baseZ);
-            rot.add("origin", newOrigin);
-            result.add("rotation", rot);
+            JsonObject rot = original.getAsJsonObject("rotation");
+            double angle = rot.has("angle") ? rot.get("angle").getAsDouble() : 0;
+            if (angle != 0) {
+                JsonObject rotCopy = rot.deepCopy();
+                JsonArray origin = rotCopy.getAsJsonArray("origin");
+                JsonArray newOrigin = new JsonArray();
+                newOrigin.add(origin.get(0).getAsDouble() - baseX);
+                newOrigin.add(origin.get(1).getAsDouble() - baseY);
+                newOrigin.add(origin.get(2).getAsDouble() - baseZ);
+                rotCopy.add("origin", newOrigin);
+                result.add("rotation", rotCopy);
+            }
         }
 
         // Faces — adjust UVs
