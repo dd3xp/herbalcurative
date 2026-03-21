@@ -194,7 +194,7 @@ public class ModBlocks {
     public static final DeferredBlock<FlowerPotBlock> POTTED_IRON_CRYST_PLANT = registerPottedPlant("potted_iron_cryst_plant", IRON_CRYST_PLANT);
 
     // ==================== Lumistone Blocks ====================
-    // Light levels: Lumistone series = 7 (weak glow), Rune Stone Bricks = 15 (glowstone level)
+    // Light levels: Rune Stone Bricks = 15 (glowstone level)
     
     public static final DeferredBlock<Block> LUMISTONE = registerBlock("lumistone",
             () -> new Block(BlockBehaviour.Properties.of()
