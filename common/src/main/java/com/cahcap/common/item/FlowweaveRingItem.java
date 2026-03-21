@@ -14,6 +14,7 @@ import com.cahcap.common.multiblock.MultiblockHerbCabinet;
 import com.cahcap.common.recipe.MultiblockHerbalBlending;
 import com.cahcap.common.multiblock.MultiblockHerbVault;
 import com.cahcap.common.multiblock.MultiblockKiln;
+import com.cahcap.common.multiblock.MultiblockObelisk;
 import com.cahcap.common.recipe.MultiblockHerbalBlending.BlendingStructure;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
@@ -743,7 +744,8 @@ public class FlowweaveRingItem extends Item {
                 MultiblockHerbCabinet.BLUEPRINT,
                 MultiblockCauldron.BLUEPRINT,
                 MultiblockKiln.BLUEPRINT,
-                MultiblockHerbVault.BLUEPRINT
+                MultiblockHerbVault.BLUEPRINT,
+                MultiblockObelisk.BLUEPRINT
         }) {
             if (blueprint.isBlockTrigger(clickedState)) {
                 if (blueprint.tryAssemble(level, context.getClickedPos(),
@@ -919,7 +921,8 @@ public class FlowweaveRingItem extends Item {
                 MultiblockHerbCabinet.BLUEPRINT,
                 MultiblockCauldron.BLUEPRINT,
                 MultiblockKiln.BLUEPRINT,
-                MultiblockHerbVault.BLUEPRINT
+                MultiblockHerbVault.BLUEPRINT,
+                MultiblockObelisk.BLUEPRINT
         }) {
             if (blueprint.isBlockTrigger(clickedState)) {
                 return true;

@@ -66,11 +66,6 @@ public class HerbVaultBlock extends MultiblockPartBlock {
         return SHAPES.get(facing, offset, mirrored);
     }
 
-    @Override
-    protected ItemStack getDefaultDropItem() {
-        return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
-    }
-
     /** Returns true if the block at pos is on the front row (forwardOffset==1, dy==0). */
     public static boolean isFrontRow(HerbVaultBlockEntity be) {
         Direction facing = be.facing;

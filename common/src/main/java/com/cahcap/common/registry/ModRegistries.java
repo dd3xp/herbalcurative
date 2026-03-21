@@ -8,6 +8,7 @@ import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
 import com.cahcap.common.recipe.KilnCatalystRecipe;
 import com.cahcap.common.recipe.KilnSmeltingRecipe;
+import com.cahcap.common.recipe.ObeliskOfferingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import net.minecraft.core.Holder;
 import net.minecraft.world.entity.EntityType;
@@ -60,6 +61,7 @@ public class ModRegistries {
     public static Supplier<Block> LUMISTONE_BRICKS;
     public static Supplier<Block> LUMISTONE_BRICK_SLAB;
     public static Supplier<Block> LUMISTONE_BRICK_WALL;
+    public static Supplier<Block> OBELISK;
     public static Supplier<Block> RUNE_STONE_BRICKS;
     public static Supplier<Block> MAGIC_ALLOY_BLOCK;
     
@@ -110,6 +112,7 @@ public class ModRegistries {
     public static Supplier<Item> KILN_ITEM;
     public static Supplier<Item> HERB_VAULT_ITEM;
     public static Supplier<Item> INCENSE_BURNER_ITEM;
+    public static Supplier<Item> OBELISK_ITEM;
     public static Supplier<Item> WITHER_SKELETON_POWDER;
     
     // ==================== Armor Materials ====================
@@ -124,6 +127,7 @@ public class ModRegistries {
     public static Supplier<BlockEntityType<?>> HERB_POT_BE;
     public static Supplier<BlockEntityType<?>> INCENSE_BURNER_BE;
     public static Supplier<BlockEntityType<?>> KILN_BE;
+    public static Supplier<BlockEntityType<?>> OBELISK_BE;
     public static Supplier<BlockEntityType<?>> HERB_VAULT_BE;
 
     // ==================== Recipe Types ====================
@@ -137,6 +141,8 @@ public class ModRegistries {
     public static Supplier<RecipeSerializer<IncenseBurningRecipe>> INCENSE_BURNING_SERIALIZER;
     public static Supplier<RecipeType<KilnSmeltingRecipe>> KILN_SMELTING_RECIPE_TYPE;
     public static Supplier<RecipeType<KilnCatalystRecipe>> KILN_CATALYST_RECIPE_TYPE;
+    public static Supplier<RecipeType<ObeliskOfferingRecipe>> OBELISK_OFFERING_RECIPE_TYPE;
+    public static Supplier<RecipeSerializer<ObeliskOfferingRecipe>> OBELISK_OFFERING_SERIALIZER;
 
     // ==================== Entity Types ====================
     public static Supplier<EntityType<FlowweaveProjectile>> FLOWWEAVE_PROJECTILE_TYPE;

@@ -59,6 +59,9 @@ public class MultiblockStateProvider implements DataProvider {
                 "kiln", "herbalcurative:block/stone_bricks", false,
                 "herbalcurative:block/kiln", List.of("lit"))));
         futures.add(generate(cache, new MultiblockConfig(
+                "obelisk", "herbalcurative:block/lumistone", false,
+                "herbalcurative:block/obelisk", List.of())));
+        futures.add(generate(cache, new MultiblockConfig(
                 "workbench", "herbalcurative:block/workbench_part_1_0_0", false,
                 "herbalcurative:block/workbench", List.of(), true)));
 

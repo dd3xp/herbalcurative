@@ -367,6 +367,13 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops())
 ));
 
+    public static final DeferredBlock<ObeliskBlock> OBELISK = BLOCKS.register("obelisk",
+            () -> new ObeliskBlock(Multiblock.addInteriorSpaceProperties(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(2.0F, 6.0F)
+                    .sound(SoundType.STONE)
+                    .requiresCorrectToolForDrops())));
+
     // ==================== Helper Methods ====================
     
     private static DeferredBlock<Block> registerFlower(String name) {

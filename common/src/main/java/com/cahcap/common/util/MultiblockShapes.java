@@ -21,8 +21,8 @@ import java.util.Map;
  * then precomputes rotated and mirrored variants for all 4 facings.
  * <p>
  * Also serves as the single source of truth for multiblock axis ranges
- * and coordinate conversion between blueprint space (SOUTH default)
- * and model space (NORTH default).
+ * and coordinate conversion between blueprint space and model space
+ * (both use NORTH as default facing).
  */
 public class MultiblockShapes {
 
@@ -97,19 +97,19 @@ public class MultiblockShapes {
     }
 
     /**
-     * Convert blueprint-space offset (SOUTH default) to model-space offset (NORTH default).
-     * The two coordinate systems are 180° apart: negate X and Z.
+     * Convert blueprint-space offset to model-space offset.
+     * Both use NORTH as default facing, so this is the identity transform.
      */
     public static int[] blueprintToModel(int bpDx, int bpDy, int bpDz) {
-        return new int[]{-bpDx, bpDy, -bpDz};
+        return new int[]{bpDx, bpDy, bpDz};
     }
 
     /**
-     * Convert model-space offset (NORTH default) to blueprint-space offset (SOUTH default).
-     * Same operation as blueprintToModel (self-inverse).
+     * Convert model-space offset to blueprint-space offset.
+     * Both use NORTH as default facing, so this is the identity transform.
      */
     public static int[] modelToBlueprint(int modelDx, int modelDy, int modelDz) {
-        return new int[]{-modelDx, modelDy, -modelDz};
+        return new int[]{modelDx, modelDy, modelDz};
     }
 
     // ==================== Shape Lookup ====================

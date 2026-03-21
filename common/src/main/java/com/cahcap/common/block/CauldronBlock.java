@@ -72,11 +72,6 @@ public class CauldronBlock extends MultiblockPartBlock {
         return SHAPES.get(facing, offset, mirrored);
     }
 
-    @Override
-    protected ItemStack getDefaultDropItem() {
-        return new ItemStack(ModRegistries.LUMISTONE_BRICKS.get());
-    }
-
     @SuppressWarnings("unchecked")
     @Nullable
     @Override

@@ -46,6 +46,7 @@ public class VoxelShapeProvider implements DataProvider {
         futures.add(processModel(cache, "herb_cabinet"));
         futures.add(processModel(cache, "herb_vault"));
         futures.add(processModel(cache, "kiln"));
+        futures.add(processModel(cache, "obelisk"));
         futures.add(processModel(cache, "workbench"));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));

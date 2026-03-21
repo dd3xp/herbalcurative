@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 /**
  * Kiln Multiblock Structure (3x3x3)
  * <p>
- * Layout (default facing SOUTH, front = +Z):
+ * Layout (default facing NORTH, front = -Z):
  * <pre>
  * Layer y=-1 (bottom):
  *   [LumiBricks][LumiBricks]  [LumiBricks]
@@ -17,9 +17,9 @@ import net.minecraft.world.level.block.state.properties.SlabType;
  *   [LumiBricks][LumiBricks]  [LumiBricks]
  *
  * Layer y=0 (master layer):
- *   [LumiBricks][LumiBricks]        [LumiBricks]
+ *   [LumiBricks][Slab(top, TRIGGER)][LumiBricks]   ← front (z=0)
  *   [LumiBricks][Pyrisage (MASTER)] [LumiBricks]
- *   [LumiBricks][Slab(top, TRIGGER)][LumiBricks]
+ *   [LumiBricks][LumiBricks]        [LumiBricks]   ← back (z=2)
  *
  * Layer y=1 (top):
  *   [Slab(bottom)][LumiBricks][Slab(bottom)]
@@ -36,9 +36,9 @@ public class MultiblockKiln {
                     "BPB",
                     "BBB")
             .layer(0,
-                    "BBB",
+                    "BTB",
                     "B#B",
-                    "BTB")
+                    "BBB")
             .layer(1,
                     "SbS",
                     "SbS",

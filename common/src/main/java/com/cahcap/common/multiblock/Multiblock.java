@@ -30,7 +30,8 @@ import java.util.function.Supplier;
  * One unified algorithm handles trigger detection, structure validation, facing detection,
  * and assembly for all multiblock types.
  * <p>
- * Blueprints are defined with a default facing of SOUTH (+Z = front).
+ * Blueprints are defined with a default facing of NORTH (-Z = front).
+ * This matches Blockbench's model coordinate system (y=0 = NORTH).
  * Rotation is handled automatically during validation and assembly.
  * <p>
  * Assembly order: setBlock with flags 0 first (no client notify), configure BlockEntities,
@@ -102,7 +103,9 @@ public class Multiblock {
     /**
      * Unified assembly entry point.
      * Tries all trigger positions × all rotations, validates, picks the best match
-     * (preferring the player's facing direction for symmetric structures), and assembles.
+     * For symmetric structures with triggers on multiple sides, the facing is
+     * determined by which trigger block was clicked (the clicked side becomes the front).
+     * Falls back to player facing for center triggers with no horizontal offset.
      *
      * @param level      The world
      * @param clickedPos The position the player clicked
@@ -114,7 +117,8 @@ public class Multiblock {
                                @Nullable Direction side, Player player) {
         if (level.isClientSide) return false;
 
-        Direction preferredFacing = (side != null && side.getAxis() != Direction.Axis.Y)
+        // Fallback for triggers at the center (no horizontal offset from master)
+        Direction playerFacing = (side != null && side.getAxis() != Direction.Axis.Y)
                 ? side : player.getDirection().getOpposite();
 
         // Collect trigger entries
@@ -144,7 +148,15 @@ public class Multiblock {
 
                     if (validateStructure(level, masterPos, facing, mirrored)) {
                         Match match = new Match(masterPos, facing, mirrored);
-                        if (facing == preferredFacing && !mirrored && preferredMatch == null) {
+
+                        // Determine preferred facing from trigger position relative to master
+                        int dx = clickedPos.getX() - masterPos.getX();
+                        int dz = clickedPos.getZ() - masterPos.getZ();
+                        Direction preferred = (dx != 0 || dz != 0)
+                                ? Direction.getNearest(dx, 0, dz)
+                                : playerFacing;
+
+                        if (facing == preferred && !mirrored && preferredMatch == null) {
                             preferredMatch = match;
                         }
                         if (anyMatch == null) {
@@ -237,10 +249,10 @@ public class Multiblock {
     private static BlockPos rotateOffset(BlockPos offset, Direction facing) {
         int x = offset.getX(), y = offset.getY(), z = offset.getZ();
         return switch (facing) {
-            case SOUTH -> offset;
-            case NORTH -> new BlockPos(-x, y, -z);
-            case EAST  -> new BlockPos(z, y, -x);
-            case WEST  -> new BlockPos(-z, y, x);
+            case NORTH -> offset;
+            case SOUTH -> new BlockPos(-x, y, -z);
+            case EAST  -> new BlockPos(-z, y, x);
+            case WEST  -> new BlockPos(z, y, -x);
             default    -> offset;
         };
     }
@@ -266,7 +278,7 @@ public class Multiblock {
          * Define a layer of the structure.
          * Each string is a row along the Z axis (first row = min Z).
          * Each character in a row represents the X axis (first char = min X).
-         * The blueprint uses default facing SOUTH (+Z = front).
+         * The blueprint uses default facing NORTH (-Z = front).
          *
          * @param y    the Y level (relative, e.g. -1, 0, 1)
          * @param rows the pattern rows for this layer

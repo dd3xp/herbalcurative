@@ -117,6 +117,9 @@ public class ModBlockLootProvider extends LootTableProvider {
 
             // Herb Vault - drops handled by block's getDrops method
             this.add(ModBlocks.HERB_VAULT.get(), noDrop());
+
+            // Obelisk - drops handled by block's getDrops method
+            this.add(ModBlocks.OBELISK.get(), noDrop());
             
             // ==================== Potted plants (drop flower pot + plant) ====================
             

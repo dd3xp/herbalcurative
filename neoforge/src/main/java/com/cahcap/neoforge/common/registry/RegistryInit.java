@@ -38,6 +38,7 @@ public class RegistryInit {
         ModRegistries.INCENSE_BURNER = () -> ModBlocks.INCENSE_BURNER.get();
         ModRegistries.KILN = () -> ModBlocks.KILN.get();
         ModRegistries.HERB_VAULT = () -> ModBlocks.HERB_VAULT.get();
+        ModRegistries.OBELISK = () -> ModBlocks.OBELISK.get();
         ModRegistries.RED_CHERRY_FENCE = () -> ModBlocks.RED_CHERRY_FENCE.get();
         ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
         ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
@@ -93,6 +94,7 @@ public class RegistryInit {
         ModRegistries.KILN_ITEM = () -> ModItems.KILN.get();
         ModRegistries.HERB_VAULT_ITEM = () -> ModItems.HERB_VAULT.get();
         ModRegistries.INCENSE_BURNER_ITEM = () -> ModItems.INCENSE_BURNER.get();
+        ModRegistries.OBELISK_ITEM = () -> ModItems.OBELISK.get();
         ModRegistries.WITHER_SKELETON_POWDER = () -> ModItems.WITHER_SKELETON_POWDER.get();
         
         // Armor Materials
@@ -107,6 +109,7 @@ public class RegistryInit {
         ModRegistries.HERB_POT_BE = () -> ModBlockEntities.HERB_POT.get();
         ModRegistries.INCENSE_BURNER_BE = () -> ModBlockEntities.INCENSE_BURNER.get();
         ModRegistries.KILN_BE = () -> ModBlockEntities.KILN.get();
+        ModRegistries.OBELISK_BE = () -> ModBlockEntities.OBELISK.get();
         ModRegistries.HERB_VAULT_BE = () -> ModBlockEntities.HERB_VAULT.get();
 
         // Entity Types

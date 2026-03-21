@@ -8,6 +8,7 @@ import com.cahcap.common.recipe.HerbPotGrowingRecipe;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
 import com.cahcap.common.recipe.KilnCatalystRecipe;
 import com.cahcap.common.recipe.KilnSmeltingRecipe;
+import com.cahcap.common.recipe.ObeliskOfferingRecipe;
 import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
 import net.minecraft.core.registries.Registries;
@@ -89,6 +90,14 @@ public class ModRecipeTypes {
                 }
             });
 
+    public static final DeferredHolder<RecipeType<?>, RecipeType<ObeliskOfferingRecipe>> OBELISK_OFFERING =
+            RECIPE_TYPES.register("obelisk_offering", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return ResourceLocation.fromNamespaceAndPath(HerbalCurativeCommon.MOD_ID, "obelisk_offering").toString();
+                }
+            });
+
     public static void register(IEventBus modEventBus) {
         RECIPE_TYPES.register(modEventBus);
     }
@@ -106,5 +115,6 @@ public class ModRecipeTypes {
         ModRegistries.INCENSE_BURNING_RECIPE_TYPE = INCENSE_BURNING;
         ModRegistries.KILN_SMELTING_RECIPE_TYPE = KILN_SMELTING;
         ModRegistries.KILN_CATALYST_RECIPE_TYPE = KILN_CATALYST;
+        ModRegistries.OBELISK_OFFERING_RECIPE_TYPE = OBELISK_OFFERING;
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 /**
  * Cauldron Multiblock Structure (3x3x2)
  * <p>
- * Layout (default facing SOUTH):
+ * Layout (default facing NORTH):
  * <pre>
  * Layer y=0 (master layer):
  *   [LumiBricks]     [LumiBrickSlab(top)] [LumiBricks]

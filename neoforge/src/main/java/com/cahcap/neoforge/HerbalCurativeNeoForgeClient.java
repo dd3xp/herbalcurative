@@ -9,6 +9,7 @@ import com.cahcap.neoforge.client.renderer.HerbPotRenderer;
 import com.cahcap.neoforge.client.renderer.HerbVaultRenderer;
 import com.cahcap.neoforge.client.renderer.KilnRenderer;
 import com.cahcap.client.renderer.IncenseBurnerRenderer;
+import com.cahcap.client.renderer.ObeliskRenderer;
 import com.cahcap.client.renderer.RedCherryShelfRenderer;
 import com.cahcap.neoforge.client.renderer.WorkbenchRenderer;
 import com.cahcap.neoforge.client.layer.HerbBoxPlayerLayer;
@@ -176,6 +177,7 @@ public class HerbalCurativeNeoForgeClient {
             event.registerBlockEntityRenderer(ModBlockEntities.INCENSE_BURNER.get(), IncenseBurnerRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.KILN.get(), KilnRenderer::new);
             event.registerBlockEntityRenderer(ModBlockEntities.HERB_VAULT.get(), HerbVaultRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.OBELISK.get(), ObeliskRenderer::new);
 
             // Entity renderers
             event.registerEntityRenderer(ModEntityTypes.FLOWWEAVE_PROJECTILE.get(), FlowweaveProjectileRenderer::new);

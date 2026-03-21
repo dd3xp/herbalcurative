@@ -50,6 +50,7 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
         buildCauldronRecipes(output);
         buildHerbPotGrowingRecipes(output);
         buildIncenseBurningRecipes(output);
+        buildObeliskOfferingRecipes(output);
         buildKilnCatalystRecipes(output);
         
         // Get registries for enchantments
@@ -505,7 +506,19 @@ public class ModRecipeProvider extends net.minecraft.data.recipes.RecipeProvider
                 .burnTime(160)  // 8 seconds
                 .save(output, "wither_skeleton");
     }
-    
+
+    /**
+     * Obelisk offering recipes.
+     * Define what items can be offered at the obelisk to summon mobs.
+     */
+    private void buildObeliskOfferingRecipes(RecipeOutput output) {
+        ObeliskOfferingRecipeBuilder.create("minecraft:villager")
+                .ingredient(Items.EMERALD_BLOCK)
+                .waitTicks(100)
+                .spawnDistance(1)
+                .save(output, "villager");
+    }
+
     /**
      * Kiln catalyst recipes.
      * Define which items act as catalysts in the kiln, along with their

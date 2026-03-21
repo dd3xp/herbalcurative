@@ -8,14 +8,14 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 /**
  * Herb Vault Multiblock Structure (3x3x3)
  * <p>
- * Layout (default facing SOUTH, front = +Z):
+ * Layout (default facing NORTH, front = -Z):
  * <pre>
  * Layer y=-1 (bottom): all Lumistone Bricks
  *
  * Layer y=0 (master layer):
- *   [RedCherryLog] [LumiBrickWall]       [RedCherryLog]
+ *   [RedCherryLog] [RedCherryFence (TRIGGER)][RedCherryLog]   ← front (z=0)
  *   [LumiBrickWall][MagicAlloyBlock (MASTER)][LumiBrickWall]
- *   [RedCherryLog] [RedCherryFence (TRIGGER)][RedCherryLog]
+ *   [RedCherryLog] [LumiBrickWall]           [RedCherryLog]   ← back (z=2)
  *
  * Layer y=1 (top):
  *   [Slab(bottom)][Slab(bottom)]  [Slab(bottom)]
@@ -32,9 +32,9 @@ public class MultiblockHerbVault {
                     "BBB",
                     "BBB")
             .layer(0,
-                    "LWL",
+                    "LFL",
                     "W#W",
-                    "LFL")
+                    "LWL")
             .layer(1,
                     "SSS",
                     "SBS",

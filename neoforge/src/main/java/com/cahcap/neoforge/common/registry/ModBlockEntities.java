@@ -8,6 +8,7 @@ import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.blockentity.KilnBlockEntity;
+import com.cahcap.common.blockentity.ObeliskBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -72,6 +73,12 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("herb_vault", () -> BlockEntityType.Builder.of(
                     HerbVaultBlockEntity::new,
                     ModBlocks.HERB_VAULT.get()
+            ).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ObeliskBlockEntity>> OBELISK =
+            BLOCK_ENTITIES.register("obelisk", () -> BlockEntityType.Builder.of(
+                    ObeliskBlockEntity::new,
+                    ModBlocks.OBELISK.get()
             ).build(null));
 }
 

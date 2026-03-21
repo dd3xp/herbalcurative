@@ -73,11 +73,6 @@ public class KilnBlock extends MultiblockPartBlock {
         return SHAPES.get(facing, offset, mirrored);
     }
 
-    @Override
-    protected ItemStack getDefaultDropItem() {
-        return new ItemStack(net.minecraft.world.level.block.Blocks.STONE_BRICKS);
-    }
-
     @SuppressWarnings("unchecked")
     @Nullable
     @Override

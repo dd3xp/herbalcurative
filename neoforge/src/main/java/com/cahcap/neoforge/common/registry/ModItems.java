@@ -166,6 +166,9 @@ public class ModItems {
 
     // Herb Vault display item (for JADE/WTHIT, not placeable)
     public static final DeferredItem<Item> HERB_VAULT = ITEMS.registerSimpleItem("herb_vault");
+
+    // Obelisk display item (for JADE/WTHIT, not placeable)
+    public static final DeferredItem<Item> OBELISK = ITEMS.registerSimpleItem("obelisk");
     
     // Herb Pot - placeable cultivation block
     public static final DeferredItem<BlockItem> HERB_POT = ITEMS.register("herb_pot",

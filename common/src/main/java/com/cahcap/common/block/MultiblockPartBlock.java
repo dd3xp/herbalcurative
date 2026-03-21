@@ -157,7 +157,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
                 return new ItemStack(original.getBlock());
             }
         }
-        return getDefaultDropItem();
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -172,16 +172,11 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
                 if (original != null && !original.isAir()) {
                     return Collections.singletonList(new ItemStack(original.getBlock()));
                 }
+                return Collections.emptyList();
             }
         }
-        return Collections.singletonList(getDefaultDropItem());
+        return Collections.emptyList();
     }
-
-    /**
-     * Fallback item when the block is not formed or has no stored original state.
-     * Override in subclasses to return the appropriate construction material.
-     */
-    protected abstract ItemStack getDefaultDropItem();
 
     // ==================== Block Destruction ====================
 

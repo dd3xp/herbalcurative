@@ -107,7 +107,8 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.LUMISTONE_WALL.get(),
             ModBlocks.LUMISTONE_PRESSURE_PLATE.get(),
             ModBlocks.LUMISTONE_BUTTON.get(),
-            ModBlocks.HERB_VAULT.get()
+            ModBlocks.HERB_VAULT.get(),
+            ModBlocks.OBELISK.get()
         );
 
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)

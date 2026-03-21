@@ -6,7 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 /**
  * Herb Cabinet Multiblock Structure (3x2, wall-mounted)
  * <p>
- * Layout (default facing SOUTH, viewed from front):
+ * Layout (default facing NORTH, viewed from front):
  * <pre>
  * Layer y=1: [Log][Log][Log]
  * Layer y=0: [Log][Log (MASTER/TRIGGER)][Log]

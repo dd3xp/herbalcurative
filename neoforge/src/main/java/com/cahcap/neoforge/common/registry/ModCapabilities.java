@@ -11,8 +11,10 @@ import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.blockentity.KilnBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
+import com.cahcap.common.blockentity.ObeliskBlockEntity;
 import com.cahcap.neoforge.common.handler.CauldronItemHandler;
 import com.cahcap.neoforge.common.handler.IncenseBurnerItemHandler;
+import com.cahcap.neoforge.common.handler.ObeliskItemHandler;
 import com.cahcap.neoforge.common.handler.HerbVaultItemHandler;
 import com.cahcap.neoforge.common.handler.KilnItemHandler;
 import com.cahcap.neoforge.common.handler.HerbBasketItemHandler;
@@ -144,6 +146,23 @@ public class ModCapabilities {
                 if (blockEntity instanceof HerbVaultBlockEntity vault) {
                     if (vault.isFormed()) {
                         return new HerbVaultItemHandler(vault);
+                    }
+                }
+                return null;
+            }
+        );
+
+        // Register IItemHandler capability for ObeliskBlockEntity
+        // Input only (no output) — hoppers/pipes can insert offering items
+        event.registerBlockEntity(
+            Capabilities.ItemHandler.BLOCK,
+            ModBlockEntities.OBELISK.get(),
+            (blockEntity, context) -> {
+                if (blockEntity instanceof ObeliskBlockEntity obelisk && obelisk.isFormed()) {
+                    // Delegate to master for capability
+                    ObeliskBlockEntity master = obelisk.getMaster();
+                    if (master != null) {
+                        return new ObeliskItemHandler(master);
                     }
                 }
                 return null;

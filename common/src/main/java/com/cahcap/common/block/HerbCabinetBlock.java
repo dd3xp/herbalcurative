@@ -68,11 +68,6 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
         return SHAPES.get(facing, offset, mirrored);
     }
 
-    @Override
-    protected ItemStack getDefaultDropItem() {
-        return new ItemStack(ModRegistries.RED_CHERRY_LOG.get());
-    }
-
     // ==================== Grid Cell Targeting ====================
 
     /**
