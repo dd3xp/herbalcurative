@@ -302,9 +302,7 @@ public class ModBlocks {
             () -> new HerbCabinetBlock(Multiblock.addInteriorSpaceProperties(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F)
-                    .sound(SoundType.WOOD)
-                    .noOcclusion()
-                    .forceSolidOn())));
+                    .sound(SoundType.WOOD))));
     
     public static final DeferredBlock<HerbBasketBlock> HERB_BASKET = BLOCKS.register("herb_basket",
             () -> new HerbBasketBlock(BlockBehaviour.Properties.of()
@@ -334,9 +332,7 @@ public class ModBlocks {
                     .mapColor(MapColor.STONE)
                     .strength(2.0F, 6.0F)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops()
-                    .noOcclusion()
-                    .forceSolidOn())
+                    .requiresCorrectToolForDrops())
 ));
     
     public static final DeferredBlock<com.cahcap.common.block.HerbPotBlock> HERB_POT = BLOCKS.register("herb_pot",
@@ -360,9 +356,7 @@ public class ModBlocks {
                     .mapColor(MapColor.STONE)
                     .strength(2.0F, 6.0F)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops()
-                    .noOcclusion()
-                    .forceSolidOn())
+                    .requiresCorrectToolForDrops())
                     .lightLevel(state -> state.getValue(com.cahcap.common.block.KilnBlock.LIT) ? 15 : 0)));
 
     public static final DeferredBlock<com.cahcap.neoforge.common.block.HerbVaultBlock> HERB_VAULT = BLOCKS.register("herb_vault",
@@ -370,9 +364,7 @@ public class ModBlocks {
                     .mapColor(MapColor.STONE)
                     .strength(2.0F, 6.0F)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops()
-                    .noOcclusion()
-                    .forceSolidOn())
+                    .requiresCorrectToolForDrops())
 ));
 
     // ==================== Helper Methods ====================
