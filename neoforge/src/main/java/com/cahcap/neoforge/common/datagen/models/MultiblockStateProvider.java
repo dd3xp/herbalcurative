@@ -286,7 +286,7 @@ public class MultiblockStateProvider implements DataProvider {
         if (occupiedPositions.contains(sourceCheck)) {
             modelRef = HerbalCurativeCommon.MOD_ID + ":block/" + partName;
         } else {
-            modelRef = HerbalCurativeCommon.MOD_ID + ":block/" + config.blockName + "_invisible";
+            modelRef = HerbalCurativeCommon.MOD_ID + ":block/invisible";
         }
 
         JsonObject variant = new JsonObject();

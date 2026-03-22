@@ -73,7 +73,7 @@ public class HerbBasketBlockEntity extends BlockEntity {
     public void bindHerb(Item herb) {
         if (this.boundHerb == null && HerbCabinetBlockEntity.isHerb(herb)) {
             this.boundHerb = herb;
-            updateBlockState();
+
             setChanged();
             syncToClient();
         }
@@ -86,7 +86,6 @@ public class HerbBasketBlockEntity extends BlockEntity {
     public void unbindHerb() {
         this.boundHerb = null;
         this.herbCount = 0;
-        updateBlockState();
         setChanged();
         syncToClient();
     }
@@ -106,9 +105,6 @@ public class HerbBasketBlockEntity extends BlockEntity {
         if (canAdd > 0) {
             boolean wasEmpty = herbCount == 0;
             herbCount += canAdd;
-            if (wasEmpty) {
-                updateBlockState(); // Update texture when going from 0 to having herbs
-            }
             setChanged();
             syncToClient();
         }
@@ -126,9 +122,6 @@ public class HerbBasketBlockEntity extends BlockEntity {
         
         if (canRemove > 0) {
             herbCount -= canRemove;
-            if (herbCount == 0) {
-                updateBlockState(); // Update texture when becoming empty
-            }
             setChanged();
             syncToClient();
         }
@@ -216,28 +209,4 @@ public class HerbBasketBlockEntity extends BlockEntity {
         }
     }
     
-    /**
-     * Update the block state to reflect the current bound herb type.
-     * Only shows herb texture when both bound AND has herbs (count > 0).
-     */
-    private void updateBlockState() {
-        if (level != null && !level.isClientSide) {
-            BlockState currentState = level.getBlockState(worldPosition);
-            // Show herb texture only when bound AND has herbs
-            int herbType = (boundHerb != null && herbCount > 0) ? HerbBasketBlock.getHerbTypeIndex(boundHerb) : 0;
-            BlockState newState = currentState.setValue(HerbBasketBlock.HERB_TYPE, herbType);
-            if (currentState != newState) {
-                level.setBlock(worldPosition, newState, 3);
-            }
-        }
-    }
-    
-    @Override
-    public void setLevel(net.minecraft.world.level.Level level) {
-        super.setLevel(level);
-        // Update block state when level is set (e.g., after loading)
-        if (level != null && !level.isClientSide) {
-            updateBlockState();
-        }
-    }
 }
