@@ -98,10 +98,6 @@ public class ObeliskBlock extends MultiblockPartBlock {
         if (!state.getValue(FORMED)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        if (stack.is(ModRegistries.FLOWWEAVE_RING.get())) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-
         if (stack.isEmpty()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -141,8 +137,8 @@ public class ObeliskBlock extends MultiblockPartBlock {
                     stack.shrink(1);
                 }
             }
-            level.playSound(null, master.getBlockPos(), SoundEvents.ENCHANTMENT_TABLE_USE,
-                    SoundSource.BLOCKS, 1.0f, 1.0f);
+            level.playSound(null, master.getBlockPos(), SoundEvents.ITEM_PICKUP,
+                    SoundSource.BLOCKS, 0.5f, 1.2f);
             return ItemInteractionResult.SUCCESS;
         }
 

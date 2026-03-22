@@ -7,6 +7,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -206,6 +208,8 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
                         spawnPos,
                         MobSpawnType.MOB_SUMMONED
                 );
+                level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE,
+                        SoundSource.BLOCKS, 1.0f, 1.0f);
             }
 
             // Clear offering state
