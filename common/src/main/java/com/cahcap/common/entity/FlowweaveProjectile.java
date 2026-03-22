@@ -64,8 +64,9 @@ public class FlowweaveProjectile extends ThrowableProjectile {
     // TNT explosion radius (approximately 4 blocks)
     private static final double EXPLOSION_RADIUS = 4.0;
     
-    // Maximum flight distance (~100 blocks at speed 3.0)
-    private static final int MAX_FLIGHT_TICKS = 35;
+    // Maximum flight distance (48 blocks at speed 3.0 = 16 ticks)
+    private static final int MAX_FLIGHT_TICKS = 16;
+    private static final double PARTICLE_VISIBLE_RANGE = 64.0;
     private int flightTicks = 0;
 
     public FlowweaveProjectile(EntityType<? extends FlowweaveProjectile> type, Level level) {
@@ -142,32 +143,29 @@ public class FlowweaveProjectile extends ThrowableProjectile {
             return;
         }
         
-        // Spawn dark green shockwave trail particles
+        // Spawn trail particles (client-side, always visible within tracking range)
         if (level().isClientSide) {
-            // Dark green color for the shockwave
             Vector3f greenColor = new Vector3f(0.1F, 0.5F, 0.15F);
             DustParticleOptions greenDust = new DustParticleOptions(greenColor, 1.5F);
-            
-            // Spawn multiple particles for shockwave effect
+
             for (int i = 0; i < 3; i++) {
                 double offsetX = (level().random.nextDouble() - 0.5) * 0.3;
                 double offsetY = (level().random.nextDouble() - 0.5) * 0.3;
                 double offsetZ = (level().random.nextDouble() - 0.5) * 0.3;
-                
-                level().addParticle(
+
+                level().addAlwaysVisibleParticle(
                         greenDust,
-                        this.getX() + offsetX, 
-                        this.getY() + offsetY, 
+                        this.getX() + offsetX,
+                        this.getY() + offsetY,
                         this.getZ() + offsetZ,
                         0, 0, 0
                 );
             }
-            
-            // Add some smaller trailing particles
+
             DustParticleOptions smallGreenDust = new DustParticleOptions(greenColor, 0.8F);
-            level().addParticle(
+            level().addAlwaysVisibleParticle(
                     smallGreenDust,
-                    this.xo, this.yo, this.zo,  // Previous position for trail
+                    this.xo, this.yo, this.zo,
                     0, 0, 0
             );
         }
@@ -215,36 +213,38 @@ public class FlowweaveProjectile extends ThrowableProjectile {
         level.playSound(null, pos.x, pos.y, pos.z,
                 SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
         
-        // Spawn explosion particles (server side - will be synced to clients)
+        // Spawn explosion particles — send to all players within visible range
         if (level instanceof ServerLevel serverLevel) {
-            // Dark green dust particles for shockwave explosion
             Vector3f greenColor = new Vector3f(0.1F, 0.5F, 0.15F);
             DustParticleOptions greenDust = new DustParticleOptions(greenColor, 2.0F);
-            
-            // Spawn green shockwave particles in a sphere pattern
-            for (int i = 0; i < 60; i++) {
-                double angle1 = level.random.nextDouble() * Math.PI * 2;
-                double angle2 = level.random.nextDouble() * Math.PI;
-                double radius = EXPLOSION_RADIUS * (0.5 + level.random.nextDouble() * 0.5);
-                
-                double offsetX = Math.sin(angle2) * Math.cos(angle1) * radius;
-                double offsetY = Math.cos(angle2) * radius;
-                double offsetZ = Math.sin(angle2) * Math.sin(angle1) * radius;
-                
-                serverLevel.sendParticles(greenDust,
-                        pos.x + offsetX, pos.y + offsetY, pos.z + offsetZ,
-                        1, 0, 0, 0, 0);
-            }
-            
-            // Add some explosion embers for extra effect
-            for (int i = 0; i < 10; i++) {
-                double offsetX = (level.random.nextDouble() - 0.5) * EXPLOSION_RADIUS;
-                double offsetY = (level.random.nextDouble() - 0.5) * EXPLOSION_RADIUS;
-                double offsetZ = (level.random.nextDouble() - 0.5) * EXPLOSION_RADIUS;
-                
-                serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER,
-                        pos.x + offsetX, pos.y + offsetY, pos.z + offsetZ,
-                        1, 0, 0, 0, 0);
+
+            double rangeSq = PARTICLE_VISIBLE_RANGE * PARTICLE_VISIBLE_RANGE;
+            for (net.minecraft.server.level.ServerPlayer player : serverLevel.players()) {
+                if (player.distanceToSqr(pos.x, pos.y, pos.z) > rangeSq) continue;
+
+                for (int i = 0; i < 60; i++) {
+                    double angle1 = level.random.nextDouble() * Math.PI * 2;
+                    double angle2 = level.random.nextDouble() * Math.PI;
+                    double radius = EXPLOSION_RADIUS * (0.5 + level.random.nextDouble() * 0.5);
+
+                    double ox = Math.sin(angle2) * Math.cos(angle1) * radius;
+                    double oy = Math.cos(angle2) * radius;
+                    double oz = Math.sin(angle2) * Math.sin(angle1) * radius;
+
+                    serverLevel.sendParticles(player, greenDust, true,
+                            pos.x + ox, pos.y + oy, pos.z + oz,
+                            1, 0, 0, 0, 0);
+                }
+
+                for (int i = 0; i < 10; i++) {
+                    double ox = (level.random.nextDouble() - 0.5) * EXPLOSION_RADIUS;
+                    double oy = (level.random.nextDouble() - 0.5) * EXPLOSION_RADIUS;
+                    double oz = (level.random.nextDouble() - 0.5) * EXPLOSION_RADIUS;
+
+                    serverLevel.sendParticles(player, ParticleTypes.EXPLOSION_EMITTER, true,
+                            pos.x + ox, pos.y + oy, pos.z + oz,
+                            1, 0, 0, 0, 0);
+                }
             }
         }
     }

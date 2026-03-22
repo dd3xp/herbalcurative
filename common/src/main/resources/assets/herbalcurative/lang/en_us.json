@@ -92,6 +92,7 @@
   "block.herbalcurative.herb_pot": "Herb Pot",
   "block.herbalcurative.incense_burner": "Incense Burner",
   "block.herbalcurative.kiln": "Kiln",
+  "block.herbalcurative.obelisk": "Obelisk",
   "tooltip.herbalcurative.kiln.input": "Input",
   "tooltip.herbalcurative.kiln.catalyst": "Catalyst",
   "tooltip.herbalcurative.kiln.output": "Output",
@@ -107,6 +108,7 @@
   "item.herbalcurative.forge_hammer": "Forge Hammer",
   "item.herbalcurative.pot": "Pot",
   "item.herbalcurative.cauldron": "Cauldron",
+  "item.herbalcurative.obelisk": "Obelisk",
   
   "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d"
 }

@@ -115,7 +115,7 @@ public class FlowweaveRingItem extends Item {
     
     // Projectile settings
     public static final float PROJECTILE_SPEED = 3.0f;  // 3 blocks per tick = fast wave
-    public static final int MAX_PROJECTILE_DISTANCE = 64;
+    public static final int MAX_PROJECTILE_DISTANCE = 48;
     
     public FlowweaveRingItem(Properties properties) {
         super(properties);
