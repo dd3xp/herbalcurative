@@ -126,6 +126,9 @@ public class HerbPotItemHandler implements IItemHandler {
         if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) {
             return stack;
         }
+        if (!pot.getAcceptedHerbs().contains(stack.getItem())) {
+            return stack;
+        }
         
         Map<Item, Integer> herbs = pot.getHerbs();
         Item herbType = stack.getItem();
@@ -181,9 +184,9 @@ public class HerbPotItemHandler implements IItemHandler {
         
         int herbIndex = slot - HERB_SLOT_START;
         if (herbIndex >= 0 && herbIndex < MAX_HERB_SLOTS) {
-            return HerbCabinetBlockEntity.isHerb(stack.getItem());
+            return pot.getAcceptedHerbs().contains(stack.getItem());
         }
-        
+
         return false;
     }
 }

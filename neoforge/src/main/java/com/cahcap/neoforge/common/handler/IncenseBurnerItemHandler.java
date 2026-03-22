@@ -95,6 +95,9 @@ public class IncenseBurnerItemHandler implements IItemHandler {
         if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) {
             return stack;
         }
+        if (!burner.getAcceptedHerbs().contains(stack.getItem())) {
+            return stack;
+        }
 
         Map<Item, Integer> herbs = burner.getHerbs();
         Item herbType = stack.getItem();
@@ -146,7 +149,7 @@ public class IncenseBurnerItemHandler implements IItemHandler {
 
         int herbIndex = slot - HERB_SLOT_START;
         if (herbIndex >= 0 && herbIndex < MAX_HERB_SLOTS) {
-            return HerbCabinetBlockEntity.isHerb(stack.getItem());
+            return burner.getAcceptedHerbs().contains(stack.getItem());
         }
 
         return false;

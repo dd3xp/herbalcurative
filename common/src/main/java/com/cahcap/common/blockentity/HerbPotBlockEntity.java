@@ -49,6 +49,8 @@ public class HerbPotBlockEntity extends BlockEntity {
     private ItemStack soilSlot = ItemStack.EMPTY;
     private ItemStack seedlingSlot = ItemStack.EMPTY;
     private final Map<Item, Integer> herbSlots = new LinkedHashMap<>();
+
+    private Set<Item> cachedAcceptedHerbs = null;
     
     private boolean isGrowing = false;
     private int growthTicks = 0;
@@ -119,6 +121,57 @@ public class HerbPotBlockEntity extends BlockEntity {
         return (float) growthTicks / totalGrowthTicks;
     }
     
+    /**
+     * Returns the set of herb items accepted by recipes matching the current seedling/soil.
+     * Empty set if no seedling is present.
+     */
+    public Set<Item> getAcceptedHerbs() {
+        if (cachedAcceptedHerbs != null) return cachedAcceptedHerbs;
+        if (level == null || seedlingSlot.isEmpty()) {
+            cachedAcceptedHerbs = Collections.emptySet();
+            return cachedAcceptedHerbs;
+        }
+        Set<Item> accepted = new HashSet<>();
+        for (RecipeHolder<HerbPotGrowingRecipe> holder : level.getRecipeManager()
+                .getAllRecipesFor(ModRegistries.HERB_POT_GROWING_RECIPE_TYPE.get())) {
+            HerbPotGrowingRecipe recipe = holder.value();
+            if (!recipe.getSeedling().test(seedlingSlot)) continue;
+            if (!recipe.getSoil().isEmpty() && !soilSlot.isEmpty() && !recipe.getSoil().test(soilSlot)) continue;
+            for (var req : recipe.getHerbRequirements()) {
+                accepted.add(req.getKey());
+            }
+        }
+        cachedAcceptedHerbs = accepted;
+        return accepted;
+    }
+
+    private void invalidateHerbCache() {
+        cachedAcceptedHerbs = null;
+    }
+
+    private void ejectInvalidHerbs() {
+        if (level == null || level.isClientSide) return;
+        Set<Item> accepted = getAcceptedHerbs();
+        Iterator<Map.Entry<Item, Integer>> it = herbSlots.entrySet().iterator();
+        boolean changed = false;
+        while (it.hasNext()) {
+            Map.Entry<Item, Integer> entry = it.next();
+            if (!accepted.contains(entry.getKey())) {
+                ItemStack ejected = new ItemStack(entry.getKey(), entry.getValue());
+                ItemEntity itemEntity = new ItemEntity(level,
+                        worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5,
+                        ejected);
+                level.addFreshEntity(itemEntity);
+                it.remove();
+                changed = true;
+            }
+        }
+        if (changed) {
+            setChanged();
+            syncToClient();
+        }
+    }
+
     public boolean hasSoil() {
         return !soilSlot.isEmpty();
     }
@@ -182,20 +235,23 @@ public class HerbPotBlockEntity extends BlockEntity {
     
     public boolean addSeedling(ItemStack stack, boolean isCreative) {
         if (!canAddSeedling(stack)) return false;
-        
+
         seedlingSlot = stack.copyWithCount(1);
         if (!isCreative) {
             stack.shrink(1);
         }
+        invalidateHerbCache();
         setChanged();
         syncToClient();
+        ejectInvalidHerbs();
         checkAndStartGrowth();
         return true;
     }
     
     public int addHerb(ItemStack stack, boolean isCreative) {
         if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) return 0;
-        
+        if (!getAcceptedHerbs().contains(stack.getItem())) return 0;
+
         Item herbType = stack.getItem();
         int current = herbSlots.getOrDefault(herbType, 0);
         
@@ -220,20 +276,24 @@ public class HerbPotBlockEntity extends BlockEntity {
             ItemStack removed = seedlingSlot.copy();
             seedlingSlot = ItemStack.EMPTY;
             stopGrowth();
+            invalidateHerbCache();
+            ejectInvalidHerbs();
             setChanged();
             syncToClient();
             return removed;
         }
-        
+
         if (!soilSlot.isEmpty()) {
             ItemStack removed = soilSlot.copy();
             soilSlot = ItemStack.EMPTY;
             stopGrowth();
+            invalidateHerbCache();
+            ejectInvalidHerbs();
             setChanged();
             syncToClient();
             return removed;
         }
-        
+
         return ItemStack.EMPTY;
     }
     

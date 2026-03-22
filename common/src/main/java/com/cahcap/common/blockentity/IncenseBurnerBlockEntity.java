@@ -19,6 +19,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
@@ -58,6 +59,8 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
     
     private ItemStack powderSlot = ItemStack.EMPTY;
     private final Map<Item, Integer> herbSlots = new LinkedHashMap<>();
+
+    private Set<Item> cachedAcceptedHerbs = null;
     
     private boolean isBurning = false;
     private int burnTicks = 0;
@@ -95,6 +98,61 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
         return (float) burnTicks / totalBurnTicks;
     }
     
+    /**
+     * Returns the set of herb items accepted by recipes matching the current powder.
+     * Empty set if no powder is present.
+     */
+    public Set<Item> getAcceptedHerbs() {
+        if (cachedAcceptedHerbs != null) return cachedAcceptedHerbs;
+        if (level == null || powderSlot.isEmpty()) {
+            cachedAcceptedHerbs = Collections.emptySet();
+            return cachedAcceptedHerbs;
+        }
+        if (!(powderSlot.getItem() instanceof IncensePowderItem powder)) {
+            cachedAcceptedHerbs = Collections.emptySet();
+            return cachedAcceptedHerbs;
+        }
+        ResourceLocation entityTypeId = powder.getEntityTypeId();
+        Set<Item> accepted = new HashSet<>();
+        for (RecipeHolder<IncenseBurningRecipe> holder : level.getRecipeManager()
+                .getAllRecipesFor(ModRegistries.INCENSE_BURNING_RECIPE_TYPE.get())) {
+            IncenseBurningRecipe recipe = holder.value();
+            if (!recipe.getEntityType().equals(entityTypeId)) continue;
+            for (var req : recipe.getHerbRequirements()) {
+                accepted.add(req.getKey());
+            }
+        }
+        cachedAcceptedHerbs = accepted;
+        return accepted;
+    }
+
+    private void invalidateHerbCache() {
+        cachedAcceptedHerbs = null;
+    }
+
+    private void ejectInvalidHerbs() {
+        if (level == null || level.isClientSide) return;
+        Set<Item> accepted = getAcceptedHerbs();
+        Iterator<Map.Entry<Item, Integer>> it = herbSlots.entrySet().iterator();
+        boolean changed = false;
+        while (it.hasNext()) {
+            Map.Entry<Item, Integer> entry = it.next();
+            if (!accepted.contains(entry.getKey())) {
+                ItemStack ejected = new ItemStack(entry.getKey(), entry.getValue());
+                ItemEntity itemEntity = new ItemEntity(level,
+                        worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5,
+                        ejected);
+                level.addFreshEntity(itemEntity);
+                it.remove();
+                changed = true;
+            }
+        }
+        if (changed) {
+            setChanged();
+            syncToClient();
+        }
+    }
+
     public boolean hasPowder() {
         return !powderSlot.isEmpty();
     }
@@ -110,20 +168,23 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
     
     public boolean addPowder(ItemStack stack, boolean isCreative) {
         if (!canAddPowder(stack)) return false;
-        
+
         powderSlot = stack.copyWithCount(1);
         if (!isCreative) {
             stack.shrink(1);
         }
+        invalidateHerbCache();
         setChanged();
         syncToClient();
+        ejectInvalidHerbs();
         checkAndStartBurning();
         return true;
     }
     
     public int addHerb(ItemStack stack, boolean isCreative) {
         if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) return 0;
-        
+        if (!getAcceptedHerbs().contains(stack.getItem())) return 0;
+
         Item herbType = stack.getItem();
         int current = herbSlots.getOrDefault(herbType, 0);
         
@@ -147,17 +208,18 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
         if (!powderSlot.isEmpty()) {
             ItemStack removed = powderSlot.copy();
             powderSlot = ItemStack.EMPTY;
-            
-            // Stop burning if in progress
+
             if (isBurning) {
                 stopBurning();
             }
-            
+
+            invalidateHerbCache();
+            ejectInvalidHerbs();
             setChanged();
             syncToClient();
             return removed;
         }
-        
+
         return ItemStack.EMPTY;
     }
     
