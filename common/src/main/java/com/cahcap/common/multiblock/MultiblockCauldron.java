@@ -41,7 +41,7 @@ public class MultiblockCauldron {
             .define('M', state -> state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get())
                     && state.hasProperty(SlabBlock.TYPE)
                     && state.getValue(SlabBlock.TYPE) == SlabType.TOP)
-            .define('.', state -> state.isAir())
+            .define('.', state -> true)
             .master('M')
             .trigger('E')
             .mirrorable()

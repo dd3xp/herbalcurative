@@ -2,7 +2,7 @@ package com.cahcap.neoforge.common.datagen;
 
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.neoforge.common.datagen.loot.ModBlockLootProvider;
-import com.cahcap.neoforge.common.datagen.recipes.ModRecipeProvider;
+import com.cahcap.neoforge.common.datagen.recipes.provider.ModRecipeProvider;
 import com.cahcap.neoforge.common.datagen.tags.ModBlockTagsProvider;
 import com.cahcap.neoforge.common.datagen.tags.ModItemTagsProvider;
 import com.cahcap.neoforge.common.datagen.worldgen.ModWorldGenProvider;
@@ -46,7 +46,7 @@ public class ModDataGenerator {
             // Loot Tables
             generator.addProvider(true, new ModBlockLootProvider(packOutput, lookupProvider));
 
-            // Recipes (vanilla crafting + herbal blending)
+            // Recipes
             generator.addProvider(true, new ModRecipeProvider(packOutput, lookupProvider));
 
             // Tags

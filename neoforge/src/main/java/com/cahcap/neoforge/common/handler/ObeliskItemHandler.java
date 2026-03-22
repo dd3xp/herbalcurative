@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * IItemHandler for the Obelisk multiblock.
- * Single slot, input only — accepts items that match an obelisk offering recipe.
+ * Single slot, input only — accepts any item.
+ * If the item matches a recipe, starts the offering process.
+ * If not, just holds the item on the pedestal.
  * No output — offering spawns mobs.
  */
 public class ObeliskItemHandler implements IItemHandler {
@@ -38,20 +40,19 @@ public class ObeliskItemHandler implements IItemHandler {
             return stack;
         }
 
-        // Already has an offering in progress
-        if (obelisk.isOffering()) {
-            return stack;
-        }
-
-        // Check if the item matches a recipe
-        ObeliskOfferingRecipe recipe = obelisk.findRecipe(stack);
-        if (recipe == null) {
+        // Already has an item on the pedestal
+        if (obelisk.hasItem()) {
             return stack;
         }
 
         if (!simulate) {
             ItemStack toOffer = stack.copyWithCount(1);
-            obelisk.startOfferingFromAutomation(toOffer, recipe);
+            ObeliskOfferingRecipe recipe = obelisk.findRecipe(stack);
+            if (recipe != null) {
+                obelisk.startOfferingFromAutomation(toOffer, recipe);
+            } else {
+                obelisk.placeOfferingItem(toOffer);
+            }
         }
 
         ItemStack remainder = stack.copy();
@@ -61,7 +62,6 @@ public class ObeliskItemHandler implements IItemHandler {
 
     @Override
     public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-        // No extraction — offering spawns mobs, no item output
         return ItemStack.EMPTY;
     }
 
@@ -72,7 +72,6 @@ public class ObeliskItemHandler implements IItemHandler {
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (slot != 0) return false;
-        return obelisk.findRecipe(stack) != null;
+        return slot == 0;
     }
 }

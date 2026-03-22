@@ -42,6 +42,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_FENCE = () -> ModBlocks.RED_CHERRY_FENCE.get();
         ModRegistries.LUMISTONE = () -> ModBlocks.LUMISTONE.get();
         ModRegistries.LUMISTONE_BRICKS = () -> ModBlocks.LUMISTONE_BRICKS.get();
+        ModRegistries.LUMISTONE_SLAB = () -> ModBlocks.LUMISTONE_SLAB.get();
         ModRegistries.LUMISTONE_BRICK_SLAB = () -> ModBlocks.LUMISTONE_BRICK_SLAB.get();
         ModRegistries.LUMISTONE_BRICK_WALL = () -> ModBlocks.LUMISTONE_BRICK_WALL.get();
         ModRegistries.RUNE_STONE_BRICKS = () -> ModBlocks.RUNE_STONE_BRICKS.get();

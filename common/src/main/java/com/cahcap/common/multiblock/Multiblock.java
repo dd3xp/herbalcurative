@@ -193,10 +193,16 @@ public class Multiblock {
         return true;
     }
 
+    private static final BlockState AIR_STATE = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+
     private void doAssemble(Level level, BlockPos masterPos, Direction facing, boolean mirrored) {
         List<BlockTransform> transforms = new ArrayList<>();
         for (int i = 0; i < entries.size(); i++) {
             PatternEntry entry = entries.get(i);
+            // Skip air positions — validated but not assembled
+            if (predicates.get(entry.symbol()).test(AIR_STATE)) {
+                continue;
+            }
             BlockPos localOffset = mirrored ? mirrorOffset(entry.offset()) : entry.offset();
             BlockPos rotated = rotateOffset(localOffset, facing);
             transforms.add(new BlockTransform(rotated, entry.isMaster(), i, entry.positionIndex()));

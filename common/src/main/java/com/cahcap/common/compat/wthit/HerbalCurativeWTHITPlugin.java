@@ -4,6 +4,7 @@ import com.cahcap.common.block.CauldronBlock;
 import com.cahcap.common.block.HerbCabinetBlock;
 import com.cahcap.common.block.HerbVaultBlock;
 import com.cahcap.common.block.KilnBlock;
+import com.cahcap.common.block.ObeliskBlock;
 import mcp.mobius.waila.api.IClientRegistrar;
 import mcp.mobius.waila.api.ICommonRegistrar;
 import mcp.mobius.waila.api.IWailaClientPlugin;
@@ -22,6 +23,7 @@ public class HerbalCurativeWTHITPlugin implements IWailaClientPlugin, IWailaComm
         registrar.icon(CauldronComponentProvider.INSTANCE, CauldronBlock.class);
         registrar.icon(KilnComponentProvider.INSTANCE, KilnBlock.class);
         registrar.icon(HerbVaultComponentProvider.INSTANCE, HerbVaultBlock.class);
+        registrar.icon(ObeliskComponentProvider.INSTANCE, ObeliskBlock.class);
     }
 
     @Override

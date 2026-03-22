@@ -72,6 +72,11 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
         return master != null && master.offeringTimer > 0;
     }
 
+    public boolean hasItem() {
+        ObeliskBlockEntity master = getMaster();
+        return master != null && !master.offeringItem.isEmpty();
+    }
+
     public int getOfferingTimer() {
         ObeliskBlockEntity master = getMaster();
         return master != null ? master.offeringTimer : 0;
@@ -143,11 +148,28 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
     }
 
     /**
+     * Place an item on the pedestal without starting a recipe (decorative / non-recipe item).
+     */
+    public void placeOfferingItem(ItemStack stack) {
+        ObeliskBlockEntity master = getMaster();
+        if (master == null) return;
+
+        master.offeringItem = stack.copy();
+        master.offeringTimer = 0;
+        master.totalOfferingTime = 0;
+        master.pendingMobType = null;
+        master.spawnDistance = 1;
+
+        master.setChanged();
+        master.syncToClient();
+    }
+
+    /**
      * Cancel the offering and return the item to the player.
      */
     public ItemStack cancelOffering() {
         ObeliskBlockEntity master = getMaster();
-        if (master == null || master.offeringTimer <= 0) return ItemStack.EMPTY;
+        if (master == null || master.offeringItem.isEmpty()) return ItemStack.EMPTY;
 
         ItemStack returned = master.offeringItem.copy();
         master.offeringItem = ItemStack.EMPTY;

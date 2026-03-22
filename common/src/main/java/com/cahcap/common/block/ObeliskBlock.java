@@ -124,21 +124,26 @@ public class ObeliskBlock extends MultiblockPartBlock {
             return ItemInteractionResult.SUCCESS;
         }
 
-        // If already offering, do nothing
-        if (master.isOffering()) {
+        // Already has an item on the pedestal
+        if (master.hasItem()) {
             return ItemInteractionResult.CONSUME;
         }
 
-        // Try to place offering
+        // Place item on pedestal
         if (!stack.isEmpty()) {
+            boolean isCreative = player.getAbilities().instabuild;
             ObeliskOfferingRecipe recipe = master.findRecipe(stack);
             if (recipe != null) {
-                boolean isCreative = player.getAbilities().instabuild;
                 master.startOffering(stack, recipe, isCreative);
-                level.playSound(null, master.getBlockPos(), SoundEvents.ENCHANTMENT_TABLE_USE,
-                        SoundSource.BLOCKS, 1.0f, 1.0f);
-                return ItemInteractionResult.SUCCESS;
+            } else {
+                master.placeOfferingItem(stack.copyWithCount(1));
+                if (!isCreative) {
+                    stack.shrink(1);
+                }
             }
+            level.playSound(null, master.getBlockPos(), SoundEvents.ENCHANTMENT_TABLE_USE,
+                    SoundSource.BLOCKS, 1.0f, 1.0f);
+            return ItemInteractionResult.SUCCESS;
         }
 
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -156,7 +161,7 @@ public class ObeliskBlock extends MultiblockPartBlock {
         }
 
         ObeliskBlockEntity master = be.getMaster();
-        if (master == null || !master.isOffering()) {
+        if (master == null || !master.hasItem()) {
             return InteractionResult.PASS;
         }
 
