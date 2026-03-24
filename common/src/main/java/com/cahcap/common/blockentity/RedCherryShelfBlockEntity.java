@@ -1,6 +1,7 @@
 package com.cahcap.common.blockentity;
 
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -101,10 +102,6 @@ public class RedCherryShelfBlockEntity extends BlockEntity {
     }
     
     public void syncToClient() {
-        if (level != null && !level.isClientSide) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, 3);
-            setChanged();
-        }
+        BlockEntityHelper.syncToClient(this);
     }
 }

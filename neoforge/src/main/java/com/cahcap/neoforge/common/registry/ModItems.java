@@ -3,6 +3,7 @@ package com.cahcap.neoforge.common.registry;
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.item.*;
 import com.cahcap.common.item.IncensePowderItem;
+import com.cahcap.common.item.flowweavering.FlowweaveRingItem;
 import com.cahcap.neoforge.common.item.LeafweaveArmorItem;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;

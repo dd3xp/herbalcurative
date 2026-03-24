@@ -1,6 +1,7 @@
 package com.cahcap.client.renderer;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -35,17 +36,17 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
     public void render(HerbCabinetBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         // Only render if this is the master block and multiblock is formed
-        if (!blockEntity.formed || !blockEntity.isMaster()) {
+        if (!blockEntity.isFormed() || !blockEntity.isMaster()) {
             return;
         }
-        
+
         // Render herb item icons on the cabinet front
-        renderHerbIcons(blockEntity, poseStack, bufferSource, packedLight, blockEntity.facing);
+        renderHerbIcons(blockEntity, poseStack, bufferSource, packedLight, blockEntity.getFacing());
     }
     
     private void renderHerbIcons(HerbCabinetBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource,
                                   int packedLight, Direction facing) {
-        Item[] herbs = HerbCabinetBlockEntity.getAllHerbItems();
+        Item[] herbs = HerbRegistry.getAllHerbItems();
         Direction right = facing.getClockWise();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         

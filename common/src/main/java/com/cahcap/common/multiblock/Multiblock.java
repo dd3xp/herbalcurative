@@ -228,16 +228,16 @@ public class Multiblock {
 
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof MultiblockPartBlockEntity part) {
-                part.facing = facing;
-                part.formed = true;
-                part.mirrored = mirrored;
-                part.posInMultiblock = t.posInMultiblock();
-                part.offset = new int[]{
+                part.setFacing(facing);
+                part.setFormed(true);
+                part.setMirrored(mirrored);
+                part.setPosInMultiblock(t.posInMultiblock());
+                part.setOffset(new int[]{
                         pos.getX() - masterPos.getX(),
                         pos.getY() - masterPos.getY(),
                         pos.getZ() - masterPos.getZ()
-                };
-                part.originalBlockState = oldState;
+                });
+                part.setOriginalBlockState(oldState);
                 part.setChanged();
             }
 

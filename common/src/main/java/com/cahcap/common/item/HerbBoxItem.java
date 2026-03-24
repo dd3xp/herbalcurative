@@ -5,6 +5,7 @@ import com.cahcap.common.block.HerbVaultBlock;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -34,15 +35,7 @@ public class HerbBoxItem extends Item {
     
     private static final int MAX_CAPACITY = 512;
     
-    // Herb registry names for storage
-    private static final String[] HERB_KEYS = {
-        "scaleplate",
-        "dewpetal_shard",
-        "golden_lilybell",
-        "cryst_spine",
-        "burnt_node",
-        "heart_of_stardream"
-    };
+    // Herb registry keys delegated to HerbRegistry
     
     public HerbBoxItem(Properties properties) {
         super(properties);
@@ -168,12 +161,9 @@ public class HerbBoxItem extends Item {
     }
     
     private void collectHerbsFromInventory(ItemStack box, Player player) {
-        collectHerb(box, player, ModRegistries.SCALEPLATE.get(), "scaleplate");
-        collectHerb(box, player, ModRegistries.DEWPETAL_SHARD.get(), "dewpetal_shard");
-        collectHerb(box, player, ModRegistries.GOLDEN_LILYBELL.get(), "golden_lilybell");
-        collectHerb(box, player, ModRegistries.CRYST_SPINE.get(), "cryst_spine");
-        collectHerb(box, player, ModRegistries.BURNT_NODE.get(), "burnt_node");
-        collectHerb(box, player, ModRegistries.HEART_OF_STARDREAM.get(), "heart_of_stardream");
+        for (int i = 0; i < HerbRegistry.getHerbCount(); i++) {
+            collectHerb(box, player, HerbRegistry.getHerbByIndex(i), HerbRegistry.getHerbKey(i));
+        }
     }
     
     private void collectHerb(ItemStack box, Player player, Item herb, String herbKey) {
@@ -192,12 +182,9 @@ public class HerbBoxItem extends Item {
     }
     
     private void extractHerbsToInventory(ItemStack box, Player player) {
-        extractHerb(box, player, ModRegistries.SCALEPLATE.get(), "scaleplate");
-        extractHerb(box, player, ModRegistries.DEWPETAL_SHARD.get(), "dewpetal_shard");
-        extractHerb(box, player, ModRegistries.GOLDEN_LILYBELL.get(), "golden_lilybell");
-        extractHerb(box, player, ModRegistries.CRYST_SPINE.get(), "cryst_spine");
-        extractHerb(box, player, ModRegistries.BURNT_NODE.get(), "burnt_node");
-        extractHerb(box, player, ModRegistries.HEART_OF_STARDREAM.get(), "heart_of_stardream");
+        for (int i = 0; i < HerbRegistry.getHerbCount(); i++) {
+            extractHerb(box, player, HerbRegistry.getHerbByIndex(i), HerbRegistry.getHerbKey(i));
+        }
     }
     
     private void extractHerb(ItemStack box, Player player, Item herb, String herbKey) {
@@ -220,12 +207,10 @@ public class HerbBoxItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         
-        addHerbTooltip(tooltip, stack, "scaleplate", "item.herbalcurative.scaleplate");
-        addHerbTooltip(tooltip, stack, "dewpetal_shard", "item.herbalcurative.dewpetal_shard");
-        addHerbTooltip(tooltip, stack, "golden_lilybell", "item.herbalcurative.golden_lilybell");
-        addHerbTooltip(tooltip, stack, "cryst_spine", "item.herbalcurative.cryst_spine");
-        addHerbTooltip(tooltip, stack, "burnt_node", "item.herbalcurative.burnt_node");
-        addHerbTooltip(tooltip, stack, "heart_of_stardream", "item.herbalcurative.heart_of_stardream");
+        for (int i = 0; i < HerbRegistry.getHerbCount(); i++) {
+            String key = HerbRegistry.getHerbKey(i);
+            addHerbTooltip(tooltip, stack, key, "item.herbalcurative." + key);
+        }
     }
     
     private void addHerbTooltip(List<Component> tooltip, ItemStack stack, String herbKey, String translationKey) {
@@ -243,12 +228,9 @@ public class HerbBoxItem extends Item {
     private void fillFromCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, Player player) {
         boolean anyTransferred = false;
         
-        anyTransferred |= fillHerbFromCabinet(box, cabinet, "scaleplate");
-        anyTransferred |= fillHerbFromCabinet(box, cabinet, "dewpetal_shard");
-        anyTransferred |= fillHerbFromCabinet(box, cabinet, "golden_lilybell");
-        anyTransferred |= fillHerbFromCabinet(box, cabinet, "cryst_spine");
-        anyTransferred |= fillHerbFromCabinet(box, cabinet, "burnt_node");
-        anyTransferred |= fillHerbFromCabinet(box, cabinet, "heart_of_stardream");
+        for (String key : HerbRegistry.getAllHerbKeys()) {
+            anyTransferred |= fillHerbFromCabinet(box, cabinet, key);
+        }
         cabinet.setChanged();
         
         // Play pickup sound if any herbs were transferred
@@ -289,12 +271,9 @@ public class HerbBoxItem extends Item {
     private void transferToCabinet(ItemStack box, HerbCabinetBlockEntity cabinet, Player player) {
         boolean anyTransferred = false;
         
-        anyTransferred |= transferHerbToCabinet(box, cabinet, "scaleplate");
-        anyTransferred |= transferHerbToCabinet(box, cabinet, "dewpetal_shard");
-        anyTransferred |= transferHerbToCabinet(box, cabinet, "golden_lilybell");
-        anyTransferred |= transferHerbToCabinet(box, cabinet, "cryst_spine");
-        anyTransferred |= transferHerbToCabinet(box, cabinet, "burnt_node");
-        anyTransferred |= transferHerbToCabinet(box, cabinet, "heart_of_stardream");
+        for (String key : HerbRegistry.getAllHerbKeys()) {
+            anyTransferred |= transferHerbToCabinet(box, cabinet, key);
+        }
         cabinet.setChanged();
         
         // Play place sound (lower pitch than pickup) if any herbs were transferred
@@ -330,7 +309,7 @@ public class HerbBoxItem extends Item {
 
     private void fillFromVault(ItemStack box, HerbVaultBlockEntity vault, Player player) {
         boolean anyTransferred = false;
-        for (String key : new String[]{"scaleplate", "dewpetal_shard", "golden_lilybell", "cryst_spine", "burnt_node", "heart_of_stardream"}) {
+        for (String key : HerbRegistry.getAllHerbKeys()) {
             int boxCurrent = getHerbAmount(box, key);
             int needed = MAX_CAPACITY - boxCurrent;
             if (needed > 0) {
@@ -353,7 +332,7 @@ public class HerbBoxItem extends Item {
 
     private void transferToVault(ItemStack box, HerbVaultBlockEntity vault, Player player) {
         boolean anyTransferred = false;
-        for (String key : new String[]{"scaleplate", "dewpetal_shard", "golden_lilybell", "cryst_spine", "burnt_node", "heart_of_stardream"}) {
+        for (String key : HerbRegistry.getAllHerbKeys()) {
             int boxAmount = getHerbAmount(box, key);
             if (boxAmount > 0) {
                 int added = vault.addHerb(key, boxAmount);

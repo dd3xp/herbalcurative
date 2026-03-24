@@ -1,7 +1,10 @@
 package com.cahcap.common.blockentity;
 
 import com.cahcap.common.recipe.HerbPotGrowingRecipe;
+import com.cahcap.common.util.BlockEntityHelper;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -42,17 +45,27 @@ import java.util.*;
  * - Seedling is NOT consumed
  */
 public class HerbPotBlockEntity extends BlockEntity {
-    
+
+    /**
+     * States of the herb pot growth process.
+     * IDLE: Not growing
+     * GROWING: Actively growing (herbs consumed, waiting for completion)
+     * COMPLETE: Growth finished (output pending)
+     */
+    public enum GrowthState {
+        IDLE, GROWING, COMPLETE
+    }
+
     public static final int MAX_HERB_PER_TYPE = 64;
     public static final int MAX_HERB_TYPES = 6;
-    
+
     private ItemStack soilSlot = ItemStack.EMPTY;
     private ItemStack seedlingSlot = ItemStack.EMPTY;
     private final Map<Item, Integer> herbSlots = new LinkedHashMap<>();
 
     private Set<Item> cachedAcceptedHerbs = null;
-    
-    private boolean isGrowing = false;
+
+    private GrowthState growthState = GrowthState.IDLE;
     private int growthTicks = 0;
     private int totalGrowthTicks = 0;
     @Nullable
@@ -82,7 +95,7 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
     
     public boolean isGrowing() {
-        return isGrowing;
+        return growthState == GrowthState.GROWING;
     }
 
     @Nullable
@@ -115,7 +128,7 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
 
     public float getGrowthProgress() {
-        if (!isGrowing || totalGrowthTicks <= 0) {
+        if (growthState != GrowthState.GROWING || totalGrowthTicks <= 0) {
             return 0f;
         }
         return (float) growthTicks / totalGrowthTicks;
@@ -249,7 +262,7 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
     
     public int addHerb(ItemStack stack, boolean isCreative) {
-        if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) return 0;
+        if (!HerbRegistry.isHerb(stack.getItem())) return 0;
         if (!getAcceptedHerbs().contains(stack.getItem())) return 0;
 
         Item herbType = stack.getItem();
@@ -298,8 +311,8 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
     
     private void stopGrowth() {
-        if (isGrowing) {
-            isGrowing = false;
+        if (growthState != GrowthState.IDLE) {
+            growthState = GrowthState.IDLE;
             growthTicks = 0;
             totalGrowthTicks = 0;
             pendingOutput = null;
@@ -351,7 +364,7 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
     
     private void checkAndStartGrowth() {
-        if (level == null || level.isClientSide || isGrowing) return;
+        if (level == null || level.isClientSide || growthState != GrowthState.IDLE) return;
         if (!hasSoil() || !hasSeedling()) return;
         
         RecipeManager recipeManager = level.getRecipeManager();
@@ -383,7 +396,7 @@ public class HerbPotBlockEntity extends BlockEntity {
                 }
             }
             
-            isGrowing = true;
+            growthState = GrowthState.GROWING;
             growthTicks = 0;
             totalGrowthTicks = recipe.getGrowthTime();
             pendingOutput = recipe.getOutput().copy();
@@ -395,13 +408,13 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
     
     public static void serverTick(Level level, BlockPos pos, BlockState state, HerbPotBlockEntity blockEntity) {
-        if (!blockEntity.isGrowing) {
+        if (blockEntity.growthState != GrowthState.GROWING) {
             blockEntity.checkAndStartGrowth();
             return;
         }
-        
+
         blockEntity.growthTicks++;
-        
+
         if (blockEntity.growthTicks >= blockEntity.totalGrowthTicks) {
             if (blockEntity.pendingOutput != null && !blockEntity.pendingOutput.isEmpty()) {
                 ItemEntity itemEntity = new ItemEntity(level,
@@ -410,8 +423,8 @@ public class HerbPotBlockEntity extends BlockEntity {
                 itemEntity.setDeltaMovement(0, 0.1, 0);
                 level.addFreshEntity(itemEntity);
             }
-            
-            blockEntity.isGrowing = false;
+
+            blockEntity.growthState = GrowthState.IDLE;
             blockEntity.growthTicks = 0;
             blockEntity.totalGrowthTicks = 0;
             blockEntity.pendingOutput = null;
@@ -448,7 +461,7 @@ public class HerbPotBlockEntity extends BlockEntity {
             tag.put("Herbs", herbList);
         }
         
-        tag.putBoolean("IsGrowing", isGrowing);
+        tag.putInt("GrowthState", growthState.ordinal());
         tag.putInt("GrowthTicks", growthTicks);
         tag.putInt("TotalGrowthTicks", totalGrowthTicks);
         
@@ -479,7 +492,14 @@ public class HerbPotBlockEntity extends BlockEntity {
             }
         }
         
-        isGrowing = tag.getBoolean("IsGrowing");
+        if (tag.contains("GrowthState")) {
+            int ordinal = tag.getInt("GrowthState");
+            GrowthState[] states = GrowthState.values();
+            growthState = (ordinal >= 0 && ordinal < states.length) ? states[ordinal] : GrowthState.IDLE;
+        } else {
+            // Backward compatibility: convert old boolean key to enum
+            growthState = tag.getBoolean("IsGrowing") ? GrowthState.GROWING : GrowthState.IDLE;
+        }
         growthTicks = tag.getInt("GrowthTicks");
         totalGrowthTicks = tag.getInt("TotalGrowthTicks");
         
@@ -502,11 +522,7 @@ public class HerbPotBlockEntity extends BlockEntity {
     }
     
     public void syncToClient() {
-        if (level != null && !level.isClientSide) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, 3);
-            setChanged();
-        }
+        BlockEntityHelper.syncToClient(this);
     }
     
     /**

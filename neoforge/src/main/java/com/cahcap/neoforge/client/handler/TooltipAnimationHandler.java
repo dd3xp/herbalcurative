@@ -5,7 +5,7 @@ package com.cahcap.neoforge.client.handler;
  * Tooltip scales from 0 at the crosshair to full size at its final position.
  * Apply the returned scale via PoseStack before rendering, and use the returned Y offset.
  */
-public class TooltipAnimator {
+public class TooltipAnimationHandler {
 
     private static final long ANIMATION_DURATION_MS = 200; // 0.2 seconds
 

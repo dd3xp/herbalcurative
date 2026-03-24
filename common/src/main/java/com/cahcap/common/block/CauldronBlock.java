@@ -1,6 +1,6 @@
 package com.cahcap.common.block;
 
-import com.cahcap.common.blockentity.CauldronBlockEntity;
+import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
 import com.cahcap.common.item.PotItem;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.MultiblockShapes;
@@ -125,70 +125,98 @@ public class CauldronBlock extends MultiblockPartBlock {
                 }
             }
 
-            if (stack.is(Items.WATER_BUCKET)) {
-                if (master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000)) {
-                    if (!player.isCreative()) {
-                        player.setItemInHand(hand, new ItemStack(Items.BUCKET));
-                    }
-                    level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return ItemInteractionResult.SUCCESS;
-                }
+            ItemInteractionResult bucketResult = handleBucketInteraction(stack, master, level, pos, player, hand);
+            if (bucketResult != null) {
+                return bucketResult;
             }
 
-            if (stack.is(Items.BUCKET) && master.hasFluid() && !master.isBrewing() && !master.isInfusing()) {
-                if (master.hasOutputSlotItems()) {
-                    ItemStack output = master.extractFromOutputSlot();
-                    if (!output.isEmpty()) {
-                        if (!player.getInventory().add(output)) {
-                            player.drop(output, false);
-                        }
-                    }
+            ItemInteractionResult emptyHandResult = handleEmptyHand(stack, master, level, pos, player);
+            if (emptyHandResult != null) {
+                return emptyHandResult;
+            }
+        }
+
+        return ItemInteractionResult.SUCCESS;
+    }
+
+    /**
+     * Handle water bucket filling and empty bucket extraction.
+     * Returns non-null if the interaction was handled.
+     */
+    private ItemInteractionResult handleBucketInteraction(ItemStack stack, CauldronBlockEntity master,
+                                                          Level level, BlockPos pos, Player player, InteractionHand hand) {
+        if (stack.is(Items.WATER_BUCKET)) {
+            if (master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000)) {
+                if (!player.isCreative()) {
+                    player.setItemInHand(hand, new ItemStack(Items.BUCKET));
                 }
-                for (ItemStack material : master.getMaterials()) {
-                    if (!material.isEmpty()) {
-                        if (!player.getInventory().add(material.copy())) {
-                            player.drop(material.copy(), false);
-                        }
+                level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+
+        if (stack.is(Items.BUCKET) && master.hasFluid() && !master.isBrewing() && !master.isInfusing()) {
+            if (master.hasOutputSlotItems()) {
+                ItemStack output = master.extractFromOutputSlot();
+                if (!output.isEmpty()) {
+                    if (!player.getInventory().add(output)) {
+                        player.drop(output, false);
                     }
-                }
-                net.minecraft.world.level.material.Fluid extracted = master.extractFluidWithClear(1000);
-                if (extracted != null && extracted == net.minecraft.world.level.material.Fluids.WATER) {
-                    if (!player.isCreative()) {
-                        stack.shrink(1);
-                        ItemStack filledBucket = new ItemStack(Items.WATER_BUCKET);
-                        if (!player.getInventory().add(filledBucket)) {
-                            player.drop(filledBucket, false);
-                        }
-                    }
-                    level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return ItemInteractionResult.SUCCESS;
                 }
             }
-
-            if (stack.isEmpty() && player.isShiftKeyDown()) {
-                ItemStack output = master.getInfusingOutput();
-                if (!output.isEmpty() && !master.isInfusing()) {
-                    output = master.extractItem(player);
-                    if (!output.isEmpty()) {
-                        if (!player.getInventory().add(output)) {
-                            player.drop(output, false);
-                        }
-                        level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
-                        return ItemInteractionResult.SUCCESS;
+            for (ItemStack material : master.getMaterials()) {
+                if (!material.isEmpty()) {
+                    if (!player.getInventory().add(material.copy())) {
+                        player.drop(material.copy(), false);
                     }
                 }
-                ItemStack extractedItem = master.extractItem(player);
-                if (!extractedItem.isEmpty()) {
-                    if (!player.getInventory().add(extractedItem)) {
-                        player.drop(extractedItem, false);
+            }
+            net.minecraft.world.level.material.Fluid extracted = master.extractFluidWithClear(1000);
+            if (extracted != null && extracted == net.minecraft.world.level.material.Fluids.WATER) {
+                if (!player.isCreative()) {
+                    stack.shrink(1);
+                    ItemStack filledBucket = new ItemStack(Items.WATER_BUCKET);
+                    if (!player.getInventory().add(filledBucket)) {
+                        player.drop(filledBucket, false);
+                    }
+                }
+                level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Handle shift-click with empty hand to retrieve output items.
+     * Returns non-null if the interaction was handled.
+     */
+    private ItemInteractionResult handleEmptyHand(ItemStack stack, CauldronBlockEntity master,
+                                                   Level level, BlockPos pos, Player player) {
+        if (stack.isEmpty() && player.isShiftKeyDown()) {
+            ItemStack output = master.getInfusingOutput();
+            if (!output.isEmpty() && !master.isInfusing()) {
+                output = master.extractItem(player);
+                if (!output.isEmpty()) {
+                    if (!player.getInventory().add(output)) {
+                        player.drop(output, false);
                     }
                     level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
                     return ItemInteractionResult.SUCCESS;
                 }
             }
+            ItemStack extractedItem = master.extractItem(player);
+            if (!extractedItem.isEmpty()) {
+                if (!player.getInventory().add(extractedItem)) {
+                    player.drop(extractedItem, false);
+                }
+                level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 1.2F);
+                return ItemInteractionResult.SUCCESS;
+            }
         }
 
-        return ItemInteractionResult.SUCCESS;
+        return null;
     }
 
     @Override

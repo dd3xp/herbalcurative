@@ -1,6 +1,8 @@
 package com.cahcap.common.blockentity;
 
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.BlockEntityHelper;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -32,10 +34,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
 
     private final Map<Item, Integer> herbStorage = new HashMap<>();
 
-    private long lastClickTime;
-    private UUID lastClickUUID;
-
-    public AABB renderAABB = null;
+    private final BlockEntityHelper.DoubleClickTracker doubleClickTracker = new BlockEntityHelper.DoubleClickTracker();
 
     public HerbVaultBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state, new int[]{3, 3, 3});
@@ -48,12 +47,9 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     }
 
     private void initializeStorage() {
-        herbStorage.put(ModRegistries.SCALEPLATE.get(), 0);
-        herbStorage.put(ModRegistries.DEWPETAL_SHARD.get(), 0);
-        herbStorage.put(ModRegistries.GOLDEN_LILYBELL.get(), 0);
-        herbStorage.put(ModRegistries.CRYST_SPINE.get(), 0);
-        herbStorage.put(ModRegistries.BURNT_NODE.get(), 0);
-        herbStorage.put(ModRegistries.HEART_OF_STARDREAM.get(), 0);
+        for (Item herb : HerbRegistry.getAllHerbItems()) {
+            herbStorage.put(herb, 0);
+        }
     }
 
     @Override
@@ -68,12 +64,12 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     }
 
     public int getHerbAmount(String herbKey) {
-        Item herb = HerbCabinetBlockEntity.getHerbFromKey(herbKey);
+        Item herb = HerbRegistry.getHerbByKey(herbKey);
         return herb != null ? getHerbAmount(herb) : 0;
     }
 
     public int addHerb(String herbKey, int amount) {
-        Item herb = HerbCabinetBlockEntity.getHerbFromKey(herbKey);
+        Item herb = HerbRegistry.getHerbByKey(herbKey);
         return herb != null ? addHerb(herb, amount) : 0;
     }
 
@@ -94,7 +90,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     }
 
     public int removeHerb(String herbKey, int amount) {
-        Item herb = HerbCabinetBlockEntity.getHerbFromKey(herbKey);
+        Item herb = HerbRegistry.getHerbByKey(herbKey);
         return herb != null ? removeHerb(herb, amount) : 0;
     }
 
@@ -115,12 +111,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     }
 
     public boolean isDoubleClick(UUID playerUUID) {
-        if (level == null) return false;
-        long currentTime = level.getGameTime();
-        boolean isDouble = (currentTime - lastClickTime < 10 && playerUUID.equals(lastClickUUID));
-        lastClickTime = currentTime;
-        lastClickUUID = playerUUID;
-        return isDouble;
+        return doubleClickTracker.check(level, playerUUID);
     }
 
     /**
@@ -136,9 +127,10 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
      * Columns map to the horizontal axis perpendicular to facing.
      */
     public int getHerbIndexForBlock(BlockPos targetPos) {
-        if (!formed) return -1;
+        if (!isFormed()) return -1;
 
-        BlockPos masterPos = getBlockPos().offset(-offset[0], -offset[1], -offset[2]);
+        int[] off = getOffset();
+        BlockPos masterPos = getBlockPos().offset(-off[0], -off[1], -off[2]);
         int dy = targetPos.getY() - masterPos.getY();
 
         // Only Layer 1 (dy=-1) and Layer 2 (dy=0) show herbs on front
@@ -147,7 +139,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
         int row = (dy == 0) ? 0 : 1;
 
         // Determine column based on horizontal position along the front face
-        Direction right = facing.getClockWise();
+        Direction right = getFacing().getClockWise();
         int dx = targetPos.getX() - masterPos.getX();
         int dz = targetPos.getZ() - masterPos.getZ();
 
@@ -171,17 +163,15 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     }
 
     @Override
-    public void disassemble() {
-        if (level == null || level.isClientSide || !formed) return;
+    protected Block getMultiblockBlock() {
+        return ModRegistries.HERB_VAULT.get();
+    }
 
+    @Override
+    protected void dropStoredItems(BlockPos masterPos) {
         HerbVaultBlockEntity master = getMaster();
         if (master == null) return;
-
-        BlockPos masterPos = master.getBlockPos();
-        BlockPos breakPos = getBlockPos();
-
-        // Drop all stored herbs
-        for (Item herb : HerbCabinetBlockEntity.getAllHerbItems()) {
+        for (Item herb : HerbRegistry.getAllHerbItems()) {
             int amount = master.getHerbAmount(herb);
             while (amount > 0) {
                 int stackSize = Math.min(amount, 64);
@@ -192,48 +182,15 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
                 amount -= stackSize;
             }
         }
-
-        // Get all positions
-        List<BlockPos> positions = getStructurePositions(masterPos);
-
-        // First pass: mark all as not formed
-        for (BlockPos targetPos : positions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.HERB_VAULT.get())) {
-                if (level.getBlockEntity(targetPos) instanceof HerbVaultBlockEntity vault) {
-                    vault.formed = false;
-                    vault.renderAABB = null;
-                    if (!targetPos.equals(breakPos)) {
-                        vault.suppressDrops = true;
-                    }
-                    vault.setChanged();
-                    BlockState state = level.getBlockState(targetPos);
-                    level.sendBlockUpdated(targetPos, state, state, 3);
-                }
-            }
-        }
-
-        // Second pass: replace with original blocks
-        for (BlockPos targetPos : positions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.HERB_VAULT.get())) {
-                if (!targetPos.equals(breakPos)) {
-                    BlockState original = null;
-                    if (level.getBlockEntity(targetPos) instanceof HerbVaultBlockEntity vault2) {
-                        original = vault2.originalBlockState;
-                    }
-                    if (original == null) {
-                        original = getOriginalBlockForPosition(targetPos, masterPos);
-                    }
-                    // Update connections for fences/walls by computing shape from neighbors
-                    BlockState updated = Block.updateFromNeighbourShapes(original, level, targetPos);
-                    level.setBlock(targetPos, updated, 3);
-                }
-            }
-        }
-
-        setChanged();
     }
 
-    private List<BlockPos> getStructurePositions(BlockPos masterPos) {
+    @Override
+    protected BlockState postProcessRestoredBlock(BlockState state, BlockPos pos) {
+        return Block.updateFromNeighbourShapes(state, level, pos);
+    }
+
+    @Override
+    protected List<BlockPos> getStructurePositions(BlockPos masterPos) {
         List<BlockPos> positions = new ArrayList<>();
         for (int dy = -1; dy <= 1; dy++) {
             for (int x = -1; x <= 1; x++) {
@@ -267,7 +224,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
             }
             // Cardinal side
             Direction relDir = getRelativeDirection(dx, dz);
-            if (relDir == facing) {
+            if (relDir == getFacing()) {
                 // Front: red cherry fence
                 return ModRegistries.RED_CHERRY_FENCE.get().defaultBlockState();
             }
@@ -304,8 +261,9 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
 
     @Override
     public BlockState getOriginalBlockState() {
-        if (originalBlockState != null) {
-            return originalBlockState;
+        BlockState stored = getRawOriginalBlockState();
+        if (stored != null) {
+            return stored;
         }
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) {
@@ -315,7 +273,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     }
 
     public AABB computeRenderAABB() {
-        if (renderAABB == null && formed) {
+        if (renderAABB == null && isFormed()) {
             BlockPos masterPos = getMasterPos();
             if (masterPos != null) {
                 renderAABB = new AABB(
@@ -337,14 +295,14 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
                 if (slot < 0 || slot >= 6) return ItemStack.EMPTY;
                 HerbVaultBlockEntity master = getMaster();
                 if (master == null) return ItemStack.EMPTY;
-                Item herb = HerbCabinetBlockEntity.getAllHerbItems()[slot];
+                Item herb = HerbRegistry.getAllHerbItems()[slot];
                 int amount = master.getHerbAmount(herb);
                 return amount <= 0 ? ItemStack.EMPTY : new ItemStack(herb, Math.min(amount, 64));
             }
 
             @Override
             public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                if (stack.isEmpty() || !HerbCabinetBlockEntity.isHerb(stack.getItem())) return stack;
+                if (stack.isEmpty() || !HerbRegistry.isHerb(stack.getItem())) return stack;
                 HerbVaultBlockEntity master = getMaster();
                 if (master == null) return stack;
                 int toInsert = stack.getCount();
@@ -362,7 +320,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
                 if (slot < 0 || slot >= 6 || amount <= 0) return ItemStack.EMPTY;
                 HerbVaultBlockEntity master = getMaster();
                 if (master == null) return ItemStack.EMPTY;
-                Item herb = HerbCabinetBlockEntity.getAllHerbItems()[slot];
+                Item herb = HerbRegistry.getAllHerbItems()[slot];
                 int stored = master.getHerbAmount(herb);
                 if (stored <= 0) return ItemStack.EMPTY;
                 int toExtract = Math.min(amount, stored);
@@ -375,7 +333,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
 
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
-                return HerbCabinetBlockEntity.isHerb(stack.getItem());
+                return HerbRegistry.isHerb(stack.getItem());
             }
         };
     }
@@ -384,7 +342,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (isMaster()) {
-            for (Item herb : HerbCabinetBlockEntity.getAllHerbItems()) {
+            for (Item herb : HerbRegistry.getAllHerbItems()) {
                 String key = "Herb_" + herb.builtInRegistryHolder().key().location().toString();
                 tag.putInt(key, herbStorage.getOrDefault(herb, 0));
             }
@@ -395,7 +353,7 @@ public class HerbVaultBlockEntity extends MultiblockPartBlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (isMaster()) {
-            for (Item herb : HerbCabinetBlockEntity.getAllHerbItems()) {
+            for (Item herb : HerbRegistry.getAllHerbItems()) {
                 String key = "Herb_" + herb.builtInRegistryHolder().key().location().toString();
                 if (tag.contains(key)) {
                     herbStorage.put(herb, tag.getInt(key));

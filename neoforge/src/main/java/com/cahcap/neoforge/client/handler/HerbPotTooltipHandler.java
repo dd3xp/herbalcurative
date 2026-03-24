@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -24,58 +23,55 @@ import java.util.Map;
 /**
  * Client-side handler for rendering Herb Pot HUD tooltip.
  * Layout:
- * - Top row: [Seedling] → [Output]  (with progress bar below arrow)
+ * - Top row: [Seedling] >>> [Output]  (with progress bar below arrow)
  * - Bottom row: herbs horizontally
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
-public class HerbPotTooltipHandler {
+public class HerbPotTooltipHandler extends TooltipHandler {
 
-    private static final TooltipAnimator animator = new TooltipAnimator();
+    private static final HerbPotTooltipHandler INSTANCE = new HerbPotTooltipHandler();
+
+    // Per-frame state
+    private HerbPotBlockEntity pot;
+    private ItemStack seedling;
+    private Map<Item, Integer> herbs;
+    private ItemStack pendingOutput;
+    private boolean isGrowing;
 
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
+        INSTANCE.handleEvent(event);
+    }
 
-        if (mc.level == null || mc.player == null) {
-            return;
+    @Override
+    protected boolean isTargetBlock(BlockState state) {
+        return state.getBlock() instanceof HerbPotBlock;
+    }
+
+    @Override
+    protected boolean isValidEntity(BlockEntity entity) {
+        if (entity instanceof HerbPotBlockEntity p) {
+            pot = p;
+            return true;
         }
+        return false;
+    }
 
-        HerbPotBlockEntity pot = null;
-        BlockPos targetPos = null;
-        HitResult hitResult = mc.hitResult;
-        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            targetPos = blockHitResult.getBlockPos();
-            BlockState state = mc.level.getBlockState(targetPos);
-            if (state.getBlock() instanceof HerbPotBlock) {
-                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
-                if (blockEntity instanceof HerbPotBlockEntity p) {
-                    pot = p;
-                }
-            }
-        }
+    @Override
+    protected boolean hasContent(BlockEntity entity) {
+        seedling = pot.getSeedling();
+        herbs = pot.getHerbs();
+        pendingOutput = pot.getPendingOutput();
+        isGrowing = pot.isGrowing();
 
-        ItemStack seedling = pot != null ? pot.getSeedling() : ItemStack.EMPTY;
-        Map<Item, Integer> herbs = pot != null ? pot.getHerbs() : java.util.Map.of();
-        ItemStack pendingOutput = pot != null ? pot.getPendingOutput() : ItemStack.EMPTY;
-        boolean isGrowing = pot != null && pot.isGrowing();
+        return !seedling.isEmpty() || !herbs.isEmpty();
+    }
 
-        boolean hasContent = !seedling.isEmpty() || !herbs.isEmpty();
-        if (!hasContent) { animator.reset(); return; }
-        float anim = animator.update(targetPos);
-
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        int screenWidth = guiGraphics.guiWidth();
-        int screenHeight = guiGraphics.guiHeight();
-
+    @Override
+    protected void renderContent(GuiGraphics guiGraphics, Minecraft mc,
+                                 BlockEntity entity, int screenWidth, int screenHeight) {
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(centerX, centerY, 0);
-        guiGraphics.pose().scale(anim, anim, 1.0f);
-        guiGraphics.pose().translate(-centerX, -centerY, 0);
-
         int baseY = centerY + 10;
 
         // === Top row: [Seedling] [arrow] [Output] ===
@@ -150,7 +146,5 @@ public class HerbPotTooltipHandler {
 
             guiGraphics.pose().popPose();
         }
-
-        guiGraphics.pose().popPose();
     }
 }

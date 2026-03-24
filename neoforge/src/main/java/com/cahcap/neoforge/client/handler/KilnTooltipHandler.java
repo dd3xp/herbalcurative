@@ -6,13 +6,10 @@ import com.cahcap.common.blockentity.KilnBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -20,58 +17,63 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
 /**
  * Client-side handler for rendering Kiln HUD tooltip.
- * Layout: [Input] → [Output], catalyst above arrow.
+ * Layout: [Input] >>> [Output], catalyst above arrow.
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
-public class KilnTooltipHandler {
+public class KilnTooltipHandler extends TooltipHandler {
 
-    private static final TooltipAnimator animator = new TooltipAnimator();
+    private static final KilnTooltipHandler INSTANCE = new KilnTooltipHandler();
+
+    // Per-frame state
+    private KilnBlockEntity master;
+    private ItemStack input;
+    private ItemStack catalyst;
+    private ItemStack output;
+    private ItemStack recipePreview;
 
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
+        INSTANCE.handleEvent(event);
+    }
 
-        if (mc.level == null || mc.player == null) {
-            return;
-        }
+    @Override
+    protected boolean isTargetBlock(BlockState state) {
+        return state.getBlock() instanceof KilnBlock && state.getValue(KilnBlock.FORMED);
+    }
 
-        // Determine if we're looking at a valid formed kiln with content
-        KilnBlockEntity master = null;
-        BlockPos targetPos = null;
-        HitResult hitResult = mc.hitResult;
-        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            targetPos = blockHitResult.getBlockPos();
-            BlockState state = mc.level.getBlockState(targetPos);
-            if (state.getBlock() instanceof KilnBlock && state.getValue(KilnBlock.FORMED)) {
-                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
-                if (blockEntity instanceof KilnBlockEntity kiln) {
-                    master = kiln.getMaster();
-                }
-            }
-        }
+    @Override
+    protected boolean isValidEntity(BlockEntity entity) {
+        return entity instanceof KilnBlockEntity;
+    }
 
-        ItemStack input = master != null ? master.getInputSlot() : ItemStack.EMPTY;
-        ItemStack catalyst = master != null ? master.getCatalystSlot() : ItemStack.EMPTY;
-        ItemStack output = master != null ? master.getOutputSlot() : ItemStack.EMPTY;
-        ItemStack recipePreview = master != null ? master.getRecipePreview() : ItemStack.EMPTY;
+    @Override
+    protected boolean additionalValidation(BlockEntity entity, BlockState state,
+                                           BlockHitResult hitResult, BlockPos pos) {
+        KilnBlockEntity kiln = (KilnBlockEntity) entity;
+        master = kiln.getMaster();
+        return master != null;
+    }
 
-        boolean hasContent = !input.isEmpty() || !catalyst.isEmpty() || !output.isEmpty() || !recipePreview.isEmpty();
-        if (!hasContent) { animator.reset(); return; }
-        float anim = animator.update(master.getBlockPos());
+    @Override
+    protected boolean hasContent(BlockEntity entity) {
+        input = master.getInputSlot();
+        catalyst = master.getCatalystSlot();
+        output = master.getOutputSlot();
+        recipePreview = master.getRecipePreview();
 
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        int screenWidth = guiGraphics.guiWidth();
-        int screenHeight = guiGraphics.guiHeight();
+        return !input.isEmpty() || !catalyst.isEmpty() || !output.isEmpty() || !recipePreview.isEmpty();
+    }
 
+    @Override
+    protected BlockPos getAnimationPos(BlockEntity entity, BlockPos targetPos) {
+        return master.getBlockPos();
+    }
+
+    @Override
+    protected void renderContent(GuiGraphics guiGraphics, Minecraft mc,
+                                 BlockEntity entity, int screenWidth, int screenHeight) {
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
-
-        // Apply scale animation from crosshair center
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(centerX, centerY, 0);
-        guiGraphics.pose().scale(anim, anim, 1.0f);
-        guiGraphics.pose().translate(-centerX, -centerY, 0);
 
         // Layout: [input 16px] [gap 4px] [arrow 16px] [gap 4px] [output 16px]
         int totalWidth = 56;
@@ -121,8 +123,6 @@ public class KilnTooltipHandler {
             guiGraphics.renderItem(catalyst, arrowX, catalystY);
             renderCount(guiGraphics, mc, catalyst.getCount(), arrowX, catalystY, 0xFF6600);
         }
-
-        guiGraphics.pose().popPose();
     }
 
     private static void renderCount(GuiGraphics guiGraphics, Minecraft mc, int count, int x, int y, int color) {

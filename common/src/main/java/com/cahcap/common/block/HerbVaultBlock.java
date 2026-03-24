@@ -1,9 +1,13 @@
 package com.cahcap.common.block;
 
-import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.GridHitHelper;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.HerbRegistry;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -68,8 +72,8 @@ public class HerbVaultBlock extends MultiblockPartBlock {
 
     /** Returns true if the block at pos is on the front row (forwardOffset==1, dy==0). */
     public static boolean isFrontRow(HerbVaultBlockEntity be) {
-        Direction facing = be.facing;
-        int[] off = be.offset;
+        Direction facing = be.getFacing();
+        int[] off = be.getOffset();
         int fwd = facing.getStepX() * off[0] + facing.getStepZ() * off[2];
         return fwd == 1 && off[1] <= 0;
     }
@@ -92,23 +96,8 @@ public class HerbVaultBlock extends MultiblockPartBlock {
     /**
      * Check if a hit location on the front face is within the grid cell for the given herb slot.
      */
-    public static boolean isHitInGridCell(BlockHitResult hitResult, BlockPos pos, net.minecraft.core.Direction facing, int herbIndex) {
-        if (herbIndex < 0 || herbIndex >= GRID_CELLS.length) return false;
-
-        double localX = (hitResult.getLocation().x - pos.getX()) * 16;
-        double localY = (hitResult.getLocation().y - pos.getY()) * 16;
-        double localZ = (hitResult.getLocation().z - pos.getZ()) * 16;
-
-        double faceX, faceY;
-        switch (facing) {
-            case SOUTH -> { faceX = 16 - localX; faceY = localY; }
-            case EAST  -> { faceX = 16 - localZ; faceY = localY; }
-            case WEST  -> { faceX = localZ; faceY = localY; }
-            default    -> { faceX = localX; faceY = localY; }
-        }
-
-        double[] cell = GRID_CELLS[herbIndex];
-        return faceX >= cell[0] && faceX <= cell[1] && faceY >= cell[2] && faceY <= cell[3];
+    public static boolean isHitInGridCell(BlockHitResult hitResult, BlockPos pos, Direction facing, int herbIndex) {
+        return GridHitHelper.isHitInGridCell(hitResult, pos, facing, herbIndex, GRID_CELLS);
     }
 
     // ==================== Interaction ====================
@@ -123,7 +112,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
         if (stack.is(ModRegistries.HERB_BOX.get())) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.formed) {
+        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.isFormed()) {
             int herbIndex = be.getHerbIndexForBlock();
             if (!isHitInGridCell(hitResult, pos, state.getValue(FACING), herbIndex)) {
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -132,17 +121,9 @@ public class HerbVaultBlock extends MultiblockPartBlock {
             boolean isDouble = be.isDoubleClick(player.getUUID());
             int totalAdded = 0;
 
-            if (isDouble && (stack.isEmpty() || !HerbCabinetBlockEntity.isHerb(stack.getItem()))) {
-                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                    ItemStack invStack = player.getInventory().getItem(i);
-                    if (!invStack.isEmpty() && HerbCabinetBlockEntity.isHerb(invStack.getItem())) {
-                        int added = be.addHerb(invStack.getItem(), invStack.getCount());
-                        invStack.shrink(added);
-                        totalAdded += added;
-                        if (invStack.isEmpty()) player.getInventory().setItem(i, ItemStack.EMPTY);
-                    }
-                }
-            } else if (!stack.isEmpty() && HerbCabinetBlockEntity.isHerb(stack.getItem())) {
+            if (isDouble && (stack.isEmpty() || !HerbRegistry.isHerb(stack.getItem()))) {
+                totalAdded = HerbRegistry.transferAllHerbsFromInventory(player, be::addHerb);
+            } else if (!stack.isEmpty() && HerbRegistry.isHerb(stack.getItem())) {
                 totalAdded = be.addHerb(stack.getItem(), stack.getCount());
                 stack.shrink(totalAdded);
             }
@@ -162,7 +143,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
     @Override
     protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (level.isClientSide) return;
-        if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.formed) return;
+        if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.isFormed()) return;
 
         HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
         if (!(hitResult instanceof BlockHitResult blockHit) || blockHit.getDirection() != state.getValue(FACING)) return;
@@ -172,7 +153,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
         if (!isHitInGridCell(blockHit, pos, state.getValue(FACING), herbIndex)) return;
         if (herbIndex < 0 || herbIndex >= 6) return;
 
-        Item herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];
+        Item herb = HerbRegistry.getAllHerbItems()[herbIndex];
         int amount = player.isShiftKeyDown() ? 64 : 1;
         int removed = be.removeHerb(herb, amount);
 
@@ -189,7 +170,7 @@ public class HerbVaultBlock extends MultiblockPartBlock {
      * Used by the creative-mode event handler.
      */
     public boolean isFrontFaceClick(BlockState state, Level level, BlockPos pos, Player player) {
-        if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.formed) return false;
+        if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.isFormed()) return false;
         if (!isFrontRow(be)) return false;
 
         HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);

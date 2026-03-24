@@ -1,9 +1,11 @@
-package com.cahcap.common.blockentity;
+package com.cahcap.common.blockentity.cauldron;
 
-import com.cahcap.common.item.FlowweaveRingItem;
+import com.cahcap.common.blockentity.MultiblockPartBlockEntity;
+import com.cahcap.common.item.flowweavering.FlowweaveRingItem;
 import com.cahcap.common.recipe.CauldronBrewingRecipe;
 import com.cahcap.common.recipe.CauldronInfusingRecipe;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.SlabBlock;
@@ -29,7 +32,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -52,26 +54,32 @@ import java.util.Map;
  * Brewing: Manual process triggered by Flowweave Ring
  */
 public class CauldronBlockEntity extends MultiblockPartBlockEntity {
-    
+
+    /**
+     * States of the brewing process.
+     * IDLE: Not brewing
+     * STARTING: Waiting to enter brewing phase (materials consumed, transitioning)
+     * BREWING: Actively brewing (can add herbs)
+     * COMPLETING: Waiting to complete brewing (final phase)
+     */
+    public enum BrewingState {
+        IDLE, STARTING, BREWING, COMPLETING
+    }
+
     // Fluid capacity (in millibuckets, 1000 = 1 bucket)
     public static final int MAX_FLUID_AMOUNT = 1000;
-    
-    // Cached render bounding box for multiblock rendering
-    public net.minecraft.world.phys.AABB renderAABB = null;
-    
+
     // Storage limits
     public static final int MAX_MATERIAL_TYPES = 10;  // 10 stacks of materials
     public static final int MAX_MATERIAL_COUNT = 64;
     public static final int MAX_HERB_DURATION_SECONDS = 480;  // 8 minutes
     public static final int BASE_DURATION_SECONDS = 120;     // 2 minutes
-    
+
     // Fluid content
     private CauldronFluid fluid = CauldronFluid.empty();
-    
+
     // Brewing state
-    private boolean isBrewing = false;
-    private boolean isStartingBrew = false;  // Waiting to enter brewing phase
-    private boolean isCompletingBrew = false; // Waiting to complete brewing
+    private BrewingState brewingState = BrewingState.IDLE;
     private int startingBrewTicks = 0;
     private int completingBrewTicks = 0;
     
@@ -80,7 +88,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     public static final int MIN_COMPLETING_BREW_TICKS = 1; // Time to complete brewing
     
     // Materials storage (can be added/removed when not brewing)
-    private final List<ItemStack> materials = new ArrayList<>();
+    private final List<ItemStack> materialIngredients = new ArrayList<>();
     
     // Herbs storage (can only be added during brewing)
     private final Map<Item, Integer> herbs = new HashMap<>();
@@ -138,7 +146,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     
     public boolean isBrewing() {
         CauldronBlockEntity master = getMaster();
-        return master != null && master.isBrewing;
+        return master != null && master.brewingState != BrewingState.IDLE;
     }
     
     /**
@@ -176,24 +184,24 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // Cannot extract potion with bucket
         if (!master.fluid.isFluid()) return null;
-        
+
         // Cannot extract while brewing
-        if (master.isBrewing) return null;
-        
+        if (master.brewingState != BrewingState.IDLE) return null;
+
         Fluid extracted = master.fluid.getFluid();
         int newAmount = master.fluid.getAmount() - amount;
-        
+
         if (newAmount <= 0) {
             master.fluid.clear();
         } else {
             master.fluid.setAmount(newAmount);
         }
-        
+
         master.setChanged();
         master.syncToClient();
         return extracted;
     }
-    
+
     /**
      * Extract fluid and clear all materials (used when scooping with bucket)
      * @return The fluid that was extracted, or null if cannot extract
@@ -201,12 +209,12 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     public Fluid extractFluidWithClear(int amount) {
         CauldronBlockEntity master = isMaster() ? this : getMaster();
         if (master == null) return null;
-        
+
         // Cannot extract potion with bucket
         if (!master.fluid.isFluid()) return null;
-        
+
         // Cannot extract while brewing
-        if (master.isBrewing) return null;
+        if (master.brewingState != BrewingState.IDLE) return null;
         
         Fluid extracted = master.fluid.getFluid();
         int newAmount = master.fluid.getAmount() - amount;
@@ -214,7 +222,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         if (newAmount <= 0) {
             master.fluid.clear();
             // Also clear materials since fluid is gone
-            master.materials.clear();
+            master.materialIngredients.clear();
             master.herbs.clear();
             master.lastBrewedHerbs.clear();
         } else {
@@ -245,8 +253,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // Return materials to player ONLY if not brewing
         // During brewing, materials have already been "used" in the process
-        if (player != null && !master.isBrewing) {
-            for (ItemStack material : master.materials) {
+        if (player != null && master.brewingState == BrewingState.IDLE) {
+            for (ItemStack material : master.materialIngredients) {
                 if (!material.isEmpty()) {
                     if (!player.getInventory().add(material.copy())) {
                         // Drop if can't add to inventory
@@ -276,12 +284,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         
         master.fluid.clear();
-        master.isBrewing = false;
-        master.isStartingBrew = false;
-        master.isCompletingBrew = false;
+        master.brewingState = BrewingState.IDLE;
         master.startingBrewTicks = 0;
         master.completingBrewTicks = 0;
-        master.materials.clear();
+        master.materialIngredients.clear();
         master.herbs.clear();
         master.isInfusing = false;
         master.infusingInput = ItemStack.EMPTY;
@@ -307,7 +313,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         if (master == null || master.fluid.isEmpty()) return false;
         
         // If brewing, only accept herbs
-        if (master.isBrewing) {
+        if (master.brewingState == BrewingState.BREWING) {
             return master.addHerb(stack, player);
         }
         
@@ -327,7 +333,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     private boolean addMaterial(ItemStack stack, Player player) {
         // Like a chest: max 10 slots, each slot max 64 items (stack limit)
         // First try to stack with existing same items
-        for (ItemStack existing : materials) {
+        for (ItemStack existing : materialIngredients) {
             if (ItemStack.isSameItemSameComponents(existing, stack)) {
                 int maxStack = existing.getMaxStackSize();
                 int canAdd = Math.min(stack.getCount(), maxStack - existing.getCount());
@@ -343,11 +349,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         
         // If can't stack and we have room for a new slot, add it
-        if (materials.size() < MAX_MATERIAL_TYPES) {
+        if (materialIngredients.size() < MAX_MATERIAL_TYPES) {
             ItemStack toAdd = stack.copy();
             int maxStack = toAdd.getMaxStackSize();
             toAdd.setCount(Math.min(stack.getCount(), maxStack));
-            materials.add(toAdd);
+            materialIngredients.add(toAdd);
             stack.shrink(toAdd.getCount());
             setChanged();
             syncToClient();
@@ -386,7 +392,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         if (master == null) return ItemStack.EMPTY;
         
         // Cannot extract while brewing
-        if (master.isBrewing) return ItemStack.EMPTY;
+        if (master.brewingState != BrewingState.IDLE) return ItemStack.EMPTY;
         
         // If infusing is complete, extract the output
         if (!master.isInfusing && !master.infusingOutput.isEmpty()) {
@@ -399,12 +405,12 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         
         // Extract from materials
-        if (master.materials.isEmpty()) {
+        if (master.materialIngredients.isEmpty()) {
             return ItemStack.EMPTY;
         }
         
         // Extract from the last added material
-        ItemStack last = master.materials.get(master.materials.size() - 1);
+        ItemStack last = master.materialIngredients.get(master.materialIngredients.size() - 1);
         int extractAmount = player.isShiftKeyDown() ? Math.min(last.getCount(), 64) : 1;
         
         ItemStack extracted = last.copy();
@@ -412,7 +418,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         last.shrink(extractAmount);
         
         if (last.isEmpty()) {
-            master.materials.remove(master.materials.size() - 1);
+            master.materialIngredients.remove(master.materialIngredients.size() - 1);
         }
         
         // If extracting material during infusing, cancel the infusing process
@@ -424,7 +430,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         master.syncToClient();
         
         // Check if we can start infusing with remaining materials
-        if (!master.materials.isEmpty()) {
+        if (!master.materialIngredients.isEmpty()) {
             master.checkAndStartInfusing(player);
         }
         
@@ -436,7 +442,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      */
     public List<ItemStack> getMaterials() {
         CauldronBlockEntity master = getMaster();
-        return master != null ? new ArrayList<>(master.materials) : new ArrayList<>();
+        return master != null ? new ArrayList<>(master.materialIngredients) : new ArrayList<>();
     }
     
     /**
@@ -450,25 +456,15 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     // ==================== Herb Validation ====================
     
     public static boolean isHerb(Item item) {
-        // Check all herb products
-        return item == ModRegistries.SCALEPLATE.get() ||
-               item == ModRegistries.DEWPETAL_SHARD.get() ||
-               item == ModRegistries.GOLDEN_LILYBELL.get() ||
-               item == ModRegistries.CRYST_SPINE.get() ||
-               item == ModRegistries.BURNT_NODE.get() ||
-               item == ModRegistries.HEART_OF_STARDREAM.get();
+        return HerbRegistry.isHerb(item);
     }
-    
+
     public static boolean isOverworldHerb(Item item) {
-        return item == ModRegistries.SCALEPLATE.get() ||
-               item == ModRegistries.DEWPETAL_SHARD.get() ||
-               item == ModRegistries.GOLDEN_LILYBELL.get();
+        return HerbRegistry.isOverworldHerb(item);
     }
-    
+
     public static boolean isNetherOrEndHerb(Item item) {
-        return item == ModRegistries.CRYST_SPINE.get() ||
-               item == ModRegistries.BURNT_NODE.get() ||
-               item == ModRegistries.HEART_OF_STARDREAM.get();
+        return HerbRegistry.isNetherOrEndHerb(item);
     }
     
     // ==================== Infusing ====================
@@ -481,10 +477,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      * (indicated by isFlowweaveRingBinding flag).
      */
     private void checkAndStartInfusing(Player player) {
-        if (level == null || materials.isEmpty() || fluid.isEmpty()) return;
+        if (level == null || materialIngredients.isEmpty() || fluid.isEmpty()) return;
         
         // Already infusing or brewing
-        if (isInfusing || isBrewing) return;
+        if (isInfusing || brewingState != BrewingState.IDLE) return;
         
         // Find a recipe that matches current materials (relaxed matching)
         CauldronInfusingRecipe recipe = findMatchingInfusingRecipe();
@@ -524,9 +520,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      * Create a bound Flowweave Ring based on current potion and herb costs.
      */
     private ItemStack createBoundFlowweaveRing() {
-        if (materials.isEmpty()) return ItemStack.EMPTY;
-        
-        ItemStack ringStack = materials.get(0);
+        if (materialIngredients.isEmpty()) return ItemStack.EMPTY;
+
+        ItemStack ringStack = materialIngredients.get(0);
         ItemStack boundRing = ringStack.copy();
         
         // Convert effects to effect IDs
@@ -554,9 +550,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      * Create an unbound Flowweave Ring (clear any existing binding).
      */
     private ItemStack createUnboundFlowweaveRing() {
-        if (materials.isEmpty()) return ItemStack.EMPTY;
-        
-        ItemStack ringStack = materials.get(0);
+        if (materialIngredients.isEmpty()) return ItemStack.EMPTY;
+
+        ItemStack ringStack = materialIngredients.get(0);
         ItemStack unboundRing = new ItemStack(ModRegistries.FLOWWEAVE_RING.get(), 1);
         // New ring has no custom data, so it's unbound
         
@@ -586,7 +582,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             }
             
             // Check materials contain required types (relaxed matching)
-            if (recipe.matchesMaterialsContains(materials)) {
+            if (recipe.matchesMaterialsContains(materialIngredients)) {
                 return recipe;
             }
         }
@@ -600,9 +596,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      * - The potion in cauldron has reached its maximum duration and level (defined by recipe)
      */
     private boolean matchesFlowweaveRingBindingConditions() {
-        if (materials.size() != 1) return false;
-        
-        ItemStack ringStack = materials.get(0);
+        if (materialIngredients.size() != 1) return false;
+
+        ItemStack ringStack = materialIngredients.get(0);
         if (!ringStack.is(ModRegistries.FLOWWEAVE_RING.get())) return false;
         if (ringStack.getCount() != 1) return false;
         
@@ -663,21 +659,21 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         if (master == null) return;
         
         // Already in a waiting state - don't trigger again
-        if (master.isStartingBrew || master.isCompletingBrew) {
+        if (master.brewingState == BrewingState.STARTING || master.brewingState == BrewingState.COMPLETING) {
             return;
         }
-        
+
         // Must have water and materials to start brewing
-        if (!master.isBrewing && master.fluid.isWater() && !master.materials.isEmpty()) {
+        if (master.brewingState == BrewingState.IDLE && master.fluid.isWater() && !master.materialIngredients.isEmpty()) {
             boolean hasHeat = master.checkHeatSource();
-            
+
             if (hasHeat) {
                 // Find matching brewing recipe
                 CauldronBrewingRecipe recipe = master.findBrewingRecipe();
-                
+
                 if (recipe != null) {
                     // Start the "starting brew" phase
-                    master.isStartingBrew = true;
+                    master.brewingState = BrewingState.STARTING;
                     master.startingBrewTicks = 0;
                     // Convert water to boiling potion - effect types are now determined
                     // Keep water color during boiling (color changes on completion)
@@ -685,7 +681,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                     int boilingColor = 0x3F76E4; // Water color during boiling
                     master.fluid.convertToBoilingPotion(effects, boilingColor);
                     // Consume materials immediately - they are now part of the brewing process
-                    master.materials.clear();
+                    master.materialIngredients.clear();
                     master.setChanged();
                     master.syncToClient();
                 }
@@ -694,11 +690,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         
         // Complete brewing on second click (requires heat source)
-        if (master.isBrewing) {
+        if (master.brewingState == BrewingState.BREWING) {
             boolean hasHeat = master.checkHeatSource();
             if (hasHeat) {
                 // Start the "completing brew" phase
-                master.isCompletingBrew = true;
+                master.brewingState = BrewingState.COMPLETING;
                 master.completingBrewTicks = 0;
                 master.setChanged();
                 master.syncToClient();
@@ -722,7 +718,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         var recipes = level.getRecipeManager().getAllRecipesFor(ModRegistries.CAULDRON_BREWING_RECIPE_TYPE.get());
         for (var recipeHolder : recipes) {
             CauldronBrewingRecipe recipe = recipeHolder.value();
-            if (recipe.matchesMaterials(materials)) {
+            if (recipe.matchesMaterials(materialIngredients)) {
                 return recipe;
             }
         }
@@ -777,7 +773,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     private void completeBrewing() {
         // Must be in boiling state
         if (!fluid.isBoilingPotion()) {
-            isBrewing = false;
+            brewingState = BrewingState.IDLE;
             return;
         }
         
@@ -845,14 +841,12 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         fluid.convertToPotion(duration, amplifier, recipeColor);
         
         // Clear brewing state
-        isBrewing = false;
-        isStartingBrew = false;
-        isCompletingBrew = false;
+        brewingState = BrewingState.IDLE;
         startingBrewTicks = 0;
         completingBrewTicks = 0;
-        materials.clear();
+        materialIngredients.clear();
         herbs.clear();
-        
+
         setChanged();
         syncToClient();
     }
@@ -934,7 +928,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         for (CauldronInfusingRecipe.IngredientWithCount iwc : requiredInputs) {
             int remaining = iwc.count();
             
-            java.util.Iterator<ItemStack> iterator = materials.iterator();
+            java.util.Iterator<ItemStack> iterator = materialIngredients.iterator();
             while (iterator.hasNext() && remaining > 0) {
                 ItemStack stack = iterator.next();
                 
@@ -960,10 +954,10 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         
         // Add remainder items back to materials (stay in cauldron)
         for (ItemStack remainder : remaindersToAdd) {
-            if (!remainder.isEmpty() && materials.size() < MAX_MATERIAL_TYPES) {
+            if (!remainder.isEmpty() && materialIngredients.size() < MAX_MATERIAL_TYPES) {
                 // Try to stack with existing
                 boolean stacked = false;
-                for (ItemStack existing : materials) {
+                for (ItemStack existing : materialIngredients) {
                     if (ItemStack.isSameItemSameComponents(existing, remainder)) {
                         int canAdd = existing.getMaxStackSize() - existing.getCount();
                         if (canAdd > 0) {
@@ -978,8 +972,8 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
                     }
                 }
                 // If not stacked and still has items, add as new stack
-                if (!stacked && !remainder.isEmpty() && materials.size() < MAX_MATERIAL_TYPES) {
-                    materials.add(remainder);
+                if (!stacked && !remainder.isEmpty() && materialIngredients.size() < MAX_MATERIAL_TYPES) {
+                    materialIngredients.add(remainder);
                 }
             }
         }
@@ -991,7 +985,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
      * Check if there's at least one heat source below the cauldron
      */
     public boolean checkHeatSource() {
-        if (level == null || !formed) return false;
+        if (level == null || !isFormed()) return false;
         
         CauldronBlockEntity master = getMaster();
         if (master == null) return false;
@@ -1052,24 +1046,22 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         be.collectItemsFromAbove(level);
         
         // Starting brew countdown (requires heat source)
-        if (be.isStartingBrew && be.hasHeatSource) {
+        if (be.brewingState == BrewingState.STARTING && be.hasHeatSource) {
             be.startingBrewTicks++;
             if (be.startingBrewTicks >= MIN_STARTING_BREW_TICKS) {
                 // Enter brewing phase - can now add herbs
-                be.isStartingBrew = false;
-                be.isBrewing = true;
+                be.brewingState = BrewingState.BREWING;
                 be.startingBrewTicks = 0;
                 be.setChanged();
                 be.syncToClient();
             }
         }
-        
+
         // Completing brew countdown (requires heat source)
-        if (be.isCompletingBrew && be.hasHeatSource) {
+        if (be.brewingState == BrewingState.COMPLETING && be.hasHeatSource) {
             be.completingBrewTicks++;
             if (be.completingBrewTicks >= MIN_COMPLETING_BREW_TICKS) {
                 // Complete brewing - get product
-                be.isCompletingBrew = false;
                 be.completingBrewTicks = 0;
                 be.completeBrewing();
             }
@@ -1088,7 +1080,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             }
             
             // Check if materials still match the recipe (in case items were added during infusing)
-            if (!be.currentInfusingRecipe.matchesMaterialsContains(be.materials)) {
+            if (!be.currentInfusingRecipe.matchesMaterialsContains(be.materialIngredients)) {
                 // Materials no longer match - stop infusing
                 be.cancelInfusing();
             } else {
@@ -1134,7 +1126,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             boolean added = false;
             
             // If brewing, only accept herbs
-            if (isBrewing) {
+            if (brewingState == BrewingState.BREWING) {
                 if (isHerb(stack.getItem())) {
                     added = addHerbFromEntity(stack);
                 }
@@ -1162,7 +1154,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     private boolean addMaterialFromEntity(ItemStack stack) {
         // Like a chest: max 10 slots, each slot max 64 items (stack limit)
         // First try to stack with existing same items
-        for (ItemStack existing : materials) {
+        for (ItemStack existing : materialIngredients) {
             if (ItemStack.isSameItemSameComponents(existing, stack)) {
                 int maxStack = existing.getMaxStackSize();
                 int canAdd = Math.min(stack.getCount(), maxStack - existing.getCount());
@@ -1178,11 +1170,11 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
         }
         
         // If can't stack and we have room for a new slot, add it
-        if (materials.size() < MAX_MATERIAL_TYPES) {
+        if (materialIngredients.size() < MAX_MATERIAL_TYPES) {
             ItemStack toAdd = stack.copy();
             int maxStack = toAdd.getMaxStackSize();
             toAdd.setCount(Math.min(stack.getCount(), maxStack));
-            materials.add(toAdd);
+            materialIngredients.add(toAdd);
             stack.shrink(toAdd.getCount());
             setChanged();
             syncToClient();
@@ -1383,91 +1375,37 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     // ==================== Multiblock Management ====================
     
     @Override
-    public void disassemble() {
-        if (level == null || level.isClientSide || !formed) {
-            return;
-        }
-        
+    protected Block getMultiblockBlock() {
+        return ModRegistries.CAULDRON.get();
+    }
+
+    @Override
+    protected void dropStoredItems(BlockPos masterPos) {
         CauldronBlockEntity master = getMaster();
-        if (master == null) {
-            return;
-        }
-        
-        BlockPos masterPos = master.getBlockPos();
-        BlockPos breakPos = getBlockPos();
-        
-        // Drop all stored materials ONLY if not brewing
-        // During brewing, materials have already been consumed
-        if (!master.isBrewing) {
-            for (ItemStack stack : master.materials) {
+        if (master == null) return;
+
+        // Drop materials ONLY if not brewing (materials consumed during brewing)
+        if (master.brewingState == BrewingState.IDLE) {
+            for (ItemStack stack : master.materialIngredients) {
                 if (!stack.isEmpty()) {
-                    ItemEntity entityItem = new ItemEntity(
-                            level,
-                            masterPos.getX() + 0.5,
-                            masterPos.getY() + 0.5,
-                            masterPos.getZ() + 0.5,
-                            stack.copy()
-                    );
+                    ItemEntity entityItem = new ItemEntity(level,
+                        masterPos.getX() + 0.5, masterPos.getY() + 0.5, masterPos.getZ() + 0.5, stack.copy());
                     level.addFreshEntity(entityItem);
                 }
             }
         }
-        // Note: herbs are also consumed during brewing, so no need to drop them
-        
-        // Drop output slot contents
+
+        // Drop output slot
         if (!master.outputSlot.isEmpty()) {
-            ItemEntity entityItem = new ItemEntity(
-                    level,
-                    masterPos.getX() + 0.5,
-                    masterPos.getY() + 0.5,
-                    masterPos.getZ() + 0.5,
-                    master.outputSlot.copy()
-            );
+            ItemEntity entityItem = new ItemEntity(level,
+                masterPos.getX() + 0.5, masterPos.getY() + 0.5, masterPos.getZ() + 0.5, master.outputSlot.copy());
             level.addFreshEntity(entityItem);
             master.outputSlot = ItemStack.EMPTY;
         }
-        
-        // Get all block positions in the structure
-        List<BlockPos> structurePositions = getStructurePositions(masterPos);
-        
-        // First pass: Mark all blocks as not formed
-        for (BlockPos targetPos : structurePositions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.CAULDRON.get())) {
-                if (level.getBlockEntity(targetPos) instanceof CauldronBlockEntity cauldron) {
-                    cauldron.formed = false;
-                    cauldron.renderAABB = null;
-                    
-                    if (!targetPos.equals(breakPos)) {
-                        cauldron.suppressDrops = true;
-                    }
-                    
-                    cauldron.setChanged();
-                    BlockState state = level.getBlockState(targetPos);
-                    level.sendBlockUpdated(targetPos, state, state, 3);
-                }
-            }
-        }
-        
-        // Second pass: Replace non-broken blocks with original blocks
-        for (BlockPos targetPos : structurePositions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.CAULDRON.get())) {
-                if (!targetPos.equals(breakPos)) {
-                    BlockState original = null;
-                    if (level.getBlockEntity(targetPos) instanceof CauldronBlockEntity cauldron2) {
-                        original = cauldron2.originalBlockState;
-                    }
-                    if (original == null) {
-                        original = getOriginalBlockForPosition(targetPos, masterPos);
-                    }
-                    level.setBlock(targetPos, original, 2);
-                }
-            }
-        }
-        
-        setChanged();
     }
-    
-    private List<BlockPos> getStructurePositions(BlockPos masterPos) {
+
+    @Override
+    protected List<BlockPos> getStructurePositions(BlockPos masterPos) {
         List<BlockPos> positions = new ArrayList<>();
         
         // Layer 1 (y=0, master layer): All 9 positions
@@ -1528,8 +1466,9 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     
     @Override
     public BlockState getOriginalBlockState() {
-        if (originalBlockState != null) {
-            return originalBlockState;
+        BlockState stored = getRawOriginalBlockState();
+        if (stored != null) {
+            return stored;
         }
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) {
@@ -1539,7 +1478,7 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
 
     public AABB computeRenderAABB() {
-        if (renderAABB == null && formed) {
+        if (renderAABB == null && isFormed()) {
             BlockPos masterPos = getMasterPos();
             if (masterPos != null) {
                 renderAABB = new AABB(
@@ -1562,16 +1501,14 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             tag.put("Fluid", fluid.save(registries));
             
             // Save brewing state
-            tag.putBoolean("IsBrewing", isBrewing);
-            tag.putBoolean("IsStartingBrew", isStartingBrew);
-            tag.putBoolean("IsCompletingBrew", isCompletingBrew);
+            tag.putInt("BrewingState", brewingState.ordinal());
             tag.putInt("StartingBrewTicks", startingBrewTicks);
             tag.putInt("CompletingBrewTicks", completingBrewTicks);
             tag.putBoolean("HasHeatSource", hasHeatSource);
             
             // Save materials
             ListTag materialsTag = new ListTag();
-            for (ItemStack stack : materials) {
+            for (ItemStack stack : materialIngredients) {
                 if (!stack.isEmpty()) {
                     materialsTag.add(stack.save(registries));
                 }
@@ -1625,18 +1562,34 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
             }
             
             // Load brewing state
-            isBrewing = tag.getBoolean("IsBrewing");
-            isStartingBrew = tag.getBoolean("IsStartingBrew");
-            isCompletingBrew = tag.getBoolean("IsCompletingBrew");
+            if (tag.contains("BrewingState")) {
+                int ordinal = tag.getInt("BrewingState");
+                BrewingState[] states = BrewingState.values();
+                brewingState = (ordinal >= 0 && ordinal < states.length) ? states[ordinal] : BrewingState.IDLE;
+            } else {
+                // Backward compatibility: convert old boolean keys to enum
+                boolean oldIsBrewing = tag.getBoolean("IsBrewing");
+                boolean oldIsStartingBrew = tag.getBoolean("IsStartingBrew");
+                boolean oldIsCompletingBrew = tag.getBoolean("IsCompletingBrew");
+                if (oldIsCompletingBrew) {
+                    brewingState = BrewingState.COMPLETING;
+                } else if (oldIsStartingBrew) {
+                    brewingState = BrewingState.STARTING;
+                } else if (oldIsBrewing) {
+                    brewingState = BrewingState.BREWING;
+                } else {
+                    brewingState = BrewingState.IDLE;
+                }
+            }
             startingBrewTicks = tag.getInt("StartingBrewTicks");
             completingBrewTicks = tag.getInt("CompletingBrewTicks");
             hasHeatSource = tag.getBoolean("HasHeatSource");
             
             // Load materials
-            materials.clear();
+            materialIngredients.clear();
             ListTag materialsTag = tag.getList("Materials", Tag.TAG_COMPOUND);
             for (int i = 0; i < materialsTag.size(); i++) {
-                ItemStack.parse(registries, materialsTag.getCompound(i)).ifPresent(materials::add);
+                ItemStack.parse(registries, materialsTag.getCompound(i)).ifPresent(materialIngredients::add);
             }
             
             // Load herbs
@@ -1682,428 +1635,6 @@ public class CauldronBlockEntity extends MultiblockPartBlockEntity {
     }
     
     private Item getHerbFromKey(String key) {
-        if (key.contains("scaleplate")) return ModRegistries.SCALEPLATE.get();
-        if (key.contains("dewpetal_shard")) return ModRegistries.DEWPETAL_SHARD.get();
-        if (key.contains("golden_lilybell")) return ModRegistries.GOLDEN_LILYBELL.get();
-        if (key.contains("cryst_spine")) return ModRegistries.CRYST_SPINE.get();
-        if (key.contains("burnt_node")) return ModRegistries.BURNT_NODE.get();
-        if (key.contains("heart_of_stardream")) return ModRegistries.HEART_OF_STARDREAM.get();
-        return null;
-    }
-    
-    // ==================== CauldronFluid Inner Class ====================
-    
-    /**
-     * Represents the fluid content of a Cauldron.
-     * Can be empty, a vanilla/modded fluid, or a potion with custom properties.
-     */
-    public static class CauldronFluid {
-        
-        public enum FluidType {
-            EMPTY,          // No fluid
-            FLUID,          // Vanilla/modded fluid (water, lava, etc.)
-            BOILING_POTION, // Brewing in progress - effect determined, duration/level pending
-            POTION          // Finished potion with effect properties
-        }
-        
-        public static final int MAX_POTION_UNITS = 32;
-
-        private FluidType type = FluidType.EMPTY;
-        private int amount = 0;  // In millibuckets (1000 = 1 bucket)
-        private int potionUnits = 0;  // Potion dose units (0-32), only meaningful for POTION type
-        
-        // For FLUID type
-        private Fluid fluid = null;
-        
-        // For POTION type - now supports multiple effects
-        private List<MobEffect> effects = new ArrayList<>();
-        private int duration = 0;      // In seconds
-        private int amplifier = 0;     // Potion level (0 = level 1)
-        private int color = 0x3F76E4;  // Default water color
-        
-        // Private constructor - use factory methods
-        private CauldronFluid() {}
-        
-        // ==================== Factory Methods ====================
-        
-        public static CauldronFluid empty() {
-            return new CauldronFluid();
-        }
-        
-        public static CauldronFluid ofFluid(Fluid fluid, int amount) {
-            CauldronFluid cf = new CauldronFluid();
-            cf.type = FluidType.FLUID;
-            cf.fluid = fluid;
-            cf.amount = amount;
-            return cf;
-        }
-        
-        public static CauldronFluid ofWater(int amount) {
-            return ofFluid(Fluids.WATER, amount);
-        }
-        
-        public static CauldronFluid ofPotion(List<MobEffect> effects, int duration, int amplifier, int color, int amount) {
-            CauldronFluid cf = new CauldronFluid();
-            cf.type = FluidType.POTION;
-            cf.effects = new ArrayList<>(effects);
-            cf.duration = duration;
-            cf.amplifier = amplifier;
-            cf.color = color;
-            cf.amount = amount;
-            cf.potionUnits = MAX_POTION_UNITS;
-            return cf;
-        }
-        
-        // Single effect version for backwards compatibility
-        public static CauldronFluid ofPotion(MobEffect effect, int duration, int amplifier, int color, int amount) {
-            return ofPotion(List.of(effect), duration, amplifier, color, amount);
-        }
-        
-        public static CauldronFluid ofBoilingPotion(List<MobEffect> effects, int color, int amount) {
-            CauldronFluid cf = new CauldronFluid();
-            cf.type = FluidType.BOILING_POTION;
-            cf.effects = new ArrayList<>(effects);
-            cf.duration = 0;   // To be determined by herbs
-            cf.amplifier = 0;  // To be determined by herbs
-            cf.color = color;
-            cf.amount = amount;
-            return cf;
-        }
-        
-        // Single effect version for backwards compatibility
-        public static CauldronFluid ofBoilingPotion(MobEffect effect, int color, int amount) {
-            return ofBoilingPotion(List.of(effect), color, amount);
-        }
-        
-        // ==================== Getters ====================
-        
-        public FluidType getType() {
-            return type;
-        }
-        
-        public boolean isEmpty() {
-            return type == FluidType.EMPTY || amount <= 0;
-        }
-        
-        public boolean isFluid() {
-            return type == FluidType.FLUID;
-        }
-        
-        public boolean isPotion() {
-            return type == FluidType.POTION;
-        }
-        
-        public boolean isBoilingPotion() {
-            return type == FluidType.BOILING_POTION;
-        }
-        
-        public boolean isWater() {
-            return type == FluidType.FLUID && fluid == Fluids.WATER;
-        }
-        
-        public int getAmount() {
-            return amount;
-        }
-
-        public int getPotionUnits() {
-            return potionUnits;
-        }
-
-        /**
-         * Consume potion units. If units reach 0, convert to water.
-         * @param units number of units to consume
-         */
-        public void consumeUnits(int units) {
-            if (!isPotion()) return;
-            potionUnits = Math.max(0, potionUnits - units);
-            if (potionUnits <= 0) {
-                convertToWater();
-            }
-        }
-        
-        public Fluid getFluid() {
-            return fluid;
-        }
-        
-        /**
-         * Get the first effect (for backwards compatibility)
-         */
-        public MobEffect getEffect() {
-            return effects.isEmpty() ? null : effects.get(0);
-        }
-        
-        /**
-         * Get all effects
-         */
-        public List<MobEffect> getEffects() {
-            return effects;
-        }
-        
-        public int getDuration() {
-            return duration;
-        }
-        
-        public int getAmplifier() {
-            return amplifier;
-        }
-        
-        /**
-         * Get the display color (interpolated for potions based on remaining units).
-         * Use for rendering the fluid in the cauldron and tooltip.
-         */
-        public int getColor() {
-            if (type == FluidType.EMPTY) {
-                return 0;
-            } else if (type == FluidType.FLUID) {
-                return getFluidColor(fluid);
-            } else if (type == FluidType.POTION && potionUnits < MAX_POTION_UNITS && potionUnits > 0) {
-                float ratio = (float) potionUnits / MAX_POTION_UNITS;
-                return lerpColor(WATER_COLOR, color, ratio);
-            } else {
-                return color;
-            }
-        }
-
-        /**
-         * Get the original undiluted potion color (not interpolated).
-         * Use when storing to pot or serialization that needs the base color.
-         */
-        public int getBaseColor() {
-            return color;
-        }
-
-        private static final int WATER_COLOR = 0x3F76E4;
-
-        private static int lerpColor(int from, int to, float ratio) {
-            int fr = (from >> 16) & 0xFF, fg = (from >> 8) & 0xFF, fb = from & 0xFF;
-            int tr = (to >> 16) & 0xFF, tg = (to >> 8) & 0xFF, tb = to & 0xFF;
-            int r = (int) (fr + (tr - fr) * ratio);
-            int g = (int) (fg + (tg - fg) * ratio);
-            int b = (int) (fb + (tb - fb) * ratio);
-            return (r << 16) | (g << 8) | b;
-        }
-        
-        private static int getFluidColor(Fluid fluid) {
-            if (fluid == null || fluid == Fluids.EMPTY) return 0;
-            if (fluid == Fluids.WATER || fluid == Fluids.FLOWING_WATER) return 0x3F76E4;
-            if (fluid == Fluids.LAVA || fluid == Fluids.FLOWING_LAVA) return 0xFF5500;
-            return 0xFFFFFF;
-        }
-        
-        // ==================== Setters ====================
-        
-        public void setAmount(int amount) {
-            this.amount = amount;
-            if (amount <= 0) {
-                clear();
-            }
-        }
-        
-        public void clear() {
-            this.type = FluidType.EMPTY;
-            this.amount = 0;
-            this.potionUnits = 0;
-            this.fluid = null;
-            this.effects.clear();
-            this.duration = 0;
-            this.amplifier = 0;
-            this.color = 0x3F76E4;
-        }
-        
-        /**
-         * Convert this fluid to water (used after infusing completes)
-         */
-        public void convertToWater() {
-            this.type = FluidType.FLUID;
-            this.fluid = Fluids.WATER;
-            this.potionUnits = 0;
-            this.effects.clear();
-            this.duration = 0;
-            this.amplifier = 0;
-            this.color = 0x3F76E4;
-            // Keep the same amount
-        }
-        
-        /**
-         * Convert water to boiling potion (used when brewing starts)
-         * Effect types are determined, but duration/amplifier are pending (based on herbs added later)
-         */
-        public void convertToBoilingPotion(List<MobEffect> effects, int color) {
-            this.type = FluidType.BOILING_POTION;
-            this.fluid = null;
-            this.effects = new ArrayList<>(effects);
-            this.duration = 0;   // To be determined
-            this.amplifier = 0;  // To be determined
-            this.color = color;
-            // Keep the same amount
-        }
-        
-        // Single effect version for backwards compatibility
-        public void convertToBoilingPotion(MobEffect effect, int color) {
-            convertToBoilingPotion(List.of(effect), color);
-        }
-        
-        /**
-         * Convert boiling potion to finished potion (used when brewing completes)
-         */
-        public void convertToPotion(int duration, int amplifier) {
-            if (this.type != FluidType.BOILING_POTION) return;
-            this.type = FluidType.POTION;
-            this.duration = duration;
-            this.amplifier = amplifier;
-            this.potionUnits = MAX_POTION_UNITS;
-            // Set color from first effect (boiling used water color)
-            if (!this.effects.isEmpty()) {
-                this.color = this.effects.get(0).getColor();
-            }
-        }
-        
-        /**
-         * Convert boiling potion to finished potion with custom color
-         */
-        public void convertToPotion(int duration, int amplifier, int color) {
-            if (this.type != FluidType.BOILING_POTION) return;
-            this.type = FluidType.POTION;
-            this.potionUnits = MAX_POTION_UNITS;
-            this.duration = duration;
-            this.amplifier = amplifier;
-            this.color = color;
-        }
-        
-        /**
-         * Convert water to potion directly (used for legacy compatibility)
-         */
-        public void convertToPotion(MobEffect effect, int duration, int amplifier, int color) {
-            this.type = FluidType.POTION;
-            this.fluid = null;
-            this.effects = new ArrayList<>(List.of(effect));
-            this.duration = duration;
-            this.amplifier = amplifier;
-            this.color = color;
-            // Keep the same amount
-        }
-        
-        // ==================== NBT Serialization ====================
-        
-        public CompoundTag save(HolderLookup.Provider registries) {
-            CompoundTag tag = new CompoundTag();
-            tag.putString("Type", type.name());
-            tag.putInt("Amount", amount);
-            tag.putInt("PotionUnits", potionUnits);
-
-            if (type == FluidType.FLUID && fluid != null) {
-                tag.putString("Fluid", net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(fluid).toString());
-            } else if ((type == FluidType.POTION || type == FluidType.BOILING_POTION) && !effects.isEmpty()) {
-                // Save effects as a list
-                net.minecraft.nbt.ListTag effectsList = new net.minecraft.nbt.ListTag();
-                for (MobEffect effect : effects) {
-                    net.minecraft.resources.ResourceLocation effectId = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getKey(effect);
-                    if (effectId != null) {
-                        net.minecraft.nbt.StringTag effectTag = net.minecraft.nbt.StringTag.valueOf(effectId.toString());
-                        effectsList.add(effectTag);
-                    }
-                }
-                tag.put("Effects", effectsList);
-                tag.putInt("Duration", duration);
-                tag.putInt("Amplifier", amplifier);
-                tag.putInt("Color", color);
-            }
-            
-            return tag;
-        }
-        
-        public static CauldronFluid load(CompoundTag tag, HolderLookup.Provider registries) {
-            CauldronFluid cf = new CauldronFluid();
-            
-            String typeName = tag.getString("Type");
-            cf.type = FluidType.valueOf(typeName.isEmpty() ? "EMPTY" : typeName);
-            cf.amount = tag.getInt("Amount");
-            cf.potionUnits = tag.getInt("PotionUnits");
-
-            if (cf.type == FluidType.FLUID && tag.contains("Fluid")) {
-                net.minecraft.resources.ResourceLocation fluidId = net.minecraft.resources.ResourceLocation.tryParse(tag.getString("Fluid"));
-                if (fluidId != null) {
-                    cf.fluid = net.minecraft.core.registries.BuiltInRegistries.FLUID.get(fluidId);
-                }
-            } else if ((cf.type == FluidType.POTION || cf.type == FluidType.BOILING_POTION)) {
-                // Load effects - support both old single effect and new list format
-                if (tag.contains("Effects")) {
-                    net.minecraft.nbt.ListTag effectsList = tag.getList("Effects", net.minecraft.nbt.Tag.TAG_STRING);
-                    for (int i = 0; i < effectsList.size(); i++) {
-                        net.minecraft.resources.ResourceLocation effectId = net.minecraft.resources.ResourceLocation.tryParse(effectsList.getString(i));
-                        if (effectId != null) {
-                            MobEffect effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.get(effectId);
-                            if (effect != null) {
-                                cf.effects.add(effect);
-                            }
-                        }
-                    }
-                } else if (tag.contains("Effect")) {
-                    // Legacy single effect format
-                    net.minecraft.resources.ResourceLocation effectId = net.minecraft.resources.ResourceLocation.tryParse(tag.getString("Effect"));
-                    if (effectId != null) {
-                        MobEffect effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.get(effectId);
-                        if (effect != null) {
-                            cf.effects.add(effect);
-                        }
-                    }
-                }
-                cf.duration = tag.getInt("Duration");
-                cf.amplifier = tag.getInt("Amplifier");
-                cf.color = tag.getInt("Color");
-            }
-            
-            return cf;
-        }
-        
-        // ==================== Matching ====================
-        
-        /**
-         * Check if this fluid matches a specific vanilla/modded fluid
-         */
-        public boolean matchesFluid(Fluid fluid) {
-            return type == FluidType.FLUID && this.fluid == fluid;
-        }
-        
-        /**
-         * Check if this fluid matches potion requirements
-         */
-        public boolean matchesPotion(MobEffect requiredEffect, int minDuration, int minAmplifier) {
-            if (type != FluidType.POTION) return false;
-            if (requiredEffect != null && !this.effects.contains(requiredEffect)) return false;
-            return this.duration >= minDuration && this.amplifier >= minAmplifier;
-        }
-        
-        /**
-         * Check if this potion has any of the given effects
-         */
-        public boolean hasAnyEffect(List<MobEffect> requiredEffects) {
-            if (type != FluidType.POTION && type != FluidType.BOILING_POTION) return false;
-            for (MobEffect effect : requiredEffects) {
-                if (this.effects.contains(effect)) return true;
-            }
-            return false;
-        }
-        
-        /**
-         * Check if this matches any fluid (water or potion)
-         */
-        public boolean matchesAny() {
-            return !isEmpty();
-        }
-        
-        // ==================== Copy ====================
-        
-        public CauldronFluid copy() {
-            CauldronFluid cf = new CauldronFluid();
-            cf.type = this.type;
-            cf.amount = this.amount;
-            cf.fluid = this.fluid;
-            cf.effects = new ArrayList<>(this.effects);
-            cf.duration = this.duration;
-            cf.amplifier = this.amplifier;
-            cf.color = this.color;
-            return cf;
-        }
+        return HerbRegistry.getHerbByKeyContains(key);
     }
 }

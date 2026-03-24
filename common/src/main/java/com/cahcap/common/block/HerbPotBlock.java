@@ -1,8 +1,10 @@
 package com.cahcap.common.block;
 
-import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.blockentity.HerbPotBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -154,7 +156,7 @@ public class HerbPotBlock extends BaseEntityBlock {
         }
         
         // Try to add herb
-        if (HerbCabinetBlockEntity.isHerb(heldItem.getItem())) {
+        if (HerbRegistry.isHerb(heldItem.getItem())) {
             int added = herbPot.addHerb(heldItem, isCreative);
             if (added > 0) {
                 level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 1.0f, 1.0f);

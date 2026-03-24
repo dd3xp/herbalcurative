@@ -1,10 +1,16 @@
 package com.cahcap.common.blockentity;
 
 import com.cahcap.common.block.IncenseBurnerBlock;
+import com.cahcap.common.util.BlockEntityHelper;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.item.IncensePowderItem;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.recipe.IncenseBurningRecipe;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModTags;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -182,7 +188,7 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
     }
     
     public int addHerb(ItemStack stack, boolean isCreative) {
-        if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) return 0;
+        if (!HerbRegistry.isHerb(stack.getItem())) return 0;
         if (!getAcceptedHerbs().contains(stack.getItem())) return 0;
 
         Item herbType = stack.getItem();
@@ -475,11 +481,7 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
     }
     
     public void syncToClient() {
-        if (level != null && !level.isClientSide) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, 3);
-            setChanged();
-        }
+        BlockEntityHelper.syncToClient(this);
     }
     
     /**

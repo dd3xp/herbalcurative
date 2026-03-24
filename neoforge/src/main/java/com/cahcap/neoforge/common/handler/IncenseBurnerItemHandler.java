@@ -1,7 +1,8 @@
 package com.cahcap.neoforge.common.handler;
 
-import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -92,7 +93,7 @@ public class IncenseBurnerItemHandler implements IItemHandler {
     }
 
     private ItemStack insertHerb(ItemStack stack, boolean simulate) {
-        if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) {
+        if (!HerbRegistry.isHerb(stack.getItem())) {
             return stack;
         }
         if (!burner.getAcceptedHerbs().contains(stack.getItem())) {

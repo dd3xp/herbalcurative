@@ -1,7 +1,8 @@
 package com.cahcap.neoforge.common.handler;
 
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
-import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -48,7 +49,7 @@ public class HerbBasketItemHandler implements IItemHandler {
         }
         
         Item item = stack.getItem();
-        if (!HerbCabinetBlockEntity.isHerb(item)) {
+        if (!HerbRegistry.isHerb(item)) {
             return stack;
         }
         
@@ -114,7 +115,7 @@ public class HerbBasketItemHandler implements IItemHandler {
     
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (!HerbCabinetBlockEntity.isHerb(stack.getItem())) {
+        if (!HerbRegistry.isHerb(stack.getItem())) {
             return false;
         }
         

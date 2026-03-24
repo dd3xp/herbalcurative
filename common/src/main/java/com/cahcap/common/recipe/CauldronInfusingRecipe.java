@@ -1,7 +1,7 @@
 package com.cahcap.common.recipe;
 
 import com.cahcap.HerbalCurativeCommon;
-import com.cahcap.common.blockentity.CauldronBlockEntity.CauldronFluid;
+import com.cahcap.common.blockentity.cauldron.CauldronFluid;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

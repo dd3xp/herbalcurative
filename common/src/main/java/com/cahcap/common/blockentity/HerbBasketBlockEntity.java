@@ -2,6 +2,8 @@ package com.cahcap.common.blockentity;
 
 import com.cahcap.common.block.HerbBasketBlock;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.BlockEntityHelper;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,9 +33,7 @@ public class HerbBasketBlockEntity extends BlockEntity {
     private Item boundHerb = null;
     private int herbCount = 0;
     
-    // Double-click detection
-    private long lastClickTime = -100; // Initialize to negative to prevent false double-click on first click
-    private java.util.UUID lastClickUUID = null;
+    private final BlockEntityHelper.DoubleClickTracker doubleClickTracker = new BlockEntityHelper.DoubleClickTracker();
     
     public HerbBasketBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state);
@@ -71,7 +71,7 @@ public class HerbBasketBlockEntity extends BlockEntity {
      * Can only be done once when the basket is empty.
      */
     public void bindHerb(Item herb) {
-        if (this.boundHerb == null && HerbCabinetBlockEntity.isHerb(herb)) {
+        if (this.boundHerb == null && HerbRegistry.isHerb(herb)) {
             this.boundHerb = herb;
 
             setChanged();
@@ -147,17 +147,7 @@ public class HerbBasketBlockEntity extends BlockEntity {
      * Check if this is a double-click from the same player.
      */
     public boolean isDoubleClick(java.util.UUID playerUUID) {
-        if (level == null) {
-            return false;
-        }
-        
-        long currentTime = level.getGameTime();
-        boolean isDouble = (currentTime - lastClickTime < 10 && playerUUID.equals(lastClickUUID));
-        
-        lastClickTime = currentTime;
-        lastClickUUID = playerUUID;
-        
-        return isDouble;
+        return doubleClickTracker.check(level, playerUUID);
     }
     
     @Override
@@ -177,7 +167,7 @@ public class HerbBasketBlockEntity extends BlockEntity {
         if (tag.contains("BoundHerb")) {
             String herbId = tag.getString("BoundHerb");
             Item loadedHerb = BuiltInRegistries.ITEM.get(ResourceLocation.parse(herbId));
-            if (loadedHerb != Items.AIR && HerbCabinetBlockEntity.isHerb(loadedHerb)) {
+            if (loadedHerb != Items.AIR && HerbRegistry.isHerb(loadedHerb)) {
                 boundHerb = loadedHerb;
             } else {
                 boundHerb = null;
@@ -202,11 +192,7 @@ public class HerbBasketBlockEntity extends BlockEntity {
     }
     
     public void syncToClient() {
-        if (level != null && !level.isClientSide) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, 3);
-            setChanged();
-        }
+        BlockEntityHelper.syncToClient(this);
     }
     
 }

@@ -141,7 +141,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof MultiblockPartBlockEntity be) {
-                if (!be.suppressDrops && be.formed) {
+                if (!be.isSuppressDrops() && be.isFormed()) {
                     be.disassemble();
                 }
             }
@@ -151,7 +151,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
 
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        if (level.getBlockEntity(pos) instanceof MultiblockPartBlockEntity be && be.formed) {
+        if (level.getBlockEntity(pos) instanceof MultiblockPartBlockEntity be && be.isFormed()) {
             BlockState original = be.getOriginalBlockState();
             if (original != null && !original.isAir()) {
                 return new ItemStack(original.getBlock());
@@ -164,10 +164,10 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
     protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof MultiblockPartBlockEntity be) {
-            if (be.suppressDrops) {
+            if (be.isSuppressDrops()) {
                 return Collections.emptyList();
             }
-            if (be.formed) {
+            if (be.isFormed()) {
                 BlockState original = be.getOriginalBlockState();
                 if (original != null && !original.isAir()) {
                     return Collections.singletonList(new ItemStack(original.getBlock()));
@@ -196,35 +196,35 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
      * Rotate a VoxelShape from NORTH orientation to the given direction.
      */
     protected static VoxelShape rotateShape(VoxelShape shape, Direction to) {
-        VoxelShape[] buffer = new VoxelShape[]{Shapes.empty()};
+        VoxelShape[] accumulatedShape = new VoxelShape[]{Shapes.empty()};
         shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
             double x1 = minX * 16, y1 = minY * 16, z1 = minZ * 16;
             double x2 = maxX * 16, y2 = maxY * 16, z2 = maxZ * 16;
-            double nx1, nz1, nx2, nz2;
+            double rotatedX1, rotatedZ1, rotatedX2, rotatedZ2;
             switch (to) {
-                case SOUTH -> { nx1 = 16 - x2; nz1 = 16 - z2; nx2 = 16 - x1; nz2 = 16 - z1; }
-                case WEST  -> { nx1 = z1; nz1 = 16 - x2; nx2 = z2; nz2 = 16 - x1; }
-                case EAST  -> { nx1 = 16 - z2; nz1 = x1; nx2 = 16 - z1; nz2 = x2; }
-                default    -> { nx1 = x1; nz1 = z1; nx2 = x2; nz2 = z2; }
+                case SOUTH -> { rotatedX1 = 16 - x2; rotatedZ1 = 16 - z2; rotatedX2 = 16 - x1; rotatedZ2 = 16 - z1; }
+                case WEST  -> { rotatedX1 = z1; rotatedZ1 = 16 - x2; rotatedX2 = z2; rotatedZ2 = 16 - x1; }
+                case EAST  -> { rotatedX1 = 16 - z2; rotatedZ1 = x1; rotatedX2 = 16 - z1; rotatedZ2 = x2; }
+                default    -> { rotatedX1 = x1; rotatedZ1 = z1; rotatedX2 = x2; rotatedZ2 = z2; }
             }
-            buffer[0] = Shapes.or(buffer[0], Block.box(
-                    Math.min(nx1, nx2), y1, Math.min(nz1, nz2),
-                    Math.max(nx1, nx2), y2, Math.max(nz1, nz2)));
+            accumulatedShape[0] = Shapes.or(accumulatedShape[0], Block.box(
+                    Math.min(rotatedX1, rotatedX2), y1, Math.min(rotatedZ1, rotatedZ2),
+                    Math.max(rotatedX1, rotatedX2), y2, Math.max(rotatedZ1, rotatedZ2)));
         });
-        return buffer[0];
+        return accumulatedShape[0];
     }
 
     /**
      * Mirror a VoxelShape on the X axis (left/right flip).
      */
     protected static VoxelShape mirrorShapeX(VoxelShape shape) {
-        VoxelShape[] buffer = new VoxelShape[]{Shapes.empty()};
+        VoxelShape[] accumulatedShape = new VoxelShape[]{Shapes.empty()};
         shape.forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
             double x1 = minX * 16, y1 = minY * 16, z1 = minZ * 16;
             double x2 = maxX * 16, y2 = maxY * 16, z2 = maxZ * 16;
-            buffer[0] = Shapes.or(buffer[0], Block.box(16 - x2, y1, z1, 16 - x1, y2, z2));
+            accumulatedShape[0] = Shapes.or(accumulatedShape[0], Block.box(16 - x2, y1, z1, 16 - x1, y2, z2));
         });
-        return buffer[0];
+        return accumulatedShape[0];
     }
 
     /**
@@ -272,8 +272,8 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
     public static VoxelShape[][] precomputeMirroredShapes(VoxelShape[] northShapes, IntUnaryOperator mirrorIndex) {
         VoxelShape[][] result = new VoxelShape[4][northShapes.length];
         for (int i = 0; i < northShapes.length; i++) {
-            int mi = mirrorIndex.applyAsInt(i);
-            VoxelShape mirroredNorth = mirrorShapeX(northShapes[mi] != null ? northShapes[mi] : Shapes.empty());
+            int mirroredIndex = mirrorIndex.applyAsInt(i);
+            VoxelShape mirroredNorth = mirrorShapeX(northShapes[mirroredIndex] != null ? northShapes[mirroredIndex] : Shapes.empty());
             result[Direction.NORTH.get2DDataValue()][i] = mirroredNorth;
             result[Direction.SOUTH.get2DDataValue()][i] = rotateShape(mirroredNorth, Direction.SOUTH);
             result[Direction.WEST.get2DDataValue()][i] = rotateShape(mirroredNorth, Direction.WEST);

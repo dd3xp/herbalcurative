@@ -1,6 +1,7 @@
 package com.cahcap.neoforge.common.handler;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -35,7 +36,7 @@ public class HerbCabinetItemHandler implements IItemHandler {
             return ItemStack.EMPTY;
         }
         
-        Item herb = HerbCabinetBlockEntity.getAllHerbItems()[slot];
+        Item herb = HerbRegistry.getAllHerbItems()[slot];
         int amount = master.getHerbAmount(herb);
         
         if (amount <= 0) {
@@ -52,7 +53,7 @@ public class HerbCabinetItemHandler implements IItemHandler {
         }
         
         Item item = stack.getItem();
-        if (!HerbCabinetBlockEntity.isHerb(item)) {
+        if (!HerbRegistry.isHerb(item)) {
             return stack;
         }
         
@@ -92,7 +93,7 @@ public class HerbCabinetItemHandler implements IItemHandler {
             return ItemStack.EMPTY;
         }
         
-        Item herb = HerbCabinetBlockEntity.getAllHerbItems()[slot];
+        Item herb = HerbRegistry.getAllHerbItems()[slot];
         int stored = master.getHerbAmount(herb);
         
         if (stored <= 0) {
@@ -115,6 +116,6 @@ public class HerbCabinetItemHandler implements IItemHandler {
     
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        return HerbCabinetBlockEntity.isHerb(stack.getItem());
+        return HerbRegistry.isHerb(stack.getItem());
     }
 }

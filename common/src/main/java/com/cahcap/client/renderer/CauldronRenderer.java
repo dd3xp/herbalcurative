@@ -1,6 +1,6 @@
 package com.cahcap.client.renderer;
 
-import com.cahcap.common.blockentity.CauldronBlockEntity;
+import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;

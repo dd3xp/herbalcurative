@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,54 +21,46 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
  * Shows herb icon and count below crosshair when looking at a herb basket.
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
-public class HerbBasketTooltipHandler {
+public class HerbBasketTooltipHandler extends TooltipHandler {
 
-    private static final TooltipAnimator animator = new TooltipAnimator();
+    private static final HerbBasketTooltipHandler INSTANCE = new HerbBasketTooltipHandler();
+
+    // Per-frame state
+    private HerbBasketBlockEntity basket;
 
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
-        
-        if (mc.level == null || mc.player == null) {
-            return;
+        INSTANCE.handleEvent(event);
+    }
+
+    @Override
+    protected boolean isTargetBlock(BlockState state) {
+        return state.getBlock() instanceof HerbBasketBlock;
+    }
+
+    @Override
+    protected boolean isValidEntity(BlockEntity entity) {
+        if (entity instanceof HerbBasketBlockEntity b) {
+            basket = b;
+            return true;
         }
+        return false;
+    }
 
-        HerbBasketBlockEntity basket = null;
-        BlockPos targetPos = null;
-        HitResult hitResult = mc.hitResult;
-        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            targetPos = blockHitResult.getBlockPos();
-            BlockState state = mc.level.getBlockState(targetPos);
-            if (state.getBlock() instanceof HerbBasketBlock) {
-                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
-                if (blockEntity instanceof HerbBasketBlockEntity b) {
-                    basket = b;
-                }
-            }
-        }
+    @Override
+    protected boolean hasContent(BlockEntity entity) {
+        return basket.getBoundHerb() != null;
+    }
 
-        Item boundHerb = basket != null ? basket.getBoundHerb() : null;
-        int amount = basket != null ? basket.getHerbCount() : 0;
-
-        if (boundHerb == null) { animator.reset(); return; }
-
-        float anim = animator.update(targetPos);
-
-        // Prepare item stack for rendering
-        ItemStack stack = new ItemStack(boundHerb);
-
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        int screenWidth = guiGraphics.guiWidth();
-        int screenHeight = guiGraphics.guiHeight();
-
+    @Override
+    protected void renderContent(GuiGraphics guiGraphics, Minecraft mc,
+                                 BlockEntity entity, int screenWidth, int screenHeight) {
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(centerX, centerY, 0);
-        guiGraphics.pose().scale(anim, anim, 1.0f);
-        guiGraphics.pose().translate(-centerX, -centerY, 0);
+        Item boundHerb = basket.getBoundHerb();
+        int amount = basket.getHerbCount();
+        ItemStack stack = new ItemStack(boundHerb);
 
         // Position below crosshair
         int x = centerX - 8; // Item icon is 16x16, so center it
@@ -83,7 +74,5 @@ public class HerbBasketTooltipHandler {
         int textX = x + 16 + 2; // Right of the item icon
         int textY = y + 4; // Vertically centered with icon
         guiGraphics.drawString(mc.font, amountText, textX, textY, 0xFFFFFF, true);
-
-        guiGraphics.pose().popPose();
     }
 }

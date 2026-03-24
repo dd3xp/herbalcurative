@@ -1,8 +1,12 @@
 package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.GridHitHelper;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.HerbRegistry;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -88,26 +92,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
      * Converts world hit coordinates to model-space face coordinates, then checks bounds.
      */
     public static boolean isHitInGridCell(BlockHitResult hitResult, BlockPos pos, Direction facing, int herbIndex) {
-        if (herbIndex < 0 || herbIndex >= GRID_CELLS.length) return false;
-
-        // Get local coordinates (0-1) within the block
-        double localX = (hitResult.getLocation().x - pos.getX()) * 16;
-        double localY = (hitResult.getLocation().y - pos.getY()) * 16;
-        double localZ = (hitResult.getLocation().z - pos.getZ()) * 16;
-
-        // Convert to model-space "across" coordinate on the front face
-        // The front face is perpendicular to the FACING direction.
-        // In model space (NORTH), across = X, up = Y.
-        double faceX, faceY;
-        switch (facing) {
-            case SOUTH -> { faceX = 16 - localX; faceY = localY; }
-            case EAST  -> { faceX = 16 - localZ; faceY = localY; }
-            case WEST  -> { faceX = localZ; faceY = localY; }
-            default    -> { faceX = localX; faceY = localY; } // NORTH
-        }
-
-        double[] cell = GRID_CELLS[herbIndex];
-        return faceX >= cell[0] && faceX <= cell[1] && faceY >= cell[2] && faceY <= cell[3];
+        return GridHitHelper.isHitInGridCell(hitResult, pos, facing, herbIndex, GRID_CELLS);
     }
 
     // ==================== Interaction ====================
@@ -121,7 +106,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
         if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
         if (level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) {
-            if (!be.formed) return ItemInteractionResult.SUCCESS;
+            if (!be.isFormed()) return ItemInteractionResult.SUCCESS;
 
             int herbIndex = be.getHerbIndexForBlock();
             if (!isHitInGridCell(hitResult, pos, state.getValue(FACING), herbIndex)) {
@@ -131,17 +116,9 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
             boolean isDouble = be.isDoubleClick(player.getUUID());
             int totalAdded = 0;
 
-            if (isDouble && (stack.isEmpty() || !HerbCabinetBlockEntity.isHerb(stack.getItem()))) {
-                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                    ItemStack invStack = player.getInventory().getItem(i);
-                    if (!invStack.isEmpty() && HerbCabinetBlockEntity.isHerb(invStack.getItem())) {
-                        int added = be.addHerb(invStack.getItem(), invStack.getCount());
-                        invStack.shrink(added);
-                        totalAdded += added;
-                        if (invStack.isEmpty()) player.getInventory().setItem(i, ItemStack.EMPTY);
-                    }
-                }
-            } else if (!stack.isEmpty() && HerbCabinetBlockEntity.isHerb(stack.getItem())) {
+            if (isDouble && (stack.isEmpty() || !HerbRegistry.isHerb(stack.getItem()))) {
+                totalAdded = HerbRegistry.transferAllHerbsFromInventory(player, be::addHerb);
+            } else if (!stack.isEmpty() && HerbRegistry.isHerb(stack.getItem())) {
                 totalAdded = be.addHerb(stack.getItem(), stack.getCount());
                 stack.shrink(totalAdded);
             }
@@ -165,7 +142,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     @Override
     protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
         if (level.isClientSide) return;
-        if (!(level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) || !be.formed) return;
+        if (!(level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) || !be.isFormed()) return;
 
         HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
         if (!(hitResult instanceof BlockHitResult blockHit) || blockHit.getDirection() != state.getValue(FACING)) return;
@@ -174,7 +151,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
         if (!isHitInGridCell(blockHit, pos, state.getValue(FACING), herbIndex)) return;
         if (herbIndex < 0 || herbIndex >= 6) return;
 
-        Item herb = HerbCabinetBlockEntity.getAllHerbItems()[herbIndex];
+        Item herb = HerbRegistry.getAllHerbItems()[herbIndex];
         int amount = player.isShiftKeyDown() ? 64 : 1;
         int removed = be.removeHerb(herb, amount);
 
@@ -191,7 +168,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
      * Used by the creative-mode event handler.
      */
     public boolean isFrontFaceClick(BlockState state, Level level, BlockPos pos, Player player) {
-        if (!(level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) || !be.formed) return false;
+        if (!(level.getBlockEntity(pos) instanceof HerbCabinetBlockEntity be) || !be.isFormed()) return false;
 
         HitResult hitResult = player.pick(player.blockInteractionRange(), 0.0F, false);
         return hitResult instanceof BlockHitResult blockHit && blockHit.getDirection() == state.getValue(FACING);

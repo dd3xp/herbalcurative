@@ -73,9 +73,6 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
     // Whether the current input is affected by catalyst output multiplier
     private boolean inputAffectedByCatalyst = false;
 
-    // Cached render bounding box
-    public AABB renderAABB = null;
-
     public KilnBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state, new int[]{3, 3, 3});
     }
@@ -297,13 +294,24 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
     public static void serverTick(Level level, BlockPos pos, BlockState state, KilnBlockEntity blockEntity) {
         if (!blockEntity.isMaster()) return;
 
-        int tickCount = (int) (level.getGameTime() % AUTO_IO_INTERVAL);
+        tickAutoIO(level, blockEntity);
+        tickSmelting(level, pos, state, blockEntity);
+    }
 
-        // Auto I/O from adjacent containers
+    /**
+     * Handle auto input/output from adjacent containers.
+     */
+    private static void tickAutoIO(Level level, KilnBlockEntity blockEntity) {
+        int tickCount = (int) (level.getGameTime() % AUTO_IO_INTERVAL);
         if (tickCount == 0) {
             blockEntity.handleAutoIO(level);
         }
+    }
 
+    /**
+     * Handle smelting progress: start new smelts and advance/complete active ones.
+     */
+    private static void tickSmelting(Level level, BlockPos pos, BlockState state, KilnBlockEntity blockEntity) {
         // Try to start smelting
         if (!blockEntity.isSmelting && !blockEntity.inputSlot.isEmpty()) {
             Optional<ItemStack> result = getSmeltingResult(level, blockEntity.inputSlot);
@@ -430,9 +438,9 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
     private void handleAutoIO(Level level) {
         if (ItemTransferHelper.INSTANCE == null) return;
 
-        Direction front = facing;
-        Direction right = mirrored ? front.getCounterClockWise() : front.getClockWise();
-        Direction left = mirrored ? front.getClockWise() : front.getCounterClockWise();
+        Direction front = getFacing();
+        Direction right = isMirrored() ? front.getCounterClockWise() : front.getClockWise();
+        Direction left = isMirrored() ? front.getClockWise() : front.getCounterClockWise();
         Direction back = front.getOpposite();
 
         // Auto I/O positions: adjacent to the Layer 1 center block (one block below master).
@@ -508,65 +516,20 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
     // ==================== Multiblock Management ====================
 
     @Override
-    public void disassemble() {
-        if (level == null || level.isClientSide || !formed) {
-            return;
-        }
+    protected Block getMultiblockBlock() {
+        return ModRegistries.KILN.get();
+    }
 
+    @Override
+    protected void dropStoredItems(BlockPos masterPos) {
         KilnBlockEntity master = getMaster();
-        if (master == null) {
-            return;
-        }
-
-        BlockPos masterPos = master.getBlockPos();
-        BlockPos breakPos = getBlockPos();
-
-        // Drop stored items
+        if (master == null) return;
         dropItem(level, masterPos, master.inputSlot);
         dropItem(level, masterPos, master.catalystSlot);
         dropItem(level, masterPos, master.outputSlot);
         master.inputSlot = ItemStack.EMPTY;
         master.catalystSlot = ItemStack.EMPTY;
         master.outputSlot = ItemStack.EMPTY;
-
-        // Get all block positions in the structure
-        List<BlockPos> structurePositions = getStructurePositions(masterPos);
-
-        // First pass: Mark all blocks as not formed
-        for (BlockPos targetPos : structurePositions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.KILN.get())) {
-                if (level.getBlockEntity(targetPos) instanceof KilnBlockEntity kiln) {
-                    kiln.formed = false;
-                    kiln.renderAABB = null;
-
-                    if (!targetPos.equals(breakPos)) {
-                        kiln.suppressDrops = true;
-                    }
-
-                    kiln.setChanged();
-                    BlockState state = level.getBlockState(targetPos);
-                    level.sendBlockUpdated(targetPos, state, state, 3);
-                }
-            }
-        }
-
-        // Second pass: Replace non-broken blocks with original blocks
-        for (BlockPos targetPos : structurePositions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.KILN.get())) {
-                if (!targetPos.equals(breakPos)) {
-                    BlockState original = null;
-                    if (level.getBlockEntity(targetPos) instanceof KilnBlockEntity kiln) {
-                        original = kiln.originalBlockState;
-                    }
-                    if (original == null) {
-                        original = getOriginalBlockForPosition(targetPos, masterPos);
-                    }
-                    level.setBlock(targetPos, original, 2);
-                }
-            }
-        }
-
-        setChanged();
     }
 
     private void dropItem(Level level, BlockPos pos, ItemStack stack) {
@@ -582,7 +545,8 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         }
     }
 
-    private List<BlockPos> getStructurePositions(BlockPos masterPos) {
+    @Override
+    protected List<BlockPos> getStructurePositions(BlockPos masterPos) {
         List<BlockPos> positions = new ArrayList<>();
         for (int dy = -1; dy <= 1; dy++) {
             for (int x = -1; x <= 1; x++) {
@@ -617,14 +581,14 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
             }
             // Check if this is the front position
             Direction relDir = getRelativeDirection(dx, dz);
-            if (relDir == facing) {
+            if (relDir == getFacing()) {
                 return ModRegistries.LUMISTONE_BRICK_SLAB.get().defaultBlockState()
                         .setValue(SlabBlock.TYPE, SlabType.TOP);
             }
             return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
         } else if (dy == 1) {
             // Layer 3: center column (along facing axis) = lumistone bricks, sides = slabs
-            boolean facingAlongZ = (facing == Direction.NORTH || facing == Direction.SOUTH);
+            boolean facingAlongZ = (getFacing() == Direction.NORTH || getFacing() == Direction.SOUTH);
             boolean isCenterColumn = facingAlongZ ? (dx == 0) : (dz == 0);
             if (isCenterColumn) {
                 return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
@@ -661,8 +625,9 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
 
     @Override
     public BlockState getOriginalBlockState() {
-        if (originalBlockState != null) {
-            return originalBlockState;
+        BlockState stored = getRawOriginalBlockState();
+        if (stored != null) {
+            return stored;
         }
         // Legacy fallback for worlds saved before original block memorization
         BlockPos masterPos = getMasterPos();
@@ -726,7 +691,7 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
      * Renderer can call this to get the expanded AABB.
      */
     public AABB computeRenderAABB() {
-        if (renderAABB == null && formed) {
+        if (renderAABB == null && isFormed()) {
             BlockPos masterPos = getMasterPos();
             if (masterPos != null) {
                 renderAABB = new AABB(

@@ -2,7 +2,7 @@ package com.cahcap.neoforge.common.registry;
 
 import com.cahcap.HerbalCurativeCommon;
 import com.cahcap.common.block.WorkbenchBlock;
-import com.cahcap.common.blockentity.CauldronBlockEntity;
+import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;

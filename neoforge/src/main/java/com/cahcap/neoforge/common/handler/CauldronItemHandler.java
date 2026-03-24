@@ -1,6 +1,6 @@
 package com.cahcap.neoforge.common.handler;
 
-import com.cahcap.common.blockentity.CauldronBlockEntity;
+import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -68,49 +68,63 @@ public class CauldronItemHandler implements IItemHandler {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        
+
         // Cannot insert into output slot
         if (slot == OUTPUT_SLOT) {
             return stack;
         }
-        
+
         CauldronBlockEntity master = cauldron.getMaster();
         if (master == null) {
             return stack;
         }
-        
+
         // Cannot insert if cauldron has no fluid
         if (!master.hasFluid()) {
             return stack;
         }
-        
+
         // Allow inserting during infusing - may cause infusing to stop if recipe no longer matches
-        
+
         // If brewing, only accept herbs
         if (master.isBrewing()) {
-            if (!CauldronBlockEntity.isHerb(stack.getItem())) {
-                return stack;
-            }
-            
-            if (!simulate) {
-                // Add herbs during brewing - herbs have no limit
-                ItemStack toAdd = stack.copy();
-                master.addItem(toAdd, null);
-                // toAdd is modified by addItem (shrink), return remaining
-                return toAdd;
-            } else {
-                // Simulate: herbs are always fully accepted during brewing (no limit)
-                return ItemStack.EMPTY;
-            }
+            return insertBrewingHerb(master, stack, simulate);
         }
-        
+
         // Not brewing: add as material
+        return insertMaterial(master, stack, simulate);
+    }
+
+    /**
+     * Insert herbs during brewing. Herbs have no limit.
+     */
+    private @NotNull ItemStack insertBrewingHerb(CauldronBlockEntity master, @NotNull ItemStack stack, boolean simulate) {
+        if (!CauldronBlockEntity.isHerb(stack.getItem())) {
+            return stack;
+        }
+
+        if (!simulate) {
+            // Add herbs during brewing - herbs have no limit
+            ItemStack toAdd = stack.copy();
+            master.addItem(toAdd, null);
+            // toAdd is modified by addItem (shrink), return remaining
+            return toAdd;
+        } else {
+            // Simulate: herbs are always fully accepted during brewing (no limit)
+            return ItemStack.EMPTY;
+        }
+    }
+
+    /**
+     * Insert materials when not brewing. Respects slot limits.
+     */
+    private @NotNull ItemStack insertMaterial(CauldronBlockEntity master, @NotNull ItemStack stack, boolean simulate) {
         java.util.List<ItemStack> materials = master.getMaterials();
-        
+
         // Calculate how much can be inserted
         int remaining = stack.getCount();
         int maxStack = stack.getMaxStackSize();
-        
+
         // First check existing stacks for space
         for (ItemStack existing : materials) {
             if (ItemStack.isSameItemSameComponents(existing, stack)) {
@@ -122,7 +136,7 @@ public class CauldronItemHandler implements IItemHandler {
                 }
             }
         }
-        
+
         // If still have remaining and room for new slots
         if (remaining > 0 && materials.size() < MAX_INPUT_SLOTS) {
             // Calculate how many new slots we can use
@@ -130,7 +144,7 @@ public class CauldronItemHandler implements IItemHandler {
             int canAddToNewSlots = Math.min(remaining, emptySlots * maxStack);
             remaining -= canAddToNewSlots;
         }
-        
+
         if (!simulate) {
             // Actually insert
             ItemStack toAdd = stack.copy();

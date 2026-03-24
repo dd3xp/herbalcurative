@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -44,9 +45,6 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
     @Nullable
     private EntityType<?> pendingMobType = null;
     private int spawnDistance = 1;
-
-    // Cached render bounding box
-    public AABB renderAABB = null;
 
     public ObeliskBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state, new int[]{3, 3, 3});
@@ -201,7 +199,7 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
                 BlockPos offeringTablePos = blockEntity.getOfferingTablePos();
                 if (offeringTablePos == null) offeringTablePos = pos;
                 BlockPos spawnPos = offeringTablePos.relative(
-                        blockEntity.facing, blockEntity.spawnDistance);
+                        blockEntity.getFacing(), blockEntity.spawnDistance);
 
                 Entity entity = blockEntity.pendingMobType.spawn(
                         serverLevel,
@@ -230,65 +228,20 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
     // ==================== Multiblock Management ====================
 
     @Override
-    public void disassemble() {
-        if (level == null || level.isClientSide || !formed) {
-            return;
-        }
+    protected Block getMultiblockBlock() {
+        return ModRegistries.OBELISK.get();
+    }
 
+    @Override
+    protected void dropStoredItems(BlockPos masterPos) {
         ObeliskBlockEntity master = getMaster();
-        if (master == null) {
-            return;
-        }
-
-        BlockPos masterPos = master.getBlockPos();
-        BlockPos breakPos = getBlockPos();
-
-        // Drop offering item if present
+        if (master == null) return;
         dropItem(level, masterPos, master.offeringItem);
         master.offeringItem = ItemStack.EMPTY;
         master.offeringTimer = 0;
         master.totalOfferingTime = 0;
         master.pendingMobType = null;
         master.spawnDistance = 1;
-
-        // Get all block positions in the structure
-        List<BlockPos> structurePositions = getStructurePositions(masterPos);
-
-        // First pass: Mark all blocks as not formed
-        for (BlockPos targetPos : structurePositions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.OBELISK.get())) {
-                if (level.getBlockEntity(targetPos) instanceof ObeliskBlockEntity obelisk) {
-                    obelisk.formed = false;
-                    obelisk.renderAABB = null;
-
-                    if (!targetPos.equals(breakPos)) {
-                        obelisk.suppressDrops = true;
-                    }
-
-                    obelisk.setChanged();
-                    BlockState blockState = level.getBlockState(targetPos);
-                    level.sendBlockUpdated(targetPos, blockState, blockState, 3);
-                }
-            }
-        }
-
-        // Second pass: Replace non-broken blocks with original blocks
-        for (BlockPos targetPos : structurePositions) {
-            if (level.getBlockState(targetPos).is(ModRegistries.OBELISK.get())) {
-                if (!targetPos.equals(breakPos)) {
-                    BlockState original = null;
-                    if (level.getBlockEntity(targetPos) instanceof ObeliskBlockEntity obelisk) {
-                        original = obelisk.originalBlockState;
-                    }
-                    if (original == null) {
-                        original = ModRegistries.LUMISTONE.get().defaultBlockState();
-                    }
-                    level.setBlock(targetPos, original, 2);
-                }
-            }
-        }
-
-        setChanged();
     }
 
     private void dropItem(Level level, BlockPos pos, ItemStack stack) {
@@ -304,7 +257,8 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
         }
     }
 
-    private List<BlockPos> getStructurePositions(BlockPos masterPos) {
+    @Override
+    protected List<BlockPos> getStructurePositions(BlockPos masterPos) {
         List<BlockPos> positions = new ArrayList<>();
         for (int dy = -1; dy <= 1; dy++) {
             for (int x = -1; x <= 1; x++) {
@@ -323,8 +277,9 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
 
     @Override
     public BlockState getOriginalBlockState() {
-        if (originalBlockState != null) {
-            return originalBlockState;
+        BlockState stored = getRawOriginalBlockState();
+        if (stored != null) {
+            return stored;
         }
         return ModRegistries.LUMISTONE.get().defaultBlockState();
     }
@@ -392,7 +347,7 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
     public BlockPos getOfferingTablePos() {
         BlockPos masterPos = getMasterPos();
         if (masterPos == null) return null;
-        BlockPos offeringTableOffset = rotateOffset(new BlockPos(0, -1, -1), facing);
+        BlockPos offeringTableOffset = rotateOffset(new BlockPos(0, -1, -1), getFacing());
         return masterPos.offset(offeringTableOffset);
     }
 
@@ -410,7 +365,7 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
         float dz = -0.875f;
         // Rotate (dx, dz) by facing (NORTH = identity)
         float rx, rz;
-        switch (facing) {
+        switch (getFacing()) {
             case SOUTH -> { rx = -dx; rz = -dz; }
             case EAST  -> { rx = -dz; rz = dx; }
             case WEST  -> { rx = dz;  rz = -dx; }
@@ -430,7 +385,7 @@ public class ObeliskBlockEntity extends MultiblockPartBlockEntity {
      * Renderer can call this to get the expanded AABB.
      */
     public AABB computeRenderAABB() {
-        if (renderAABB == null && formed) {
+        if (renderAABB == null && isFormed()) {
             BlockPos masterPos = getMasterPos();
             if (masterPos != null) {
                 renderAABB = new AABB(

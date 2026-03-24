@@ -1,7 +1,8 @@
 package com.cahcap.client.renderer;
 
-import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -35,13 +36,13 @@ public class HerbVaultRenderer implements BlockEntityRenderer<HerbVaultBlockEnti
     @Override
     public void render(HerbVaultBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        if (!blockEntity.formed || !blockEntity.isMaster()) return;
-        renderHerbIcons(blockEntity, poseStack, bufferSource, packedLight, blockEntity.facing);
+        if (!blockEntity.isFormed() || !blockEntity.isMaster()) return;
+        renderHerbIcons(blockEntity, poseStack, bufferSource, packedLight, blockEntity.getFacing());
     }
 
     private void renderHerbIcons(HerbVaultBlockEntity be, PoseStack poseStack, MultiBufferSource bufferSource,
                                   int packedLight, Direction facing) {
-        Item[] herbs = HerbCabinetBlockEntity.getAllHerbItems();
+        Item[] herbs = HerbRegistry.getAllHerbItems();
         Direction right = facing.getClockWise();
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 

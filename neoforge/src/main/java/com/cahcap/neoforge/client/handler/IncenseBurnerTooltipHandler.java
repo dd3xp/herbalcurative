@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,53 +27,49 @@ import java.util.Map;
  * - Below: herbs horizontally (always shown if present)
  */
 @EventBusSubscriber(modid = HerbalCurativeCommon.MOD_ID, value = Dist.CLIENT)
-public class IncenseBurnerTooltipHandler {
+public class IncenseBurnerTooltipHandler extends TooltipHandler {
 
-    private static final TooltipAnimator animator = new TooltipAnimator();
+    private static final IncenseBurnerTooltipHandler INSTANCE = new IncenseBurnerTooltipHandler();
+
+    // Per-frame state
+    private IncenseBurnerBlockEntity burner;
+    private ItemStack powder;
+    private Map<Item, Integer> herbs;
+    private boolean isBurning;
 
     @SubscribeEvent
     public static void onRenderGuiPost(RenderGuiEvent.Post event) {
-        Minecraft mc = Minecraft.getInstance();
+        INSTANCE.handleEvent(event);
+    }
 
-        if (mc.level == null || mc.player == null) {
-            return;
+    @Override
+    protected boolean isTargetBlock(BlockState state) {
+        return state.getBlock() instanceof IncenseBurnerBlock;
+    }
+
+    @Override
+    protected boolean isValidEntity(BlockEntity entity) {
+        if (entity instanceof IncenseBurnerBlockEntity b) {
+            burner = b;
+            return true;
         }
+        return false;
+    }
 
-        IncenseBurnerBlockEntity burner = null;
-        BlockPos targetPos = null;
-        HitResult hitResult = mc.hitResult;
-        if (hitResult != null && hitResult.getType() == HitResult.Type.BLOCK) {
-            BlockHitResult blockHitResult = (BlockHitResult) hitResult;
-            targetPos = blockHitResult.getBlockPos();
-            BlockState state = mc.level.getBlockState(targetPos);
-            if (state.getBlock() instanceof IncenseBurnerBlock) {
-                BlockEntity blockEntity = mc.level.getBlockEntity(targetPos);
-                if (blockEntity instanceof IncenseBurnerBlockEntity b) {
-                    burner = b;
-                }
-            }
-        }
+    @Override
+    protected boolean hasContent(BlockEntity entity) {
+        powder = burner.getPowder();
+        herbs = burner.getHerbs();
+        isBurning = burner.isBurning();
 
-        ItemStack powder = burner != null ? burner.getPowder() : ItemStack.EMPTY;
-        Map<Item, Integer> herbs = burner != null ? burner.getHerbs() : java.util.Map.of();
-        boolean isBurning = burner != null && burner.isBurning();
+        return !powder.isEmpty() || !herbs.isEmpty();
+    }
 
-        boolean hasContent = !powder.isEmpty() || !herbs.isEmpty();
-        if (!hasContent) { animator.reset(); return; }
-        float anim = animator.update(targetPos);
-
-        GuiGraphics guiGraphics = event.getGuiGraphics();
-        int screenWidth = guiGraphics.guiWidth();
-        int screenHeight = guiGraphics.guiHeight();
-
+    @Override
+    protected void renderContent(GuiGraphics guiGraphics, Minecraft mc,
+                                 BlockEntity entity, int screenWidth, int screenHeight) {
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
-
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(centerX, centerY, 0);
-        guiGraphics.pose().scale(anim, anim, 1.0f);
-        guiGraphics.pose().translate(-centerX, -centerY, 0);
-
         int baseY = centerY + 10;
 
         // === Powder + vertical progress bar ===
@@ -131,7 +126,5 @@ public class IncenseBurnerTooltipHandler {
 
             guiGraphics.pose().popPose();
         }
-
-        guiGraphics.pose().popPose();
     }
 }

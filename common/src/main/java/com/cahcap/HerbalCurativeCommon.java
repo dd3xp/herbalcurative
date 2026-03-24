@@ -1,5 +1,6 @@
 package com.cahcap;
 
+import com.cahcap.common.item.flowweavering.RingInteractionRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ public class HerbalCurativeCommon {
      */
     public static void init() {
         LOGGER.info("Herbal Curative is initializing...");
+        RingInteractionRegistry.init();
     }
     
     /**

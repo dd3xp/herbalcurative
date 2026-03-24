@@ -1,6 +1,8 @@
 package com.cahcap.common.blockentity;
 
+import com.cahcap.common.recipe.WorkbenchRecipe;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.BlockEntityHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -9,6 +11,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -41,7 +47,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
     private ItemStack inputSlot = ItemStack.EMPTY;
     
     // Material stack [0] is bottom (first in), [size-1] is top (last in, first out)
-    private final List<ItemStack> materialStack = new ArrayList<>();
+    private final List<ItemStack> materialStackList = new ArrayList<>();
     
     public WorkbenchBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state);
@@ -273,22 +279,22 @@ public class WorkbenchBlockEntity extends BlockEntity {
      * Get the number of material stacks.
      */
     public int getMaterialCount() {
-        return materialStack.size();
+        return materialStackList.size();
     }
     
     /**
      * Check if material stack is full.
      */
     public boolean isMaterialFull() {
-        return materialStack.size() >= MATERIAL_SLOTS;
+        return materialStackList.size() >= MATERIAL_SLOTS;
     }
     
     /**
      * Get a material at a specific index (0 = bottom, size-1 = top).
      */
     public ItemStack getMaterialAt(int index) {
-        if (index < 0 || index >= materialStack.size()) return ItemStack.EMPTY;
-        return materialStack.get(index).copy();
+        if (index < 0 || index >= materialStackList.size()) return ItemStack.EMPTY;
+        return materialStackList.get(index).copy();
     }
     
     /**
@@ -296,7 +302,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
      */
     public List<ItemStack> getMaterials() {
         List<ItemStack> result = new ArrayList<>();
-        for (ItemStack stack : materialStack) {
+        for (ItemStack stack : materialStackList) {
             result.add(stack.copy());
         }
         return result;
@@ -310,8 +316,8 @@ public class WorkbenchBlockEntity extends BlockEntity {
      */
     public boolean pushMaterial(ItemStack stack, boolean creativeMode) {
         // First try to stack with top item
-        if (!materialStack.isEmpty()) {
-            ItemStack top = materialStack.get(materialStack.size() - 1);
+        if (!materialStackList.isEmpty()) {
+            ItemStack top = materialStackList.get(materialStackList.size() - 1);
             if (ItemStack.isSameItemSameComponents(top, stack)) {
                 int canAdd = top.getMaxStackSize() - top.getCount();
                 if (canAdd > 0) {
@@ -328,11 +334,11 @@ public class WorkbenchBlockEntity extends BlockEntity {
         }
         
         // Add as new stack if there's room
-        if (materialStack.size() < MATERIAL_SLOTS) {
+        if (materialStackList.size() < MATERIAL_SLOTS) {
             if (creativeMode) {
-                materialStack.add(stack.copyWithCount(Math.min(stack.getCount(), stack.getMaxStackSize())));
+                materialStackList.add(stack.copyWithCount(Math.min(stack.getCount(), stack.getMaxStackSize())));
             } else {
-                materialStack.add(stack.split(stack.getMaxStackSize()));
+                materialStackList.add(stack.split(stack.getMaxStackSize()));
             }
             setChanged();
             syncToClient();
@@ -347,10 +353,10 @@ public class WorkbenchBlockEntity extends BlockEntity {
      * @return The removed material, or EMPTY if stack is empty
      */
     public ItemStack popMaterial() {
-        if (materialStack.isEmpty()) {
+        if (materialStackList.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack removed = materialStack.remove(materialStack.size() - 1);
+        ItemStack removed = materialStackList.remove(materialStackList.size() - 1);
         setChanged();
         syncToClient();
         return removed;
@@ -363,16 +369,16 @@ public class WorkbenchBlockEntity extends BlockEntity {
      * @return true if successful
      */
     public boolean consumeMaterial(int index, int count) {
-        if (index < 0 || index >= materialStack.size()) {
+        if (index < 0 || index >= materialStackList.size()) {
             return false;
         }
-        ItemStack mat = materialStack.get(index);
+        ItemStack mat = materialStackList.get(index);
         if (mat.getCount() < count) {
             return false;
         }
         mat.shrink(count);
         if (mat.isEmpty()) {
-            materialStack.remove(index);
+            materialStackList.remove(index);
         }
         setChanged();
         syncToClient();
@@ -388,7 +394,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
         // First verify we have enough of everything
         for (ItemStack required : requirements) {
             int needed = required.getCount();
-            for (ItemStack mat : materialStack) {
+            for (ItemStack mat : materialStackList) {
                 if (ItemStack.isSameItemSameComponents(mat, required)) {
                     needed -= mat.getCount();
                     if (needed <= 0) break;
@@ -400,14 +406,14 @@ public class WorkbenchBlockEntity extends BlockEntity {
         // Actually consume
         for (ItemStack required : requirements) {
             int toConsume = required.getCount();
-            for (int i = materialStack.size() - 1; i >= 0 && toConsume > 0; i--) {
-                ItemStack mat = materialStack.get(i);
+            for (int i = materialStackList.size() - 1; i >= 0 && toConsume > 0; i--) {
+                ItemStack mat = materialStackList.get(i);
                 if (ItemStack.isSameItemSameComponents(mat, required)) {
                     int consume = Math.min(toConsume, mat.getCount());
                     mat.shrink(consume);
                     toConsume -= consume;
                     if (mat.isEmpty()) {
-                        materialStack.remove(i);
+                        materialStackList.remove(i);
                     }
                 }
             }
@@ -440,7 +446,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
     public boolean consumeMaterialByTypeWithRemainder(net.minecraft.world.item.Item item, int count, List<ItemStack> remainderCollector) {
         // First verify we have enough
         int available = 0;
-        for (ItemStack mat : materialStack) {
+        for (ItemStack mat : materialStackList) {
             if (mat.is(item)) {
                 available += mat.getCount();
             }
@@ -451,8 +457,8 @@ public class WorkbenchBlockEntity extends BlockEntity {
         
         // Actually consume (from top of stack first - LIFO)
         int toConsume = count;
-        for (int i = materialStack.size() - 1; i >= 0 && toConsume > 0; i--) {
-            ItemStack mat = materialStack.get(i);
+        for (int i = materialStackList.size() - 1; i >= 0 && toConsume > 0; i--) {
+            ItemStack mat = materialStackList.get(i);
             if (mat.is(item)) {
                 int consume = Math.min(toConsume, mat.getCount());
                 
@@ -467,7 +473,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
                 mat.shrink(consume);
                 toConsume -= consume;
                 if (mat.isEmpty()) {
-                    materialStack.remove(i);
+                    materialStackList.remove(i);
                 }
             }
         }
@@ -488,7 +494,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
     public boolean consumeMaterialByIngredientWithRemainder(net.minecraft.world.item.crafting.Ingredient ingredient, int count, List<ItemStack> remainderCollector) {
         // First verify we have enough
         int available = 0;
-        for (ItemStack mat : materialStack) {
+        for (ItemStack mat : materialStackList) {
             if (ingredient.test(mat)) {
                 available += mat.getCount();
             }
@@ -499,8 +505,8 @@ public class WorkbenchBlockEntity extends BlockEntity {
         
         // Actually consume (from top of stack first - LIFO)
         int toConsume = count;
-        for (int i = materialStack.size() - 1; i >= 0 && toConsume > 0; i--) {
-            ItemStack mat = materialStack.get(i);
+        for (int i = materialStackList.size() - 1; i >= 0 && toConsume > 0; i--) {
+            ItemStack mat = materialStackList.get(i);
             if (ingredient.test(mat)) {
                 int consume = Math.min(toConsume, mat.getCount());
                 
@@ -515,7 +521,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
                 mat.shrink(consume);
                 toConsume -= consume;
                 if (mat.isEmpty()) {
-                    materialStack.remove(i);
+                    materialStackList.remove(i);
                 }
             }
         }
@@ -525,6 +531,142 @@ public class WorkbenchBlockEntity extends BlockEntity {
         return true;
     }
     
+    // ==================== Crafting ====================
+
+    /**
+     * Execute a workbench craft using the given recipe.
+     * Handles experience checks, material/input consumption, tool damage,
+     * remainder item drops, and result item drops.
+     *
+     * @param recipe   The matched recipe to execute
+     * @param player   The player performing the craft (can be null)
+     * @param craftAll If true, craft as many as possible; if false, craft one
+     * @return true if crafting was successful
+     */
+    public boolean executeCraft(WorkbenchRecipe recipe, Player player, boolean craftAll) {
+        if (level == null) return false;
+
+        // Create recipe input from current workbench state
+        WorkbenchRecipe.WorkbenchInput input = new WorkbenchRecipe.WorkbenchInput(this);
+
+        // Calculate how many to craft
+        int craftCount = craftAll ? recipe.getMaxCraftCount(input) : 1;
+        if (craftCount <= 0) {
+            return false;
+        }
+
+        // Check experience cost (if recipe requires experience and player exists)
+        int expCost = recipe.getExperienceCost();
+        if (expCost > 0 && player != null && !player.isCreative()) {
+            int totalExpCost = expCost * craftCount;
+            int playerExp = getTotalExperience(player);
+
+            if (playerExp < totalExpCost) {
+                // Not enough experience - limit craft count to what player can afford
+                craftCount = playerExp / expCost;
+                if (craftCount <= 0) {
+                    // Play failure sound
+                    level.playSound(null, worldPosition, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    return false;
+                }
+            }
+        }
+
+        // Collect crafting remainder items (like buckets)
+        List<ItemStack> remainderItems = new ArrayList<>();
+
+        // Perform crafting
+        for (int i = 0; i < craftCount; i++) {
+            // Damage tools by ingredient (tools can be in any slot)
+            for (WorkbenchRecipe.ToolRequirement tool : recipe.getTools()) {
+                for (int d = 0; d < tool.damage(); d++) {
+                    damageToolByIngredient(tool.ingredient());
+                }
+            }
+
+            // Consume materials by ingredient and collect remainder items
+            for (WorkbenchRecipe.MaterialRequirement req : recipe.getMaterials()) {
+                consumeMaterialByIngredientWithRemainder(req.ingredient(), req.count(), remainderItems);
+            }
+
+            // Consume input and collect remainder
+            ItemStack inputStack = getInputItem();
+            Item inputRemainderItem = inputStack.getItem().getCraftingRemainingItem();
+            if (inputRemainderItem != null) {
+                remainderItems.add(new ItemStack(inputRemainderItem));
+            }
+            consumeInput(1);
+
+            // Consume experience
+            if (expCost > 0 && player != null && !player.isCreative()) {
+                player.giveExperiencePoints(-expCost);
+            }
+        }
+
+        // Drop remainder items (like empty buckets)
+        for (ItemStack remainder : remainderItems) {
+            if (!remainder.isEmpty()) {
+                ItemEntity remainderEntity = new ItemEntity(level,
+                        worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, remainder);
+                remainderEntity.setDeltaMovement(0, 0.15, 0);
+                level.addFreshEntity(remainderEntity);
+            }
+        }
+
+        // Create result and drop it
+        ItemStack result = recipe.getResult();
+        result.setCount(result.getCount() * craftCount);
+
+        // Drop the result (pop out from center)
+        ItemEntity itemEntity = new ItemEntity(level,
+                worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, result);
+        itemEntity.setDeltaMovement(0, 0.2, 0);
+        level.addFreshEntity(itemEntity);
+
+        // Play success sound
+        level.playSound(null, worldPosition, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+        return true;
+    }
+
+    /**
+     * Calculate total experience points the player has.
+     * Experience is stored as levels + progress, need to convert to total points.
+     */
+    private static int getTotalExperience(Player player) {
+        int level = player.experienceLevel;
+        float progress = player.experienceProgress;
+
+        // Calculate points needed to reach current level
+        int totalPoints;
+        if (level <= 16) {
+            totalPoints = level * level + 6 * level;
+        } else if (level <= 31) {
+            totalPoints = (int) (2.5 * level * level - 40.5 * level + 360);
+        } else {
+            totalPoints = (int) (4.5 * level * level - 162.5 * level + 2220);
+        }
+
+        // Add progress towards next level
+        int pointsForNextLevel = getExperienceForLevel(level + 1) - getExperienceForLevel(level);
+        totalPoints += (int) (progress * pointsForNextLevel);
+
+        return totalPoints;
+    }
+
+    /**
+     * Get total experience points needed to reach a specific level.
+     */
+    private static int getExperienceForLevel(int level) {
+        if (level <= 16) {
+            return level * level + 6 * level;
+        } else if (level <= 31) {
+            return (int) (2.5 * level * level - 40.5 * level + 360);
+        } else {
+            return (int) (4.5 * level * level - 162.5 * level + 2220);
+        }
+    }
+
     // ==================== Utility Methods ====================
     
     /**
@@ -543,7 +685,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
             items.add(inputSlot.copy());
         }
         
-        for (ItemStack mat : materialStack) {
+        for (ItemStack mat : materialStackList) {
             if (!mat.isEmpty()) {
                 items.add(mat.copy());
             }
@@ -560,7 +702,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
             toolSlots[i] = ItemStack.EMPTY;
         }
         inputSlot = ItemStack.EMPTY;
-        materialStack.clear();
+        materialStackList.clear();
         setChanged();
         syncToClient();
     }
@@ -590,7 +732,7 @@ public class WorkbenchBlockEntity extends BlockEntity {
         
         // Save materials
         ListTag materialsTag = new ListTag();
-        for (ItemStack mat : materialStack) {
+        for (ItemStack mat : materialStackList) {
             if (!mat.isEmpty()) {
                 materialsTag.add(mat.save(registries));
             }
@@ -625,13 +767,13 @@ public class WorkbenchBlockEntity extends BlockEntity {
         }
         
         // Load materials
-        materialStack.clear();
+        materialStackList.clear();
         if (tag.contains("Materials", Tag.TAG_LIST)) {
             ListTag materialsTag = tag.getList("Materials", Tag.TAG_COMPOUND);
             for (int i = 0; i < materialsTag.size() && i < MATERIAL_SLOTS; i++) {
                 ItemStack mat = ItemStack.parseOptional(registries, materialsTag.getCompound(i));
                 if (!mat.isEmpty()) {
-                    materialStack.add(mat);
+                    materialStackList.add(mat);
                 }
             }
         }
@@ -650,10 +792,6 @@ public class WorkbenchBlockEntity extends BlockEntity {
     }
     
     public void syncToClient() {
-        if (level != null && !level.isClientSide) {
-            BlockState state = level.getBlockState(worldPosition);
-            level.sendBlockUpdated(worldPosition, state, state, 3);
-            setChanged();
-        }
+        BlockEntityHelper.syncToClient(this);
     }
 }

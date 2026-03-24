@@ -1,27 +1,12 @@
-package com.cahcap.common.item;
+package com.cahcap.common.item.flowweavering;
 
-import com.cahcap.common.block.CauldronBlock;
-import com.cahcap.common.block.WorkbenchBlock;
-import com.cahcap.common.blockentity.CauldronBlockEntity;
-import com.cahcap.common.blockentity.HerbBasketBlockEntity;
-import com.cahcap.common.blockentity.HerbPotBlockEntity;
-import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
-import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import com.cahcap.common.entity.FlowweaveProjectile;
-import com.cahcap.common.multiblock.Multiblock;
-import com.cahcap.common.multiblock.MultiblockCauldron;
-import com.cahcap.common.multiblock.MultiblockHerbCabinet;
-import com.cahcap.common.recipe.MultiblockHerbalBlending;
-import com.cahcap.common.multiblock.MultiblockHerbVault;
-import com.cahcap.common.multiblock.MultiblockKiln;
-import com.cahcap.common.multiblock.MultiblockObelisk;
-import com.cahcap.common.recipe.MultiblockHerbalBlending.BlendingStructure;
-import com.cahcap.common.recipe.WorkbenchRecipe;
-import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.entity.ProjectileConfig;
+import com.cahcap.common.item.HerbBoxItem;
+import com.cahcap.common.util.PotionHelper;
+import com.cahcap.common.util.HerbRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -33,19 +18,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -54,7 +34,6 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Flowweave Ring
@@ -314,13 +293,7 @@ public class FlowweaveRingItem extends Item {
     }
     
     private static Item getHerbFromKey(String key) {
-        if (key.contains("scaleplate")) return ModRegistries.SCALEPLATE.get();
-        if (key.contains("dewpetal_shard")) return ModRegistries.DEWPETAL_SHARD.get();
-        if (key.contains("golden_lilybell")) return ModRegistries.GOLDEN_LILYBELL.get();
-        if (key.contains("cryst_spine")) return ModRegistries.CRYST_SPINE.get();
-        if (key.contains("burnt_node")) return ModRegistries.BURNT_NODE.get();
-        if (key.contains("heart_of_stardream")) return ModRegistries.HEART_OF_STARDREAM.get();
-        return null;
+        return HerbRegistry.getHerbByKeyContains(key);
     }
     
     /**
@@ -437,12 +410,12 @@ public class FlowweaveRingItem extends Item {
                 
             case BURST:
                 // Shoot projectile that applies AOE buff on impact
-                shootProjectile(level, player, effects, duration, amplifier, color, false, isInstant);
+                shootProjectile(level, player, new ProjectileConfig(effects, duration, amplifier, color, false, isInstant));
                 break;
-                
+
             case ECHO:
                 // Shoot projectile that creates lingering cloud on impact
-                shootProjectile(level, player, effects, duration, amplifier, color, true, isInstant);
+                shootProjectile(level, player, new ProjectileConfig(effects, duration, amplifier, color, true, isInstant));
                 break;
         }
         
@@ -464,14 +437,13 @@ public class FlowweaveRingItem extends Item {
      * Shoot a projectile for BURST or LINGERING mode
      * Supports multiple effects
      */
-    private void shootProjectile(Level level, Player player, List<Holder<MobEffect>> effects, 
-                                  int duration, int amplifier, int color, boolean lingering, boolean isInstant) {
+    private void shootProjectile(Level level, Player player, ProjectileConfig config) {
         // Create and spawn the projectile entity
         FlowweaveProjectile projectile = new FlowweaveProjectile(level, player);
-        projectile.setEffects(effects, duration, amplifier);
-        projectile.setColor(color);
-        projectile.setLingering(lingering);
-        projectile.setInstant(isInstant);
+        projectile.setEffects(config.effects(), config.duration(), config.amplifier());
+        projectile.setColor(config.color());
+        projectile.setLingering(config.lingering());
+        projectile.setInstant(config.isInstant());
         
         // Calculate direction from player's look direction (NOT affected by player movement)
         Vec3 lookVec = player.getLookAngle();
@@ -520,13 +492,7 @@ public class FlowweaveRingItem extends Item {
      * Get the herbKey for an Item, used by HerbBoxItem storage
      */
     private String getHerbKeyForItem(Item item) {
-        if (item == ModRegistries.SCALEPLATE.get()) return "scaleplate";
-        if (item == ModRegistries.DEWPETAL_SHARD.get()) return "dewpetal_shard";
-        if (item == ModRegistries.GOLDEN_LILYBELL.get()) return "golden_lilybell";
-        if (item == ModRegistries.CRYST_SPINE.get()) return "cryst_spine";
-        if (item == ModRegistries.BURNT_NODE.get()) return "burnt_node";
-        if (item == ModRegistries.HEART_OF_STARDREAM.get()) return "heart_of_stardream";
-        return null;
+        return HerbRegistry.getKeyForHerb(item);
     }
     
     /**
@@ -596,21 +562,14 @@ public class FlowweaveRingItem extends Item {
      * Uses dynamic registry lookup instead of hardcoded switch.
      */
     private Holder<MobEffect> getEffectForType(String type) {
-        // type is a full registry ID like "minecraft:instant_health"
-        ResourceLocation id = ResourceLocation.tryParse(type);
-        if (id == null) return null;
-        
-        MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
-        if (effect == null) return null;
-        
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
+        return PotionHelper.getEffectForType(type);
     }
     
     /**
      * Check if an effect is instantaneous (like heal/harm) using vanilla API.
      */
     private boolean isInstantEffect(Holder<MobEffect> effect) {
-        return effect != null && effect.value().isInstantenous();
+        return PotionHelper.isInstantEffect(effect);
     }
     
     @Override
@@ -728,164 +687,26 @@ public class FlowweaveRingItem extends Item {
         BlockState clickedState = level.getBlockState(context.getClickedPos());
         Player player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
 
         // Check if this click would trigger any action (for both client and server)
-        boolean wouldTriggerAction = wouldTriggerAction(context, clickedState);
-        
+        boolean wouldTriggerAction = wouldTriggerAction(context, clickedState, pos, player, stack);
+
         if (level.isClientSide()) {
             // Client: only show swing animation if action would be triggered
             return wouldTriggerAction ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
-        
-        // Server-side: actually perform the actions
-        
-        // Try to form multiblock structures
-        for (Multiblock blueprint : new Multiblock[]{
-                MultiblockHerbCabinet.BLUEPRINT,
-                MultiblockCauldron.BLUEPRINT,
-                MultiblockKiln.BLUEPRINT,
-                MultiblockHerbVault.BLUEPRINT,
-                MultiblockObelisk.BLUEPRINT
-        }) {
-            if (blueprint.isBlockTrigger(clickedState)) {
-                if (blueprint.tryAssemble(level, context.getClickedPos(),
-                        context.getClickedFace(), player)) {
-                    return InteractionResult.SUCCESS;
+
+        // Server-side: delegate to registered interactions
+        for (RingBlockInteraction interaction : RingInteractionRegistry.getInteractions()) {
+            if (interaction.canInteract(context, clickedState, level, pos, player, stack)) {
+                InteractionResult result = interaction.interact(context, clickedState, level, pos, player, stack);
+                if (result.consumesAction()) {
+                    return result;
                 }
             }
         }
 
-        // Handle formed Cauldron - start/finish brewing or force clear
-        if (clickedState.is(ModRegistries.CAULDRON.get()) && clickedState.getValue(CauldronBlock.FORMED)) {
-            if (level.getBlockEntity(context.getClickedPos()) instanceof CauldronBlockEntity be) {
-                CauldronBlockEntity master = be.getMaster();
-                if (master != null) {
-                    if (player != null && player.isShiftKeyDown()) {
-                        master.onFlowweaveRingShiftUse(player);
-                        level.playSound(null, context.getClickedPos(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 1.0F);
-                    } else {
-                        master.onFlowweaveRingUse(player);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        }
-        
-        // Try to trigger Herbal Blending Rack crafting (requires shift + right click)
-        if (player != null && player.isShiftKeyDown() 
-                && MultiblockHerbalBlending.INSTANCE.isBlockTrigger(clickedState)) {
-            BlendingStructure structure = MultiblockHerbalBlending.INSTANCE.findStructure(
-                    level,
-                    context.getClickedPos(),
-                    context.getClickedFace(),
-                    player);
-            
-            if (structure != null) {
-                if (MultiblockHerbalBlending.INSTANCE.tryCraft(level, structure, player)) {
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        }
-        
-        // Try to trigger Workbench crafting (right-click center block)
-        if (clickedState.is(ModRegistries.WORKBENCH.get())) {
-            if (clickedState.getValue(WorkbenchBlock.POSITION) == WorkbenchBlock.POS_CENTER) {
-                boolean isShift = player != null && player.isShiftKeyDown();
-                if (tryWorkbenchCraft(level, context.getClickedPos(), player, isShift)) {
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        }
-        
-        // Handle Herb Basket - clear binding and eject all herbs (shift+right-click only)
-        if (player != null && player.isShiftKeyDown()) {
-            if (clickedState.is(ModRegistries.HERB_BASKET.get()) && level.getBlockEntity(context.getClickedPos()) instanceof HerbBasketBlockEntity basket) {
-                Item boundHerbToClear = basket.getBoundHerb();
-                if (boundHerbToClear != null) {
-                    int count = basket.getHerbCount();
-                    
-                    // Eject all herbs
-                    if (count > 0) {
-                        BlockPos pos = context.getClickedPos();
-                        while (count > 0) {
-                            int stackSize = Math.min(count, 64);
-                            ItemStack herbStack = new ItemStack(boundHerbToClear, stackSize);
-                            ItemEntity entityItem = new ItemEntity(
-                                    level,
-                                    pos.getX() + 0.5,
-                                    pos.getY() + 0.5,
-                                    pos.getZ() + 0.5,
-                                    herbStack
-                            );
-                            entityItem.setDeltaMovement(
-                                    (level.random.nextDouble() - 0.5) * 0.2,
-                                    level.random.nextDouble() * 0.2 + 0.1,
-                                    (level.random.nextDouble() - 0.5) * 0.2
-                            );
-                            level.addFreshEntity(entityItem);
-                            count -= stackSize;
-                        }
-                    }
-                    
-                    // Clear binding
-                    basket.unbindHerb();
-                    
-                    // Play leaf break particles
-                    if (level instanceof ServerLevel serverLevel) {
-                        BlockPos pos = context.getClickedPos();
-                        serverLevel.sendParticles(
-                                ParticleTypes.COMPOSTER,
-                                pos.getX() + 0.5,
-                                pos.getY() + 0.5,
-                                pos.getZ() + 0.5,
-                                15,
-                                0.3, 0.3, 0.3,
-                                0.05
-                        );
-                    }
-                    
-                    level.playSound(null, context.getClickedPos(), SoundEvents.GRASS_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        }
-        
-        // Handle Herb Pot - shift+right-click to remove seedling/soil
-        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_POT.get())) {
-            if (level.getBlockEntity(context.getClickedPos()) instanceof HerbPotBlockEntity pot) {
-                ItemStack removed = pot.onFlowweaveRingShiftUse(player);
-                if (!removed.isEmpty()) {
-                    if (!player.getInventory().add(removed)) {
-                        BlockPos pos = context.getClickedPos();
-                        ItemEntity itemEntity = new ItemEntity(level,
-                                pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, removed);
-                        level.addFreshEntity(itemEntity);
-                    }
-                    level.playSound(null, context.getClickedPos(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0f, 1.0f);
-                    return InteractionResult.SUCCESS;
-                }
-            }
-            return InteractionResult.PASS;
-        }
-        
-        // Handle Incense Burner - shift+right-click to remove powder
-        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.INCENSE_BURNER.get())) {
-            if (level.getBlockEntity(context.getClickedPos()) instanceof IncenseBurnerBlockEntity burner) {
-                ItemStack removed = burner.onFlowweaveRingShiftUse(player);
-                if (!removed.isEmpty()) {
-                    if (!player.getInventory().add(removed)) {
-                        BlockPos pos = context.getClickedPos();
-                        ItemEntity itemEntity = new ItemEntity(level,
-                                pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, removed);
-                        level.addFreshEntity(itemEntity);
-                    }
-                    level.playSound(null, context.getClickedPos(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0f, 1.0f);
-                    return InteractionResult.SUCCESS;
-                }
-            }
-            return InteractionResult.PASS;
-        }
-        
         // If no other action triggered and ring has bound potion
         if (player != null && hasBoundPotion(stack)) {
             // Shift+right-click on non-trigger block: cycle mode
@@ -893,227 +714,41 @@ public class FlowweaveRingItem extends Item {
                 CastingMode newMode = cycleMode(stack);
                 player.displayClientMessage(
                     Component.translatable("item.herbalcurative.flowweave_ring.mode_changed", newMode.getDisplayName())
-                        .withStyle(ChatFormatting.AQUA), 
+                        .withStyle(ChatFormatting.AQUA),
                     true);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
                         SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.5F, 1.2F);
                 return InteractionResult.SUCCESS;
             }
-            
+
             // Normal right-click: try to cast
             if (tryCastPotion(level, player, stack)) {
                 return InteractionResult.SUCCESS;
             }
         }
-        
+
         return InteractionResult.PASS;
     }
-    
+
     /**
      * Check if clicking would trigger any action (used for client-side swing animation)
      */
-    private boolean wouldTriggerAction(UseOnContext context, BlockState clickedState) {
-        Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
-        
-        // Check multiblock triggers
-        for (Multiblock blueprint : new Multiblock[]{
-                MultiblockHerbCabinet.BLUEPRINT,
-                MultiblockCauldron.BLUEPRINT,
-                MultiblockKiln.BLUEPRINT,
-                MultiblockHerbVault.BLUEPRINT,
-                MultiblockObelisk.BLUEPRINT
-        }) {
-            if (blueprint.isBlockTrigger(clickedState)) {
+    private boolean wouldTriggerAction(UseOnContext context, BlockState clickedState, BlockPos pos, Player player, ItemStack stack) {
+        Level level = context.getLevel();
+
+        // Check registered interactions
+        for (RingBlockInteraction interaction : RingInteractionRegistry.getInteractions()) {
+            if (interaction.canInteract(context, clickedState, level, pos, player, stack)) {
                 return true;
             }
         }
-        // Check formed Cauldron
-        if (clickedState.is(ModRegistries.CAULDRON.get()) && clickedState.getValue(CauldronBlock.FORMED)) {
-            return true;
-        }
-        if (player != null && player.isShiftKeyDown() 
-                && MultiblockHerbalBlending.INSTANCE.isBlockTrigger(clickedState)) {
-            return true;
-        }
-        if (clickedState.is(ModRegistries.WORKBENCH.get()) 
-                && clickedState.getValue(WorkbenchBlock.POSITION) == WorkbenchBlock.POS_CENTER) {
-            return true;
-        }
-        // Check Herb Basket (with bound herb, shift+right-click)
-        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_BASKET.get())) {
-            if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof HerbBasketBlockEntity basket 
-                    && basket.getBoundHerb() != null) {
-                return true;
-            }
-        }
-        // Check Herb Pot (shift+right-click to remove seedling/soil)
-        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.HERB_POT.get())) {
-            if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof HerbPotBlockEntity pot 
-                    && (pot.hasSeedling() || pot.hasSoil()) && !pot.isGrowing()) {
-                return true;
-            }
-        }
-        // Check Incense Burner (shift+right-click to remove powder)
-        if (player != null && player.isShiftKeyDown() && clickedState.is(ModRegistries.INCENSE_BURNER.get())) {
-            if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IncenseBurnerBlockEntity burner 
-                    && burner.hasPowder()) {
-                return true;
-            }
-        }
-        
+
         // Check if casting would trigger (has bound potion)
         if (hasBoundPotion(stack)) {
             return true;
         }
-        
+
         return false;
-    }
-    
-    /**
-     * Try to craft using the workbench.
-     * @param level The world level
-     * @param centerPos The position of the center workbench block
-     * @param player The player performing the craft (can be null)
-     * @param craftAll If true, craft as many as possible; if false, craft one
-     * @return true if crafting was successful
-     */
-    private boolean tryWorkbenchCraft(Level level, BlockPos centerPos, Player player, boolean craftAll) {
-        BlockEntity be = level.getBlockEntity(centerPos);
-        if (!(be instanceof WorkbenchBlockEntity workbench)) {
-            return false;
-        }
-        
-        // Create recipe input from workbench state
-        WorkbenchRecipe.WorkbenchInput input = new WorkbenchRecipe.WorkbenchInput(workbench);
-        
-        // Find matching recipe
-        Optional<RecipeHolder<WorkbenchRecipe>> recipeHolder = level.getRecipeManager()
-                .getRecipeFor(ModRegistries.WORKBENCH_RECIPE_TYPE.get(), input, level);
-        
-        if (recipeHolder.isEmpty()) {
-            return false;
-        }
-        
-        WorkbenchRecipe recipe = recipeHolder.get().value();
-        
-        // Calculate how many to craft
-        int craftCount = craftAll ? recipe.getMaxCraftCount(input) : 1;
-        if (craftCount <= 0) {
-            return false;
-        }
-        
-        // Check experience cost (if recipe requires experience and player exists)
-        int expCost = recipe.getExperienceCost();
-        if (expCost > 0 && player != null && !player.isCreative()) {
-            // Calculate total experience cost
-            int totalExpCost = expCost * craftCount;
-            int playerExp = getTotalExperience(player);
-            
-            if (playerExp < totalExpCost) {
-                // Not enough experience - limit craft count to what player can afford
-                craftCount = playerExp / expCost;
-                if (craftCount <= 0) {
-                    // Play failure sound
-                    level.playSound(null, centerPos, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return false;
-                }
-            }
-        }
-        
-        // Collect crafting remainder items (like buckets)
-        List<ItemStack> remainderItems = new java.util.ArrayList<>();
-        
-        // Perform crafting
-        for (int i = 0; i < craftCount; i++) {
-            // Damage tools by ingredient (tools can be in any slot)
-            for (WorkbenchRecipe.ToolRequirement tool : recipe.getTools()) {
-                for (int d = 0; d < tool.damage(); d++) {
-                    workbench.damageToolByIngredient(tool.ingredient());
-                }
-            }
-            
-            // Consume materials by ingredient and collect remainder items
-            for (WorkbenchRecipe.MaterialRequirement req : recipe.getMaterials()) {
-                workbench.consumeMaterialByIngredientWithRemainder(req.ingredient(), req.count(), remainderItems);
-            }
-            
-            // Consume input and collect remainder
-            ItemStack inputStack = workbench.getInputItem();
-            Item inputRemainderItem = inputStack.getItem().getCraftingRemainingItem();
-            if (inputRemainderItem != null) {
-                remainderItems.add(new ItemStack(inputRemainderItem));
-            }
-            workbench.consumeInput(1);
-            
-            // Consume experience
-            if (expCost > 0 && player != null && !player.isCreative()) {
-                player.giveExperiencePoints(-expCost);
-            }
-        }
-        
-        // Drop remainder items (like empty buckets)
-        for (ItemStack remainder : remainderItems) {
-            if (!remainder.isEmpty()) {
-                ItemEntity remainderEntity = new ItemEntity(level,
-                        centerPos.getX() + 0.5, centerPos.getY() + 1.0, centerPos.getZ() + 0.5, remainder);
-                remainderEntity.setDeltaMovement(0, 0.15, 0);
-                level.addFreshEntity(remainderEntity);
-            }
-        }
-        
-        // Create result and drop it
-        ItemStack result = recipe.getResult();
-        result.setCount(result.getCount() * craftCount);
-        
-        // Drop the result (pop out from center)
-        ItemEntity itemEntity = new ItemEntity(level, 
-                centerPos.getX() + 0.5, centerPos.getY() + 1.0, centerPos.getZ() + 0.5, result);
-        itemEntity.setDeltaMovement(0, 0.2, 0); // Small upward velocity
-        level.addFreshEntity(itemEntity);
-        
-        // Play success sound
-        level.playSound(null, centerPos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
-        
-        return true;
-    }
-    
-    /**
-     * Calculate total experience points the player has.
-     * Experience is stored as levels + progress, need to convert to total points.
-     */
-    private int getTotalExperience(Player player) {
-        int level = player.experienceLevel;
-        float progress = player.experienceProgress;
-        
-        // Calculate points needed to reach current level
-        int totalPoints;
-        if (level <= 16) {
-            totalPoints = level * level + 6 * level;
-        } else if (level <= 31) {
-            totalPoints = (int) (2.5 * level * level - 40.5 * level + 360);
-        } else {
-            totalPoints = (int) (4.5 * level * level - 162.5 * level + 2220);
-        }
-        
-        // Add progress towards next level
-        int pointsForNextLevel = getExperienceForLevel(level + 1) - getExperienceForLevel(level);
-        totalPoints += (int) (progress * pointsForNextLevel);
-        
-        return totalPoints;
-    }
-    
-    /**
-     * Get total experience points needed to reach a specific level.
-     */
-    private int getExperienceForLevel(int level) {
-        if (level <= 16) {
-            return level * level + 6 * level;
-        } else if (level <= 31) {
-            return (int) (2.5 * level * level - 40.5 * level + 360);
-        } else {
-            return (int) (4.5 * level * level - 162.5 * level + 2220);
-        }
     }
     
     @Override

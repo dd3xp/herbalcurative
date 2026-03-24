@@ -1,7 +1,9 @@
 package com.cahcap.common.item;
 
-import com.cahcap.common.blockentity.CauldronBlockEntity;
+import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
+import com.cahcap.common.blockentity.cauldron.CauldronFluid;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.PotionHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -93,42 +95,54 @@ public class PotItem extends Item {
         Player player = context.getPlayer();
 
         if (isFilled(stack)) {
-            // Pour pot back into empty cauldron
-            if (!master.getFluid().isEmpty()) {
-                return InteractionResult.PASS; // Cauldron not empty
-            }
-
-            // Restore potion from pot data
-            java.util.List<String> potionTypes = getPotionTypes(stack);
-            java.util.List<MobEffect> effects = new java.util.ArrayList<>();
-            for (String type : potionTypes) {
-                ResourceLocation id = ResourceLocation.tryParse(type);
-                if (id != null) {
-                    MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
-                    if (effect != null) effects.add(effect);
-                }
-            }
-            if (effects.isEmpty()) return InteractionResult.PASS;
-
-            int units = getUses(stack);
-            int duration = getDuration(stack);
-            int amplifier = getLevel(stack) - 1;
-            int color = getPotionColor(stack);
-
-            // Fill cauldron with water first, then convert to potion
-            master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000);
-            master.getFluid().convertToBoilingPotion(effects, color);
-            master.getFluid().convertToPotion(duration, amplifier, color);
-            // Set the actual potion units from pot
-            master.getFluid().consumeUnits(CauldronBlockEntity.CauldronFluid.MAX_POTION_UNITS - units);
-
-            emptyPot(stack);
-            level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-            master.syncToClient();
-            return InteractionResult.SUCCESS;
+            return pourIntoCauldron(stack, master, level, pos);
         }
 
-        // Empty pot: collect potion from cauldron
+        return collectFromCauldron(stack, master, player, level, pos);
+    }
+    
+    /**
+     * Pour pot contents back into an empty cauldron.
+     */
+    private InteractionResult pourIntoCauldron(ItemStack potStack, CauldronBlockEntity master, Level level, BlockPos pos) {
+        if (!master.getFluid().isEmpty()) {
+            return InteractionResult.PASS; // Cauldron not empty
+        }
+
+        // Restore potion from pot data
+        java.util.List<String> potionTypes = getPotionTypes(potStack);
+        java.util.List<MobEffect> effects = new java.util.ArrayList<>();
+        for (String type : potionTypes) {
+            ResourceLocation id = ResourceLocation.tryParse(type);
+            if (id != null) {
+                MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
+                if (effect != null) effects.add(effect);
+            }
+        }
+        if (effects.isEmpty()) return InteractionResult.PASS;
+
+        int units = getUses(potStack);
+        int duration = getDuration(potStack);
+        int amplifier = getLevel(potStack) - 1;
+        int color = getPotionColor(potStack);
+
+        // Fill cauldron with water first, then convert to potion
+        master.addFluid(net.minecraft.world.level.material.Fluids.WATER, 1000);
+        master.getFluid().convertToBoilingPotion(effects, color);
+        master.getFluid().convertToPotion(duration, amplifier, color);
+        // Set the actual potion units from pot
+        master.getFluid().consumeUnits(CauldronFluid.MAX_POTION_UNITS - units);
+
+        emptyPot(potStack);
+        level.playSound(null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+        master.syncToClient();
+        return InteractionResult.SUCCESS;
+    }
+
+    /**
+     * Collect potion from cauldron into an empty pot.
+     */
+    private InteractionResult collectFromCauldron(ItemStack potStack, CauldronBlockEntity master, Player player, Level level, BlockPos pos) {
         if (!master.getFluid().isPotion()) {
             return InteractionResult.PASS;
         }
@@ -144,9 +158,9 @@ public class PotItem extends Item {
 
         // Fill the pot with remaining potion units, store base (undiluted) color
         int units = master.getFluid().getPotionUnits();
-        fillPot(stack, effectIds, master.getFluid().getBaseColor(),
+        fillPot(potStack, effectIds, master.getFluid().getBaseColor(),
                 master.getPotionDuration(), master.getPotionLevel());
-        setUses(stack, units);
+        setUses(potStack, units);
 
         // Return any floating materials and output slot to player
         if (player != null) {
@@ -173,7 +187,7 @@ public class PotItem extends Item {
         level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
         return InteractionResult.SUCCESS;
     }
-    
+
     /**
      * Drink the potion when used
      */
@@ -376,21 +390,14 @@ public class PotItem extends Item {
      * Uses dynamic registry lookup instead of hardcoded switch.
      */
     private Holder<MobEffect> getEffectForType(String type) {
-        // Try to parse as ResourceLocation
-        ResourceLocation id = ResourceLocation.tryParse(type);
-        if (id == null) return null;
-        
-        MobEffect effect = BuiltInRegistries.MOB_EFFECT.get(id);
-        if (effect == null) return null;
-        
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
+        return PotionHelper.getEffectForType(type);
     }
     
     /**
      * Check if an effect is instantaneous (like heal/harm) using vanilla API.
      */
     private boolean isInstantEffect(Holder<MobEffect> effect) {
-        return effect != null && effect.value().isInstantenous();
+        return PotionHelper.isInstantEffect(effect);
     }
     
     /**

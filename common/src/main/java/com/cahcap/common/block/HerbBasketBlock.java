@@ -1,8 +1,10 @@
 package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
-import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
+import com.cahcap.common.util.HerbRegistry;
+import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.HerbRegistry;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -80,7 +82,7 @@ public class HerbBasketBlock extends BaseEntityBlock {
      * @return 0 if not a valid herb, 1-6 for valid herbs
      */
     public static int getHerbTypeIndex(Item herb) {
-        Item[] herbs = HerbCabinetBlockEntity.getAllHerbItems();
+        Item[] herbs = HerbRegistry.getAllHerbItems();
         for (int i = 0; i < herbs.length; i++) {
             if (herbs[i] == herb) {
                 return i + 1; // 1-based index
@@ -181,7 +183,7 @@ public class HerbBasketBlock extends BaseEntityBlock {
                     }
                 }
             }
-        } else if (!stack.isEmpty() && HerbCabinetBlockEntity.isHerb(stack.getItem())) {
+        } else if (!stack.isEmpty() && HerbRegistry.isHerb(stack.getItem())) {
             // Single click (or double-click) with herb: add held stack only
             Item herb = stack.getItem();
             
