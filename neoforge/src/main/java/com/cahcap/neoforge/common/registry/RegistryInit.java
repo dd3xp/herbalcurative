@@ -10,19 +10,19 @@ public class RegistryInit {
     
     public static void init() {
         // Blocks
-        ModRegistries.VERDSCALE_FERN = () -> ModBlocks.VERDSCALE_FERN.get();
-        ModRegistries.DEWPETAL = () -> ModBlocks.DEWPETAL.get();
-        ModRegistries.ZEPHYR_LILY = () -> ModBlocks.ZEPHYR_LILY.get();
-        ModRegistries.CRYSTBUD = () -> ModBlocks.CRYSTBUD.get();
-        ModRegistries.PYRISAGE = () -> ModBlocks.PYRISAGE.get();
-        ModRegistries.ROSYNIA = () -> ModBlocks.ROSYNIA.get();
+        ModRegistries.SCLERIS = () -> ModBlocks.SCLERIS.get();
+        ModRegistries.DORELLA = () -> ModBlocks.DORELLA.get();
+        ModRegistries.SEPHREL = () -> ModBlocks.SEPHREL.get();
+        ModRegistries.CRYSEL = () -> ModBlocks.CRYSEL.get();
+        ModRegistries.PYRAZE = () -> ModBlocks.PYRAZE.get();
+        ModRegistries.STELLIA = () -> ModBlocks.STELLIA.get();
         
-        ModRegistries.VERDSCALE_FERN_CROP = () -> ModBlocks.VERDSCALE_FERN_CROP.get();
-        ModRegistries.DEWPETAL_CROP = () -> ModBlocks.DEWPETAL_CROP.get();
-        ModRegistries.ZEPHYR_LILY_CROP = () -> ModBlocks.ZEPHYR_LILY_CROP.get();
-        ModRegistries.CRYSTBUD_CROP = () -> ModBlocks.CRYSTBUD_CROP.get();
-        ModRegistries.PYRISAGE_CROP = () -> ModBlocks.PYRISAGE_CROP.get();
-        ModRegistries.ROSYNIA_CROP = () -> ModBlocks.ROSYNIA_CROP.get();
+        ModRegistries.SCLERIS_CROP = () -> ModBlocks.SCLERIS_CROP.get();
+        ModRegistries.DORELLA_CROP = () -> ModBlocks.DORELLA_CROP.get();
+        ModRegistries.SEPHREL_CROP = () -> ModBlocks.SEPHREL_CROP.get();
+        ModRegistries.CRYSEL_CROP = () -> ModBlocks.CRYSEL_CROP.get();
+        ModRegistries.PYRAZE_CROP = () -> ModBlocks.PYRAZE_CROP.get();
+        ModRegistries.STELLIA_CROP = () -> ModBlocks.STELLIA_CROP.get();
         
         ModRegistries.RED_CHERRY_LOG = () -> ModBlocks.RED_CHERRY_LOG.get();
         ModRegistries.RED_CHERRY_PLANKS = () -> ModBlocks.RED_CHERRY_PLANKS.get();
@@ -50,18 +50,18 @@ public class RegistryInit {
         
         // Items
         ModRegistries.SCALEPLATE = () -> ModItems.SCALEPLATE.get();
-        ModRegistries.DEWPETAL_SHARD = () -> ModItems.DEWPETAL_SHARD.get();
-        ModRegistries.GOLDEN_LILYBELL = () -> ModItems.GOLDEN_LILYBELL.get();
+        ModRegistries.DEWPETAL = () -> ModItems.DEWPETAL.get();
+        ModRegistries.ZEPHYR_BLOSSOM = () -> ModItems.ZEPHYR_BLOSSOM.get();
         ModRegistries.CRYST_SPINE = () -> ModItems.CRYST_SPINE.get();
-        ModRegistries.BURNT_NODE = () -> ModItems.BURNT_NODE.get();
-        ModRegistries.HEART_OF_STARDREAM = () -> ModItems.HEART_OF_STARDREAM.get();
+        ModRegistries.PYRO_NODE = () -> ModItems.PYRO_NODE.get();
+        ModRegistries.STELLAR_MOTE = () -> ModItems.STELLAR_MOTE.get();
         
-        ModRegistries.VERDSCALE_FERN_SEED = () -> ModItems.VERDSCALE_FERN_SEED.get();
-        ModRegistries.DEWPETAL_SEED = () -> ModItems.DEWPETAL_SEED.get();
-        ModRegistries.ZEPHYR_LILY_SEED = () -> ModItems.ZEPHYR_LILY_SEED.get();
-        ModRegistries.CRYSTBUD_SEED = () -> ModItems.CRYSTBUD_SEED.get();
-        ModRegistries.PYRISAGE_SEED = () -> ModItems.PYRISAGE_SEED.get();
-        ModRegistries.ROSYNIA_SEED = () -> ModItems.ROSYNIA_SEED.get();
+        ModRegistries.SCLERIS_SEED = () -> ModItems.SCLERIS_SEED.get();
+        ModRegistries.DORELLA_SEED = () -> ModItems.DORELLA_SEED.get();
+        ModRegistries.SEPHREL_SEED = () -> ModItems.SEPHREL_SEED.get();
+        ModRegistries.CRYSEL_SEED = () -> ModItems.CRYSEL_SEED.get();
+        ModRegistries.PYRAZE_SEED = () -> ModItems.PYRAZE_SEED.get();
+        ModRegistries.STELLIA_SEED = () -> ModItems.STELLIA_SEED.get();
         
         ModRegistries.RED_CHERRY_STICK = () -> ModItems.RED_CHERRY_STICK.get();
         ModRegistries.RED_CHERRY = () -> ModItems.RED_CHERRY.get();

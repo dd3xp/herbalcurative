@@ -74,15 +74,15 @@ public class ModItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvide
         // Add forest heartwood stick to c:rods/wooden tag (allows use in vanilla recipes)
         tag(STICKS).add(ModItems.RED_CHERRY_STICK.get());
         
-        // herbalcurative:herb_products - All herb products (scaleplate, dewpetal_shard, etc.)
+        // herbalcurative:herb_products - All herb products (scaleplate, dewpetal, etc.)
         // Used in recipes that accept any herb product (e.g. crafting Lumistone)
         tag(HERB_PRODUCTS).add(
             ModItems.SCALEPLATE.get(),
-            ModItems.DEWPETAL_SHARD.get(),
-            ModItems.GOLDEN_LILYBELL.get(),
+            ModItems.DEWPETAL.get(),
+            ModItems.ZEPHYR_BLOSSOM.get(),
             ModItems.CRYST_SPINE.get(),
-            ModItems.BURNT_NODE.get(),
-            ModItems.HEART_OF_STARDREAM.get()
+            ModItems.PYRO_NODE.get(),
+            ModItems.STELLAR_MOTE.get()
         );
         
         // ==================== Minecraft tool/armor tags (required for enchanting) ====================

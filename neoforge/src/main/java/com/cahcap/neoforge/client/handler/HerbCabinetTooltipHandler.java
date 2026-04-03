@@ -106,11 +106,11 @@ public class HerbCabinetTooltipHandler extends TooltipHandler {
     private static Item getHerbItem(int index) {
         return switch (index) {
             case 0 -> ModItems.SCALEPLATE.get();
-            case 1 -> ModItems.DEWPETAL_SHARD.get();
-            case 2 -> ModItems.GOLDEN_LILYBELL.get();
+            case 1 -> ModItems.DEWPETAL.get();
+            case 2 -> ModItems.ZEPHYR_BLOSSOM.get();
             case 3 -> ModItems.CRYST_SPINE.get();
-            case 4 -> ModItems.BURNT_NODE.get();
-            case 5 -> ModItems.HEART_OF_STARDREAM.get();
+            case 4 -> ModItems.PYRO_NODE.get();
+            case 5 -> ModItems.STELLAR_MOTE.get();
             default -> null;
         };
     }
@@ -118,11 +118,11 @@ public class HerbCabinetTooltipHandler extends TooltipHandler {
     private static String getHerbKey(int index) {
         return switch (index) {
             case 0 -> "scaleplate";
-            case 1 -> "dewpetal_shard";
-            case 2 -> "golden_lilybell";
+            case 1 -> "dewpetal";
+            case 2 -> "zephyr_blossom";
             case 3 -> "cryst_spine";
-            case 4 -> "burnt_node";
-            case 5 -> "heart_of_stardream";
+            case 4 -> "pyro_node";
+            case 5 -> "stellar_mote";
             default -> "";
         };
     }

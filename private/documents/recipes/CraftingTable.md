@@ -94,7 +94,7 @@
 
 - **精灵果**：
   <table border="1">
-  <tr><td>无</td><td>金铃花</td><td>无</td></tr>
-  <tr><td>金铃花</td><td>红樱桃果</td><td>金铃花</td></tr>
-  <tr><td>无</td><td>金铃花</td><td>无</td></tr>
+  <tr><td>无</td><td>流风花</td><td>无</td></tr>
+  <tr><td>流风花</td><td>红樱桃果</td><td>流风花</td></tr>
+  <tr><td>无</td><td>流风花</td><td>无</td></tr>
   </table>

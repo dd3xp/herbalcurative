@@ -21,26 +21,26 @@ public class ModItems {
     // ==================== Herb Products ====================
     
     public static final DeferredItem<Item> SCALEPLATE = ITEMS.registerSimpleItem("scaleplate");
-    public static final DeferredItem<Item> DEWPETAL_SHARD = ITEMS.registerSimpleItem("dewpetal_shard");
-    public static final DeferredItem<Item> GOLDEN_LILYBELL = ITEMS.registerSimpleItem("golden_lilybell");
+    public static final DeferredItem<Item> DEWPETAL = ITEMS.registerSimpleItem("dewpetal");
+    public static final DeferredItem<Item> ZEPHYR_BLOSSOM = ITEMS.registerSimpleItem("zephyr_blossom");
     public static final DeferredItem<Item> CRYST_SPINE = ITEMS.registerSimpleItem("cryst_spine");
-    public static final DeferredItem<Item> BURNT_NODE = ITEMS.registerSimpleItem("burnt_node");
-    public static final DeferredItem<Item> HEART_OF_STARDREAM = ITEMS.registerSimpleItem("heart_of_stardream");
+    public static final DeferredItem<Item> PYRO_NODE = ITEMS.registerSimpleItem("pyro_node");
+    public static final DeferredItem<Item> STELLAR_MOTE = ITEMS.registerSimpleItem("stellar_mote");
 
     // ==================== Herb Seeds ====================
     
-    public static final DeferredItem<Item> VERDSCALE_FERN_SEED = ITEMS.register("verdscale_fern_seed",
-            () -> new HerbSeedItem(ModBlocks.VERDSCALE_FERN_CROP.get(), new Item.Properties()));
-    public static final DeferredItem<Item> DEWPETAL_SEED = ITEMS.register("dewpetal_seed",
-            () -> new HerbSeedItem(ModBlocks.DEWPETAL_CROP.get(), new Item.Properties()));
-    public static final DeferredItem<Item> ZEPHYR_LILY_SEED = ITEMS.register("zephyr_lily_seed",
-            () -> new HerbSeedItem(ModBlocks.ZEPHYR_LILY_CROP.get(), new Item.Properties()));
-    public static final DeferredItem<Item> CRYSTBUD_SEED = ITEMS.register("crystbud_seed",
-            () -> new HerbSeedItem(ModBlocks.CRYSTBUD_CROP.get(), new Item.Properties()));
-    public static final DeferredItem<Item> PYRISAGE_SEED = ITEMS.register("pyrisage_seed",
-            () -> new HerbSeedItem(ModBlocks.PYRISAGE_CROP.get(), new Item.Properties()));
-    public static final DeferredItem<Item> ROSYNIA_SEED = ITEMS.register("rosynia_seed",
-            () -> new HerbSeedItem(ModBlocks.ROSYNIA_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> SCLERIS_SEED = ITEMS.register("scleris_seed",
+            () -> new HerbSeedItem(ModBlocks.SCLERIS_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> DORELLA_SEED = ITEMS.register("dorella_seed",
+            () -> new HerbSeedItem(ModBlocks.DORELLA_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> SEPHREL_SEED = ITEMS.register("sephrel_seed",
+            () -> new HerbSeedItem(ModBlocks.SEPHREL_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> CRYSEL_SEED = ITEMS.register("crysel_seed",
+            () -> new HerbSeedItem(ModBlocks.CRYSEL_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> PYRAZE_SEED = ITEMS.register("pyraze_seed",
+            () -> new HerbSeedItem(ModBlocks.PYRAZE_CROP.get(), new Item.Properties()));
+    public static final DeferredItem<Item> STELLIA_SEED = ITEMS.register("stellia_seed",
+            () -> new HerbSeedItem(ModBlocks.STELLIA_CROP.get(), new Item.Properties()));
 
     // ==================== Crafting Materials ====================
     
@@ -199,18 +199,18 @@ public class ModItems {
     // Placeable blocks (herb flowers, Red Cherry wood, Lumistone)
     
     // Herb flowers
-    public static final DeferredItem<BlockItem> VERDSCALE_FERN = ITEMS.register("verdscale_fern",
-            () -> new BlockItem(ModBlocks.VERDSCALE_FERN.get(), new Item.Properties()));
-    public static final DeferredItem<BlockItem> DEWPETAL = ITEMS.register("dewpetal",
-            () -> new BlockItem(ModBlocks.DEWPETAL.get(), new Item.Properties()));
-    public static final DeferredItem<BlockItem> ZEPHYR_LILY = ITEMS.register("zephyr_lily",
-            () -> new BlockItem(ModBlocks.ZEPHYR_LILY.get(), new Item.Properties()));
-    public static final DeferredItem<BlockItem> CRYSTBUD = ITEMS.register("crystbud",
-            () -> new BlockItem(ModBlocks.CRYSTBUD.get(), new Item.Properties()));
-    public static final DeferredItem<BlockItem> PYRISAGE = ITEMS.register("pyrisage",
-            () -> new BlockItem(ModBlocks.PYRISAGE.get(), new Item.Properties()));
-    public static final DeferredItem<BlockItem> ROSYNIA = ITEMS.register("rosynia",
-            () -> new BlockItem(ModBlocks.ROSYNIA.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> SCLERIS = ITEMS.register("scleris",
+            () -> new BlockItem(ModBlocks.SCLERIS.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> DORELLA = ITEMS.register("dorella",
+            () -> new BlockItem(ModBlocks.DORELLA.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> SEPHREL = ITEMS.register("sephrel",
+            () -> new BlockItem(ModBlocks.SEPHREL.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> CRYSEL = ITEMS.register("crysel",
+            () -> new BlockItem(ModBlocks.CRYSEL.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> PYRAZE = ITEMS.register("pyraze",
+            () -> new BlockItem(ModBlocks.PYRAZE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> STELLIA = ITEMS.register("stellia",
+            () -> new BlockItem(ModBlocks.STELLIA.get(), new Item.Properties()));
     
     // Red Cherry blocks (placeable)
     public static final DeferredItem<BlockItem> RED_CHERRY_LOG = ITEMS.register("red_cherry_log",

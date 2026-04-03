@@ -25,7 +25,7 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
         // ==================== Overworld Herbs ====================
         
         // Dewpetal - Generates in cold/snowy biomes (8 biomes, no overlap)
-        this.tag(ModWorldGenProvider.HAS_DEWPETAL).add(
+        this.tag(ModWorldGenProvider.HAS_DORELLA).add(
             Biomes.GROVE,
             Biomes.SNOWY_PLAINS,
             Biomes.ICE_SPIKES,
@@ -36,8 +36,8 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
             Biomes.FROZEN_PEAKS
         );
         
-        // Verdscale Fern - Generates in forest biomes
-        this.tag(ModWorldGenProvider.HAS_VERDSCALE_FERN).add(
+        // Scleris - Generates in forest biomes
+        this.tag(ModWorldGenProvider.HAS_SCLERIS).add(
             Biomes.FOREST,
             Biomes.BIRCH_FOREST,
             Biomes.DARK_FOREST,
@@ -51,8 +51,8 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
             Biomes.CHERRY_GROVE
         );
         
-        // Zephyr Lily - Generates in plains biomes
-        this.tag(ModWorldGenProvider.HAS_ZEPHYR_LILY).add(
+        // Sephrel - Generates in plains biomes
+        this.tag(ModWorldGenProvider.HAS_SEPHREL).add(
             Biomes.PLAINS,
             Biomes.SUNFLOWER_PLAINS,
             Biomes.MEADOW,
@@ -79,14 +79,14 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
         
         // ==================== Nether Herbs ====================
         
-        // Crystbud - Generates in Basalt Deltas and Nether Wastes (stone-like blocks)
-        this.tag(ModWorldGenProvider.HAS_CRYSTBUD).add(
+        // Crysel - Generates in Basalt Deltas and Nether Wastes (stone-like blocks)
+        this.tag(ModWorldGenProvider.HAS_CRYSEL).add(
             Biomes.BASALT_DELTAS,
             Biomes.NETHER_WASTES
         );
         
-        // Pyrisage - Generates in Warped Forest, Crimson Forest, Soul Sand Valley (dirt-like blocks)
-        this.tag(ModWorldGenProvider.HAS_PYRISAGE).add(
+        // Pyraze - Generates in Warped Forest, Crimson Forest, Soul Sand Valley (dirt-like blocks)
+        this.tag(ModWorldGenProvider.HAS_PYRAZE).add(
             Biomes.WARPED_FOREST,
             Biomes.CRIMSON_FOREST,
             Biomes.SOUL_SAND_VALLEY
@@ -94,8 +94,8 @@ public class ModBiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvi
         
         // ==================== End Herbs ====================
         
-        // Rosynia - Generates in all End biomes
-        this.tag(ModWorldGenProvider.HAS_ROSYNIA).add(
+        // Stellia - Generates in all End biomes
+        this.tag(ModWorldGenProvider.HAS_STELLIA).add(
             Biomes.THE_END,
             Biomes.END_HIGHLANDS,
             Biomes.END_MIDLANDS,

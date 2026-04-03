@@ -24,7 +24,7 @@ import java.util.Map;
  * Input behavior:
  * - Slot 0 accepts valid soil items (dirt, grass_block, etc.)
  * - Slot 1 accepts valid seedlings (seeds, saplings, herb flowers, etc.) if soil is present
- * - Slots 2-7 accept herbs (herb products like scaleplate, dewpetal_shard, etc.)
+ * - Slots 2-7 accept herbs (herb products like scaleplate, dewpetal, etc.)
  * 
  * No output slots - products drop as item entities when growth completes.
  */

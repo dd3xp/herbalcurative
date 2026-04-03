@@ -36,12 +36,12 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         
         // minecraft:flowers - All herb flowers
         this.tag(BlockTags.FLOWERS).add(
-            ModBlocks.VERDSCALE_FERN.get(),
-            ModBlocks.DEWPETAL.get(),
-            ModBlocks.ZEPHYR_LILY.get(),
-            ModBlocks.CRYSTBUD.get(),
-            ModBlocks.PYRISAGE.get(),
-            ModBlocks.ROSYNIA.get()
+            ModBlocks.SCLERIS.get(),
+            ModBlocks.DORELLA.get(),
+            ModBlocks.SEPHREL.get(),
+            ModBlocks.CRYSEL.get(),
+            ModBlocks.PYRAZE.get(),
+            ModBlocks.STELLIA.get()
         );
         
         // minecraft:leaves - Red Cherry leaves
@@ -114,19 +114,19 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
         // minecraft:mineable/hoe - Blocks mineable with hoe (all herbs and crops)
         this.tag(BlockTags.MINEABLE_WITH_HOE).add(
             // Herb flowers
-            ModBlocks.VERDSCALE_FERN.get(),
-            ModBlocks.DEWPETAL.get(),
-            ModBlocks.ZEPHYR_LILY.get(),
-            ModBlocks.CRYSTBUD.get(),
-            ModBlocks.PYRISAGE.get(),
-            ModBlocks.ROSYNIA.get(),
+            ModBlocks.SCLERIS.get(),
+            ModBlocks.DORELLA.get(),
+            ModBlocks.SEPHREL.get(),
+            ModBlocks.CRYSEL.get(),
+            ModBlocks.PYRAZE.get(),
+            ModBlocks.STELLIA.get(),
             // Herb crops
-            ModBlocks.VERDSCALE_FERN_CROP.get(),
-            ModBlocks.DEWPETAL_CROP.get(),
-            ModBlocks.ZEPHYR_LILY_CROP.get(),
-            ModBlocks.CRYSTBUD_CROP.get(),
-            ModBlocks.PYRISAGE_CROP.get(),
-            ModBlocks.ROSYNIA_CROP.get(),
+            ModBlocks.SCLERIS_CROP.get(),
+            ModBlocks.DORELLA_CROP.get(),
+            ModBlocks.SEPHREL_CROP.get(),
+            ModBlocks.CRYSEL_CROP.get(),
+            ModBlocks.PYRAZE_CROP.get(),
+            ModBlocks.STELLIA_CROP.get(),
             // Red Cherry Bush
             ModBlocks.RED_CHERRY_BUSH.get()
         );

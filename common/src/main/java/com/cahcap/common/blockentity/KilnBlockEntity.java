@@ -41,7 +41,7 @@ import java.util.Optional;
  *
  * Features:
  * - Perpetually burning furnace (no fuel needed), same smelting speed as vanilla furnace
- * - Catalyst slot: Burnt Nodes double ore output
+ * - Catalyst slot: Pyro Nodes double ore output
  * - Auto I/O from adjacent containers:
  *   - Right side (relative to front): input materials
  *   - Left side (relative to front): output products
@@ -567,17 +567,17 @@ public class KilnBlockEntity extends MultiblockPartBlockEntity {
         int dz = targetPos.getZ() - masterPos.getZ();
 
         if (dy == -1) {
-            // Layer 1: center = soul sand (default pyrisage-plantable), rest = lumistone bricks
+            // Layer 1: center = soul sand (default pyraze-plantable), rest = lumistone bricks
             if (dx == 0 && dz == 0) {
                 return Blocks.SOUL_SAND.defaultBlockState();
             }
             return ModRegistries.LUMISTONE_BRICKS.get().defaultBlockState();
         } else if (dy == 0) {
-            // Layer 2: center = pyrisage, front = lumistone brick slab (top),
+            // Layer 2: center = pyraze, front = lumistone brick slab (top),
             // rest = lumistone bricks
             if (dx == 0 && dz == 0) {
-                // Restore pyrisage on soul sand when disassembled
-                return ModRegistries.PYRISAGE.get().defaultBlockState();
+                // Restore pyraze on soul sand when disassembled
+                return ModRegistries.PYRAZE.get().defaultBlockState();
             }
             // Check if this is the front position
             Direction relDir = getRelativeDirection(dx, dz);

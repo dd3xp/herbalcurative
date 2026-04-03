@@ -39,16 +39,16 @@ public class ModBlocks {
     // ==================== Herb Flowers ====================
     
     // Overworld herbs (no light emission)
-    public static final DeferredBlock<Block> VERDSCALE_FERN = registerFlower("verdscale_fern");
-    public static final DeferredBlock<Block> DEWPETAL = registerFlower("dewpetal");
-    public static final DeferredBlock<Block> ZEPHYR_LILY = registerFlower("zephyr_lily");
+    public static final DeferredBlock<Block> SCLERIS = registerFlower("scleris");
+    public static final DeferredBlock<Block> DORELLA = registerFlower("dorella");
+    public static final DeferredBlock<Block> SEPHREL = registerFlower("sephrel");
     
     // Nether herbs - only grow on specific Nether blocks
-    public static final DeferredBlock<Block> CRYSTBUD = registerCrystbudFlower("crystbud", 10);
-    public static final DeferredBlock<Block> PYRISAGE = registerPyrisageFlower("pyrisage", 10);
+    public static final DeferredBlock<Block> CRYSEL = registerCryselFlower("crysel", 10);
+    public static final DeferredBlock<Block> PYRAZE = registerPyrazeFlower("pyraze", 10);
     
     // End herb - only grows on End Stone
-    public static final DeferredBlock<Block> ROSYNIA = registerRosyniaFlower("rosynia", 10);
+    public static final DeferredBlock<Block> STELLIA = registerStelliaFlower("stellia", 10);
     
     // ==================== Crystal Plants ====================
     // Crystal plant seedlings that can be placed on ground or in flower pots
@@ -59,18 +59,18 @@ public class ModBlocks {
 
     // ==================== Herb Crops ====================
     
-    public static final DeferredBlock<HerbCropBlock> VERDSCALE_FERN_CROP = registerCrop("verdscale_fern_crop", 
-            () -> ModItems.VERDSCALE_FERN_SEED);
-    public static final DeferredBlock<HerbCropBlock> DEWPETAL_CROP = registerCrop("dewpetal_crop", 
-            () -> ModItems.DEWPETAL_SEED);
-    public static final DeferredBlock<HerbCropBlock> ZEPHYR_LILY_CROP = registerCrop("zephyr_lily_crop", 
-            () -> ModItems.ZEPHYR_LILY_SEED);
-    public static final DeferredBlock<HerbCropBlock> CRYSTBUD_CROP = registerCrop("crystbud_crop", 
-            () -> ModItems.CRYSTBUD_SEED);
-    public static final DeferredBlock<HerbCropBlock> PYRISAGE_CROP = registerCrop("pyrisage_crop", 
-            () -> ModItems.PYRISAGE_SEED);
-    public static final DeferredBlock<HerbCropBlock> ROSYNIA_CROP = registerCrop("rosynia_crop", 
-            () -> ModItems.ROSYNIA_SEED);
+    public static final DeferredBlock<HerbCropBlock> SCLERIS_CROP = registerCrop("scleris_crop", 
+            () -> ModItems.SCLERIS_SEED);
+    public static final DeferredBlock<HerbCropBlock> DORELLA_CROP = registerCrop("dorella_crop", 
+            () -> ModItems.DORELLA_SEED);
+    public static final DeferredBlock<HerbCropBlock> SEPHREL_CROP = registerCrop("sephrel_crop", 
+            () -> ModItems.SEPHREL_SEED);
+    public static final DeferredBlock<HerbCropBlock> CRYSEL_CROP = registerCrop("crysel_crop", 
+            () -> ModItems.CRYSEL_SEED);
+    public static final DeferredBlock<HerbCropBlock> PYRAZE_CROP = registerCrop("pyraze_crop", 
+            () -> ModItems.PYRAZE_SEED);
+    public static final DeferredBlock<HerbCropBlock> STELLIA_CROP = registerCrop("stellia_crop", 
+            () -> ModItems.STELLIA_SEED);
 
     // ==================== Red Cherry Blocks ====================
     
@@ -182,12 +182,12 @@ public class ModBlocks {
 
     // ==================== Potted Plants ====================
     
-    public static final DeferredBlock<FlowerPotBlock> POTTED_VERDSCALE_FERN = registerPottedPlant("potted_verdscale_fern", VERDSCALE_FERN);
-    public static final DeferredBlock<FlowerPotBlock> POTTED_DEWPETAL = registerPottedPlant("potted_dewpetal", DEWPETAL);
-    public static final DeferredBlock<FlowerPotBlock> POTTED_ZEPHYR_LILY = registerPottedPlant("potted_zephyr_lily", ZEPHYR_LILY);
-    public static final DeferredBlock<FlowerPotBlock> POTTED_CRYSTBUD = registerPottedPlant("potted_crystbud", CRYSTBUD);
-    public static final DeferredBlock<FlowerPotBlock> POTTED_PYRISAGE = registerPottedPlant("potted_pyrisage", PYRISAGE);
-    public static final DeferredBlock<FlowerPotBlock> POTTED_ROSYNIA = registerPottedPlant("potted_rosynia", ROSYNIA);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_SCLERIS = registerPottedPlant("potted_scleris", SCLERIS);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_DORELLA = registerPottedPlant("potted_dorella", DORELLA);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_SEPHREL = registerPottedPlant("potted_sephrel", SEPHREL);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_CRYSEL = registerPottedPlant("potted_crysel", CRYSEL);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_PYRAZE = registerPottedPlant("potted_pyraze", PYRAZE);
+    public static final DeferredBlock<FlowerPotBlock> POTTED_STELLIA = registerPottedPlant("potted_stellia", STELLIA);
     public static final DeferredBlock<FlowerPotBlock> POTTED_RED_CHERRY_SAPLING = registerPottedPlant("potted_red_cherry_sapling", RED_CHERRY_SAPLING);
     
     // Crystal Plant potted versions
@@ -390,8 +390,8 @@ public class ModBlocks {
         return block;
     }
     
-    private static DeferredBlock<Block> registerCrystbudFlower(String name, int lightLevel) {
-        DeferredBlock<Block> block = BLOCKS.register(name, () -> new CrystbudFlowerBlock(
+    private static DeferredBlock<Block> registerCryselFlower(String name, int lightLevel) {
+        DeferredBlock<Block> block = BLOCKS.register(name, () -> new CryselFlowerBlock(
                 MobEffects.REGENERATION,
                 5.0F,
                 BlockBehaviour.Properties.of()
@@ -405,8 +405,8 @@ public class ModBlocks {
         return block;
     }
     
-    private static DeferredBlock<Block> registerPyrisageFlower(String name, int lightLevel) {
-        DeferredBlock<Block> block = BLOCKS.register(name, () -> new PyrisageFlowerBlock(
+    private static DeferredBlock<Block> registerPyrazeFlower(String name, int lightLevel) {
+        DeferredBlock<Block> block = BLOCKS.register(name, () -> new PyrazeFlowerBlock(
                 MobEffects.REGENERATION,
                 5.0F,
                 BlockBehaviour.Properties.of()
@@ -420,8 +420,8 @@ public class ModBlocks {
         return block;
     }
     
-    private static DeferredBlock<Block> registerRosyniaFlower(String name, int lightLevel) {
-        DeferredBlock<Block> block = BLOCKS.register(name, () -> new RosyniaFlowerBlock(
+    private static DeferredBlock<Block> registerStelliaFlower(String name, int lightLevel) {
+        DeferredBlock<Block> block = BLOCKS.register(name, () -> new StelliaFlowerBlock(
                 MobEffects.REGENERATION,
                 5.0F,
                 BlockBehaviour.Properties.of()
@@ -481,12 +481,12 @@ public class ModBlocks {
      * Must be called during mod setup (FMLCommonSetupEvent).
      */
     public static void registerFlowerPots() {
-        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(VERDSCALE_FERN.getId(), POTTED_VERDSCALE_FERN);
-        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(DEWPETAL.getId(), POTTED_DEWPETAL);
-        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ZEPHYR_LILY.getId(), POTTED_ZEPHYR_LILY);
-        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(CRYSTBUD.getId(), POTTED_CRYSTBUD);
-        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(PYRISAGE.getId(), POTTED_PYRISAGE);
-        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(ROSYNIA.getId(), POTTED_ROSYNIA);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(SCLERIS.getId(), POTTED_SCLERIS);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(DORELLA.getId(), POTTED_DORELLA);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(SEPHREL.getId(), POTTED_SEPHREL);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(CRYSEL.getId(), POTTED_CRYSEL);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(PYRAZE.getId(), POTTED_PYRAZE);
+        ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(STELLIA.getId(), POTTED_STELLIA);
         ((FlowerPotBlock) Blocks.FLOWER_POT).addPlant(RED_CHERRY_SAPLING.getId(), POTTED_RED_CHERRY_SAPLING);
         
         // Crystal Plants

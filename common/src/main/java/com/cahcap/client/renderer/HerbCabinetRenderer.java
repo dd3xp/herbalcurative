@@ -91,7 +91,7 @@ public class HerbCabinetRenderer implements BlockEntityRenderer<HerbCabinetBlock
                 float slotCenterX = 8.0f + xOffsets[col];
                 float slotCenterY = 8.0f + yOffsets[row];
                 
-                // Special offset for Burnt Node (index 4) to align with slot
+                // Special offset for Pyro Node (index 4) to align with slot
                 if (index == 4) {
                     slotCenterX += 0.5f * itemSize;
                 }

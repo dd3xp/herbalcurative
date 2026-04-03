@@ -20,19 +20,19 @@ public class ModCreativeTabs {
                     .displayItems((parameters, output) -> {
                         // Herb Products
                         output.accept(ModItems.SCALEPLATE.get());
-                        output.accept(ModItems.DEWPETAL_SHARD.get());
-                        output.accept(ModItems.GOLDEN_LILYBELL.get());
+                        output.accept(ModItems.DEWPETAL.get());
+                        output.accept(ModItems.ZEPHYR_BLOSSOM.get());
                         output.accept(ModItems.CRYST_SPINE.get());
-                        output.accept(ModItems.BURNT_NODE.get());
-                        output.accept(ModItems.HEART_OF_STARDREAM.get());
+                        output.accept(ModItems.PYRO_NODE.get());
+                        output.accept(ModItems.STELLAR_MOTE.get());
                         
                         // Herb Seeds
-                        output.accept(ModItems.VERDSCALE_FERN_SEED.get());
-                        output.accept(ModItems.DEWPETAL_SEED.get());
-                        output.accept(ModItems.ZEPHYR_LILY_SEED.get());
-                        output.accept(ModItems.CRYSTBUD_SEED.get());
-                        output.accept(ModItems.PYRISAGE_SEED.get());
-                        output.accept(ModItems.ROSYNIA_SEED.get());
+                        output.accept(ModItems.SCLERIS_SEED.get());
+                        output.accept(ModItems.DORELLA_SEED.get());
+                        output.accept(ModItems.SEPHREL_SEED.get());
+                        output.accept(ModItems.CRYSEL_SEED.get());
+                        output.accept(ModItems.PYRAZE_SEED.get());
+                        output.accept(ModItems.STELLIA_SEED.get());
                         
                         // Crafting Materials
                         output.accept(ModItems.LEATHER_PLATE.get());
@@ -48,12 +48,12 @@ public class ModCreativeTabs {
                         output.accept(ModItems.RED_CHERRY.get());
                         
                         // Herb Flowers
-                        output.accept(ModBlocks.VERDSCALE_FERN.get());
-                        output.accept(ModBlocks.DEWPETAL.get());
-                        output.accept(ModBlocks.ZEPHYR_LILY.get());
-                        output.accept(ModBlocks.CRYSTBUD.get());
-                        output.accept(ModBlocks.PYRISAGE.get());
-                        output.accept(ModBlocks.ROSYNIA.get());
+                        output.accept(ModBlocks.SCLERIS.get());
+                        output.accept(ModBlocks.DORELLA.get());
+                        output.accept(ModBlocks.SEPHREL.get());
+                        output.accept(ModBlocks.CRYSEL.get());
+                        output.accept(ModBlocks.PYRAZE.get());
+                        output.accept(ModBlocks.STELLIA.get());
                         
                         // Red Cherry Blocks
                         output.accept(ModBlocks.RED_CHERRY_LOG.get());

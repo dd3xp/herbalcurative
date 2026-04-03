@@ -13,12 +13,12 @@ import net.minecraft.world.level.block.state.properties.SlabType;
  * <pre>
  * Layer y=-1 (bottom):
  *   [LumiBricks][LumiBricks]  [LumiBricks]
- *   [LumiBricks][PyrisageSoil][LumiBricks]
+ *   [LumiBricks][PyrazeSoil][LumiBricks]
  *   [LumiBricks][LumiBricks]  [LumiBricks]
  *
  * Layer y=0 (master layer):
  *   [LumiBricks][Slab(top, TRIGGER)][LumiBricks]   ← front (z=0)
- *   [LumiBricks][Pyrisage (MASTER)] [LumiBricks]
+ *   [LumiBricks][Pyraze (MASTER)] [LumiBricks]
  *   [LumiBricks][LumiBricks]        [LumiBricks]   ← back (z=2)
  *
  * Layer y=1 (top):
@@ -46,7 +46,7 @@ public class MultiblockKiln {
             .define('B', state -> state.is(ModRegistries.LUMISTONE_BRICKS.get()))
             .define('P', state -> state.is(Blocks.WARPED_NYLIUM) || state.is(Blocks.CRIMSON_NYLIUM)
                     || state.is(Blocks.SOUL_SAND) || state.is(Blocks.SOUL_SOIL))
-            .define('#', state -> state.is(ModRegistries.PYRISAGE.get()))
+            .define('#', state -> state.is(ModRegistries.PYRAZE.get()))
             .define('T', state -> state.is(ModRegistries.LUMISTONE_BRICK_SLAB.get())
                     && state.hasProperty(SlabBlock.TYPE)
                     && state.getValue(SlabBlock.TYPE) == SlabType.TOP)

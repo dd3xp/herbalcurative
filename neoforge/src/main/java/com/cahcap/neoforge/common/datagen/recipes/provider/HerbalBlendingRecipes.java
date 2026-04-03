@@ -14,7 +14,7 @@ public class HerbalBlendingRecipes {
 
     public void build(RecipeOutput output) {
         HerbalBlendingRecipeBuilder.builder()
-                .basketInput(ModItems.DEWPETAL_SHARD.get(), 4)
+                .basketInput(ModItems.DEWPETAL.get(), 4)
                 .pattern("   ", " S ", "   ")
                 .define('S', ItemTags.SAPLINGS)
                 .output(ModBlocks.RED_CHERRY_SAPLING.get())

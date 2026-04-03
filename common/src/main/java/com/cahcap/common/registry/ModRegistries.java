@@ -28,19 +28,19 @@ import java.util.function.Supplier;
 public class ModRegistries {
     
     // ==================== Blocks ====================
-    public static Supplier<Block> VERDSCALE_FERN;
-    public static Supplier<Block> DEWPETAL;
-    public static Supplier<Block> ZEPHYR_LILY;
-    public static Supplier<Block> CRYSTBUD;
-    public static Supplier<Block> PYRISAGE;
-    public static Supplier<Block> ROSYNIA;
+    public static Supplier<Block> SCLERIS;
+    public static Supplier<Block> DORELLA;
+    public static Supplier<Block> SEPHREL;
+    public static Supplier<Block> CRYSEL;
+    public static Supplier<Block> PYRAZE;
+    public static Supplier<Block> STELLIA;
     
-    public static Supplier<Block> VERDSCALE_FERN_CROP;
-    public static Supplier<Block> DEWPETAL_CROP;
-    public static Supplier<Block> ZEPHYR_LILY_CROP;
-    public static Supplier<Block> CRYSTBUD_CROP;
-    public static Supplier<Block> PYRISAGE_CROP;
-    public static Supplier<Block> ROSYNIA_CROP;
+    public static Supplier<Block> SCLERIS_CROP;
+    public static Supplier<Block> DORELLA_CROP;
+    public static Supplier<Block> SEPHREL_CROP;
+    public static Supplier<Block> CRYSEL_CROP;
+    public static Supplier<Block> PYRAZE_CROP;
+    public static Supplier<Block> STELLIA_CROP;
     
     public static Supplier<Block> RED_CHERRY_LOG;
     public static Supplier<Block> RED_CHERRY_PLANKS;
@@ -68,18 +68,18 @@ public class ModRegistries {
     
     // ==================== Items ====================
     public static Supplier<Item> SCALEPLATE;
-    public static Supplier<Item> DEWPETAL_SHARD;
-    public static Supplier<Item> GOLDEN_LILYBELL;
+    public static Supplier<Item> DEWPETAL;
+    public static Supplier<Item> ZEPHYR_BLOSSOM;
     public static Supplier<Item> CRYST_SPINE;
-    public static Supplier<Item> BURNT_NODE;
-    public static Supplier<Item> HEART_OF_STARDREAM;
+    public static Supplier<Item> PYRO_NODE;
+    public static Supplier<Item> STELLAR_MOTE;
     
-    public static Supplier<Item> VERDSCALE_FERN_SEED;
-    public static Supplier<Item> DEWPETAL_SEED;
-    public static Supplier<Item> ZEPHYR_LILY_SEED;
-    public static Supplier<Item> CRYSTBUD_SEED;
-    public static Supplier<Item> PYRISAGE_SEED;
-    public static Supplier<Item> ROSYNIA_SEED;
+    public static Supplier<Item> SCLERIS_SEED;
+    public static Supplier<Item> DORELLA_SEED;
+    public static Supplier<Item> SEPHREL_SEED;
+    public static Supplier<Item> CRYSEL_SEED;
+    public static Supplier<Item> PYRAZE_SEED;
+    public static Supplier<Item> STELLIA_SEED;
     
     public static Supplier<Item> RED_CHERRY_STICK;
     public static Supplier<Item> RED_CHERRY;

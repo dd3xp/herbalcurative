@@ -18,11 +18,11 @@ public class KilnRecipes {
         TagKey<Item> kilnCatalyzable = ItemTags.create(
                 ResourceLocation.fromNamespaceAndPath("herbalcurative", "kiln_catalyzable"));
         KilnCatalystRecipeBuilder.builder()
-                .ingredient(ModItems.BURNT_NODE.get())
+                .ingredient(ModItems.PYRO_NODE.get())
                 .affectedInputs(kilnCatalyzable)
                 .outputMultiplier(2)
                 .speedMultiplier(4)
                 .usesPerItem(8)
-                .build(output, "burnt_node");
+                .build(output, "pyro_node");
     }
 }

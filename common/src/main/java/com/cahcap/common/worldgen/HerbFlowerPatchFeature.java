@@ -136,33 +136,33 @@ public class HerbFlowerPatchFeature extends Feature<NoneFeatureConfiguration> {
     
     // ==================== Factory methods for each flower type ====================
     
-    public static HerbFlowerPatchFeature verdscaleFern(Codec<NoneFeatureConfiguration> codec) {
-        return new HerbFlowerPatchFeature(codec, ModRegistries.VERDSCALE_FERN.get(), false,
+    public static HerbFlowerPatchFeature scleris(Codec<NoneFeatureConfiguration> codec) {
+        return new HerbFlowerPatchFeature(codec, ModRegistries.SCLERIS.get(), false,
                 Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.PODZOL);
     }
     
-    public static HerbFlowerPatchFeature zephyrLily(Codec<NoneFeatureConfiguration> codec) {
-        return new HerbFlowerPatchFeature(codec, ModRegistries.ZEPHYR_LILY.get(), false,
+    public static HerbFlowerPatchFeature sephrel(Codec<NoneFeatureConfiguration> codec) {
+        return new HerbFlowerPatchFeature(codec, ModRegistries.SEPHREL.get(), false,
                 Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.PODZOL);
     }
     
-    public static HerbFlowerPatchFeature dewpetal(Codec<NoneFeatureConfiguration> codec) {
-        return new HerbFlowerPatchFeature(codec, ModRegistries.DEWPETAL.get(), false,
+    public static HerbFlowerPatchFeature dorella(Codec<NoneFeatureConfiguration> codec) {
+        return new HerbFlowerPatchFeature(codec, ModRegistries.DORELLA.get(), false,
                 Blocks.GRASS_BLOCK, Blocks.DIRT, Blocks.PODZOL);
     }
     
-    public static HerbFlowerPatchFeature crystbud(Codec<NoneFeatureConfiguration> codec) {
-        return new HerbFlowerPatchFeature(codec, ModRegistries.CRYSTBUD.get(), false,
+    public static HerbFlowerPatchFeature crysel(Codec<NoneFeatureConfiguration> codec) {
+        return new HerbFlowerPatchFeature(codec, ModRegistries.CRYSEL.get(), false,
                 Blocks.BASALT, Blocks.NETHERRACK);
     }
     
-    public static HerbFlowerPatchFeature pyrisage(Codec<NoneFeatureConfiguration> codec) {
-        return new HerbFlowerPatchFeature(codec, ModRegistries.PYRISAGE.get(), false,
+    public static HerbFlowerPatchFeature pyraze(Codec<NoneFeatureConfiguration> codec) {
+        return new HerbFlowerPatchFeature(codec, ModRegistries.PYRAZE.get(), false,
                 Blocks.WARPED_NYLIUM, Blocks.CRIMSON_NYLIUM, Blocks.SOUL_SAND);
     }
     
-    public static HerbFlowerPatchFeature rosynia(Codec<NoneFeatureConfiguration> codec) {
-        return new HerbFlowerPatchFeature(codec, ModRegistries.ROSYNIA.get(), false,
+    public static HerbFlowerPatchFeature stellia(Codec<NoneFeatureConfiguration> codec) {
+        return new HerbFlowerPatchFeature(codec, ModRegistries.STELLIA.get(), false,
                 Blocks.END_STONE);
     }
 }

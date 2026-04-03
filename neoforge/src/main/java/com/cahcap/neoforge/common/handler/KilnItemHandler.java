@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * Slot layout:
  * - Slot 0: Input slot (1 item, smeltable items only)
- * - Slot 1: Catalyst slot (up to 64, Burnt Nodes only)
+ * - Slot 1: Catalyst slot (up to 64, Pyro Nodes only)
  * - Slot 2: Output slot (extract only)
  *
  * Direction-based access:

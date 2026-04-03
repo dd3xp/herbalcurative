@@ -14,21 +14,21 @@ public final class HerbRegistry {
 
     private static final String[] HERB_KEYS = {
         "scaleplate",
-        "dewpetal_shard",
-        "golden_lilybell",
+        "dewpetal",
+        "zephyr_blossom",
         "cryst_spine",
-        "burnt_node",
-        "heart_of_stardream"
+        "pyro_node",
+        "stellar_mote"
     };
 
     @SuppressWarnings("unchecked")
     private static final Supplier<Item>[] HERB_SUPPLIERS = new Supplier[] {
         () -> ModRegistries.SCALEPLATE.get(),
-        () -> ModRegistries.DEWPETAL_SHARD.get(),
-        () -> ModRegistries.GOLDEN_LILYBELL.get(),
+        () -> ModRegistries.DEWPETAL.get(),
+        () -> ModRegistries.ZEPHYR_BLOSSOM.get(),
         () -> ModRegistries.CRYST_SPINE.get(),
-        () -> ModRegistries.BURNT_NODE.get(),
-        () -> ModRegistries.HEART_OF_STARDREAM.get()
+        () -> ModRegistries.PYRO_NODE.get(),
+        () -> ModRegistries.STELLAR_MOTE.get()
     };
 
     private HerbRegistry() {}
@@ -56,14 +56,14 @@ public final class HerbRegistry {
 
     public static boolean isOverworldHerb(Item item) {
         return item == HERB_SUPPLIERS[0].get() || // scaleplate
-               item == HERB_SUPPLIERS[1].get() || // dewpetal_shard
-               item == HERB_SUPPLIERS[2].get();   // golden_lilybell
+               item == HERB_SUPPLIERS[1].get() || // dewpetal
+               item == HERB_SUPPLIERS[2].get();   // zephyr_blossom
     }
 
     public static boolean isNetherOrEndHerb(Item item) {
         return item == HERB_SUPPLIERS[3].get() || // cryst_spine
-               item == HERB_SUPPLIERS[4].get() || // burnt_node
-               item == HERB_SUPPLIERS[5].get();   // heart_of_stardream
+               item == HERB_SUPPLIERS[4].get() || // pyro_node
+               item == HERB_SUPPLIERS[5].get();   // stellar_mote
     }
 
     public static int getHerbIndex(Item herb) {

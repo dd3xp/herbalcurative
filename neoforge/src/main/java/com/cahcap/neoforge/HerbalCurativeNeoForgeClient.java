@@ -62,20 +62,20 @@ public class HerbalCurativeNeoForgeClient {
                 // Cutout: for blocks with fully transparent or fully opaque pixels (no translucency)
                 
                 // Herb Crops (all 6 types)
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.VERDSCALE_FERN_CROP.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.DEWPETAL_CROP.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.ZEPHYR_LILY_CROP.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTBUD_CROP.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.PYRISAGE_CROP.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.ROSYNIA_CROP.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.SCLERIS_CROP.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.DORELLA_CROP.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.SEPHREL_CROP.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSEL_CROP.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.PYRAZE_CROP.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.STELLIA_CROP.get(), RenderType.cutout());
                 
                 // Herb Flowers (all 6 types)
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.VERDSCALE_FERN.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.DEWPETAL.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.ZEPHYR_LILY.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSTBUD.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.PYRISAGE.get(), RenderType.cutout());
-                ItemBlockRenderTypes.setRenderLayer(ModBlocks.ROSYNIA.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.SCLERIS.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.DORELLA.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.SEPHREL.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.CRYSEL.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.PYRAZE.get(), RenderType.cutout());
+                ItemBlockRenderTypes.setRenderLayer(ModBlocks.STELLIA.get(), RenderType.cutout());
                 
                 // Red Cherry Sapling
                 ItemBlockRenderTypes.setRenderLayer(ModBlocks.RED_CHERRY_SAPLING.get(), RenderType.cutout());

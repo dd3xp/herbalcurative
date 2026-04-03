@@ -15,33 +15,33 @@ public class HerbPotRecipes {
     public void build(RecipeOutput output) {
         // ==================== Herb Plant Cultivation ====================
         HerbPotGrowingRecipeBuilder.builder()
-                .seedling(ModBlocks.VERDSCALE_FERN.get()).herb(ModItems.SCALEPLATE.get(), 1)
-                .result(ModBlocks.VERDSCALE_FERN.get()).growthTimeSeconds(10).build(output, "verdscale_fern");
+                .seedling(ModBlocks.SCLERIS.get()).herb(ModItems.SCALEPLATE.get(), 1)
+                .result(ModBlocks.SCLERIS.get()).growthTimeSeconds(10).build(output, "scleris");
 
         HerbPotGrowingRecipeBuilder.builder()
-                .seedling(ModBlocks.DEWPETAL.get()).herb(ModItems.DEWPETAL_SHARD.get(), 1)
-                .result(ModBlocks.DEWPETAL.get()).growthTimeSeconds(10).build(output, "dewpetal");
+                .seedling(ModBlocks.DORELLA.get()).herb(ModItems.DEWPETAL.get(), 1)
+                .result(ModBlocks.DORELLA.get()).growthTimeSeconds(10).build(output, "dorella");
 
         HerbPotGrowingRecipeBuilder.builder()
-                .seedling(ModBlocks.ZEPHYR_LILY.get()).herb(ModItems.GOLDEN_LILYBELL.get(), 1)
-                .result(ModBlocks.ZEPHYR_LILY.get()).growthTimeSeconds(10).build(output, "zephyr_lily");
+                .seedling(ModBlocks.SEPHREL.get()).herb(ModItems.ZEPHYR_BLOSSOM.get(), 1)
+                .result(ModBlocks.SEPHREL.get()).growthTimeSeconds(10).build(output, "sephrel");
 
         HerbPotGrowingRecipeBuilder.builder()
-                .seedling(ModBlocks.CRYSTBUD.get()).herb(ModItems.CRYST_SPINE.get(), 1)
-                .result(ModBlocks.CRYSTBUD.get()).growthTimeSeconds(10).build(output, "crystbud");
+                .seedling(ModBlocks.CRYSEL.get()).herb(ModItems.CRYST_SPINE.get(), 1)
+                .result(ModBlocks.CRYSEL.get()).growthTimeSeconds(10).build(output, "crysel");
 
         HerbPotGrowingRecipeBuilder.builder()
-                .seedling(ModBlocks.PYRISAGE.get()).herb(ModItems.BURNT_NODE.get(), 1)
-                .result(ModBlocks.PYRISAGE.get()).growthTimeSeconds(10).build(output, "pyrisage");
+                .seedling(ModBlocks.PYRAZE.get()).herb(ModItems.PYRO_NODE.get(), 1)
+                .result(ModBlocks.PYRAZE.get()).growthTimeSeconds(10).build(output, "pyraze");
 
         HerbPotGrowingRecipeBuilder.builder()
-                .seedling(ModBlocks.ROSYNIA.get()).herb(ModItems.HEART_OF_STARDREAM.get(), 1)
-                .result(ModBlocks.ROSYNIA.get()).growthTimeSeconds(10).build(output, "rosynia");
+                .seedling(ModBlocks.STELLIA.get()).herb(ModItems.STELLAR_MOTE.get(), 1)
+                .result(ModBlocks.STELLIA.get()).growthTimeSeconds(10).build(output, "stellia");
 
         // ==================== Crystal Plant Cultivation ====================
         HerbPotGrowingRecipeBuilder.builder()
                 .seedling(ModItems.IRON_CRYST_PLANT.get())
-                .herb(ModItems.SCALEPLATE.get(), 4).herb(ModItems.GOLDEN_LILYBELL.get(), 4)
+                .herb(ModItems.SCALEPLATE.get(), 4).herb(ModItems.ZEPHYR_BLOSSOM.get(), 4)
                 .result(Items.IRON_INGOT).growthTimeMinutes(2).build(output, "iron_cryst_plant");
     }
 }

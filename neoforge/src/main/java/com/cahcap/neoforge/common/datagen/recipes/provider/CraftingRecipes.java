@@ -28,34 +28,34 @@ public class CraftingRecipes {
 
     public void build(RecipeOutput output) {
         // ==================== Herb to Seed Recipes (Shapeless) ====================
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.CRYSTBUD_SEED.get(), 3)
-            .requires(ModBlocks.CRYSTBUD.get())
-            .unlockedBy("has_crystbud", p.criterion(ModBlocks.CRYSTBUD.get()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.CRYSEL_SEED.get(), 3)
+            .requires(ModBlocks.CRYSEL.get())
+            .unlockedBy("has_crysel", p.criterion(ModBlocks.CRYSEL.get()))
             .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DEWPETAL_SEED.get(), 3)
-            .requires(ModBlocks.DEWPETAL.get())
-            .unlockedBy("has_dewpetal", p.criterion(ModBlocks.DEWPETAL.get()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.DORELLA_SEED.get(), 3)
+            .requires(ModBlocks.DORELLA.get())
+            .unlockedBy("has_dorella", p.criterion(ModBlocks.DORELLA.get()))
             .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PYRISAGE_SEED.get(), 3)
-            .requires(ModBlocks.PYRISAGE.get())
-            .unlockedBy("has_pyrisage", p.criterion(ModBlocks.PYRISAGE.get()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.PYRAZE_SEED.get(), 3)
+            .requires(ModBlocks.PYRAZE.get())
+            .unlockedBy("has_pyraze", p.criterion(ModBlocks.PYRAZE.get()))
             .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ROSYNIA_SEED.get(), 3)
-            .requires(ModBlocks.ROSYNIA.get())
-            .unlockedBy("has_rosynia", p.criterion(ModBlocks.ROSYNIA.get()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.STELLIA_SEED.get(), 3)
+            .requires(ModBlocks.STELLIA.get())
+            .unlockedBy("has_stellia", p.criterion(ModBlocks.STELLIA.get()))
             .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.VERDSCALE_FERN_SEED.get(), 3)
-            .requires(ModBlocks.VERDSCALE_FERN.get())
-            .unlockedBy("has_verdscale_fern", p.criterion(ModBlocks.VERDSCALE_FERN.get()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SCLERIS_SEED.get(), 3)
+            .requires(ModBlocks.SCLERIS.get())
+            .unlockedBy("has_scleris", p.criterion(ModBlocks.SCLERIS.get()))
             .save(output);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.ZEPHYR_LILY_SEED.get(), 3)
-            .requires(ModBlocks.ZEPHYR_LILY.get())
-            .unlockedBy("has_zephyr_lily", p.criterion(ModBlocks.ZEPHYR_LILY.get()))
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.SEPHREL_SEED.get(), 3)
+            .requires(ModBlocks.SEPHREL.get())
+            .unlockedBy("has_sephrel", p.criterion(ModBlocks.SEPHREL.get()))
             .save(output);
 
         // ==================== Red Cherry Series ====================

@@ -27,11 +27,11 @@ public class HerbBasketRenderer implements BlockEntityRenderer<HerbBasketBlockEn
     private static final int[] HERB_COLORS = {
             0xFFFFFF, // 0: unused (empty)
             0x497540, // 1: scaleplate
-            0x7ABBD0, // 2: dewpetal_shard
-            0xF7D462, // 3: golden_lilybell
+            0x7ABBD0, // 2: dewpetal
+            0xF7D462, // 3: zephyr_blossom
             0xAE82F6, // 4: cryst_spine
-            0x9B120D, // 5: burnt_node
-            0x001C70, // 6: heart_of_stardream
+            0x9B120D, // 5: pyro_node
+            0x001C70, // 6: stellar_mote
     };
 
     private static final RandomSource RANDOM = RandomSource.create();

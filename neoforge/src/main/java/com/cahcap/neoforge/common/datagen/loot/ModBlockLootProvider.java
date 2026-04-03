@@ -50,12 +50,12 @@ public class ModBlockLootProvider extends LootTableProvider {
             // ==================== Blocks that drop themselves ====================
             
             // Herb flower blocks
-            this.dropSelf(ModBlocks.CRYSTBUD.get());
-            this.dropSelf(ModBlocks.DEWPETAL.get());
-            this.dropSelf(ModBlocks.PYRISAGE.get());
-            this.dropSelf(ModBlocks.ROSYNIA.get());
-            this.dropSelf(ModBlocks.VERDSCALE_FERN.get());
-            this.dropSelf(ModBlocks.ZEPHYR_LILY.get());
+            this.dropSelf(ModBlocks.CRYSEL.get());
+            this.dropSelf(ModBlocks.DORELLA.get());
+            this.dropSelf(ModBlocks.PYRAZE.get());
+            this.dropSelf(ModBlocks.STELLIA.get());
+            this.dropSelf(ModBlocks.SCLERIS.get());
+            this.dropSelf(ModBlocks.SEPHREL.get());
             
             // Crystal plant blocks
             this.dropSelf(ModBlocks.IRON_CRYST_PLANT.get());
@@ -123,18 +123,18 @@ public class ModBlockLootProvider extends LootTableProvider {
             
             // ==================== Potted plants (drop flower pot + plant) ====================
             
-            this.add(ModBlocks.POTTED_VERDSCALE_FERN.get(), block -> 
-                createPotFlowerItemTable(ModBlocks.VERDSCALE_FERN.get()));
-            this.add(ModBlocks.POTTED_DEWPETAL.get(), block -> 
-                createPotFlowerItemTable(ModBlocks.DEWPETAL.get()));
-            this.add(ModBlocks.POTTED_ZEPHYR_LILY.get(), block -> 
-                createPotFlowerItemTable(ModBlocks.ZEPHYR_LILY.get()));
-            this.add(ModBlocks.POTTED_CRYSTBUD.get(), block -> 
-                createPotFlowerItemTable(ModBlocks.CRYSTBUD.get()));
-            this.add(ModBlocks.POTTED_PYRISAGE.get(), block -> 
-                createPotFlowerItemTable(ModBlocks.PYRISAGE.get()));
-            this.add(ModBlocks.POTTED_ROSYNIA.get(), block -> 
-                createPotFlowerItemTable(ModBlocks.ROSYNIA.get()));
+            this.add(ModBlocks.POTTED_SCLERIS.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.SCLERIS.get()));
+            this.add(ModBlocks.POTTED_DORELLA.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.DORELLA.get()));
+            this.add(ModBlocks.POTTED_SEPHREL.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.SEPHREL.get()));
+            this.add(ModBlocks.POTTED_CRYSEL.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.CRYSEL.get()));
+            this.add(ModBlocks.POTTED_PYRAZE.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.PYRAZE.get()));
+            this.add(ModBlocks.POTTED_STELLIA.get(), block -> 
+                createPotFlowerItemTable(ModBlocks.STELLIA.get()));
             this.add(ModBlocks.POTTED_RED_CHERRY_SAPLING.get(), block -> 
                 createPotFlowerItemTable(ModBlocks.RED_CHERRY_SAPLING.get()));
             
@@ -144,29 +144,29 @@ public class ModBlockLootProvider extends LootTableProvider {
             
             // ==================== Crop blocks (drop seeds and products when mature at age 9) ====================
             
-            // Crystbud crop - drops Cryst Spine
-            this.add(ModBlocks.CRYSTBUD_CROP.get(), block -> 
-                createHerbCropDrops(block, ModItems.CRYST_SPINE.get(), ModItems.CRYSTBUD_SEED.get()));
+            // Crysel crop - drops Cryst Spine
+            this.add(ModBlocks.CRYSEL_CROP.get(), block -> 
+                createHerbCropDrops(block, ModItems.CRYST_SPINE.get(), ModItems.CRYSEL_SEED.get()));
             
             // Dewpetal crop - drops Dewpetal Shard
-            this.add(ModBlocks.DEWPETAL_CROP.get(), block -> 
-                createHerbCropDrops(block, ModItems.DEWPETAL_SHARD.get(), ModItems.DEWPETAL_SEED.get()));
+            this.add(ModBlocks.DORELLA_CROP.get(), block -> 
+                createHerbCropDrops(block, ModItems.DEWPETAL.get(), ModItems.DORELLA_SEED.get()));
             
-            // Pyrisage crop - drops Burnt Node
-            this.add(ModBlocks.PYRISAGE_CROP.get(), block -> 
-                createHerbCropDrops(block, ModItems.BURNT_NODE.get(), ModItems.PYRISAGE_SEED.get()));
+            // Pyraze crop - drops Pyro Node
+            this.add(ModBlocks.PYRAZE_CROP.get(), block -> 
+                createHerbCropDrops(block, ModItems.PYRO_NODE.get(), ModItems.PYRAZE_SEED.get()));
             
-            // Rosynia crop - drops Heart of Stardream
-            this.add(ModBlocks.ROSYNIA_CROP.get(), block -> 
-                createHerbCropDrops(block, ModItems.HEART_OF_STARDREAM.get(), ModItems.ROSYNIA_SEED.get()));
+            // Stellia crop - drops Stellar Mote
+            this.add(ModBlocks.STELLIA_CROP.get(), block -> 
+                createHerbCropDrops(block, ModItems.STELLAR_MOTE.get(), ModItems.STELLIA_SEED.get()));
             
-            // Verdscale Fern crop - drops Scaleplate
-            this.add(ModBlocks.VERDSCALE_FERN_CROP.get(), block -> 
-                createHerbCropDrops(block, ModItems.SCALEPLATE.get(), ModItems.VERDSCALE_FERN_SEED.get()));
+            // Scleris crop - drops Scaleplate
+            this.add(ModBlocks.SCLERIS_CROP.get(), block -> 
+                createHerbCropDrops(block, ModItems.SCALEPLATE.get(), ModItems.SCLERIS_SEED.get()));
             
-            // Zephyr Lily crop - drops Golden Lilybell
-            this.add(ModBlocks.ZEPHYR_LILY_CROP.get(), block -> 
-                createHerbCropDrops(block, ModItems.GOLDEN_LILYBELL.get(), ModItems.ZEPHYR_LILY_SEED.get()));
+            // Sephrel crop - drops Zephyr Blossom
+            this.add(ModBlocks.SEPHREL_CROP.get(), block -> 
+                createHerbCropDrops(block, ModItems.ZEPHYR_BLOSSOM.get(), ModItems.SEPHREL_SEED.get()));
             
             // ==================== Special blocks ====================
             

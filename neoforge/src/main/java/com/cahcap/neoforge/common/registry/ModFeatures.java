@@ -22,30 +22,30 @@ public class ModFeatures {
     // Herb flower patch features (2-3 per cluster)
     
     // Overworld herbs
-    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> VERDSCALE_FERN_PATCH = 
-        FEATURES.register("verdscale_fern_patch", 
-            () -> HerbFlowerPatchFeature.verdscaleFern(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> SCLERIS_PATCH = 
+        FEATURES.register("scleris_patch", 
+            () -> HerbFlowerPatchFeature.scleris(NoneFeatureConfiguration.CODEC));
     
-    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> ZEPHYR_LILY_PATCH = 
-        FEATURES.register("zephyr_lily_patch", 
-            () -> HerbFlowerPatchFeature.zephyrLily(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> SEPHREL_PATCH = 
+        FEATURES.register("sephrel_patch", 
+            () -> HerbFlowerPatchFeature.sephrel(NoneFeatureConfiguration.CODEC));
     
-    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> DEWPETAL_PATCH = 
-        FEATURES.register("dewpetal_patch", 
-            () -> HerbFlowerPatchFeature.dewpetal(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> DORELLA_PATCH = 
+        FEATURES.register("dorella_patch", 
+            () -> HerbFlowerPatchFeature.dorella(NoneFeatureConfiguration.CODEC));
     
     // Nether herbs
-    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> CRYSTBUD_PATCH = 
-        FEATURES.register("crystbud_patch", 
-            () -> HerbFlowerPatchFeature.crystbud(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> CRYSEL_PATCH = 
+        FEATURES.register("crysel_patch", 
+            () -> HerbFlowerPatchFeature.crysel(NoneFeatureConfiguration.CODEC));
     
-    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> PYRISAGE_PATCH = 
-        FEATURES.register("pyrisage_patch", 
-            () -> HerbFlowerPatchFeature.pyrisage(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> PYRAZE_PATCH = 
+        FEATURES.register("pyraze_patch", 
+            () -> HerbFlowerPatchFeature.pyraze(NoneFeatureConfiguration.CODEC));
     
     // End herb
-    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> ROSYNIA_PATCH = 
-        FEATURES.register("rosynia_patch", 
-            () -> HerbFlowerPatchFeature.rosynia(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, HerbFlowerPatchFeature> STELLIA_PATCH = 
+        FEATURES.register("stellia_patch", 
+            () -> HerbFlowerPatchFeature.stellia(NoneFeatureConfiguration.CODEC));
 }
 

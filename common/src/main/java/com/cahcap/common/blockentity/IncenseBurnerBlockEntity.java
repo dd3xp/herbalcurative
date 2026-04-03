@@ -364,7 +364,7 @@ public class IncenseBurnerBlockEntity extends BlockEntity {
         
         blockEntity.burnTicks++;
         
-        // Spawn small flame particles (similar to Pyrisage)
+        // Spawn small flame particles (similar to Pyraze)
         if (level instanceof ServerLevel serverLevel && blockEntity.burnTicks % 10 == 0) {
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.25;

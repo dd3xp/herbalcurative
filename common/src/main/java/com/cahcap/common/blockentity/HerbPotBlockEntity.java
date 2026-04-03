@@ -224,9 +224,9 @@ public class HerbPotBlockEntity extends BlockEntity {
         }
         
         if ("herbalcurative".equals(namespace)) {
-            return path.equals("verdscale_fern") || path.equals("dewpetal") ||
-                   path.equals("zephyr_lily") || path.equals("crystbud") ||
-                   path.equals("pyrisage") || path.equals("rosynia") ||
+            return path.equals("scleris") || path.equals("dorella") ||
+                   path.equals("sephrel") || path.equals("crysel") ||
+                   path.equals("pyraze") || path.equals("stellia") ||
                    path.contains("crystal_plant") || path.contains("cryst_plant") || 
                    path.contains("cryst_spine");
         }

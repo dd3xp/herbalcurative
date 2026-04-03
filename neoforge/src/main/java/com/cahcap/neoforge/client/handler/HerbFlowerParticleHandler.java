@@ -50,22 +50,22 @@ public class HerbFlowerParticleHandler {
 
             BlockState state = level.getBlockState(pos);
             
-            // Crystbud - purple redstone particles (crystallization effect)
-            if (state.is(ModBlocks.CRYSTBUD.get())) {
-                spawnCrystbudParticles(level, pos, random);
+            // Crysel - purple redstone particles (crystallization effect)
+            if (state.is(ModBlocks.CRYSEL.get())) {
+                spawnCryselParticles(level, pos, random);
             }
-            // Pyrisage - flame particles
-            else if (state.is(ModBlocks.PYRISAGE.get())) {
-                spawnPyrisageParticles(level, pos, random);
+            // Pyraze - flame particles
+            else if (state.is(ModBlocks.PYRAZE.get())) {
+                spawnPyrazeParticles(level, pos, random);
             }
-            // Rosynia - portal particles (starry sky effect)
-            else if (state.is(ModBlocks.ROSYNIA.get())) {
-                spawnRosyniaParticles(level, pos, random);
+            // Stellia - portal particles (starry sky effect)
+            else if (state.is(ModBlocks.STELLIA.get())) {
+                spawnStelliaParticles(level, pos, random);
             }
         }
     }
 
-    private static void spawnCrystbudParticles(ClientLevel level, BlockPos pos, RandomSource random) {
+    private static void spawnCryselParticles(ClientLevel level, BlockPos pos, RandomSource random) {
         if (random.nextInt(10) < 3) {
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.4 + random.nextDouble() * 0.2;
@@ -88,7 +88,7 @@ public class HerbFlowerParticleHandler {
         }
     }
 
-    private static void spawnPyrisageParticles(ClientLevel level, BlockPos pos, RandomSource random) {
+    private static void spawnPyrazeParticles(ClientLevel level, BlockPos pos, RandomSource random) {
         if (random.nextInt(10) < 3) {
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.4 + random.nextDouble() * 0.2;
@@ -107,7 +107,7 @@ public class HerbFlowerParticleHandler {
         }
     }
 
-    private static void spawnRosyniaParticles(ClientLevel level, BlockPos pos, RandomSource random) {
+    private static void spawnStelliaParticles(ClientLevel level, BlockPos pos, RandomSource random) {
         if (random.nextInt(2) == 0) {
             double x = pos.getX() + 0.5;
             double y = pos.getY() + 0.5;

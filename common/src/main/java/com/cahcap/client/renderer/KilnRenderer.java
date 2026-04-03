@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Renderer for the Kiln multiblock structure.
- * Renders the Pyrisage plant model on the soulsand element after assembly.
+ * Renders the Pyraze plant model on the soulsand element after assembly.
  */
 public class KilnRenderer implements BlockEntityRenderer<KilnBlockEntity> {
 
@@ -40,15 +40,15 @@ public class KilnRenderer implements BlockEntityRenderer<KilnBlockEntity> {
             return;
         }
 
-        // Render Pyrisage plant on the soulsand element
+        // Render Pyraze plant on the soulsand element
         // Soulsand is at dy=-1 (one block below master), center
         // In the model, soulsand element: from [0, -16, 0] to [16, -12, 16]
         // So soulsand top surface is at y = -12/16 relative to master block origin
-        // The pyrisage plant should sit on top of that
+        // The pyraze plant should sit on top of that
 
-        Block pyrisageBlock = (Block) ModRegistries.PYRISAGE.get();
-        BlockState pyrisageState = pyrisageBlock.defaultBlockState();
-        BakedModel model = blockRenderer.getBlockModel(pyrisageState);
+        Block pyrazeBlock = (Block) ModRegistries.PYRAZE.get();
+        BlockState pyrazeState = pyrazeBlock.defaultBlockState();
+        BakedModel model = blockRenderer.getBlockModel(pyrazeState);
 
         // Get light level at the soulsand position (one below master)
         BlockPos soulsandPos = blockEntity.getBlockPos().below();
@@ -61,11 +61,11 @@ public class KilnRenderer implements BlockEntityRenderer<KilnBlockEntity> {
         // Translate to soulsand top: master origin is (0,0,0), soulsand top is at y=-12/16
         poseStack.translate(0, -12.0 / 16.0, 0);
 
-        // Render the pyrisage block model at full size (same as placed on ground)
+        // Render the pyraze block model at full size (same as placed on ground)
         blockRenderer.getModelRenderer().renderModel(
                 poseStack.last(),
                 bufferSource.getBuffer(RenderType.cutout()),
-                pyrisageState,
+                pyrazeState,
                 model,
                 1.0f, 1.0f, 1.0f,
                 light,
