@@ -4,7 +4,7 @@
 
 | 产物 | 产物个数 | 材料 |
 |----|----|----|
-| **皮甲** | 1 | 皮革，任意树叶 |
+|  |  |  |
 
 ## 有序合成
 
@@ -12,6 +12,13 @@
   <table border="1">
   <tr><td>无</td><td>红樱木棍</td><td>无</td></tr>
   <tr><td>红樱木棍</td><td>无</td><td>无</td></tr>
+  <tr><td>无</td><td>无</td><td>无</td></tr>
+  </table>
+
+- **皮甲**：
+  <table border="1">
+  <tr><td>皮革</td><td>任意树叶</td><td>皮革</td></tr>
+  <tr><td>无</td><td>无</td><td>无</td></tr>
   <tr><td>无</td><td>无</td><td>无</td></tr>
   </table>
 
