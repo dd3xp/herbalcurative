@@ -19,7 +19,7 @@ public class HerbPotInteraction implements RingBlockInteraction {
     public boolean canInteract(UseOnContext context, BlockState state, Level level, BlockPos pos, Player player, ItemStack ringStack) {
         if (player != null && player.isShiftKeyDown() && state.is(ModRegistries.HERB_POT.get())) {
             if (level.getBlockEntity(pos) instanceof HerbPotBlockEntity pot
-                    && (pot.hasSeedling() || pot.hasSoil()) && !pot.isGrowing()) {
+                    && (pot.hasSeedling() || pot.hasSoil())) {
                 return true;
             }
         }
