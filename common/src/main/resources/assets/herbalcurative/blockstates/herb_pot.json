@@ -1,8 +1,8 @@
 {
   "variants": {
-    "facing=north": { "model": "herbalcurative:block/herb_pot" },
-    "facing=south": { "model": "herbalcurative:block/herb_pot", "y": 180 },
-    "facing=west": { "model": "herbalcurative:block/herb_pot", "y": 270 },
-    "facing=east": { "model": "herbalcurative:block/herb_pot", "y": 90 }
+    "facing=north": { "model": "herbalcurative:custom/herb_pot" },
+    "facing=south": { "model": "herbalcurative:custom/herb_pot", "y": 180 },
+    "facing=west": { "model": "herbalcurative:custom/herb_pot", "y": 270 },
+    "facing=east": { "model": "herbalcurative:custom/herb_pot", "y": 90 }
   }
 }

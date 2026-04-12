@@ -167,8 +167,10 @@ public class MultiblockShapes {
                 is = ClassLoader.getSystemResourceAsStream(clPath);
             }
             if (is == null) {
-                // During datagen the JSON hasn't been generated yet — return a stub
-                return new MultiblockShapes(new VoxelShape[]{Shapes.block()}, 0, 0, 0, 1, 1, 1);
+                // During datagen the JSON hasn't been generated yet — return a stub.
+                // Must have totalPositions >= 2 so that IntegerProperty.create("position", 0, totalPositions-1)
+                // satisfies the max > min constraint (otherwise datagen itself crashes during <clinit>).
+                return new MultiblockShapes(new VoxelShape[]{Shapes.block(), Shapes.block()}, 0, 0, 0, 2, 1, 1);
             }
             JsonObject root = JsonParser.parseReader(new InputStreamReader(is, StandardCharsets.UTF_8)).getAsJsonObject();
             return fromJson(root);

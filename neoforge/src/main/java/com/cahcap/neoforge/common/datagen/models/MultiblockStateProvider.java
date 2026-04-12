@@ -50,7 +50,7 @@ public class MultiblockStateProvider implements DataProvider {
                 "cauldron", "herbalcurative:block/lumistone", false,
                 "herbalcurative:block/cauldron", List.of())));
         futures.add(generate(cache, new MultiblockConfig(
-                "herb_cabinet", "herbalcurative:block/herb_cabinet", true,
+                "herb_cabinet", "herbalcurative:block/red_cherry_log", false,
                 "herbalcurative:block/herb_cabinet", List.of())));
         futures.add(generate(cache, new MultiblockConfig(
                 "herb_vault", "herbalcurative:block/lumistone_bricks", false,
@@ -284,7 +284,10 @@ public class MultiblockStateProvider implements DataProvider {
         String modelRef;
 
         if (occupiedPositions.contains(sourceCheck)) {
-            modelRef = HerbalCurativeCommon.MOD_ID + ":block/" + partName;
+            // Split parts live in models/split/ (written by ModelSplitProvider).
+            // Note: "block/invisible" stays under models/block/ because it's a normal
+            // single-block model that lives in common/.../models/block/, not a split part.
+            modelRef = HerbalCurativeCommon.MOD_ID + ":split/" + partName;
         } else {
             modelRef = HerbalCurativeCommon.MOD_ID + ":block/invisible";
         }

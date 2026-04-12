@@ -1,5 +1,5 @@
 {
-  "parent": "herbalcurative:block/herb_basket_floor",
+  "parent": "herbalcurative:custom/herb_basket_floor",
   "display": {
     "thirdperson_righthand": {
       "rotation": [75, 45, 0],

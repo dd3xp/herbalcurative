@@ -5,6 +5,7 @@ import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.HerbRegistry;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,14 +52,11 @@ public class HerbBasketBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ON_WALL = BooleanProperty.create("on_wall");
     
-    // VoxelShape for wall placement (6 pixels thick)
-    protected static final VoxelShape WALL_SHAPE_NORTH = Block.box(0, 0, 10, 16, 16, 16);
-    protected static final VoxelShape WALL_SHAPE_SOUTH = Block.box(0, 0, 0, 16, 16, 6);
-    protected static final VoxelShape WALL_SHAPE_WEST = Block.box(10, 0, 0, 16, 16, 16);
-    protected static final VoxelShape WALL_SHAPE_EAST = Block.box(0, 0, 0, 6, 16, 16);
-    
-    // VoxelShape for floor placement (6 pixels tall, full width)
-    protected static final VoxelShape FLOOR_SHAPE = Block.box(0, 0, 0, 16, 6, 16);
+    // VoxelShapes loaded from Blockbench models via datagen.
+    // Each MultiblockShapes auto-rotates for all 4 FACING values at load time.
+    private static final MultiblockShapes FLOOR_SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_basket_floor.json");
+    // Wall shape excludes Rope and Nails groups (filtered by VoxelShapeProvider at datagen time).
+    private static final MultiblockShapes WALL_SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_basket_wall.json");
     
     public HerbBasketBlock(Properties properties) {
         super(properties);
@@ -93,21 +91,10 @@ public class HerbBasketBlock extends BaseEntityBlock {
     
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (state.getValue(ON_WALL)) {
-            // Wall placement
-            return switch (state.getValue(FACING)) {
-                case NORTH -> WALL_SHAPE_NORTH;
-                case SOUTH -> WALL_SHAPE_SOUTH;
-                case WEST -> WALL_SHAPE_WEST;
-                case EAST -> WALL_SHAPE_EAST;
-                default -> WALL_SHAPE_NORTH;
-            };
-        } else {
-            // Floor placement
-            return FLOOR_SHAPE;
-        }
+        MultiblockShapes shapes = state.getValue(ON_WALL) ? WALL_SHAPES : FLOOR_SHAPES;
+        return shapes.getByIndex(state.getValue(FACING), 0, false);
     }
-    
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {

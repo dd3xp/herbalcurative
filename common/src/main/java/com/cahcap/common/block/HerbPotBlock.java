@@ -5,6 +5,7 @@ import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.HerbRegistry;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,13 +61,9 @@ public class HerbPotBlock extends BaseEntityBlock {
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     
-    protected static final VoxelShape SHAPE = Shapes.or(
-            Block.box(0, 0, 0, 16, 3, 16),
-            Block.box(0, 3, 0, 3, 16, 16),
-            Block.box(13, 3, 0, 16, 16, 16),
-            Block.box(3, 3, 13, 13, 16, 16),
-            Block.box(3, 3, 0, 13, 16, 3)
-    );
+    // VoxelShape loaded from the Blockbench model via datagen.
+    // Auto-rotates for all 4 FACING values at load time.
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_pot.json");
     
     public HerbPotBlock(Properties properties) {
         super(properties);
@@ -86,7 +83,7 @@ public class HerbPotBlock extends BaseEntityBlock {
     
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+        return SHAPES.getByIndex(state.getValue(FACING), 0, false);
     }
     
     @Override

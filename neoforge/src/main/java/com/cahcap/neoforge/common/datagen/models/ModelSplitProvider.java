@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
  * the elements (or portions of elements) that fall within that block's 16×16×16 region,
  * with UV coordinates proportionally adjusted.
  * <p>
- * Output: models/block/{name}_part_{dx}_{dy}_{dz}.json for each occupied position
+ * Output: models/split/{name}_part_{dx}_{dy}_{dz}.json for each occupied position
  */
 public class ModelSplitProvider implements DataProvider {
 
@@ -63,10 +63,14 @@ public class ModelSplitProvider implements DataProvider {
             Map<String, JsonObject> mirroredModels = generateMirroredModels(splitModels, modelName);
 
             List<CompletableFuture<?>> futures = new ArrayList<>();
+            // Split parts go under models/split/ to keep them separate from the
+            // cleaned single-block models that BlockModelProvider writes to
+            // models/block/. Multiblock blockstate JSONs reference these as
+            // "herbalcurative:split/<name>_part_X_Y_Z" — see MultiblockStateProvider.
             Path modelsDir = output.getOutputFolder()
                     .resolve("assets")
                     .resolve(HerbalCurativeCommon.MOD_ID)
-                    .resolve("models/block");
+                    .resolve("models/split");
 
             for (Map.Entry<String, JsonObject> entry : splitModels.entrySet()) {
                 futures.add(DataProvider.saveStable(cache, entry.getValue(), modelsDir.resolve(entry.getKey() + ".json")));

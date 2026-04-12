@@ -248,5 +248,38 @@
 		"fixed": {
 			"scale": [0.5, 0.5, 0.5]
 		}
-	}
+	},
+	"groups": [
+		{
+			"name": "IncenseBurner",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [
+				{
+					"name": "Side",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [0, 1, 2, 3, 4, 5, 6, 7]
+				},
+				{
+					"name": "Bottom",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [8, 9, 10]
+				},
+				{
+					"name": "Ash",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [11, 12, 13]
+				},
+				{
+					"name": "Incense",
+					"origin": [8, 8, 8],
+					"color": 0,
+					"children": [14, 15]
+				}
+			]
+		}
+	]
 }

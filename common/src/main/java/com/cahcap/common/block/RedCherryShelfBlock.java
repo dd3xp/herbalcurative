@@ -2,6 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
+import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,11 +46,9 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     
-    // VoxelShape for wall placement (6 pixels thick, 12x12 face)
-    protected static final VoxelShape SHAPE_NORTH = Block.box(2, 2, 10, 14, 14, 16);
-    protected static final VoxelShape SHAPE_SOUTH = Block.box(2, 2, 0, 14, 14, 6);
-    protected static final VoxelShape SHAPE_WEST = Block.box(10, 2, 2, 16, 14, 14);
-    protected static final VoxelShape SHAPE_EAST = Block.box(0, 2, 2, 6, 14, 14);
+    // VoxelShape loaded from the Blockbench model via datagen.
+    // Auto-rotates for all 4 FACING values at load time.
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/red_cherry_shelf.json");
     
     public RedCherryShelfBlock(Properties properties) {
         super(properties);
@@ -69,13 +68,7 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
     
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return switch (state.getValue(FACING)) {
-            case NORTH -> SHAPE_NORTH;
-            case SOUTH -> SHAPE_SOUTH;
-            case WEST -> SHAPE_WEST;
-            case EAST -> SHAPE_EAST;
-            default -> SHAPE_NORTH;
-        };
+        return SHAPES.getByIndex(state.getValue(FACING), 0, false);
     }
     
     @Nullable

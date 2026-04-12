@@ -36,7 +36,15 @@ public class ModDataGenerator {
                 .getParent() // project root
                 .resolve("common/src/main/resources");
 
-        // Asset generation (voxelshapes + split models + blockstates from model JSONs)
+        // Asset generation. All providers read source models from common/.../models/block/
+        // and write processed output under generated/.../models/. Source files are never
+        // mutated by datagen.
+        //
+        //   BlockModelProvider     → generated/.../models/block/<name>.json   (cleaned, overrides source)
+        //   ModelSplitProvider     → generated/.../models/split/<name>_part_*.json
+        //   VoxelShapeProvider     → generated/.../voxelshapes/<name>.json
+        //   MultiblockStateProvider→ generated/.../blockstates/<name>.json (references models/split/)
+        generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.BlockModelProvider(packOutput, commonResources));
         generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.VoxelShapeProvider(packOutput, commonResources));
         generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.ModelSplitProvider(packOutput, commonResources));
         generator.addProvider(true, new com.cahcap.neoforge.common.datagen.models.MultiblockStateProvider(packOutput, commonResources));

@@ -10,7 +10,6 @@
 			"name": "handle",
 			"from": [7, 1, 2],
 			"to": [9, 3, 10],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 1, 8]},
 			"faces": {
 				"north": {"uv": [12, 8, 14, 10], "texture": "#0"},
 				"east": {"uv": [8, 4, 16, 6], "texture": "#0"},
@@ -24,7 +23,6 @@
 			"name": "head",
 			"from": [4, 0, 10],
 			"to": [12, 4, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 1, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 8, 4], "texture": "#0"},
 				"east": {"uv": [0, 12, 4, 16], "texture": "#0"},
