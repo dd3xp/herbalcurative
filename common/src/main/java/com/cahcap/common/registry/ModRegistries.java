@@ -49,7 +49,7 @@ public class ModRegistries {
     public static Supplier<Block> RED_CHERRY_BUSH;
     public static Supplier<Block> HERB_CABINET;
     public static Supplier<Block> HERB_BASKET;
-    public static Supplier<Block> RED_CHERRY_SHELF;
+    public static Supplier<Block> SHELF;
     public static Supplier<Block> WORKBENCH;
     public static Supplier<Block> CAULDRON;
     public static Supplier<Block> HERB_POT;
@@ -101,7 +101,7 @@ public class ModRegistries {
     public static Supplier<Item> HERB_BOX;
     public static Supplier<Item> HERB_CABINET_ITEM;
     public static Supplier<Item> HERB_BASKET_ITEM;
-    public static Supplier<Item> RED_CHERRY_SHELF_ITEM;
+    public static Supplier<Item> SHELF_ITEM;
     public static Supplier<Item> WORKBENCH_ITEM;
     
     public static Supplier<Item> CUTTING_KNIFE;
@@ -122,7 +122,7 @@ public class ModRegistries {
     // ==================== Block Entities ====================
     public static Supplier<BlockEntityType<?>> HERB_CABINET_BE;
     public static Supplier<BlockEntityType<?>> HERB_BASKET_BE;
-    public static Supplier<BlockEntityType<?>> RED_CHERRY_SHELF_BE;
+    public static Supplier<BlockEntityType<?>> SHELF_BE;
     public static Supplier<BlockEntityType<?>> WORKBENCH_BE;
     public static Supplier<BlockEntityType<?>> CAULDRON_BE;
     public static Supplier<BlockEntityType<?>> HERB_POT_BE;

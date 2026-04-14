@@ -81,7 +81,7 @@ public class ModBlockLootProvider extends LootTableProvider {
             this.dropSelf(ModBlocks.HERB_BASKET.get());
             
             // Red Cherry Shelf
-            this.dropSelf(ModBlocks.RED_CHERRY_SHELF.get());
+            this.dropSelf(ModBlocks.SHELF.get());
             
             // Workbench (center part only drops itself, left/right parts drop nothing - handled by block)
             this.dropSelf(ModBlocks.WORKBENCH.get());

@@ -9,7 +9,7 @@ import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
 import com.cahcap.common.blockentity.KilnBlockEntity;
 import com.cahcap.common.blockentity.ObeliskBlockEntity;
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.cahcap.common.blockentity.WorkbenchBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,10 +33,10 @@ public class ModBlockEntities {
                     ModBlocks.HERB_BASKET.get()
             ).build(null));
     
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RedCherryShelfBlockEntity>> RED_CHERRY_SHELF =
-            BLOCK_ENTITIES.register("red_cherry_shelf", () -> BlockEntityType.Builder.of(
-                    RedCherryShelfBlockEntity::new,
-                    ModBlocks.RED_CHERRY_SHELF.get()
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShelfBlockEntity>> SHELF =
+            BLOCK_ENTITIES.register("shelf", () -> BlockEntityType.Builder.of(
+                    ShelfBlockEntity::new,
+                    ModBlocks.SHELF.get()
             ).build(null));
     
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WorkbenchBlockEntity>> WORKBENCH =

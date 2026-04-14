@@ -1,7 +1,7 @@
 package com.cahcap.common.recipe;
 
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -100,7 +100,7 @@ public class HerbalBlendingRecipe implements Recipe<HerbalBlendingRecipe.Blendin
         }
         
         // Check shelf pattern - position-sensitive matching
-        List<RedCherryShelfBlockEntity> shelves = input.shelves();
+        List<ShelfBlockEntity> shelves = input.shelves();
         if (shelves.size() != 9) {
             return false;
         }
@@ -164,7 +164,7 @@ public class HerbalBlendingRecipe implements Recipe<HerbalBlendingRecipe.Blendin
     /**
      * Input container for the blending recipe
      */
-    public record BlendingInput(List<HerbBasketBlockEntity> baskets, List<RedCherryShelfBlockEntity> shelves) implements RecipeInput {
+    public record BlendingInput(List<HerbBasketBlockEntity> baskets, List<ShelfBlockEntity> shelves) implements RecipeInput {
         @Override
         public ItemStack getItem(int index) {
             // First 6 slots are baskets (return empty for now, as they hold counts not stacks)

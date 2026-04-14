@@ -59,7 +59,7 @@ public class VoxelShapeProvider implements DataProvider {
         futures.add(processModelExcludingGroups(cache, "incense_burner",
                 "incense_burner", Set.of("Incense")));
         futures.add(processModel(cache, "herb_pot"));
-        futures.add(processModel(cache, "red_cherry_shelf"));
+        futures.add(processModel(cache, "shelf"));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }

@@ -58,7 +58,7 @@ public class BlockModelProvider implements DataProvider {
             "herb_basket_wall",
             "herb_pot",
             "incense_burner",
-            "red_cherry_shelf",
+            "shelf",
             // Multiblock source models (also processed by ModelSplitProvider, but the
             // unformed-state renderer points back to the source for some multiblocks
             // like herb_cabinet, so they need to be clean too)

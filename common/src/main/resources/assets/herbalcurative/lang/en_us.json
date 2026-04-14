@@ -1,5 +1,6 @@
 {
   "itemGroup.herbalcurative": "Herbal Curative",
+  "jei.herbalcurative.category.herbal_blending": "Herbal Blending",
   
   "block.herbalcurative.scleris": "Scleris",
   "block.herbalcurative.dorella": "Dorella",
@@ -86,7 +87,7 @@
   
   "block.herbalcurative.herb_cabinet": "Herb Cabinet",
   "block.herbalcurative.herb_basket": "Herb Basket",
-  "block.herbalcurative.red_cherry_shelf": "Red Cherry Shelf",
+  "block.herbalcurative.shelf": "Shelf",
   "block.herbalcurative.workbench": "Workbench",
   "block.herbalcurative.cauldron": "Cauldron",
   "block.herbalcurative.herb_pot": "Herb Pot",

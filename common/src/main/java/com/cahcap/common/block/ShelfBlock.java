@@ -1,6 +1,6 @@
 package com.cahcap.common.block;
 
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.MultiblockShapes;
 import com.mojang.serialization.MapCodec;
@@ -40,17 +40,17 @@ import java.util.List;
  * Similar to an item frame but as a block.
  * Right-click to place/remove item.
  */
-public class RedCherryShelfBlock extends BaseEntityBlock {
+public class ShelfBlock extends BaseEntityBlock {
     
-    public static final MapCodec<RedCherryShelfBlock> CODEC = simpleCodec(RedCherryShelfBlock::new);
+    public static final MapCodec<ShelfBlock> CODEC = simpleCodec(ShelfBlock::new);
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     
     // VoxelShape loaded from the Blockbench model via datagen.
     // Auto-rotates for all 4 FACING values at load time.
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/red_cherry_shelf.json");
+    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/shelf.json");
     
-    public RedCherryShelfBlock(Properties properties) {
+    public ShelfBlock(Properties properties) {
         super(properties);
         registerDefaultState(stateDefinition.any()
                 .setValue(FACING, Direction.NORTH));
@@ -93,7 +93,7 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new RedCherryShelfBlockEntity(pos, state);
+        return new ShelfBlockEntity(pos, state);
     }
     
     @Override
@@ -104,7 +104,7 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
         }
         
         BlockEntity be = level.getBlockEntity(pos);
-        if (!(be instanceof RedCherryShelfBlockEntity shelf)) {
+        if (!(be instanceof ShelfBlockEntity shelf)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         
@@ -152,7 +152,7 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
         }
         
         BlockEntity be = level.getBlockEntity(pos);
-        if (!(be instanceof RedCherryShelfBlockEntity shelf)) {
+        if (!(be instanceof ShelfBlockEntity shelf)) {
             return InteractionResult.PASS;
         }
         
@@ -180,7 +180,7 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
         
         // Add stored item to drops
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (be instanceof RedCherryShelfBlockEntity shelf && shelf.hasItem()) {
+        if (be instanceof ShelfBlockEntity shelf && shelf.hasItem()) {
             drops.add(shelf.getItem().copy());
         }
         
@@ -191,7 +191,7 @@ public class RedCherryShelfBlock extends BaseEntityBlock {
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof RedCherryShelfBlockEntity shelf && shelf.hasItem()) {
+            if (be instanceof ShelfBlockEntity shelf && shelf.hasItem()) {
                 // Item will be dropped by loot table, but we need to handle piston movement
                 if (movedByPiston) {
                     ItemStack storedItem = shelf.getItem();

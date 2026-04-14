@@ -107,7 +107,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.POT.get());
                         // Note: CAULDRON and HERB_CABINET are technical items for display only (multiblock structures)
                         output.accept(ModItems.HERB_BASKET.get());
-                        output.accept(ModItems.RED_CHERRY_SHELF.get());
+                        output.accept(ModItems.SHELF.get());
                         output.accept(ModItems.WORKBENCH.get());
                         output.accept(ModItems.HERB_POT.get());
                         output.accept(ModItems.INCENSE_BURNER.get());

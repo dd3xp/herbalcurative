@@ -1,7 +1,7 @@
 package com.cahcap.client.renderer;
 
-import com.cahcap.common.block.RedCherryShelfBlock;
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.block.ShelfBlock;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
  *   Interior: x=[4,12] y=[5,12] z=[11,14]
  * </pre>
  */
-public class RedCherryShelfRenderer implements BlockEntityRenderer<RedCherryShelfBlockEntity> {
+public class ShelfRenderer implements BlockEntityRenderer<ShelfBlockEntity> {
 
     // Frame interior center in base model space (pixels / 16)
     private static final float CENTER_X = 8f / 16f;        // (4+12)/2
@@ -37,11 +37,11 @@ public class RedCherryShelfRenderer implements BlockEntityRenderer<RedCherryShel
     // Item scale: fit the 7-pixel tall frame opening with a small margin
     private static final float ITEM_SCALE = 6f / 16f;
 
-    public RedCherryShelfRenderer(BlockEntityRendererProvider.Context context) {
+    public ShelfRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(RedCherryShelfBlockEntity blockEntity, float partialTick, PoseStack poseStack,
+    public void render(ShelfBlockEntity blockEntity, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
         if (!blockEntity.hasItem()) {
@@ -49,7 +49,7 @@ public class RedCherryShelfRenderer implements BlockEntityRenderer<RedCherryShel
         }
 
         ItemStack stack = blockEntity.getItem();
-        Direction facing = blockEntity.getBlockState().getValue(RedCherryShelfBlock.FACING);
+        Direction facing = blockEntity.getBlockState().getValue(ShelfBlock.FACING);
 
         poseStack.pushPose();
 

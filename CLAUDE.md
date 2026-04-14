@@ -15,7 +15,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 "直接渲染"指被 blockstate 或 BlockEntityRenderer 引用、交给 Minecraft model baker 的那些。具体来说：
 
 - **多方块 `_part_` 模型**（由 ModelSplitProvider 输出）：**自动保证干净**。ModelSplitProvider 在 [line 329-343](neoforge/src/main/java/com/cahcap/neoforge/common/datagen/models/ModelSplitProvider.java#L329-L343) 的裁剪逻辑里显式跳过 `angle == 0` 的 rotation，不写入 `_part_` 文件。所以**不要手动去 `_part_` 模型里加 `rotation: {angle: 0}`**（会让 ModelSplitProvider 的防护失效）。
-- **单块自定义形状模型**（herb_basket_floor / herb_basket_wall / herb_pot / incense_burner / red_cherry_shelf）：这些是 Minecraft 直接加载的最终文件，**必须手动保证清洁**。从 Blockbench 导出或同步到 `common/.../models/block/` 之前需要剥离一遍。
+- **单块自定义形状模型**（herb_basket_floor / herb_basket_wall / herb_pot / incense_burner / shelf）：这些是 Minecraft 直接加载的最终文件，**必须手动保证清洁**。从 Blockbench 导出或同步到 `common/.../models/block/` 之前需要剥离一遍。
 - **BlockEntityRenderer 直接加载的独立模型**（如 [WorkbenchRenderer](common/src/main/java/com/cahcap/client/renderer/WorkbenchRenderer.java) 里的 `workbench_tool_*`）：同上，必须手动保证清洁。
 - **多方块源文件**（cauldron / herb_cabinet / herb_vault / kiln / obelisk / workbench）：虽然只作为 ModelSplitProvider 的输入、不被直接渲染，但 `MultiblockStateProvider` 的 `unformedModel` 字段偶尔会指回源文件（例如 herb_cabinet），那时就会变成直接渲染。**保持源文件清洁**比记住每个方块的 unformed 状态来自哪里更稳。
 

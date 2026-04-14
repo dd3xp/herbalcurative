@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "herbalcurative:block/red_cherry_shelf",
-		"particle": "herbalcurative:block/red_cherry_shelf"
+		"0": "herbalcurative:block/shelf",
+		"particle": "herbalcurative:block/shelf"
 	},
 	"elements": [
 		{
@@ -119,7 +119,7 @@
 	},
 	"groups": [
 		{
-			"name": "RedCherryShelf",
+			"name": "Shelf",
 			"origin": [8, 8, 8],
 			"scope": 0,
 			"color": 0,

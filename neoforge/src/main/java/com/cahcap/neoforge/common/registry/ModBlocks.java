@@ -5,7 +5,7 @@ import com.cahcap.common.block.*;
 import com.cahcap.common.multiblock.Multiblock;
 import com.cahcap.neoforge.common.block.HerbCabinetBlock;
 import com.cahcap.common.block.HerbBasketBlock;
-import com.cahcap.common.block.RedCherryShelfBlock;
+import com.cahcap.common.block.ShelfBlock;
 import com.cahcap.common.block.WorkbenchBlock;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
@@ -312,8 +312,8 @@ public class ModBlocks {
                     .noOcclusion()
                     .pushReaction(PushReaction.DESTROY)));
     
-    public static final DeferredBlock<RedCherryShelfBlock> RED_CHERRY_SHELF = BLOCKS.register("red_cherry_shelf",
-            () -> new RedCherryShelfBlock(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<ShelfBlock> SHELF = BLOCKS.register("shelf",
+            () -> new ShelfBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD)
                     .strength(2.0F, 3.0F)
                     .sound(SoundType.WOOD)

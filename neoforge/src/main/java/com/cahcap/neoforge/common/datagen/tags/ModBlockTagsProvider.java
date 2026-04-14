@@ -85,7 +85,7 @@ public class ModBlockTagsProvider extends net.neoforged.neoforge.common.data.Blo
             ModBlocks.RED_CHERRY_LEAVES.get(),
             ModBlocks.HERB_CABINET.get(),
             ModBlocks.HERB_BASKET.get(),
-            ModBlocks.RED_CHERRY_SHELF.get(),
+            ModBlocks.SHELF.get(),
             ModBlocks.WORKBENCH.get()
         );
         

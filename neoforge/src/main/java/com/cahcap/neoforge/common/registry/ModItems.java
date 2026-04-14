@@ -153,8 +153,8 @@ public class ModItems {
     public static final DeferredItem<BlockItem> HERB_BASKET = ITEMS.register("herb_basket",
             () -> new BlockItem(ModBlocks.HERB_BASKET.get(), new Item.Properties()));
     
-    public static final DeferredItem<BlockItem> RED_CHERRY_SHELF = ITEMS.register("red_cherry_shelf",
-            () -> new BlockItem(ModBlocks.RED_CHERRY_SHELF.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> SHELF = ITEMS.register("shelf",
+            () -> new BlockItem(ModBlocks.SHELF.get(), new Item.Properties()));
     
     public static final DeferredItem<BlockItem> WORKBENCH = ITEMS.register("workbench",
             () -> new BlockItem(ModBlocks.WORKBENCH.get(), new Item.Properties()));

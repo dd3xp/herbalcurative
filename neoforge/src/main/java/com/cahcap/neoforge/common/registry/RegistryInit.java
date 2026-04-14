@@ -31,7 +31,7 @@ public class RegistryInit {
         ModRegistries.RED_CHERRY_BUSH = () -> ModBlocks.RED_CHERRY_BUSH.get();
         ModRegistries.HERB_CABINET = () -> ModBlocks.HERB_CABINET.get();
         ModRegistries.HERB_BASKET = () -> ModBlocks.HERB_BASKET.get();
-        ModRegistries.RED_CHERRY_SHELF = () -> ModBlocks.RED_CHERRY_SHELF.get();
+        ModRegistries.SHELF = () -> ModBlocks.SHELF.get();
         ModRegistries.WORKBENCH = () -> ModBlocks.WORKBENCH.get();
         ModRegistries.CAULDRON = () -> ModBlocks.CAULDRON.get();
         ModRegistries.HERB_POT = () -> ModBlocks.HERB_POT.get();
@@ -83,7 +83,7 @@ public class RegistryInit {
         ModRegistries.HERB_BOX = () -> ModItems.HERB_BOX.get();
         ModRegistries.HERB_CABINET_ITEM = () -> ModItems.HERB_CABINET.get();
         ModRegistries.HERB_BASKET_ITEM = () -> ModItems.HERB_BASKET.get();
-        ModRegistries.RED_CHERRY_SHELF_ITEM = () -> ModItems.RED_CHERRY_SHELF.get();
+        ModRegistries.SHELF_ITEM = () -> ModItems.SHELF.get();
         ModRegistries.WORKBENCH_ITEM = () -> ModItems.WORKBENCH.get();
         
         ModRegistries.CUTTING_KNIFE = () -> ModItems.CUTTING_KNIFE.get();
@@ -104,7 +104,7 @@ public class RegistryInit {
         // Block Entities
         ModRegistries.HERB_CABINET_BE = () -> ModBlockEntities.HERB_CABINET.get();
         ModRegistries.HERB_BASKET_BE = () -> ModBlockEntities.HERB_BASKET.get();
-        ModRegistries.RED_CHERRY_SHELF_BE = () -> ModBlockEntities.RED_CHERRY_SHELF.get();
+        ModRegistries.SHELF_BE = () -> ModBlockEntities.SHELF.get();
         ModRegistries.WORKBENCH_BE = () -> ModBlockEntities.WORKBENCH.get();
         ModRegistries.CAULDRON_BE = () -> ModBlockEntities.CAULDRON.get();
         ModRegistries.HERB_POT_BE = () -> ModBlockEntities.HERB_POT.get();

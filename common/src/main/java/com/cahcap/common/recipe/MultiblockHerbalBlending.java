@@ -1,7 +1,7 @@
 package com.cahcap.common.recipe;
 
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.cahcap.common.recipe.HerbalBlendingRecipe;
 import com.cahcap.common.recipe.HerbalBlendingRecipe.IngredientWithCount;
 import com.cahcap.common.registry.ModRegistries;
@@ -47,7 +47,7 @@ public class MultiblockHerbalBlending {
      * Check if a block can trigger the multiblock check.
      */
     public boolean isBlockTrigger(BlockState state) {
-        return state.is(ModRegistries.RED_CHERRY_SHELF.get());
+        return state.is(ModRegistries.SHELF.get());
     }
     
     /**
@@ -96,7 +96,7 @@ public class MultiblockHerbalBlending {
     private BlendingStructure validateStructure(Level level, BlockPos centerShelf, Direction facing, Direction right) {
         List<HerbBasketBlockEntity> baskets = new ArrayList<>();
         // Use array to ensure correct ordering: 0-8, top-to-bottom, left-to-right
-        RedCherryShelfBlockEntity[] shelfArray = new RedCherryShelfBlockEntity[9];
+        ShelfBlockEntity[] shelfArray = new ShelfBlockEntity[9];
         
         // Calculate top-left corner (relative to wall-mounted view)
         BlockPos topLeft = centerShelf
@@ -132,10 +132,10 @@ public class MultiblockHerbalBlending {
                     }
                 } else {
                     // Should be a shelf
-                    if (!state.is(ModRegistries.RED_CHERRY_SHELF.get())) {
+                    if (!state.is(ModRegistries.SHELF.get())) {
                         return null;
                     }
-                    if (level.getBlockEntity(checkPos) instanceof RedCherryShelfBlockEntity shelf) {
+                    if (level.getBlockEntity(checkPos) instanceof ShelfBlockEntity shelf) {
                         // Calculate shelf index with mirrored columns for player perspective
                         // col is 1,2,3 for shelves, mirror to 2,1,0 so player's left = recipe's left
                         int shelfIndex = row * 3 + (3 - col);
@@ -169,8 +169,8 @@ public class MultiblockHerbalBlending {
         baskets.add(leftBaskets[1]);  // Left middle
         baskets.add(leftBaskets[2]);  // Left bottom
         
-        List<RedCherryShelfBlockEntity> shelves = Arrays.asList(shelfArray);
-        RedCherryShelfBlockEntity centerShelfEntity = shelfArray[CENTER_SHELF_INDEX];
+        List<ShelfBlockEntity> shelves = Arrays.asList(shelfArray);
+        ShelfBlockEntity centerShelfEntity = shelfArray[CENTER_SHELF_INDEX];
         
         return new BlendingStructure(baskets, shelves, centerShelfEntity, centerShelf);
     }
@@ -249,11 +249,11 @@ public class MultiblockHerbalBlending {
         // Consume items from shelves (except center which will become output)
         // Remainder items stay on their original shelves
         NonNullList<Ingredient> pattern = recipe.getShelfPattern();
-        List<RedCherryShelfBlockEntity> shelves = structure.shelves();
+        List<ShelfBlockEntity> shelves = structure.shelves();
         
         for (int i = 0; i < 9; i++) {
             Ingredient required = pattern.get(i);
-            RedCherryShelfBlockEntity shelf = shelves.get(i);
+            ShelfBlockEntity shelf = shelves.get(i);
             
             if (i == CENTER_SHELF_INDEX) {
                 // Center shelf: check for remainder, then replace with output
@@ -300,8 +300,8 @@ public class MultiblockHerbalBlending {
      */
     public record BlendingStructure(
             List<HerbBasketBlockEntity> baskets,
-            List<RedCherryShelfBlockEntity> shelves,
-            RedCherryShelfBlockEntity centerShelf,
+            List<ShelfBlockEntity> shelves,
+            ShelfBlockEntity centerShelf,
             BlockPos centerPos
     ) {}
 }

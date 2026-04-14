@@ -5,7 +5,7 @@ import com.cahcap.common.block.WorkbenchBlock;
 import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
 import com.cahcap.common.blockentity.HerbBasketBlockEntity;
 import com.cahcap.common.blockentity.HerbCabinetBlockEntity;
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.cahcap.common.blockentity.HerbPotBlockEntity;
 import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.blockentity.HerbVaultBlockEntity;
@@ -20,7 +20,7 @@ import com.cahcap.neoforge.common.handler.KilnItemHandler;
 import com.cahcap.neoforge.common.handler.HerbBasketItemHandler;
 import com.cahcap.neoforge.common.handler.HerbCabinetItemHandler;
 import com.cahcap.neoforge.common.handler.HerbPotItemHandler;
-import com.cahcap.neoforge.common.handler.RedCherryShelfItemHandler;
+import com.cahcap.neoforge.common.handler.ShelfItemHandler;
 import com.cahcap.neoforge.common.handler.WorkbenchItemHandler;
 import net.minecraft.core.Direction;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -63,13 +63,13 @@ public class ModCapabilities {
             }
         );
         
-        // Register IItemHandler capability for RedCherryShelfBlockEntity
+        // Register IItemHandler capability for ShelfBlockEntity
         event.registerBlockEntity(
             Capabilities.ItemHandler.BLOCK,
-            ModBlockEntities.RED_CHERRY_SHELF.get(),
+            ModBlockEntities.SHELF.get(),
             (blockEntity, context) -> {
-                if (blockEntity instanceof RedCherryShelfBlockEntity shelf) {
-                    return new RedCherryShelfItemHandler(shelf);
+                if (blockEntity instanceof ShelfBlockEntity shelf) {
+                    return new ShelfItemHandler(shelf);
                 }
                 return null;
             }

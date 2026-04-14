@@ -1,20 +1,20 @@
 package com.cahcap.neoforge.common.handler;
 
-import com.cahcap.common.blockentity.RedCherryShelfBlockEntity;
+import com.cahcap.common.blockentity.ShelfBlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * IItemHandler implementation for RedCherryShelfBlockEntity.
+ * IItemHandler implementation for ShelfBlockEntity.
  * Allows hoppers and mod pipes to interact with the shelf.
  * The shelf can hold exactly 1 item of any type.
  */
-public class RedCherryShelfItemHandler implements IItemHandler {
+public class ShelfItemHandler implements IItemHandler {
     
-    private final RedCherryShelfBlockEntity shelf;
+    private final ShelfBlockEntity shelf;
     
-    public RedCherryShelfItemHandler(RedCherryShelfBlockEntity shelf) {
+    public ShelfItemHandler(ShelfBlockEntity shelf) {
         this.shelf = shelf;
     }
     

@@ -17,17 +17,17 @@ import net.minecraft.world.level.block.state.BlockState;
  * Block entity for Red Cherry Shelf.
  * Stores a single item for display.
  */
-public class RedCherryShelfBlockEntity extends BlockEntity {
+public class ShelfBlockEntity extends BlockEntity {
     
     private ItemStack storedItem = ItemStack.EMPTY;
     
-    public RedCherryShelfBlockEntity(BlockPos pos, BlockState state) {
+    public ShelfBlockEntity(BlockPos pos, BlockState state) {
         super(getBlockEntityType(), pos, state);
     }
     
     @SuppressWarnings("unchecked")
-    private static BlockEntityType<RedCherryShelfBlockEntity> getBlockEntityType() {
-        return (BlockEntityType<RedCherryShelfBlockEntity>) ModRegistries.RED_CHERRY_SHELF_BE.get();
+    private static BlockEntityType<ShelfBlockEntity> getBlockEntityType() {
+        return (BlockEntityType<ShelfBlockEntity>) ModRegistries.SHELF_BE.get();
     }
     
     /**
