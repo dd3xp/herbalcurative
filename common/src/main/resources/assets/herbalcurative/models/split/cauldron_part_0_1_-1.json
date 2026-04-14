@@ -1,0 +1,81 @@
+{
+  "texture_size": [
+    256,
+    256
+  ],
+  "textures": {
+    "0": "herbalcurative:block/cauldron",
+    "particle": "herbalcurative:block/cauldron"
+  },
+  "elements": [
+    {
+      "name": "side1",
+      "from": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "to": [
+        16.0,
+        16.0,
+        6.0
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            1.375,
+            7.125,
+            2.375,
+            8.125
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            0.0,
+            7.125,
+            0.375,
+            8.125
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            4.75,
+            7.125,
+            5.75,
+            8.125
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            3.375,
+            7.125,
+            3.75,
+            8.125
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            2.375,
+            7.125,
+            1.375,
+            6.75
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            5.375,
+            6.75,
+            4.375,
+            7.125
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

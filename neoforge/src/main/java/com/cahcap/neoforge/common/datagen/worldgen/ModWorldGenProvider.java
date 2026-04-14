@@ -134,20 +134,20 @@ public class ModWorldGenProvider {
     
     // ==================== Data Provider Registration ====================
     
-    public static void addProviders(net.minecraft.data.DataGenerator generator, PackOutput output, 
-                                   CompletableFuture<HolderLookup.Provider> lookupProvider,
-                                   ExistingFileHelper existingFileHelper) {
+    /** Build the world-gen related data providers (registry entries + biome tags). */
+    public static java.util.List<net.minecraft.data.DataProvider> providers(
+            PackOutput output,
+            CompletableFuture<HolderLookup.Provider> lookupProvider,
+            ExistingFileHelper existingFileHelper) {
         RegistrySetBuilder registryBuilder = new RegistrySetBuilder();
         registryBuilder.add(Registries.CONFIGURED_FEATURE, ModWorldGenProvider::bootstrapConfiguredFeatures);
         registryBuilder.add(Registries.PLACED_FEATURE, ModWorldGenProvider::bootstrapPlacedFeatures);
         registryBuilder.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ModWorldGenProvider::bootstrapBiomeModifiers);
-        
-        generator.addProvider(true, new DatapackBuiltinEntriesProvider(
-            output, lookupProvider, registryBuilder, Set.of(HerbalCurativeCommon.MOD_ID)
-        ));
-        
-        // Biome tags
-        generator.addProvider(true, new ModBiomeTagsProvider(output, lookupProvider, existingFileHelper));
+
+        return java.util.List.of(
+                new DatapackBuiltinEntriesProvider(
+                        output, lookupProvider, registryBuilder, Set.of(HerbalCurativeCommon.MOD_ID)),
+                new ModBiomeTagsProvider(output, lookupProvider, existingFileHelper));
     }
     
     // ==================== Configured Features ====================

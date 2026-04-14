@@ -24,7 +24,6 @@
 			"name": "wall",
 			"from": [0, 3, 0],
 			"to": [3, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, 2, 0]},
 			"faces": {
 				"north": {"uv": [8.75, 11, 9.5, 14.25], "texture": "#0"},
 				"east": {"uv": [4, 0, 8, 3.25], "texture": "#0"},
@@ -38,7 +37,6 @@
 			"name": "wall",
 			"from": [13, 3, 0],
 			"to": [16, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [14, 2, 0]},
 			"faces": {
 				"north": {"uv": [0, 11.25, 0.75, 14.5], "texture": "#0"},
 				"east": {"uv": [4, 6.5, 8, 9.75], "texture": "#0"},
@@ -52,7 +50,6 @@
 			"name": "wall",
 			"from": [3, 3, 13],
 			"to": [13, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [12, 2, 0]},
 			"faces": {
 				"north": {"uv": [8, 7, 10.5, 10.25], "texture": "#0"},
 				"east": {"uv": [1.5, 11.25, 2.25, 14.5], "texture": "#0"},
@@ -66,7 +63,6 @@
 			"name": "wall",
 			"from": [3, 3, 0],
 			"to": [13, 16, 3],
-			"rotation": {"angle": 0, "axis": "y", "origin": [12, 2, -14]},
 			"faces": {
 				"north": {"uv": [8, 0, 10.5, 3.5], "texture": "#0"},
 				"east": {"uv": [7.25, 11, 8, 14.5], "texture": "#0"},

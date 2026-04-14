@@ -1,0 +1,1462 @@
+{
+  "variants": {
+    "facing=north,formed=false,mirrored=false,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=false,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=false,mirrored=true,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=north,formed=true,mirrored=false,position=0": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1"
+    },
+    "facing=north,formed=true,mirrored=false,position=1": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=2": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1"
+    },
+    "facing=north,formed=true,mirrored=false,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1"
+    },
+    "facing=north,formed=true,mirrored=false,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1"
+    },
+    "facing=north,formed=true,mirrored=false,position=6": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1"
+    },
+    "facing=north,formed=true,mirrored=false,position=7": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=8": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1"
+    },
+    "facing=north,formed=true,mirrored=false,position=9": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=10": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=11": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=12": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=14": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=15": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=16": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=17": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=false,position=18": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1"
+    },
+    "facing=north,formed=true,mirrored=false,position=19": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=20": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1"
+    },
+    "facing=north,formed=true,mirrored=false,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1"
+    },
+    "facing=north,formed=true,mirrored=false,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1"
+    },
+    "facing=north,formed=true,mirrored=false,position=24": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1"
+    },
+    "facing=north,formed=true,mirrored=false,position=25": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0"
+    },
+    "facing=north,formed=true,mirrored=false,position=26": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1"
+    },
+    "facing=north,formed=true,mirrored=true,position=0": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=1": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=2": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=6": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=7": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=8": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=9": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=10": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=11": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=12": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=14": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=15": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=16": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=17": {
+      "model": "herbalcurative:block/invisible"
+    },
+    "facing=north,formed=true,mirrored=true,position=18": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=19": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=20": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=24": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=25": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0_mirrored"
+    },
+    "facing=north,formed=true,mirrored=true,position=26": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1_mirrored"
+    },
+    "facing=south,formed=false,mirrored=false,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=false,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=false,mirrored=true,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=south,formed=true,mirrored=false,position=0": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=1": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=2": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=6": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=7": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=8": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=9": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=10": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=11": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=12": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=14": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=15": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=16": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=17": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=18": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=19": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=20": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=24": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=25": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=false,position=26": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=0": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=1": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=2": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=6": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=7": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=8": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=9": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=10": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=11": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=12": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=14": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=15": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=16": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=17": {
+      "model": "herbalcurative:block/invisible",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=18": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=19": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=20": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=24": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=25": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0_mirrored",
+      "y": 180
+    },
+    "facing=south,formed=true,mirrored=true,position=26": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1_mirrored",
+      "y": 180
+    },
+    "facing=east,formed=false,mirrored=false,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=false,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=false,mirrored=true,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=east,formed=true,mirrored=false,position=0": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=1": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=2": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=6": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=7": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=8": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=9": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=10": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=11": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=12": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=14": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=15": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=16": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=17": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=18": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=19": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=20": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=24": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=25": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=false,position=26": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=0": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=1": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=2": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=6": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=7": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=8": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=9": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=10": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=11": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=12": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=14": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=15": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=16": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=17": {
+      "model": "herbalcurative:block/invisible",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=18": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=19": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=20": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=24": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=25": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0_mirrored",
+      "y": 90
+    },
+    "facing=east,formed=true,mirrored=true,position=26": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1_mirrored",
+      "y": 90
+    },
+    "facing=west,formed=false,mirrored=false,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=false,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=0": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=1": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=2": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=3": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=4": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=5": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=6": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=7": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=8": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=9": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=10": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=11": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=12": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=13": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=14": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=15": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=16": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=17": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=18": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=19": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=20": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=21": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=22": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=23": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=24": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=25": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=false,mirrored=true,position=26": {
+      "model": "herbalcurative:block/lumistone"
+    },
+    "facing=west,formed=true,mirrored=false,position=0": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=1": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=2": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=6": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=7": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=8": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=9": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=10": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=11": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=12": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=14": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=15": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=16": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=17": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=18": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=19": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=20": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=24": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=25": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=false,position=26": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=0": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_-1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=1": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=2": {
+      "model": "herbalcurative:split/obelisk_part_1_-1_1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=3": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_-1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=4": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=5": {
+      "model": "herbalcurative:split/obelisk_part_0_-1_1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=6": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_-1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=7": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=8": {
+      "model": "herbalcurative:split/obelisk_part_-1_-1_1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=9": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=10": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=11": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=12": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=13": {
+      "model": "herbalcurative:split/obelisk_part_0_0_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=14": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=15": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=16": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=17": {
+      "model": "herbalcurative:block/invisible",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=18": {
+      "model": "herbalcurative:split/obelisk_part_1_1_-1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=19": {
+      "model": "herbalcurative:split/obelisk_part_1_1_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=20": {
+      "model": "herbalcurative:split/obelisk_part_1_1_1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=21": {
+      "model": "herbalcurative:split/obelisk_part_0_1_-1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=22": {
+      "model": "herbalcurative:split/obelisk_part_0_1_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=23": {
+      "model": "herbalcurative:split/obelisk_part_0_1_1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=24": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_-1_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=25": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_0_mirrored",
+      "y": 270
+    },
+    "facing=west,formed=true,mirrored=true,position=26": {
+      "model": "herbalcurative:split/obelisk_part_-1_1_1_mirrored",
+      "y": 270
+    }
+  }
+}

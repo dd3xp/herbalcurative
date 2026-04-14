@@ -54,13 +54,13 @@ public class WorkbenchRenderer implements BlockEntityRenderer<WorkbenchBlockEnti
     static {
         var mod = HerbalCurativeCommon.MOD_ID;
         TOOL_MODEL_MAP.put(ResourceLocation.fromNamespaceAndPath(mod, "cutting_knife"),
-                ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_cutting_knife"));
+                ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_cutting_knife"));
         TOOL_MODEL_MAP.put(ResourceLocation.fromNamespaceAndPath(mod, "feather_quill"),
-                ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_feather_quill"));
+                ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_feather_quill"));
         TOOL_MODEL_MAP.put(ResourceLocation.fromNamespaceAndPath(mod, "woven_rope"),
-                ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_woven_rope"));
+                ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_woven_rope"));
         TOOL_MODEL_MAP.put(ResourceLocation.fromNamespaceAndPath(mod, "forge_hammer"),
-                ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_forge_hammer"));
+                ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_forge_hammer"));
     }
     
     public WorkbenchRenderer(BlockEntityRendererProvider.Context context) {

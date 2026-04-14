@@ -1,0 +1,49 @@
+{
+  "variants": {
+    "facing=north,position=0": {
+      "model": "herbalcurative:split/workbench_part_-1_0_0"
+    },
+    "facing=north,position=1": {
+      "model": "herbalcurative:split/workbench_part_0_0_0"
+    },
+    "facing=north,position=2": {
+      "model": "herbalcurative:split/workbench_part_1_0_0"
+    },
+    "facing=south,position=0": {
+      "model": "herbalcurative:split/workbench_part_-1_0_0",
+      "y": 180
+    },
+    "facing=south,position=1": {
+      "model": "herbalcurative:split/workbench_part_0_0_0",
+      "y": 180
+    },
+    "facing=south,position=2": {
+      "model": "herbalcurative:split/workbench_part_1_0_0",
+      "y": 180
+    },
+    "facing=east,position=0": {
+      "model": "herbalcurative:split/workbench_part_-1_0_0",
+      "y": 90
+    },
+    "facing=east,position=1": {
+      "model": "herbalcurative:split/workbench_part_0_0_0",
+      "y": 90
+    },
+    "facing=east,position=2": {
+      "model": "herbalcurative:split/workbench_part_1_0_0",
+      "y": 90
+    },
+    "facing=west,position=0": {
+      "model": "herbalcurative:split/workbench_part_-1_0_0",
+      "y": 270
+    },
+    "facing=west,position=1": {
+      "model": "herbalcurative:split/workbench_part_0_0_0",
+      "y": 270
+    },
+    "facing=west,position=2": {
+      "model": "herbalcurative:split/workbench_part_1_0_0",
+      "y": 270
+    }
+  }
+}

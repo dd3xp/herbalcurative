@@ -1,18 +1,18 @@
 {
   "variants": {
     "facing=north": {
-      "model": "herbalcurative:custom/incense_burner"
+      "model": "herbalcurative:block/incense_burner"
     },
     "facing=south": {
-      "model": "herbalcurative:custom/incense_burner",
+      "model": "herbalcurative:block/incense_burner",
       "y": 180
     },
     "facing=west": {
-      "model": "herbalcurative:custom/incense_burner",
+      "model": "herbalcurative:block/incense_burner",
       "y": 270
     },
     "facing=east": {
-      "model": "herbalcurative:custom/incense_burner",
+      "model": "herbalcurative:block/incense_burner",
       "y": 90
     }
   }

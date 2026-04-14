@@ -162,10 +162,10 @@ public class HerbalCurativeNeoForgeClient {
             // Register workbench tool block models so they get baked and can be used in BER.
             // Side-loaded models must use the "standalone" variant per NeoForge.
             var mod = HerbalCurativeCommon.MOD_ID;
-            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_cutting_knife"), "standalone"));
-            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_feather_quill"), "standalone"));
-            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_forge_hammer"), "standalone"));
-            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "custom/workbench_tool_woven_rope"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_cutting_knife"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_feather_quill"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_forge_hammer"), "standalone"));
+            event.register(new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(mod, "block/workbench_tool_woven_rope"), "standalone"));
         }
 
         @SubscribeEvent
