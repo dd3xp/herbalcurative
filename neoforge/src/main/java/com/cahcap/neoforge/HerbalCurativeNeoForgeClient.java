@@ -37,7 +37,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import com.cahcap.neoforge.client.model.split.SplitGeometryLoader;
+import com.cahcap.neoforge.client.model.CustomModelLoaders;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -160,7 +160,7 @@ public class HerbalCurativeNeoForgeClient {
         
         @SubscribeEvent
         public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
-            event.register(SplitGeometryLoader.ID, SplitGeometryLoader.INSTANCE);
+            CustomModelLoaders.register(event);
         }
 
         @SubscribeEvent

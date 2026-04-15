@@ -1,164 +1,43 @@
-package com.cahcap.neoforge.client.model.split;
+package com.cahcap.neoforge.client.model;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-// ResourceLocation still needed for particle sprite parsing
 import net.neoforged.neoforge.client.model.ExtendedBlockModelDeserializer;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Runtime equivalent of the old {@code ModelSplitProcessor} + {@code BlockModelProcessor}:
- * <ol>
- *     <li>Strip {@code rotation:{angle:0}} from each element.</li>
- *     <li>Compute the model's block-cell bounds from element AABBs.</li>
- *     <li>For each (mirrored, position) pair, clip elements to that cell's local coords
- *         with UV re-interpolation, then bake those clipped elements into {@link BakedQuad}s.</li>
- *     <li>Also bake the full unclipped model for item / no-state rendering.</li>
- * </ol>
- * The resulting {@link BakedSplitModel} dispatches on block state {@code position}/{@code mirrored}
- * at render time.
+ * Shared static helpers for Blockbench element processing.
+ * <p>
+ * Three responsibilities, each surfaced as a small set of pure methods:
+ * <ul>
+ *     <li><b>cleanup</b> — {@link #stripZeroRotation}: remove {@code "rotation":{"angle":0,...}}
+ *         so Minecraft's vanilla baker doesn't take the AO-breaking "rotated element" codepath.</li>
+ *     <li><b>split</b> — {@link #clipToCell} + {@link #mirrorX}: axis-aligned element clipping
+ *         with UV re-interpolation, and X-mirror for multiblock "mirrored" variants.</li>
+ *     <li><b>bake</b> — {@link #bakeSubset}: wrap a JsonArray of elements in a synthetic
+ *         {@link BlockModel} and run it through the vanilla baker.</li>
+ * </ul>
  */
-public final class SplitUnbakedGeometry implements IUnbakedGeometry<SplitUnbakedGeometry> {
+public final class ElementProcessing {
 
     private static final Gson GSON = new Gson();
-    private static final RandomSource RANDOM = RandomSource.create();
 
-    private final JsonObject rawModel;
+    private ElementProcessing() {}
 
-    public SplitUnbakedGeometry(JsonObject rawModel) {
-        this.rawModel = rawModel;
-    }
+    // ==================== cleanup ====================
 
-    @Override
-    public BakedModel bake(IGeometryBakingContext ctx,
-                           ModelBaker baker,
-                           Function<Material, TextureAtlasSprite> spriteGetter,
-                           ModelState modelState,
-                           ItemOverrides overrides) {
-
-        JsonArray originalElements = cleanElements(rawModel.getAsJsonArray("elements"));
-        JsonObject textures = rawModel.has("textures") && rawModel.get("textures").isJsonObject()
-                ? rawModel.getAsJsonObject("textures").deepCopy() : new JsonObject();
-        JsonElement textureSize = rawModel.get("texture_size");
-
-        double[] bounds = computeElementBounds(originalElements);
-        int bxMin = (int) Math.floor(bounds[0] / 16.0);
-        int bxMax = (int) Math.ceil(bounds[1] / 16.0);
-        int byMin = (int) Math.floor(bounds[2] / 16.0);
-        int byMax = (int) Math.ceil(bounds[3] / 16.0);
-        int bzMin = (int) Math.floor(bounds[4] / 16.0);
-        int bzMax = (int) Math.ceil(bounds[5] / 16.0);
-        int xSize = bxMax - bxMin, ySize = byMax - byMin, zSize = bzMax - bzMin;
-        int totalPositions = xSize * ySize * zSize;
-
-        // [mirror][position][side_ordinal_or_6_for_null] -> quads
-        @SuppressWarnings("unchecked")
-        List<BakedQuad>[][][] table = (List<BakedQuad>[][][]) new List[2][totalPositions][7];
-
-        for (int mir = 0; mir < 2; mir++) {
-            JsonArray base = (mir == 1) ? mirrorAllX(originalElements) : originalElements;
-            for (int dy = byMin; dy < byMax; dy++) {
-                for (int dx = bxMin; dx < bxMax; dx++) {
-                    for (int dz = bzMin; dz < bzMax; dz++) {
-                        JsonArray clipped = new JsonArray();
-                        for (JsonElement el : base) {
-                            JsonObject c = clipElement(el.getAsJsonObject(), dx * 16.0, dy * 16.0, dz * 16.0);
-                            if (c != null) clipped.add(c);
-                        }
-                        int pos = (dy - byMin) * xSize * zSize + (dx - bxMin) * zSize + (dz - bzMin);
-                        if (clipped.isEmpty()) {
-                            for (int s = 0; s < 7; s++) table[mir][pos][s] = ImmutableList.of();
-                        } else {
-                            BakedModel baked = bakeSubset(clipped, textures, textureSize, baker, spriteGetter, modelState);
-                            fillSides(table[mir][pos], baked);
-                        }
-                    }
-                }
-            }
-        }
-
-        BakedModel itemBaked = bakeSubset(originalElements, textures, textureSize, baker, spriteGetter, modelState);
-        List<BakedQuad>[] itemSides = newSideArray();
-        fillSides(itemSides, itemBaked);
-
-        TextureAtlasSprite particle = resolveParticle(textures, spriteGetter);
-
-        return new BakedSplitModel(table, itemSides, ctx.getTransforms(), particle,
-                totalPositions, itemBaked.useAmbientOcclusion(), itemBaked.isGui3d(),
-                itemBaked.usesBlockLight(), overrides);
-    }
-
-    // ==================== Baking helpers ====================
-
-    private static BakedModel bakeSubset(JsonArray elements,
-                                         JsonObject textures,
-                                         JsonElement textureSize,
-                                         ModelBaker baker,
-                                         Function<Material, TextureAtlasSprite> spriteGetter,
-                                         ModelState modelState) {
-        JsonObject synth = new JsonObject();
-        synth.addProperty("parent", "minecraft:block/block");
-        if (textureSize != null) synth.add("texture_size", textureSize);
-        synth.add("textures", textures);
-        synth.add("elements", elements);
-        BlockModel bm = ExtendedBlockModelDeserializer.INSTANCE.fromJson(GSON.toJson(synth), BlockModel.class);
-        return bm.bake(baker, bm, spriteGetter, modelState, true);
-    }
-
-    private static void fillSides(List<BakedQuad>[] sides, BakedModel baked) {
-        for (int s = 0; s < 6; s++) {
-            Direction dir = Direction.values()[s];
-            List<BakedQuad> q = baked.getQuads(null, dir, RANDOM, ModelData.EMPTY, null);
-            sides[s] = q == null ? ImmutableList.of() : ImmutableList.copyOf(q);
-        }
-        List<BakedQuad> nullSide = baked.getQuads(null, null, RANDOM, ModelData.EMPTY, null);
-        sides[6] = nullSide == null ? ImmutableList.of() : ImmutableList.copyOf(nullSide);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<BakedQuad>[] newSideArray() {
-        return (List<BakedQuad>[]) new List[7];
-    }
-
-    private static TextureAtlasSprite resolveParticle(JsonObject textures,
-                                                      Function<Material, TextureAtlasSprite> spriteGetter) {
-        String ref = textures.has("particle") ? textures.get("particle").getAsString() : null;
-        if (ref == null || ref.startsWith("#")) {
-            // Fall back to the first concrete texture
-            for (Map.Entry<String, JsonElement> e : textures.entrySet()) {
-                String v = e.getValue().getAsString();
-                if (!v.startsWith("#")) { ref = v; break; }
-            }
-        }
-        if (ref == null) return spriteGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.withDefaultNamespace("block/stone")));
-        return spriteGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, ResourceLocation.parse(ref)));
-    }
-
-    // ==================== Element cleaning (strip angle=0) ====================
-
-    private static JsonArray cleanElements(JsonArray elements) {
+    /** Remove {@code rotation:{angle:0, ...}} entries (AO fix). Returns a new JsonArray. */
+    public static JsonArray stripZeroRotation(JsonArray elements) {
         JsonArray out = new JsonArray();
         for (JsonElement el : elements) {
             JsonObject copy = el.getAsJsonObject().deepCopy();
@@ -173,32 +52,36 @@ public final class SplitUnbakedGeometry implements IUnbakedGeometry<SplitUnbaked
         return out;
     }
 
-    // ==================== Bounds ====================
+    // ==================== bake ====================
 
-    private static double[] computeElementBounds(JsonArray elements) {
-        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
-        double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
-        for (JsonElement el : elements) {
-            JsonObject elem = el.getAsJsonObject();
-            JsonArray from = elem.getAsJsonArray("from");
-            JsonArray to = elem.getAsJsonArray("to");
-            for (int i = 0; i < 3; i++) {
-                double f = from.get(i).getAsDouble(), t = to.get(i).getAsDouble();
-                double lo = Math.min(f, t), hi = Math.max(f, t);
-                switch (i) {
-                    case 0 -> { minX = Math.min(minX, lo); maxX = Math.max(maxX, hi); }
-                    case 1 -> { minY = Math.min(minY, lo); maxY = Math.max(maxY, hi); }
-                    case 2 -> { minZ = Math.min(minZ, lo); maxZ = Math.max(maxZ, hi); }
-                }
-            }
-        }
-        return new double[]{minX, maxX, minY, maxY, minZ, maxZ};
+    /**
+     * Wrap elements in a minimal synthetic BlockModel JSON and bake it through vanilla.
+     * Returns the baked model whose {@code getQuads(null, side, ...)} yields the raw quads.
+     */
+    public static BakedModel bakeSubset(JsonArray elements,
+                                        JsonObject textures,
+                                        JsonElement textureSize,
+                                        ModelBaker baker,
+                                        Function<Material, TextureAtlasSprite> spriteGetter,
+                                        ModelState modelState,
+                                        boolean useAmbientOcclusion) {
+        JsonObject synth = new JsonObject();
+        synth.addProperty("parent", "minecraft:block/block");
+        if (textureSize != null) synth.add("texture_size", textureSize);
+        synth.add("textures", textures);
+        synth.add("elements", elements);
+        BlockModel bm = ExtendedBlockModelDeserializer.INSTANCE.fromJson(GSON.toJson(synth), BlockModel.class);
+        return bm.bake(baker, bm, spriteGetter, modelState, useAmbientOcclusion);
     }
 
-    // ==================== Clip (ported from ModelSplitProcessor) ====================
+    // ==================== split: clip ====================
 
-    private static JsonObject clipElement(JsonObject original, double baseX, double baseY, double baseZ) {
+    /**
+     * Clip a single element to a block-cell AABB at {@code (baseX, baseY, baseZ)} (pixel coords),
+     * re-interpolating UVs for the clipped face extents. Returns {@code null} if the element
+     * doesn't overlap the cell.
+     */
+    public static JsonObject clipToCell(JsonObject original, double baseX, double baseY, double baseZ) {
         JsonArray from = original.getAsJsonArray("from");
         JsonArray to = original.getAsJsonArray("to");
         double fx = from.get(0).getAsDouble(), fy = from.get(1).getAsDouble(), fz = from.get(2).getAsDouble();
@@ -307,9 +190,10 @@ public final class SplitUnbakedGeometry implements IUnbakedGeometry<SplitUnbaked
         return new double[]{newU1, newV1, newU2, newV2};
     }
 
-    // ==================== Mirror in X (ported from ModelSplitProcessor) ====================
+    // ==================== split: mirror ====================
 
-    private static JsonArray mirrorAllX(JsonArray elements) {
+    /** Mirror every element across the x=0 plane (for multiblock 'mirrored' variants). */
+    public static JsonArray mirrorX(JsonArray elements) {
         JsonArray out = new JsonArray();
         for (JsonElement el : elements) out.add(mirrorElementX(el.getAsJsonObject()));
         return out;
@@ -321,9 +205,6 @@ public final class SplitUnbakedGeometry implements IUnbakedGeometry<SplitUnbaked
 
         JsonArray from = original.getAsJsonArray("from");
         JsonArray to = original.getAsJsonArray("to");
-        // Mirror around x=0 (so post-mirror from is 0 - to, post-mirror to is 0 - from).
-        // Note: ModelSplitProcessor mirrors around x=16 (single-cell), but here we mirror the
-        // entire oversized model around x=0 so the clip loop below re-buckets into cells.
         JsonArray newFrom = new JsonArray();
         newFrom.add(-to.get(0).getAsDouble());
         newFrom.add(from.get(1).getAsDouble());
@@ -380,7 +261,29 @@ public final class SplitUnbakedGeometry implements IUnbakedGeometry<SplitUnbaked
         return result;
     }
 
-    // ==================== Utility ====================
+    // ==================== bounds ====================
+
+    /** Compute element bounds [minX,maxX,minY,maxY,minZ,maxZ] over all from/to pixel coords. */
+    public static double[] computeBounds(JsonArray elements) {
+        double minX = Double.MAX_VALUE, maxX = -Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+        double minZ = Double.MAX_VALUE, maxZ = -Double.MAX_VALUE;
+        for (JsonElement el : elements) {
+            JsonObject elem = el.getAsJsonObject();
+            JsonArray from = elem.getAsJsonArray("from");
+            JsonArray to = elem.getAsJsonArray("to");
+            for (int i = 0; i < 3; i++) {
+                double f = from.get(i).getAsDouble(), t = to.get(i).getAsDouble();
+                double lo = Math.min(f, t), hi = Math.max(f, t);
+                switch (i) {
+                    case 0 -> { minX = Math.min(minX, lo); maxX = Math.max(maxX, hi); }
+                    case 1 -> { minY = Math.min(minY, lo); maxY = Math.max(maxY, hi); }
+                    case 2 -> { minZ = Math.min(minZ, lo); maxZ = Math.max(maxZ, hi); }
+                }
+            }
+        }
+        return new double[]{minX, maxX, minY, maxY, minZ, maxZ};
+    }
 
     private static double lerp(double a, double b, double t) { return a + (b - a) * t; }
     private static double roundUV(double v) { return Math.round(v * 10000.0) / 10000.0; }

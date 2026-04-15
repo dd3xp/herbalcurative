@@ -107,31 +107,31 @@ public class HerbVaultBlock extends MultiblockPartBlock {
                                                Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (hand == InteractionHand.OFF_HAND) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (hitResult.getDirection() != state.getValue(FACING)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && !isFrontRow(be))
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (stack.is(ModRegistries.HERB_BOX.get())) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+        if (!(level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be) || !be.isFormed() || !isFrontRow(be)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        int herbIndex = be.getHerbIndexForBlock();
+        if (!isHitInGridCell(hitResult, pos, state.getValue(FACING), herbIndex)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+
         if (level.isClientSide) return ItemInteractionResult.SUCCESS;
 
-        if (level.getBlockEntity(pos) instanceof HerbVaultBlockEntity be && be.isFormed()) {
-            int herbIndex = be.getHerbIndexForBlock();
-            if (!isHitInGridCell(hitResult, pos, state.getValue(FACING), herbIndex)) {
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-            }
+        boolean isDouble = be.isDoubleClick(player.getUUID());
+        int totalAdded = 0;
 
-            boolean isDouble = be.isDoubleClick(player.getUUID());
-            int totalAdded = 0;
+        if (isDouble && (stack.isEmpty() || !HerbRegistry.isHerb(stack.getItem()))) {
+            totalAdded = HerbRegistry.transferAllHerbsFromInventory(player, be::addHerb);
+        } else if (!stack.isEmpty() && HerbRegistry.isHerb(stack.getItem())) {
+            totalAdded = be.addHerb(stack.getItem(), stack.getCount());
+            stack.shrink(totalAdded);
+        }
 
-            if (isDouble && (stack.isEmpty() || !HerbRegistry.isHerb(stack.getItem()))) {
-                totalAdded = HerbRegistry.transferAllHerbsFromInventory(player, be::addHerb);
-            } else if (!stack.isEmpty() && HerbRegistry.isHerb(stack.getItem())) {
-                totalAdded = be.addHerb(stack.getItem(), stack.getCount());
-                stack.shrink(totalAdded);
-            }
-
-            if (totalAdded > 0) {
-                level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F,
-                        1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F);
-            }
+        if (totalAdded > 0) {
+            level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F,
+                    1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F);
         }
         return ItemInteractionResult.SUCCESS;
     }

@@ -76,20 +76,39 @@ public class HerbBoxItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        
+
+        boolean shift = player.isShiftKeyDown();
+        // Pre-check so we only swing when something will actually move.
+        if (shift ? !boxHasAnyHerb(stack) : !inventoryHasAnyHerb(player)) {
+            return InteractionResultHolder.pass(stack);
+        }
+
         if (level.isClientSide()) {
             return InteractionResultHolder.success(stack);
         }
-        
-        if (player.isShiftKeyDown()) {
-            // Shift + Right Click: Extract all herbs to inventory
+
+        if (shift) {
             extractHerbsToInventory(stack, player);
         } else {
-            // Right Click: Collect all herbs from inventory
             collectHerbsFromInventory(stack, player);
         }
-        
+
         return InteractionResultHolder.success(stack);
+    }
+
+    private static boolean boxHasAnyHerb(ItemStack box) {
+        for (int i = 0; i < HerbRegistry.getHerbCount(); i++) {
+            if (getHerbAmount(box, HerbRegistry.getHerbKey(i)) > 0) return true;
+        }
+        return false;
+    }
+
+    private static boolean inventoryHasAnyHerb(Player player) {
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack s = player.getInventory().getItem(i);
+            if (!s.isEmpty() && HerbRegistry.isHerb(s.getItem())) return true;
+        }
+        return false;
     }
 
     @Override
@@ -105,13 +124,13 @@ public class HerbBoxItem extends Item {
                 return InteractionResult.PASS;
             }
 
-            // Check if player is clicking on the front face of the cabinet
             var blockState = level.getBlockState(pos);
             var facing = blockState.getValue(HerbCabinetBlock.FACING);
             var clickedFace = context.getClickedFace();
-            
-            if (clickedFace != facing) {
-                // Not clicking on front face, pass
+
+            if (clickedFace != facing) return InteractionResult.PASS;
+            int herbIndex = cabinet.getHerbIndexForBlock();
+            if (!HerbCabinetBlock.isHitInGridCell(new net.minecraft.world.phys.BlockHitResult(context.getClickLocation(), context.getClickedFace(), pos, context.isInside()), pos, facing, herbIndex)) {
                 return InteractionResult.PASS;
             }
 
@@ -141,6 +160,10 @@ public class HerbBoxItem extends Item {
             var clickedFace = context.getClickedFace();
 
             if (clickedFace != facing || !HerbVaultBlock.isFrontRow(vault)) {
+                return InteractionResult.PASS;
+            }
+            int herbIndex = vault.getHerbIndexForBlock();
+            if (!HerbVaultBlock.isHitInGridCell(new net.minecraft.world.phys.BlockHitResult(context.getClickLocation(), context.getClickedFace(), pos, context.isInside()), pos, facing, herbIndex)) {
                 return InteractionResult.PASS;
             }
 

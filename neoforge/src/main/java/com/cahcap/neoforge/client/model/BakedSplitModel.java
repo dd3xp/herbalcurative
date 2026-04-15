@@ -1,4 +1,4 @@
-package com.cahcap.neoforge.client.model.split;
+package com.cahcap.neoforge.client.model;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.block.model.BakedQuad;
