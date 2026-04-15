@@ -1,7 +1,7 @@
 package com.cahcap.common.multiblock;
 
 import com.cahcap.common.blockentity.MultiblockPartBlockEntity;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -366,7 +366,7 @@ public class Multiblock {
                 for (int z = 0; z < rows.length; z++) {
                     for (int x = 0; x < rows[z].length(); x++) {
                         int bpDx = x - masterGx, bpDy = y - masterGy, bpDz = z - masterGz;
-                        int[] model = MultiblockShapes.blueprintToModel(bpDx, bpDy, bpDz);
+                        int[] model = CustomVoxelShapes.blueprintToModel(bpDx, bpDy, bpDz);
                         mdxMin = Math.min(mdxMin, model[0]); mdxMax = Math.max(mdxMax, model[0]);
                         mdyMin = Math.min(mdyMin, model[1]); mdyMax = Math.max(mdyMax, model[1]);
                         mdzMin = Math.min(mdzMin, model[2]); mdzMax = Math.max(mdzMax, model[2]);
@@ -389,7 +389,7 @@ public class Multiblock {
                                     + "' at layer " + y + " row " + z + " col " + x);
                         }
                         int bpDx = x - masterGx, bpDy = y - masterGy, bpDz = z - masterGz;
-                        int[] model = MultiblockShapes.blueprintToModel(bpDx, bpDy, bpDz);
+                        int[] model = CustomVoxelShapes.blueprintToModel(bpDx, bpDy, bpDz);
                         boolean isMaster = (symbol == masterSymbol);
                         int positionIndex = (model[1] - mdyMin) * xSize * zSize
                                 + (model[0] - mdxMin) * zSize

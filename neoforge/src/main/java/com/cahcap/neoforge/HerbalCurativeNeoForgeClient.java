@@ -37,6 +37,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import com.cahcap.neoforge.client.model.split.SplitGeometryLoader;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -157,6 +158,11 @@ public class HerbalCurativeNeoForgeClient {
             event.registerLayerDefinition(HerbBoxModel.LAYER_LOCATION, HerbBoxModel::createBodyLayer);
         }
         
+        @SubscribeEvent
+        public static void registerGeometryLoaders(ModelEvent.RegisterGeometryLoaders event) {
+            event.register(SplitGeometryLoader.ID, SplitGeometryLoader.INSTANCE);
+        }
+
         @SubscribeEvent
         public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
             // Register workbench tool block models so they get baked and can be used in BER.

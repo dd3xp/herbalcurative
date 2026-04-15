@@ -5,7 +5,7 @@ import com.cahcap.common.blockentity.IncenseBurnerBlockEntity;
 import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.HerbRegistry;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,9 +60,8 @@ public class IncenseBurnerBlock extends BaseEntityBlock {
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     
-    // VoxelShape loaded from the Blockbench model via datagen.
-    // Auto-rotates for all 4 FACING values at load time.
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/incense_burner.json");
+    private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel(
+            "/assets/herbalcurative/models/block/incense_burner.json", java.util.Set.of("Incense"));
     
     public IncenseBurnerBlock(Properties properties) {
         super(properties);

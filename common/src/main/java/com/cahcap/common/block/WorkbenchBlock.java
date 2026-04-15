@@ -62,9 +62,8 @@ public class WorkbenchBlock extends BaseEntityBlock {
     public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, 2);
     public static final int POS_LEFT = 0, POS_CENTER = 1, POS_RIGHT = 2;
 
-    // VoxelShapes loaded from data-driven JSON
-    private static final com.cahcap.common.util.MultiblockShapes SHAPES =
-            com.cahcap.common.util.MultiblockShapes.load("/assets/herbalcurative/voxelshapes/workbench.json");
+    private static final com.cahcap.common.util.CustomVoxelShapes SHAPES =
+            com.cahcap.common.util.CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/workbench.json");
 
     public WorkbenchBlock(Properties properties) {
         super(properties);

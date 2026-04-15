@@ -2,7 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.KilnBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +37,7 @@ public class KilnBlock extends MultiblockPartBlock {
 
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/kiln.json");
+    private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/kiln.json");
     public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, SHAPES.totalPositions() - 1);
 
     public KilnBlock(Properties properties) {
@@ -66,7 +66,7 @@ public class KilnBlock extends MultiblockPartBlock {
     }
 
     @Override
-    protected MultiblockShapes getMultiblockShapes() { return SHAPES; }
+    protected CustomVoxelShapes getCustomVoxelShapes() { return SHAPES; }
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {

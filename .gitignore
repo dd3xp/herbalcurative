@@ -29,6 +29,7 @@ neoforge/src/main/generated/
 # private
 private/modpacks
 private/assets/minecraft
+private/references
 
 # repo
 repo

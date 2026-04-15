@@ -2,7 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.MultiblockPartBlockEntity;
 import com.cahcap.common.multiblock.Multiblock;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -84,16 +84,16 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
     protected abstract VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored);
 
     /**
-     * Get the MultiblockShapes instance for this block.
+     * Get the CustomVoxelShapes instance for this block.
      */
-    protected abstract MultiblockShapes getMultiblockShapes();
+    protected abstract CustomVoxelShapes getCustomVoxelShapes();
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        return getMultiblockShapes().getByIndex(
+        return getCustomVoxelShapes().getByIndex(
                 state.getValue(FACING),
                 state.getValue(getPositionProperty()),
                 state.getValue(MIRRORED));
@@ -104,7 +104,7 @@ public abstract class MultiblockPartBlock extends BaseEntityBlock {
         if (!state.getValue(FORMED)) {
             return Shapes.block();
         }
-        return getMultiblockShapes().getByIndex(
+        return getCustomVoxelShapes().getByIndex(
                 state.getValue(FACING),
                 state.getValue(getPositionProperty()),
                 state.getValue(MIRRORED));

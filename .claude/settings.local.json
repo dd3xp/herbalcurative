@@ -73,7 +73,8 @@
       "Bash(powershell.exe -Command \"cd C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts; python voxel.py --per-block C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json 2>&1; Write-Host EXIT: $LASTEXITCODE\")",
       "Bash(powershell.exe -Command \"& ''C:\\\\Users\\\\17145\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python314\\\\python.exe'' ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\scripts\\\\voxel.py'' --per-block ''C:\\\\Codes\\\\herbalcurative\\\\private\\\\assets\\\\herbalcurative\\\\Klin\\\\klin.json'' 2>&1\")",
       "Bash(git checkout:*)",
-      "Bash(./gradlew neoforge:runData)"
+      "Bash(./gradlew neoforge:runData)",
+      "Bash(grep -E \"\\\\.json$\")"
     ]
   }
 }

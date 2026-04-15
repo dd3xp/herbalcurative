@@ -3,7 +3,7 @@ package com.cahcap.common.block;
 import com.cahcap.common.blockentity.ObeliskBlockEntity;
 import com.cahcap.common.recipe.ObeliskOfferingRecipe;
 import com.cahcap.common.registry.ModRegistries;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,7 +34,7 @@ public class ObeliskBlock extends MultiblockPartBlock {
 
     public static final MapCodec<ObeliskBlock> CODEC = simpleCodec(ObeliskBlock::new);
 
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/obelisk.json");
+    private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/obelisk.json");
     public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, 26); // 3x3x3 = 27 positions
 
     public ObeliskBlock(Properties properties) {
@@ -63,7 +63,7 @@ public class ObeliskBlock extends MultiblockPartBlock {
     }
 
     @Override
-    protected MultiblockShapes getMultiblockShapes() { return SHAPES; }
+    protected CustomVoxelShapes getCustomVoxelShapes() { return SHAPES; }
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {

@@ -13,14 +13,3 @@ dependencies {
     // Jade API for optional Jade support
     modCompileOnly "maven.modrinth:jade:15.9.3+neoforge"
 }
-
-// Processes Blockbench-exported block models:
-//   - cleans angle:0 rotations in-place in models/block/
-//   - splits multiblocks to models/split/
-//   - generates voxelshapes/ and multiblock blockstates/
-// Run after editing any source model in common/.../models/block/.
-tasks.register('processModels', com.cahcap.tools.models.ProcessModelsTask) {
-    commonResourcesRoot = project(':common').file('src/main/resources').absolutePath
-    group = 'herbalcurative'
-    description = 'Clean + split Blockbench models, regenerate voxelshapes and multiblock blockstates.'
-}

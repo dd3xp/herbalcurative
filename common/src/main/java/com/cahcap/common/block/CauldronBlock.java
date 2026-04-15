@@ -3,7 +3,7 @@ package com.cahcap.common.block;
 import com.cahcap.common.blockentity.cauldron.CauldronBlockEntity;
 import com.cahcap.common.item.PotItem;
 import com.cahcap.common.registry.ModRegistries;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +36,7 @@ public class CauldronBlock extends MultiblockPartBlock {
 
     public static final MapCodec<CauldronBlock> CODEC = simpleCodec(CauldronBlock::new);
 
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/cauldron.json");
+    private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/cauldron.json");
     public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, SHAPES.totalPositions() - 1);
 
     public CauldronBlock(Properties properties) {
@@ -65,7 +65,7 @@ public class CauldronBlock extends MultiblockPartBlock {
     }
 
     @Override
-    protected MultiblockShapes getMultiblockShapes() { return SHAPES; }
+    protected CustomVoxelShapes getCustomVoxelShapes() { return SHAPES; }
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {

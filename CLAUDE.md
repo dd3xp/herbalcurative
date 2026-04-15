@@ -6,89 +6,78 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 私有资产目录里面的json文件需要改一下纹理路径
 
-## AO 光照格子问题 - 已修复
+## 多方块模型:运行时 split loader
 
-**根因**:Blockbench 导出的模型 JSON 中每个 element 都带有 `rotation: {angle: 0, axis: y, origin: ...}`。虽然 angle=0 无实际旋转,但 Minecraft 在 bake 模型时对有 `rotation` 属性的 element 走不同的渲染代码路径,影响 AO(Ambient Occlusion)的计算 —— 相邻 element 之间、以及多方块的相邻方块之间都会出现亮度不连续的格子。
+### 思想
 
-### 规则:所有会被 Minecraft 直接渲染的 block 模型 JSON 里,element 都不能带 `rotation: {angle: 0, ...}`
+Blockbench 导出的 oversized 多方块模型(元素坐标跨 `[−16, 32]`)不再预先切成 per-position JSON。改为在 bake 时由自定义 NeoForge geometry loader `herbalcurative:split` 运行时切片,缓存 `[mirror][position][side]` 的 `BakedQuad` 表,按 block state 的 `position` / `mirrored` 属性分派。同一份 base model JSON 同时喂渲染、VoxelShape、物品显示,**无任何预生成产物**。
 
-由 [`:common:processModels`](buildSrc/src/main/java/com/cahcap/tools/models/BlockModelProcessor.java) 自动剥离,**不需要手工维护**。Blockbench 导出脏 JSON → 跑一次 task → 原地清洁。
+### 数据流
 
-## 自定义模型的处理流程(不用 runData)
-
-**重要变更**:模型处理已从 `runData`(NeoForge datagen)迁到 buildSrc 的独立 Gradle task。不需要启动 Minecraft,毫秒级完成,跨平台共享产物。
-
-### 触发方式
-
-```bash
-./gradlew :common:processModels
+```
+common/.../models/block/<name>.json   ← Blockbench 导出,根部带 "loader": "herbalcurative:split"
+             │
+             ├─► 客户端:SplitGeometryLoader → SplitUnbakedGeometry.bake()
+             │      剥 rotation:{angle:0} → 计算 grid bounds → clipElement + mirrorElementX
+             │      每 (mirror,pos) 一份 clipped element 子集 → vanilla BlockModel.bake
+             │      结果塞进 BakedSplitModel 的 quad 表
+             │
+             └─► 服务端/两端:CustomVoxelShapes.loadFromModel(path)
+                    读同一 JSON → 按 element 中心点归格 → 合成 per-cell VoxelShape
 ```
 
-改了 Blockbench 源模型后跑这一条。task 定义在 [common/build.gradle](common/build.gradle),实现在 [buildSrc/src/main/java/com/cahcap/tools/models/](buildSrc/src/main/java/com/cahcap/tools/models/)。
+### 关键类
 
-### 四个处理器
-
-| 处理器 | 输入 | 输出 |
+| 类 | 位置 | 作用 |
 |---|---|---|
-| [BlockModelProcessor](buildSrc/src/main/java/com/cahcap/tools/models/BlockModelProcessor.java) | `common/.../models/block/<name>.json` (脏) | 原地覆写(清洁) |
-| [ModelSplitProcessor](buildSrc/src/main/java/com/cahcap/tools/models/ModelSplitProcessor.java) | `common/.../models/block/<multiblock>.json` | `common/.../models/split/<name>_part_X_Y_Z.json` + `_mirrored` 变体 |
-| [VoxelShapeProcessor](buildSrc/src/main/java/com/cahcap/tools/models/VoxelShapeProcessor.java) | `common/.../models/block/<name>.json` | `common/.../voxelshapes/<name>.json` |
-| [MultiblockStateProcessor](buildSrc/src/main/java/com/cahcap/tools/models/MultiblockStateProcessor.java) | `common/.../models/block/<multiblock>.json` | `common/.../blockstates/<name>.json` (覆写) |
+| [`SplitGeometryLoader`](neoforge/src/main/java/com/cahcap/neoforge/client/model/split/SplitGeometryLoader.java) | neoforge | 注册入口,key = `herbalcurative:split` |
+| [`SplitUnbakedGeometry`](neoforge/src/main/java/com/cahcap/neoforge/client/model/split/SplitUnbakedGeometry.java) | neoforge | 运行时 clip / mirror / bake,全部逻辑 |
+| [`BakedSplitModel`](neoforge/src/main/java/com/cahcap/neoforge/client/model/split/BakedSplitModel.java) | neoforge | `getQuads(state, side, rand)` 按 state 查表,item 渲染时返回全模型 |
+| [`CustomVoxelShapes.loadFromModel`](common/src/main/java/com/cahcap/common/util/CustomVoxelShapes.java) | common | 读同一 model JSON 产出 VoxelShape;支持 `excludeGroups` 跳过 Blockbench 组 |
 
-### 完整数据流
+Loader 在 [`HerbalCurativeNeoForgeClient.registerGeometryLoaders`](neoforge/src/main/java/com/cahcap/neoforge/HerbalCurativeNeoForgeClient.java) 里注册。
 
+### 哪些多方块走这条路
+
+6 个: `cauldron`、`herb_cabinet`、`herb_vault`、`kiln`、`obelisk`、`workbench`。这 6 个 model JSON 根部有 `"loader": "herbalcurative:split"` 标记。
+
+另外 4 个 (`herb_pot`、`herb_basket`、`incense_burner`、`shelf`) 的 block model 不跨格,走 vanilla bake;它们仅通过 `CustomVoxelShapes.loadFromModel` 获取 VoxelShape。
+
+### Blockstate JSON 形式
+
+6 个走 split loader 的多方块 blockstate 退化成 4-5 条 variant:
+
+```json
+{
+  "variants": {
+    "formed=false": { "model": "herbalcurative:block/lumistone" },
+    "facing=north,formed=true": { "model": "herbalcurative:block/cauldron" },
+    "facing=south,formed=true": { "model": "herbalcurative:block/cauldron", "y": 180 },
+    "facing=east,formed=true":  { "model": "herbalcurative:block/cauldron", "y": 90 },
+    "facing=west,formed=true":  { "model": "herbalcurative:block/cauldron", "y": 270 }
+  }
+}
 ```
-common/.../models/block/<name>.json         ← Blockbench 脏导出
-                 ↓
-         :common:processModels
-         ├─ BlockModelProcessor 原地清洁 ────┐
-         ├─ ModelSplitProcessor              │
-         ├─ VoxelShapeProcessor              │
-         └─ MultiblockStateProcessor         │
-                 ↓                           │
-common/.../models/block/<name>.json  ←──────┘ (清洁版)
-common/.../models/split/<name>_part_X_Y_Z.json
-common/.../voxelshapes/<name>.json
-common/.../blockstates/<multiblock>.json  (覆写)
-                 ↓
-       Minecraft 直接从 common 资源加载
-```
 
-### 为什么是 buildSrc task 而不是 DataProvider
+Position / mirrored / lit 等属性由 `BakedSplitModel.getQuads` 从 state 读,不进 blockstate 文件。`workbench` 无 `formed` 属性,只有 4 条 facing variant。
 
-之前用 NeoForge 的 `DataProvider` 走 `runData`,问题:
-1. 启动完整 MC 运行时要分钟级
-2. 输出落在 `neoforge/src/main/generated/`,Fabric 加进来后要么重新跑一次要么复制过去,都别扭
-3. 逻辑本质是纯 JSON in/out,根本不需要 MC
+### 新增一个多方块要做的事
 
-迁到 buildSrc 之后:
-- 秒级完成,不启 MC
-- 输出落在 common,所有平台自动共享
-- 加 Fabric 时完全不需要重复配置这块
-
-### blockstate 和 item model 的引用方式
-
-custom 这条伪路径已废弃。现在一律用 vanilla 的 `block/` 前缀:
-
-- **单方块 blockstate**(手写在 `common/.../blockstates/`):`"model": "herbalcurative:block/<name>"`
-- **多方块 blockstate**(processModels 覆写生成):
-  - `formed=true` → `"herbalcurative:split/<name>_part_X_Y_Z"`
-  - `formed=false` → `"herbalcurative:block/<占位方块>"`(如 `block/lumistone`)
-- **item model**(手写在 `common/.../models/item/`):`"parent": "herbalcurative:block/<name>"`
-- **WorkbenchRenderer 工具模型**:加载路径 `block/workbench_tool_*`
-
-### 新增一个自定义形状方块时需要做的事
-
-1. 在 Blockbench 里建模,导出 `.json` 到 `common/src/main/resources/assets/herbalcurative/models/block/<name>.json`
+1. Blockbench 建模,导出到 `common/src/main/resources/assets/herbalcurative/models/block/<name>.json`
 2. 修纹理路径(加 `herbalcurative:block/` 命名空间前缀)
-3. 在 [BlockModelProcessor.MODELS](buildSrc/src/main/java/com/cahcap/tools/models/BlockModelProcessor.java) 列表里加一行 `"<name>"`
-4. 在 [VoxelShapeProcessor](buildSrc/src/main/java/com/cahcap/tools/models/VoxelShapeProcessor.java) 的 `run()` 里加一条 `process("<name>", "<name>", Set.of())`
-5. 写 blockstate JSON,model 引用用 `herbalcurative:block/<name>`
-6. 写 item model JSON,parent 用 `herbalcurative:block/<name>`
-7. Block 类里 `MultiblockShapes.load("/assets/herbalcurative/voxelshapes/<name>.json")` + `getByIndex(facing, 0, false)`
-8. 跑 `./gradlew :common:processModels`(多方块需要再进 [MultiblockStateProcessor.CONFIGS](buildSrc/src/main/java/com/cahcap/tools/models/MultiblockStateProcessor.java) 加一行)
+3. **根部加** `"loader": "herbalcurative:split"` 一行(在 `format_version` 同级)
+4. 写 blockstate JSON(模板见上,换模型名和占位方块)
+5. 写 item model JSON:`{ "parent": "herbalcurative:block/<name>" }`
+6. Block 类 `private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/<name>.json");`
+7. 如果模型带 "配饰" 组(例如 incense 香条、rope)需排除出碰撞,给 `loadFromModel` 传第二参数 `Set.of("GroupName")`
+
+**没有 Gradle task 要跑。** 改完 Blockbench 模型,F3+T 或重启客户端即可看到改动。
 
 ### 什么还需要 runData
 
-- loot 表、recipe、block/item/biome tag、worldgen(biome modifier)—— 都还在 NeoForge datagen 里,跑 `./gradlew :neoforge:runData`
-- 模型相关的四件事**不再需要** runData
+- loot 表、recipe、block/item/biome tag、worldgen (biome modifier) —— 都还在 NeoForge datagen 里,跑 `./gradlew :neoforge:runData`
+- 模型相关的四件事(剥 rotation、split、voxelshape、blockstate)**全部运行时完成**,无需 datagen 也无需 buildSrc task
+
+### AO 光照格子历史
+
+Blockbench 导出的 elements 含 `rotation: {angle: 0, ...}` 会让 Minecraft 走不同 bake 路径,产生 AO 不连续。loader 在读入 JSON 后自动剥离这种 zero-angle rotation(见 `SplitUnbakedGeometry.cleanElements`),源 JSON 不需要手工清理。

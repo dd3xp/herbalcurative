@@ -5,7 +5,7 @@ import com.cahcap.common.util.GridHitHelper;
 import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.HerbRegistry;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.cahcap.common.util.HerbRegistry;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -35,7 +35,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
 
     public static final MapCodec<HerbCabinetBlock> CODEC = simpleCodec(HerbCabinetBlock::new);
 
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_cabinet.json");
+    private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/herb_cabinet.json");
     public static final IntegerProperty POSITION = IntegerProperty.create("position", 0, SHAPES.totalPositions() - 1);
 
     public HerbCabinetBlock(Properties properties) {
@@ -64,7 +64,7 @@ public class HerbCabinetBlock extends MultiblockPartBlock {
     }
 
     @Override
-    protected MultiblockShapes getMultiblockShapes() { return SHAPES; }
+    protected CustomVoxelShapes getCustomVoxelShapes() { return SHAPES; }
 
     @Override
     protected VoxelShape getMultiblockShape(Direction facing, int[] offset, boolean mirrored) {

@@ -2,7 +2,7 @@ package com.cahcap.common.block;
 
 import com.cahcap.common.blockentity.ShelfBlockEntity;
 import com.cahcap.common.registry.ModRegistries;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,9 +46,7 @@ public class ShelfBlock extends BaseEntityBlock {
     
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     
-    // VoxelShape loaded from the Blockbench model via datagen.
-    // Auto-rotates for all 4 FACING values at load time.
-    private static final MultiblockShapes SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/shelf.json");
+    private static final CustomVoxelShapes SHAPES = CustomVoxelShapes.loadFromModel("/assets/herbalcurative/models/block/shelf.json");
     
     public ShelfBlock(Properties properties) {
         super(properties);

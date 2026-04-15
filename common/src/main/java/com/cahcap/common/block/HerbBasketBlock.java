@@ -5,7 +5,7 @@ import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.util.HerbRegistry;
 import com.cahcap.common.registry.ModRegistries;
 import com.cahcap.common.util.HerbRegistry;
-import com.cahcap.common.util.MultiblockShapes;
+import com.cahcap.common.util.CustomVoxelShapes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -52,11 +52,10 @@ public class HerbBasketBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty ON_WALL = BooleanProperty.create("on_wall");
     
-    // VoxelShapes loaded from Blockbench models via datagen.
-    // Each MultiblockShapes auto-rotates for all 4 FACING values at load time.
-    private static final MultiblockShapes FLOOR_SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_basket_floor.json");
-    // Wall shape excludes Rope and Nails groups (filtered by VoxelShapeProvider at datagen time).
-    private static final MultiblockShapes WALL_SHAPES = MultiblockShapes.load("/assets/herbalcurative/voxelshapes/herb_basket_wall.json");
+    private static final CustomVoxelShapes FLOOR_SHAPES = CustomVoxelShapes.loadFromModel(
+            "/assets/herbalcurative/models/block/herb_basket_floor.json");
+    private static final CustomVoxelShapes WALL_SHAPES = CustomVoxelShapes.loadFromModel(
+            "/assets/herbalcurative/models/block/herb_basket_wall.json", java.util.Set.of("Rope", "Nails"));
     
     public HerbBasketBlock(Properties properties) {
         super(properties);
@@ -91,7 +90,7 @@ public class HerbBasketBlock extends BaseEntityBlock {
     
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        MultiblockShapes shapes = state.getValue(ON_WALL) ? WALL_SHAPES : FLOOR_SHAPES;
+        CustomVoxelShapes shapes = state.getValue(ON_WALL) ? WALL_SHAPES : FLOOR_SHAPES;
         return shapes.getByIndex(state.getValue(FACING), 0, false);
     }
 
