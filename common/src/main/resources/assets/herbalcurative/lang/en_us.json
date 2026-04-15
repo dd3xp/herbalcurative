@@ -111,6 +111,12 @@
   "item.herbalcurative.cauldron": "Cauldron",
   "item.herbalcurative.obelisk": "Obelisk",
   
-  "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d"
+  "tooltip.herbalcurative.herb_basket.contents": "%s: %d/%d",
+
+  "config.jade.plugin_herbalcurative.icon_provider": "Icon Provider",
+  "config.jade.plugin_herbalcurative.cauldron_icon_provider": "Cauldron Icon",
+  "config.jade.plugin_herbalcurative.kiln_provider": "Kiln Info",
+  "config.jade.plugin_herbalcurative.obelisk_provider": "Obelisk Info",
+  "config.jade.plugin_herbalcurative.herb_vault_icon": "Herb Vault Icon"
 }
 

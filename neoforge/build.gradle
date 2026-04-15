@@ -60,8 +60,12 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
-    // Optional WTHIT/Jade support
+    // Optional WTHIT/Jade support — compile against API only, ship full mod at dev runtime
     modCompileOnly "mcp.mobius.waila:wthit-api:neo-12.8.2"
+    modLocalRuntime "mcp.mobius.waila:wthit:neo-12.8.2"
+
+    modCompileOnly "maven.modrinth:jade:15.9.3+neoforge"
+    modLocalRuntime "maven.modrinth:jade:15.9.3+neoforge"
 
     // JEI - compile against API only, ship full JEI at dev runtime for testing
     modCompileOnly "mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}"
